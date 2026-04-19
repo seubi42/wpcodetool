@@ -1,0 +1,57 @@
+{
+  "name": "sample_settings",
+  "label": "Sample settings",
+  "description": "Example admin settings page stored as a single object in wp_options.",
+  "storage": {
+    "type": "option",
+    "optionName": "smbb_sample_settings",
+    "autoload": false,
+    "default": {
+      "enabled": false,
+      "label": "",
+      "support_email": "",
+      "logo_id": 0,
+      "brand_color": "#2271b1",
+      "publish_date": "",
+      "publish_time": "",
+      "intro_content": "",
+      "api": {
+        "endpoint": "",
+        "token": "",
+        "timeout": 10
+      },
+      "features": []
+    }
+  },
+  "admin": {
+    "enabled": true,
+    "type": "settings_page",
+    "capability": "manage_options",
+    "menu": {
+      "placement": "submenu",
+      "parent": {
+        "slug": "smbb-sample-tools",
+        "title": "SMBB Sample",
+        "icon": "dashicons-admin-generic",
+        "position": 31
+      },
+      "title": "Sample settings",
+      "icon": "dashicons-admin-generic",
+      "position": 31
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "views": {
+      "form": "views/sample-settings/form.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  },
+  "hooks": {
+    "file": "classes/SampleSettingsHooks.php",
+    "class": "Smbb\\Sample\\CodeTool\\SampleSettingsHooks"
+  }
+}

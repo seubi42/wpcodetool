@@ -1,0 +1,249 @@
+{
+  "name": "test",
+  "label": "Test",
+  "pluralLabel": "Tests",
+  "description": "Sample custom-table resource used to validate CodeTool conventions.",
+  "storage": {
+    "table": "smbb_sample_tests",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "name": {
+      "type": "varchar",
+      "length": 50,
+      "nullable": false,
+      "default": ""
+    },
+    "number": {
+      "type": "int",
+      "nullable": true
+    },
+    "amount": {
+      "type": "decimal",
+      "precision": 12,
+      "scale": 2,
+      "nullable": true
+    },
+    "parent_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "advanced_mode": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "basic_note": {
+      "type": "varchar",
+      "length": 120,
+      "nullable": true
+    },
+    "advanced_note": {
+      "type": "varchar",
+      "length": 120,
+      "nullable": true
+    },
+    "image_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "gallery_ids": {
+      "type": "longtext",
+      "nullable": true,
+      "format": "json"
+    },
+    "event_date": {
+      "type": "date",
+      "nullable": true
+    },
+    "event_time": {
+      "type": "time",
+      "nullable": true
+    },
+    "event_datetime": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "brand_color": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": true
+    },
+    "content": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "json_table": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "json_object": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "creation_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "create_datetime"
+    },
+    "lastupdate_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "update_datetime"
+    },
+    "creation_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "create_user"
+    },
+    "lastupdate_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "update_user"
+    }
+  },
+  "indexes": [
+    {
+      "name": "ft_name",
+      "type": "fulltext",
+      "columns": ["name"]
+    },
+    {
+      "name": "idx_lastupdate_date",
+      "type": "index",
+      "using": "btree",
+      "columns": [
+        {
+          "name": "lastupdate_date",
+          "order": "desc"
+        }
+      ]
+    },
+    {
+      "name": "idx_creation_by",
+      "type": "index",
+      "columns": ["creation_by"]
+    },
+    {
+      "name": "idx_parent_id",
+      "type": "index",
+      "columns": ["parent_id"]
+    },
+    {
+      "name": "idx_number_amount",
+      "type": "index",
+      "columns": ["number", "amount"]
+    }
+  ],
+  "admin": {
+    "enabled": true,
+    "capability": "manage_options",
+    "menu": {
+      "placement": "main",
+      "title": "Tests",
+      "icon": "dashicons-database",
+      "position": 30
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": true
+    },
+    "list": {
+      "perPage": 20,
+      "search": {
+        "enabled": true,
+        "provider": "hook",
+        "fields": ["name", "json_object"],
+        "mode": "or",
+        "placeholder": "Search in name or JSON object"
+      },
+      "filters": {
+        "enabled": true,
+        "fields": [
+          {
+            "field": "name",
+            "label": "Name",
+            "operators": ["contains", "eq", "starts_with", "ends_with", "empty", "not_empty"]
+          },
+          {
+            "field": "number",
+            "label": "Number",
+            "operators": ["eq", "gt", "gte", "lt", "lte", "empty", "not_empty"]
+          },
+          {
+            "field": "amount",
+            "label": "Amount",
+            "operators": ["eq", "gt", "gte", "lt", "lte", "empty", "not_empty"]
+          },
+          {
+            "field": "lastupdate_date",
+            "label": "Last update",
+            "operators": ["eq", "gt", "gte", "lt", "lte", "empty", "not_empty"]
+          }
+        ]
+      },
+      "defaultOrder": {
+        "by": "id",
+        "direction": "desc"
+      }
+    },
+    "views": {
+      "list": "views/test/list.php",
+      "form": "views/test/form.php",
+      "details": "views/test/details.php"
+    }
+  },
+  "api": {
+    "enabled": true,
+    "namespace": "smbb-sample/v1",
+    "base": "tests",
+    "capability": "manage_options",
+    "actions": {
+      "list": true,
+      "get": true,
+      "create": true,
+      "patch": {
+        "enabled": true,
+        "missingFields": "keep",
+        "nullFields": "set_null"
+      },
+      "put": {
+        "enabled": false,
+        "missingFields": "reject"
+      },
+      "delete": true
+    },
+    "custom": {
+      "searchByName": {
+        "method": "GET",
+        "path": "/tests/search",
+        "file": "classes/TestApi.php",
+        "class": "Smbb\\Sample\\CodeTool\\TestApi",
+        "callback": "searchByName"
+      },
+      "print": {
+        "method": "POST",
+        "path": "/tests/(?P<id>\\d+)/print",
+        "file": "classes/TestApi.php",
+        "class": "Smbb\\Sample\\CodeTool\\TestApi",
+        "callback": "printSummary"
+      }
+    }
+  },
+  "hooks": {
+    "file": "classes/TestHooks.php",
+    "class": "Smbb\\Sample\\CodeTool\\TestHooks"
+  }
+}
