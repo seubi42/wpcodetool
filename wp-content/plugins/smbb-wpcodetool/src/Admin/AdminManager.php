@@ -2,7 +2,17 @@
 
 namespace Smbb\WpCodeTool\Admin;
 
+use Smbb\WpCodeTool\Api\ApiClientStore;
+use Smbb\WpCodeTool\Api\ApiVisibilitySettings;
+use Smbb\WpCodeTool\Admin\Pages\ApiClientsPage;
+use Smbb\WpCodeTool\Admin\Pages\ApiPage;
+use Smbb\WpCodeTool\Admin\Pages\OverviewPage;
+use Smbb\WpCodeTool\Admin\Pages\ParentPage;
+use Smbb\WpCodeTool\Admin\Pages\ResourcePage;
+use Smbb\WpCodeTool\Admin\Pages\ResourcesIndexPage;
 use Smbb\WpCodeTool\Resource\ResourceDefinition;
+use Smbb\WpCodeTool\Resource\ResourceMutationService;
+use Smbb\WpCodeTool\Resource\ResourceRuntime;
 use Smbb\WpCodeTool\Resource\ResourceScanner;
 use Smbb\WpCodeTool\Schema\SchemaSynchronizer;
 use Smbb\WpCodeTool\Store\OptionStore;
@@ -37,25 +47,34 @@ final class AdminManager
     // Service de preview/apply des schemas SQL custom table.
     private $schema;
 
-    // Instances de hooks deja resolues pendant la requete courante.
-    private $hooks_cache = array();
+    // Runtime partage pour hooks, metadata et search clause.
+    private $runtime;
 
-    // Notices affichees pendant le rendu courant.
-    private $runtime_notices = array();
+    // Pipeline de mutation partage entre l'admin et l'API.
+    private $mutations;
 
-    // Donnees de formulaire a reinjecter apres une erreur de validation/sauvegarde.
-    private $runtime_item_override = null;
+    // Helper d'acces a la requete admin courante.
+    private $request;
 
-    // Erreurs de champ normalisees pour affichage inline dans le formulaire courant.
-    private $runtime_form_errors = array();
+    // Etat mutable du rendu/admin courant.
+    private $state;
 
-    // View forcee par une action, par exemple rester sur form apres une erreur POST.
-    private $forced_view = '';
+    // Regles de visibilite OpenAPI/Swagger par namespace.
+    private $api_visibility;
+
+    // Clients API geres dans l'admin CodeTool.
+    private $api_clients;
 
     public function __construct(ResourceScanner $scanner)
     {
         $this->scanner = $scanner;
         $this->schema = new SchemaSynchronizer();
+        $this->runtime = new ResourceRuntime();
+        $this->mutations = new ResourceMutationService($this->runtime);
+        $this->request = new AdminRequest();
+        $this->state = new AdminPageState();
+        $this->api_visibility = new ApiVisibilitySettings();
+        $this->api_clients = new ApiClientStore();
     }
 
     /**
@@ -78,7 +97,27 @@ final class AdminManager
      */
     public function handleAdminActions()
     {
-        $page = isset($_GET['page']) ? sanitize_text_field(wp_unslash($_GET['page'])) : '';
+        $page = $this->request->page();
+
+        $this->state->reset();
+
+        if ($page === 'smbb-wpcodetool-api') {
+            if (!current_user_can('manage_options')) {
+                wp_die(esc_html__('You are not allowed to manage CodeTool API settings.', 'smbb-wpcodetool'));
+            }
+
+            $this->handleApiVisibilityActions();
+            return;
+        }
+
+        if ($page === 'smbb-wpcodetool-api-tokens') {
+            if (!current_user_can('manage_options')) {
+                wp_die(esc_html__('You are not allowed to manage CodeTool API clients.', 'smbb-wpcodetool'));
+            }
+
+            $this->handleApiTokenActions();
+            return;
+        }
 
         if (strpos($page, 'smbb-codetool-') !== 0) {
             return;
@@ -94,11 +133,6 @@ final class AdminManager
         if (!current_user_can($resource->capability())) {
             wp_die(esc_html__('You are not allowed to modify this CodeTool resource.', 'smbb-wpcodetool'));
         }
-
-        $this->runtime_notices = array();
-        $this->runtime_item_override = null;
-        $this->runtime_form_errors = array();
-        $this->forced_view = '';
         $this->handleResourceMutation($resource);
     }
 
@@ -185,7 +219,7 @@ final class AdminManager
             __('CodeTool', 'smbb-wpcodetool'),
             'manage_options',
             'smbb-wpcodetool',
-            array($this, 'renderIndexPage'),
+            array($this, 'renderOverviewPage'),
             'dashicons-editor-code',
             58
         );
@@ -193,6 +227,42 @@ final class AdminManager
         // Les parents thématiques doivent être enregistrés avant leurs sous-menus.
         // Exemple : un plugin peut demander un parent "SMBB Sample", puis ranger
         // plusieurs ressources dessous.
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('Overview', 'smbb-wpcodetool'),
+            __('Overview', 'smbb-wpcodetool'),
+            'manage_options',
+            'smbb-wpcodetool',
+            array($this, 'renderOverviewPage')
+        );
+
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('Resources', 'smbb-wpcodetool'),
+            __('Resources', 'smbb-wpcodetool'),
+            'manage_options',
+            'smbb-wpcodetool-resources',
+            array($this, 'renderIndexPage')
+        );
+
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('API', 'smbb-wpcodetool'),
+            __('API', 'smbb-wpcodetool'),
+            'manage_options',
+            'smbb-wpcodetool-api',
+            array($this, 'renderApiPage')
+        );
+
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('API Clients', 'smbb-wpcodetool'),
+            __('API Clients', 'smbb-wpcodetool'),
+            'manage_options',
+            'smbb-wpcodetool-api-tokens',
+            array($this, 'renderApiTokensPage')
+        );
+
         $this->registerManagedParentMenus();
 
         foreach ($this->resources as $resource) {
@@ -284,7 +354,7 @@ final class AdminManager
     {
         $url = admin_url('admin.php?page=' . $resource->adminSlug());
 
-        if ($prefer_create && $resource->adminType() !== 'settings_page') {
+        if ($prefer_create && $resource->adminType() === 'resource') {
             return add_query_arg(array('view' => 'form'), $url);
         }
 
@@ -299,7 +369,7 @@ final class AdminManager
      */
     private function adminBarNewContentTitle(ResourceDefinition $resource)
     {
-        if ($resource->adminType() === 'settings_page') {
+        if ($resource->adminType() !== 'resource') {
             return sprintf(
                 /* translators: %s: resource label. */
                 __('Open %s', 'smbb-wpcodetool'),
@@ -414,47 +484,16 @@ final class AdminManager
      */
     private function renderParentPage($parent_slug)
     {
-        $title = $this->parentTitle($parent_slug);
-        $subtitle = __('Resources grouped under this menu.', 'smbb-wpcodetool');
-        $icon = $this->parentIcon($parent_slug);
-        ?>
-        <div class="wrap smbb-codetool">
-            <?php echo $this->pageHeaderHtml($title, $subtitle, $icon); ?>
-
-            <table class="widefat striped smbb-codetool-table">
-                <thead>
-                    <tr>
-                        <th><?php esc_html_e('Resource', 'smbb-wpcodetool'); ?></th>
-                        <th><?php esc_html_e('Storage', 'smbb-wpcodetool'); ?></th>
-                        <th><?php esc_html_e('Action', 'smbb-wpcodetool'); ?></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($this->resources as $resource) : ?>
-                        <?php if (!$resource->adminEnabled() || $resource->menuPlacement() !== 'submenu' || $resource->menuParentSlug() !== $parent_slug) : ?>
-                            <?php continue; ?>
-                        <?php endif; ?>
-                        <tr>
-                            <td><?php echo esc_html($resource->menuTitle()); ?></td>
-                            <td><?php echo esc_html($resource->storageType()); ?></td>
-                            <td>
-                                <a class="button" href="<?php echo esc_url(admin_url('admin.php?page=' . $resource->adminSlug())); ?>">
-                                    <?php esc_html_e('Open', 'smbb-wpcodetool'); ?>
-                                </a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-        <?php
+        (new ParentPage($this))->render($parent_slug);
     }
 
     /**
      * Retrouve le titre d'un parent thématique à partir de son slug.
      */
-    private function parentTitle($parent_slug)
+    public function parentTitle($parent_slug)
     {
+        $this->ensureResources();
+
         foreach ($this->resources as $resource) {
             if ($resource->menuParentManaged() && $resource->menuParentSlug() === $parent_slug) {
                 return $resource->menuParentTitle();
@@ -467,8 +506,10 @@ final class AdminManager
     /**
      * Icône du parent thématique courant.
      */
-    private function parentIcon($parent_slug)
+    public function parentIcon($parent_slug)
     {
+        $this->ensureResources();
+
         foreach ($this->resources as $resource) {
             if ($resource->menuParentManaged() && $resource->menuParentSlug() === $parent_slug) {
                 return $resource->menuParentIcon();
@@ -476,6 +517,45 @@ final class AdminManager
         }
 
         return 'dashicons-editor-code';
+    }
+
+    public function request()
+    {
+        return $this->request;
+    }
+
+    public function state()
+    {
+        return $this->state;
+    }
+
+    public function resources()
+    {
+        $this->ensureResources();
+
+        return $this->resources;
+    }
+
+    public function errors()
+    {
+        $this->ensureResources();
+
+        return $this->errors;
+    }
+
+    public function schema()
+    {
+        return $this->schema;
+    }
+
+    public function apiVisibility()
+    {
+        return $this->api_visibility;
+    }
+
+    public function apiClients()
+    {
+        return $this->api_clients;
     }
 
     /**
@@ -488,9 +568,9 @@ final class AdminManager
      */
     private function isCodeToolAdminPage()
     {
-        $page = isset($_GET['page']) ? sanitize_text_field(wp_unslash($_GET['page'])) : '';
+        $page = $this->request->page();
 
-        if ($page === 'smbb-wpcodetool' || strpos($page, 'smbb-codetool-') === 0) {
+        if (strpos($page, 'smbb-wpcodetool') === 0 || strpos($page, 'smbb-codetool-') === 0) {
             return true;
         }
 
@@ -516,92 +596,268 @@ final class AdminManager
      * Elle nous permet de valider rapidement que le scanner voit bien les ressources
      * avant de rendre les CRUD totalement fonctionnels.
      */
+    public function renderOverviewPage()
+    {
+        (new OverviewPage($this))->render();
+    }
+
     public function renderIndexPage()
     {
+        (new ResourcesIndexPage($this))->render();
+    }
+
+    /**
+     * Namespace-level API documentation settings page.
+     */
+    public function renderApiPage()
+    {
+        (new ApiPage($this))->render();
+    }
+
+    /**
+     * Managed API clients page.
+     */
+    public function renderApiTokensPage()
+    {
+        (new ApiClientsPage($this))->render();
+    }
+
+    /**
+     * Save namespace visibility settings.
+     */
+    private function handleApiVisibilityActions()
+    {
+        $method = $this->request->method();
+        $action = $this->request->postKey('codetool_api_action');
+
+        if ($method !== 'POST' || $action !== 'save_visibility') {
+            return;
+        }
+
+        check_admin_referer('smbb_codetool_api_visibility');
         $this->ensureResources();
-        $schema_notice = $this->handleSchemaApply();
-        $schema_preview = $this->requestedSchemaPreview();
+        $submitted = $this->request->postArray('api_visibility');
+        $this->api_visibility->updateMany($submitted, array_keys($this->apiNamespaces()));
 
-        ?>
-        <div class="wrap smbb-codetool">
-            <?php
-            echo $this->pageHeaderHtml(
-                __('CodeTool resources', 'smbb-wpcodetool'),
-                __('Inspect detected resources, database status, and schema preview actions.', 'smbb-wpcodetool'),
-                'dashicons-editor-code'
-            );
-            ?>
+        wp_safe_redirect(add_query_arg(
+            array(
+                'page' => 'smbb-wpcodetool-api',
+                'codetool_notice' => 'api_visibility_saved',
+            ),
+            admin_url('admin.php')
+        ));
+        exit;
+    }
 
-            <?php $this->renderSchemaNotice($schema_notice); ?>
-            <?php $this->renderSchemaPreview($schema_preview); ?>
+    /**
+     * Create/enable/disable/delete managed API clients.
+     */
+    private function handleApiTokenActions()
+    {
+        $method = $this->request->method();
+        $action = $this->request->postKey('codetool_api_token_action');
 
-            <h2><?php esc_html_e('Detected resources', 'smbb-wpcodetool'); ?></h2>
+        if ($method !== 'POST' || $action === '') {
+            return;
+        }
 
-            <?php if (!$this->resources) : ?>
-                <p><?php esc_html_e('No active plugin exposes a codetool/models directory yet.', 'smbb-wpcodetool'); ?></p>
-            <?php else : ?>
-                <table class="widefat striped smbb-codetool-table">
-                    <thead>
-                        <tr>
-                            <th><?php esc_html_e('Name', 'smbb-wpcodetool'); ?></th>
-                            <th><?php esc_html_e('Storage', 'smbb-wpcodetool'); ?></th>
-                            <th><?php esc_html_e('Database', 'smbb-wpcodetool'); ?></th>
-                            <th><?php esc_html_e('Admin', 'smbb-wpcodetool'); ?></th>
-                            <th><?php esc_html_e('Menu', 'smbb-wpcodetool'); ?></th>
-                            <th><?php esc_html_e('Model file', 'smbb-wpcodetool'); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($this->resources as $resource) : ?>
-                            <tr>
-                                <td>
-                                    <a href="<?php echo esc_url(admin_url('admin.php?page=' . $resource->adminSlug())); ?>">
-                                        <?php echo esc_html($resource->name()); ?>
-                                    </a>
-                                </td>
-                                <td><?php echo esc_html($resource->storageType()); ?></td>
-                                <td><?php $this->renderSchemaCell($resource); ?></td>
-                                <td><?php echo esc_html($resource->adminEnabled() ? 'enabled' : 'disabled'); ?></td>
-                                <td>
-                                    <?php echo esc_html($resource->menuPlacement()); ?>
-                                    <?php if ($resource->menuPlacement() === 'submenu') : ?>
-                                        <br><code><?php echo esc_html($resource->menuParentSlug()); ?></code>
-                                    <?php endif; ?>
-                                </td>
-                                <td><code><?php echo esc_html($this->displayPath($resource->modelFile())); ?></code></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php endif; ?>
+        check_admin_referer('smbb_codetool_api_tokens');
+        $token_id = $this->request->postText('token_id');
 
-            <?php if ($this->errors) : ?>
-                <h2><?php esc_html_e('Scan errors', 'smbb-wpcodetool'); ?></h2>
-                <table class="widefat striped smbb-codetool-table">
-                    <thead>
-                        <tr>
-                            <th><?php esc_html_e('File', 'smbb-wpcodetool'); ?></th>
-                            <th><?php esc_html_e('Error', 'smbb-wpcodetool'); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($this->errors as $error) : ?>
-                            <tr>
-                                <td><code><?php echo esc_html(isset($error['file']) ? $error['file'] : ''); ?></code></td>
-                                <td><?php echo esc_html(isset($error['message']) ? $error['message'] : ''); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php endif; ?>
-        </div>
-        <?php
+        switch ($action) {
+            case 'create':
+                $label = $this->request->postText('client_label');
+                $contact_email = $this->request->postEmail('contact_email');
+                $token_ttl_seconds = $this->request->postAbsInt('token_ttl_seconds', 259200);
+                $expires_at = $this->request->postText('expires_at');
+                $created = $this->api_clients->create($label, $contact_email, $token_ttl_seconds, $expires_at);
+
+                if (!$created) {
+                    $this->addRuntimeNotice('error', __('Unable to create the API client.', 'smbb-wpcodetool'));
+                    return;
+                }
+
+                $flash_id = $this->storeApiTokenFlash($created);
+
+                wp_safe_redirect(add_query_arg(
+                    array(
+                        'page' => 'smbb-wpcodetool-api-tokens',
+                        'codetool_notice' => 'api_client_created',
+                        'token_flash' => $flash_id,
+                    ),
+                    admin_url('admin.php')
+                ));
+                exit;
+
+            case 'update':
+                if ($token_id !== '') {
+                    $label = $this->request->postText('client_label');
+                    $contact_email = $this->request->postEmail('contact_email');
+                    $token_ttl_seconds = $this->request->postAbsInt('token_ttl_seconds', 259200);
+                    $expires_at = $this->request->postText('expires_at');
+                    $updated = $this->api_clients->update($token_id, $label, $contact_email, $token_ttl_seconds, $expires_at);
+
+                    if (!$updated) {
+                        $this->addRuntimeNotice('error', __('Unable to update the API client.', 'smbb-wpcodetool'));
+                        return;
+                    }
+                }
+
+                wp_safe_redirect(add_query_arg(
+                    array(
+                        'page' => 'smbb-wpcodetool-api-tokens',
+                        'codetool_notice' => 'api_client_updated',
+                    ),
+                    admin_url('admin.php')
+                ));
+                exit;
+
+            case 'enable':
+                if ($token_id !== '') {
+                    $this->api_clients->setActive($token_id, true);
+                }
+
+                wp_safe_redirect(add_query_arg(
+                    array(
+                        'page' => 'smbb-wpcodetool-api-tokens',
+                        'codetool_notice' => 'api_client_enabled',
+                    ),
+                    admin_url('admin.php')
+                ));
+                exit;
+
+            case 'disable':
+                if ($token_id !== '') {
+                    $this->api_clients->setActive($token_id, false);
+                }
+
+                wp_safe_redirect(add_query_arg(
+                    array(
+                        'page' => 'smbb-wpcodetool-api-tokens',
+                        'codetool_notice' => 'api_client_disabled',
+                    ),
+                    admin_url('admin.php')
+                ));
+                exit;
+
+            case 'delete':
+                if ($token_id !== '') {
+                    $this->api_clients->delete($token_id);
+                }
+
+                wp_safe_redirect(add_query_arg(
+                    array(
+                        'page' => 'smbb-wpcodetool-api-tokens',
+                        'codetool_notice' => 'api_client_deleted',
+                    ),
+                    admin_url('admin.php')
+                ));
+                exit;
+        }
+    }
+
+    /**
+     * Group API-enabled resources by namespace.
+     *
+     * @return array<string, ResourceDefinition[]>
+     */
+    public function apiNamespaces()
+    {
+        $this->ensureResources();
+
+        $namespaces = array();
+
+        foreach ($this->resources as $resource) {
+            if (!$resource->apiEnabled()) {
+                continue;
+            }
+
+            $namespaces[$resource->apiNamespace()][] = $resource;
+        }
+
+        ksort($namespaces);
+
+        return $namespaces;
+    }
+
+    /**
+     * Store a one-time plain token flash.
+     */
+    private function storeApiTokenFlash(array $created)
+    {
+        $flash_id = wp_generate_password(12, false, false);
+
+        set_transient(
+            'smbb_wpcodetool_api_token_flash_' . $flash_id,
+            $created,
+            MINUTE_IN_SECONDS * 10
+        );
+
+        return $flash_id;
+    }
+
+    /**
+     * Read and delete a one-time plain token flash.
+     */
+    public function consumeApiTokenFlash()
+    {
+        $flash_id = $this->request->queryText('token_flash');
+
+        if ($flash_id === '') {
+            return null;
+        }
+
+        $key = 'smbb_wpcodetool_api_token_flash_' . $flash_id;
+        $value = get_transient($key);
+        delete_transient($key);
+
+        return is_array($value) ? $value : null;
+    }
+
+    /**
+     * Format one SQL datetime for a datetime-local input.
+     */
+    public function dateTimeLocalInputValue($value)
+    {
+        $value = trim((string) $value);
+
+        if ($value === '') {
+            return '';
+        }
+
+        $date = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $value, wp_timezone());
+
+        if ($date instanceof \DateTimeImmutable) {
+            return $date->format('Y-m-d\TH:i');
+        }
+
+        $timestamp = strtotime($value);
+
+        return $timestamp ? wp_date('Y-m-d\TH:i', $timestamp, wp_timezone()) : '';
+    }
+
+    /**
+     * Add the REST nonce for the current logged-in session when available.
+     */
+    public function signedRestUrl($url)
+    {
+        if (!is_user_logged_in()) {
+            return $url;
+        }
+
+        $nonce = wp_create_nonce('wp_rest');
+
+        if ($nonce === '') {
+            return $url;
+        }
+
+        return add_query_arg('_wpnonce', $nonce, $url);
     }
 
     /**
      * Recharge les ressources si la page est appelee dans un contexte atypique.
      */
-    private function ensureResources()
+    public function ensureResources()
     {
         if ($this->resources || $this->errors) {
             return;
@@ -617,21 +873,21 @@ final class AdminManager
      * On garde l'action volontairement manuelle : aucune creation de table cachee pendant
      * le chargement de l'admin. L'utilisateur demande explicitement l'application.
      */
-    private function handleSchemaApply()
+    public function handleSchemaApply()
     {
-        $method = isset($_SERVER['REQUEST_METHOD']) ? strtoupper((string) $_SERVER['REQUEST_METHOD']) : 'GET';
+        $method = $this->request->method();
 
         if ($method !== 'POST') {
             return null;
         }
 
-        $action = isset($_POST['codetool_schema_action']) ? sanitize_key(wp_unslash($_POST['codetool_schema_action'])) : '';
+        $action = $this->request->postKey('codetool_schema_action');
 
         if ($action !== 'apply') {
             return null;
         }
 
-        $resource_name = isset($_POST['resource']) ? sanitize_key(wp_unslash($_POST['resource'])) : '';
+        $resource_name = $this->request->postKey('resource');
 
         check_admin_referer('smbb_codetool_schema_apply_' . $resource_name);
 
@@ -665,16 +921,16 @@ final class AdminManager
     /**
      * Prepare la preview SQL demandee par lien GET.
      */
-    private function requestedSchemaPreview()
+    public function requestedSchemaPreview()
     {
-        $action = isset($_GET['codetool_schema_action']) ? sanitize_key(wp_unslash($_GET['codetool_schema_action'])) : '';
+        $action = $this->request->queryKey('codetool_schema_action');
 
         if ($action !== 'preview') {
             return null;
         }
 
-        $resource_name = isset($_GET['resource']) ? sanitize_key(wp_unslash($_GET['resource'])) : '';
-        $nonce = isset($_GET['_wpnonce']) ? sanitize_text_field(wp_unslash($_GET['_wpnonce'])) : '';
+        $resource_name = $this->request->queryKey('resource');
+        $nonce = $this->request->queryText('_wpnonce');
 
         if (!wp_verify_nonce($nonce, 'smbb_codetool_schema_preview_' . $resource_name)) {
             return array(
@@ -708,30 +964,46 @@ final class AdminManager
      */
     private function renderSchemaNotice($notice)
     {
+        echo $this->schemaNoticeHtml($notice);
+    }
+
+    /**
+     * Rend une notice de schema avec le meme layout que les runtime notices.
+     */
+    public function schemaNoticeHtml($notice)
+    {
         if (!$notice) {
-            return;
+            return '';
         }
 
-        $class = !empty($notice['type']) && $notice['type'] === 'success' ? 'notice-success' : 'notice-error';
-        ?>
-        <div class="notice <?php echo esc_attr($class); ?> is-dismissible">
-            <p><?php echo esc_html(isset($notice['message']) ? $notice['message'] : ''); ?></p>
+        $type = !empty($notice['type']) && $notice['type'] === 'success' ? 'success' : 'error';
 
-            <?php if (!empty($notice['changes'])) : ?>
-                <ul class="smbb-codetool-notice-list">
-                    <?php foreach ($notice['changes'] as $change) : ?>
-                        <li><?php echo esc_html((string) $change); ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php endif; ?>
+        ob_start();
+        ?>
+        <div class="smbb-codetool-notices">
+            <div class="smbb-codetool-notice is-<?php echo esc_attr($type); ?>">
+                <div class="smbb-codetool-notice-body">
+                    <p class="smbb-codetool-notice-message"><?php echo esc_html(isset($notice['message']) ? $notice['message'] : ''); ?></p>
+
+                    <?php if (!empty($notice['changes'])) : ?>
+                        <ul class="smbb-codetool-notice-list">
+                            <?php foreach ($notice['changes'] as $change) : ?>
+                                <li><?php echo esc_html((string) $change); ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
+                </div>
+            </div>
         </div>
         <?php
+
+        return (string) ob_get_clean();
     }
 
     /**
      * Affiche le SQL qui sera envoye a dbDelta().
      */
-    private function renderSchemaPreview($preview)
+    public function renderSchemaPreview($preview)
     {
         if (!$preview) {
             return;
@@ -768,7 +1040,7 @@ final class AdminManager
     /**
      * Cellule "Database" de la table des ressources.
      */
-    private function renderSchemaCell(ResourceDefinition $resource)
+    public function renderSchemaCell(ResourceDefinition $resource)
     {
         $status = $this->schema->status($resource);
 
@@ -788,7 +1060,7 @@ final class AdminManager
 
         if ($status['state'] !== 'invalid' && $status['state'] !== 'ok') {
             ?>
-            <form class="smbb-codetool-inline-form" method="post" action="<?php echo esc_url(admin_url('admin.php?page=smbb-wpcodetool')); ?>">
+            <form class="smbb-codetool-inline-form" method="post" action="<?php echo esc_url(admin_url('admin.php?page=smbb-wpcodetool-resources')); ?>">
                 <input type="hidden" name="codetool_schema_action" value="apply">
                 <input type="hidden" name="resource" value="<?php echo esc_attr($resource->name()); ?>">
                 <?php wp_nonce_field('smbb_codetool_schema_apply_' . $resource->name()); ?>
@@ -803,11 +1075,11 @@ final class AdminManager
     /**
      * URL de preview SQL pour une ressource.
      */
-    private function schemaPreviewUrl(ResourceDefinition $resource)
+    public function schemaPreviewUrl(ResourceDefinition $resource)
     {
         $url = add_query_arg(
             array(
-                'page' => 'smbb-wpcodetool',
+                'page' => 'smbb-wpcodetool-resources',
                 'codetool_schema_action' => 'preview',
                 'resource' => $resource->name(),
             ),
@@ -820,7 +1092,7 @@ final class AdminManager
     /**
      * Classe CSS de badge schema.
      */
-    private function schemaStatusClass(array $status)
+    public function schemaStatusClass(array $status)
     {
         $state = isset($status['state']) ? (string) $status['state'] : 'unknown';
 
@@ -832,6 +1104,8 @@ final class AdminManager
      */
     private function resourceByName($name)
     {
+        $this->ensureResources();
+
         return isset($this->resources[$name]) ? $this->resources[$name] : null;
     }
 
@@ -840,6 +1114,8 @@ final class AdminManager
      */
     private function resourceByAdminSlug($slug)
     {
+        $this->ensureResources();
+
         foreach ($this->resources as $resource) {
             if ($resource->adminSlug() === $slug) {
                 return $resource;
@@ -864,7 +1140,7 @@ final class AdminManager
 
         $this->ensureResources();
 
-        $resource_name = isset($_GET['resource']) ? sanitize_key(wp_unslash($_GET['resource'])) : '';
+        $resource_name = $this->request->queryKey('resource');
         $resource = $this->resourceByName($resource_name);
 
         if (!$resource || $resource->storageType() !== 'custom_table') {
@@ -875,11 +1151,11 @@ final class AdminManager
             wp_send_json_error(array('message' => __('You are not allowed to query this resource.', 'smbb-wpcodetool')), 403);
         }
 
-        $search = isset($_GET['search']) ? sanitize_text_field(wp_unslash($_GET['search'])) : '';
-        $label_field = isset($_GET['label_field']) ? sanitize_text_field(wp_unslash($_GET['label_field'])) : 'name';
-        $value_field = isset($_GET['value_field']) ? sanitize_key(wp_unslash($_GET['value_field'])) : $resource->primaryKey();
-        $limit = isset($_GET['limit']) ? max(1, min(50, (int) $_GET['limit'])) : 12;
-        $exclude_id = isset($_GET['exclude_id']) ? sanitize_text_field(wp_unslash($_GET['exclude_id'])) : '';
+        $search = $this->request->queryText('search');
+        $label_field = $this->request->queryText('label_field', 'name');
+        $value_field = $this->request->queryKey('value_field', $resource->primaryKey());
+        $limit = $this->request->queryHas('limit') ? max(1, min(50, $this->request->queryInt('limit'))) : 12;
+        $exclude_id = $this->request->queryText('exclude_id');
         $search_fields = $this->lookupSearchFields($resource);
         $rows = $this->lookupRows($resource, $search, $search_fields, $limit);
         $items = array();
@@ -932,7 +1208,7 @@ final class AdminManager
             if ($search_fields) {
                 $args['search_clause'] = $this->lookupSearchClause($resource, $search, $search_fields);
             } elseif ($resource->listSearchProvider() === 'hook') {
-                $args['search_clause'] = $this->tableSearchClause($resource, $search);
+                $args['search_clause'] = $this->runtime->tableSearchClause($resource, $search);
             }
         }
 
@@ -1016,16 +1292,19 @@ final class AdminManager
     {
         $fields = array();
 
-        if (isset($_GET['search_fields']) && is_array($_GET['search_fields'])) {
-            $fields = array_map('sanitize_key', wp_unslash($_GET['search_fields']));
-        } elseif (isset($_GET['search_fields'])) {
-            $raw = wp_unslash($_GET['search_fields']);
-            $decoded = json_decode((string) $raw, true);
+        if ($this->request->queryHas('search_fields')) {
+            $raw = $this->request->queryValue('search_fields');
 
-            if (is_array($decoded)) {
-                $fields = array_map('sanitize_key', $decoded);
+            if (is_array($raw)) {
+                $fields = array_map('sanitize_key', $raw);
             } else {
-                $fields = array_map('sanitize_key', array_filter(array_map('trim', explode(',', (string) $raw))));
+                $decoded = json_decode((string) $raw, true);
+
+                if (is_array($decoded)) {
+                    $fields = array_map('sanitize_key', $decoded);
+                } else {
+                    $fields = array_map('sanitize_key', array_filter(array_map('trim', explode(',', (string) $raw))));
+                }
             }
         }
 
@@ -1113,37 +1392,79 @@ final class AdminManager
     }
 
     /**
+     * Raccourcit un chemin relativement a la racine d'un plugin.
+     */
+    public function displayPluginRelativePath($path, $plugin_dir)
+    {
+        $path = wp_normalize_path((string) $path);
+        $plugin_dir = untrailingslashit(wp_normalize_path((string) $plugin_dir));
+
+        if ($plugin_dir !== '' && strpos($path, $plugin_dir . '/') === 0) {
+            return substr($path, strlen($plugin_dir) + 1);
+        }
+
+        return $this->displayPath($path);
+    }
+
+    /**
+     * Regroupe les ressources detectees par plugin pour la page Resources.
+     *
+     * @return array<int,array<string,mixed>>
+     */
+    public function resourcesGroupedByPlugin()
+    {
+        $this->ensureResources();
+
+        $groups = array();
+
+        foreach ($this->resources as $resource) {
+            $plugin_dir = $resource->pluginDir();
+
+            if (!isset($groups[$plugin_dir])) {
+                $groups[$plugin_dir] = array(
+                    'label' => $this->pluginDisplayName($plugin_dir),
+                    'path' => $this->displayPath($plugin_dir),
+                    'resources' => array(),
+                );
+            }
+
+            $groups[$plugin_dir]['resources'][] = $resource;
+        }
+
+        foreach ($groups as &$group) {
+            usort($group['resources'], function (ResourceDefinition $left, ResourceDefinition $right) {
+                return strcasecmp($left->name(), $right->name());
+            });
+        }
+        unset($group);
+
+        uasort($groups, function (array $left, array $right) {
+            return strcasecmp((string) $left['label'], (string) $right['label']);
+        });
+
+        return array_values($groups);
+    }
+
+    /**
+     * Nom lisible d'un plugin a partir de son dossier racine.
+     */
+    private function pluginDisplayName($plugin_dir)
+    {
+        $slug = wp_basename(wp_normalize_path((string) $plugin_dir));
+
+        if ($slug === '') {
+            return __('Unknown plugin', 'smbb-wpcodetool');
+        }
+
+        return ucwords(str_replace(array('-', '_'), ' ', $slug));
+    }
+
+    /**
      * Rend une ressource précise.
      */
     private function renderResourcePage(ResourceDefinition $resource)
     {
-        if (!current_user_can($resource->capability())) {
-            wp_die(esc_html__('You are not allowed to access this CodeTool page.', 'smbb-wpcodetool'));
-        }
-
-        $this->addNoticeFromQuery();
-
-        // Pour une page de réglages, la view par défaut est toujours le formulaire.
-        // Pour une ressource table, la view par défaut est la liste.
-        $default_view = $resource->adminType() === 'settings_page' ? 'form' : 'list';
-        $view = $this->forced_view !== '' ? $this->forced_view : (isset($_GET['view']) ? sanitize_key(wp_unslash($_GET['view'])) : $default_view);
-
-        if (!empty($_GET['action'])) {
-            $action = sanitize_key(wp_unslash($_GET['action']));
-
-            if (!in_array($action, array('delete', 'duplicate'), true)) {
-                $this->addRuntimeNotice('info', __('This admin action is not implemented yet.', 'smbb-wpcodetool'));
-            }
-        }
-
-        $view_path = $resource->viewPath($view);
-
-        if (!$view_path || !is_readable($view_path)) {
-            $this->renderMissingView($resource, $view, $view_path);
-            return;
-        }
-
-        $this->renderView($resource, $view, $view_path);
+        (new ResourcePage($this))->render($resource);
     }
 
     /**
@@ -1151,7 +1472,11 @@ final class AdminManager
      */
     private function handleResourceMutation(ResourceDefinition $resource)
     {
-        $method = isset($_SERVER['REQUEST_METHOD']) ? strtoupper((string) $_SERVER['REQUEST_METHOD']) : 'GET';
+        $method = $this->request->method();
+
+        if ($resource->storageType() === 'none') {
+            return;
+        }
 
         if ($resource->storageType() === 'option') {
             if ($method === 'POST') {
@@ -1175,7 +1500,7 @@ final class AdminManager
             return;
         }
 
-        $action = isset($_GET['action']) ? sanitize_key(wp_unslash($_GET['action'])) : '';
+        $action = $this->request->queryKey('action');
 
         if ($action === 'delete') {
             $this->handleTableDelete($resource);
@@ -1194,41 +1519,27 @@ final class AdminManager
     {
         check_admin_referer('smbb_codetool_save_' . $resource->name());
 
-        $store = new OptionStore($resource->optionName(), $resource->optionDefaults(), $resource->optionAutoload());
-        $hooks = $this->hooksForResource($resource);
-        $context = array(
+        $result = $this->mutations->saveOption($resource, $this->postedOptionData(), array(
             'action' => 'settings_update',
-            'resource' => $resource,
-            'store' => $store,
-            'current' => $store->get(),
-        );
-        $data = $this->postedOptionData();
-
-        $data = $this->callDataHook($hooks, 'beforeValidate', $data, $context);
-        $errors = $this->normalizeValidationErrors(array_merge(
-            $this->requiredFieldErrors($data),
-            $this->callValidateHook($hooks, $data, $context)
+            'validation_callback' => function (array $data) {
+                return $this->requiredFieldErrors($data);
+            },
         ));
 
-        if ($errors) {
-            $this->forced_view = 'form';
-            $this->runtime_item_override = $data;
-            $this->runtime_form_errors = $errors;
-            $this->addRuntimeNotice('error', __('The form contains errors.', 'smbb-wpcodetool'), ValidationErrors::noticeDetails($errors));
+        if (empty($result['success'])) {
+            $this->state->setForcedView('form');
+            $this->state->setItemOverride(isset($result['data']) && is_array($result['data']) ? $result['data'] : array());
+
+            if (isset($result['reason']) && $result['reason'] === 'validation') {
+                $errors = $this->normalizeValidationErrors(isset($result['errors']) && is_array($result['errors']) ? $result['errors'] : array());
+                $this->state->setFormErrors($errors);
+                $this->addRuntimeNotice('error', __('The form contains errors.', 'smbb-wpcodetool'), ValidationErrors::noticeDetails($errors));
+                return;
+            }
+
+            $this->addRuntimeNotice('error', !empty($result['message']) ? $result['message'] : __('The settings could not be saved.', 'smbb-wpcodetool'));
             return;
         }
-
-        $data = $this->callDataHook($hooks, 'beforeSave', $data, $context);
-
-        if (!$store->replace($data)) {
-            $this->forced_view = 'form';
-            $this->runtime_item_override = $data;
-            $this->addRuntimeNotice('error', __('The settings could not be saved.', 'smbb-wpcodetool'));
-            return;
-        }
-
-        $saved = $store->get();
-        $this->callAfterSaveHook($hooks, $saved, $context);
 
         wp_safe_redirect(add_query_arg(
             array(
@@ -1249,65 +1560,33 @@ final class AdminManager
         $primary_key = $resource->primaryKey();
         $requested_id = $this->requestedResourceId($primary_key);
         $is_update = $requested_id !== null;
-        $store = new TableStore($resource);
-        $hooks = $this->hooksForResource($resource);
-        $context = array(
-            'action' => $is_update ? 'update' : 'create',
+        $result = $this->mutations->saveTable($resource, $this->postedResourceData($resource), array(
             'id' => $requested_id,
-            'resource' => $resource,
-            'store' => $store,
-        );
-        $data = $this->postedResourceData($resource);
+            'action' => $is_update ? 'update' : 'create',
+            'not_found_message' => __('The item to update was not found.', 'smbb-wpcodetool'),
+            'save_failed_message' => __('The item could not be saved.', 'smbb-wpcodetool'),
+            'validation_callback' => function (array $data) {
+                return $this->requiredFieldErrors($data);
+            },
+        ));
 
-        if ($is_update) {
-            $current = $store->find($requested_id);
+        if (empty($result['success'])) {
+            $this->state->setForcedView('form');
+            $this->state->setItemOverride(isset($result['data']) && is_array($result['data']) ? $result['data'] : array());
 
-            if (!$current) {
-                $this->forced_view = 'form';
-                $this->runtime_item_override = $data;
-                $this->addRuntimeNotice('error', __('The item to update was not found.', 'smbb-wpcodetool'));
+            if (isset($result['reason']) && $result['reason'] === 'validation') {
+                $errors = $this->normalizeValidationErrors(isset($result['errors']) && is_array($result['errors']) ? $result['errors'] : array());
+                $this->state->setFormErrors($errors);
+                $this->addRuntimeNotice('error', __('The form contains errors.', 'smbb-wpcodetool'), ValidationErrors::noticeDetails($errors));
                 return;
             }
 
-            $context['current'] = $current;
-        }
-
-        $data = $this->callDataHook($hooks, 'beforeValidate', $data, $context);
-        $errors = $this->normalizeValidationErrors(array_merge(
-            $this->requiredFieldErrors($data),
-            $this->callValidateHook($hooks, $data, $context)
-        ));
-
-        if ($errors) {
-            $this->forced_view = 'form';
-            $this->runtime_item_override = $data;
-            $this->runtime_form_errors = $errors;
-            $this->addRuntimeNotice('error', __('The form contains errors.', 'smbb-wpcodetool'), ValidationErrors::noticeDetails($errors));
+            $this->addRuntimeNotice('error', !empty($result['message']) ? $result['message'] : __('The item could not be saved.', 'smbb-wpcodetool'));
             return;
         }
 
-        $data = $this->applyManagedColumns($resource, $data, !$is_update);
-        $data = $this->callDataHook($hooks, 'beforeSave', $data, $context);
-
-        if ($is_update) {
-            $result = $store->update($requested_id, $data);
-            $saved_id = $requested_id;
-            $notice = 'updated';
-        } else {
-            $result = $store->create($data);
-            $saved_id = $result;
-            $notice = 'created';
-        }
-
-        if ($result === false) {
-            $this->forced_view = 'form';
-            $this->runtime_item_override = $data;
-            $this->addRuntimeNotice('error', $store->lastError() ?: __('The item could not be saved.', 'smbb-wpcodetool'));
-            return;
-        }
-
-        $row = $store->find($saved_id);
-        $this->callAfterSaveHook($hooks, is_array($row) ? $row : $data, array_merge($context, array('id' => $saved_id)));
+        $saved_id = $result['id'];
+        $notice = $is_update ? 'updated' : 'created';
 
         wp_safe_redirect(add_query_arg(
             array(
@@ -1335,31 +1614,10 @@ final class AdminManager
 
         check_admin_referer('smbb_codetool_delete_' . $resource->name() . '_' . $requested_id);
 
-        $store = new TableStore($resource);
-        $row = $store->find($requested_id);
+        $result = $this->deleteTableItem($resource, new TableStore($resource), $requested_id);
 
-        if (!$row) {
-            $this->addRuntimeNotice('error', __('The item to delete was not found.', 'smbb-wpcodetool'));
-            return;
-        }
-
-        $hooks = $this->hooksForResource($resource);
-        $context = array(
-            'action' => 'delete',
-            'id' => $requested_id,
-            'resource' => $resource,
-            'store' => $store,
-        );
-        $allowed = $this->callBeforeDeleteHook($hooks, $row, $context);
-
-        if ($allowed !== true) {
-            $message = is_string($allowed) ? $allowed : __('Deletion was blocked by the resource hooks.', 'smbb-wpcodetool');
-            $this->addRuntimeNotice('error', $message);
-            return;
-        }
-
-        if (!$store->delete($requested_id)) {
-            $this->addRuntimeNotice('error', $store->lastError() ?: __('The item could not be deleted.', 'smbb-wpcodetool'));
+        if (empty($result['success'])) {
+            $this->addRuntimeNotice('error', !empty($result['message']) ? $result['message'] : __('The item could not be deleted.', 'smbb-wpcodetool'));
             return;
         }
 
@@ -1389,43 +1647,18 @@ final class AdminManager
         }
 
         check_admin_referer('smbb_codetool_duplicate_' . $resource->name() . '_' . $requested_id);
+        $result = $this->duplicateTableItem($resource, new TableStore($resource), $requested_id);
 
-        $store = new TableStore($resource);
-        $source = $store->find($requested_id);
-
-        if (!$source) {
-            $this->addRuntimeNotice('error', __('The item to duplicate was not found.', 'smbb-wpcodetool'));
+        if (empty($result['success'])) {
+            $this->addRuntimeNotice(
+                'error',
+                !empty($result['message']) ? $result['message'] : __('The item could not be duplicated.', 'smbb-wpcodetool'),
+                !empty($result['details']) && is_array($result['details']) ? $result['details'] : array()
+            );
             return;
         }
 
-        unset($source[$primary_key]);
-
-        $hooks = $this->hooksForResource($resource);
-        $context = array(
-            'action' => 'duplicate',
-            'source_id' => $requested_id,
-            'resource' => $resource,
-            'store' => $store,
-        );
-        $data = $this->callDataHook($hooks, 'beforeValidate', $source, $context);
-        $errors = $this->normalizeValidationErrors($this->callValidateHook($hooks, $data, $context));
-
-        if ($errors) {
-            $this->addRuntimeNotice('error', __('The cloned item contains errors.', 'smbb-wpcodetool'), ValidationErrors::noticeDetails($errors));
-            return;
-        }
-
-        $data = $this->applyManagedColumns($resource, $data, true);
-        $data = $this->callDataHook($hooks, 'beforeSave', $data, $context);
-        $new_id = $store->create($data);
-
-        if ($new_id === false) {
-            $this->addRuntimeNotice('error', $store->lastError() ?: __('The item could not be duplicated.', 'smbb-wpcodetool'));
-            return;
-        }
-
-        $row = $store->find($new_id);
-        $this->callAfterSaveHook($hooks, is_array($row) ? $row : $data, array_merge($context, array('id' => $new_id)));
+        $new_id = $result['id'];
 
         wp_safe_redirect(add_query_arg(
             array(
@@ -1443,7 +1676,7 @@ final class AdminManager
      */
     private function isTableBatchRequest()
     {
-        $flag = isset($_POST['smbb_codetool_batch']) ? sanitize_text_field(wp_unslash($_POST['smbb_codetool_batch'])) : '';
+        $flag = $this->request->postText('smbb_codetool_batch');
 
         return $flag === '1';
     }
@@ -1473,15 +1706,14 @@ final class AdminManager
         }
 
         $store = new TableStore($resource);
-        $hooks = $this->hooksForResource($resource);
         $success = 0;
         $failures = array();
 
         foreach ($ids as $id) {
             if ($action === 'delete') {
-                $result = $this->deleteTableItem($resource, $store, $hooks, $id);
+                $result = $this->deleteTableItem($resource, $store, $id);
             } else {
-                $result = $this->duplicateTableItem($resource, $store, $hooks, $id);
+                $result = $this->duplicateTableItem($resource, $store, $id);
             }
 
             if (!empty($result['success'])) {
@@ -1544,13 +1776,13 @@ final class AdminManager
      */
     private function tableBatchAction()
     {
-        $action = isset($_POST['smbb_codetool_batch_action']) ? sanitize_key(wp_unslash($_POST['smbb_codetool_batch_action'])) : '';
+        $action = $this->request->postKey('smbb_codetool_batch_action');
 
         if ($action !== '') {
             return $action;
         }
 
-        return isset($_POST['smbb_codetool_batch_action_bottom']) ? sanitize_key(wp_unslash($_POST['smbb_codetool_batch_action_bottom'])) : '';
+        return $this->request->postKey('smbb_codetool_batch_action_bottom');
     }
 
     /**
@@ -1558,10 +1790,9 @@ final class AdminManager
      */
     private function selectedTableIds(ResourceDefinition $resource)
     {
-        $raw_ids = isset($_POST['smbb_codetool_selected']) && is_array($_POST['smbb_codetool_selected']) ? wp_unslash($_POST['smbb_codetool_selected']) : array();
+        $raw_ids = $this->request->postArray('smbb_codetool_selected');
         $ids = array();
-        $primary_key = $resource->primaryKey();
-        $numeric = $this->resourcePrimaryKeyIsNumeric($resource);
+        $numeric = $this->runtime->primaryKeyIsNumeric($resource);
 
         foreach ($raw_ids as $id) {
             $id = sanitize_text_field((string) $id);
@@ -1571,10 +1802,6 @@ final class AdminManager
             }
 
             $ids[] = $numeric ? (string) (int) $id : $id;
-        }
-
-        if ($primary_key === '') {
-            return array_values(array_unique($ids));
         }
 
         return array_values(array_unique($ids));
@@ -1587,28 +1814,28 @@ final class AdminManager
     {
         $args = array();
 
-        if (isset($_POST['s'])) {
-            $args['s'] = sanitize_text_field(wp_unslash($_POST['s']));
+        if ($this->request->postHas('s')) {
+            $args['s'] = $this->request->postText('s');
         }
 
-        if (isset($_POST['orderby'])) {
-            $args['orderby'] = sanitize_key(wp_unslash($_POST['orderby']));
+        if ($this->request->postHas('orderby')) {
+            $args['orderby'] = $this->request->postKey('orderby');
         }
 
-        if (isset($_POST['order'])) {
-            $args['order'] = sanitize_key(wp_unslash($_POST['order']));
+        if ($this->request->postHas('order')) {
+            $args['order'] = $this->request->postKey('order');
         }
 
-        if (isset($_POST['paged'])) {
-            $args['paged'] = max(1, (int) $_POST['paged']);
+        if ($this->request->postHas('paged')) {
+            $args['paged'] = max(1, $this->request->postInt('paged'));
         }
 
-        if (isset($_POST['per_page'])) {
-            $args['per_page'] = max(1, (int) $_POST['per_page']);
+        if ($this->request->postHas('per_page')) {
+            $args['per_page'] = max(1, $this->request->postInt('per_page'));
         }
 
-        if (isset($_POST['filter']) && is_array($_POST['filter'])) {
-            $filter = wp_unslash($_POST['filter']);
+        if ($this->request->postHas('filter')) {
+            $filter = $this->request->postArray('filter');
             $args['filter'] = array(
                 'field' => isset($filter['field']) ? sanitize_key((string) $filter['field']) : '',
                 'operator' => isset($filter['operator']) ? sanitize_key((string) $filter['operator']) : '',
@@ -1622,100 +1849,44 @@ final class AdminManager
     /**
      * Execute la suppression d'une ligne sans gerer la redirection.
      */
-    private function deleteTableItem(ResourceDefinition $resource, TableStore $store, $hooks, $requested_id)
+    private function deleteTableItem(ResourceDefinition $resource, TableStore $store, $requested_id)
     {
-        $row = $store->find($requested_id);
-
-        if (!$row) {
-            return array(
-                'success' => false,
-                'message' => __('The item to delete was not found.', 'smbb-wpcodetool'),
-            );
-        }
-
-        $context = array(
-            'action' => 'delete',
-            'id' => $requested_id,
-            'resource' => $resource,
+        return $this->mutations->deleteTable($resource, $requested_id, array(
             'store' => $store,
-        );
-        $allowed = $this->callBeforeDeleteHook($hooks, $row, $context);
-
-        if ($allowed !== true) {
-            return array(
-                'success' => false,
-                'message' => is_string($allowed) ? $allowed : __('Deletion was blocked by the resource hooks.', 'smbb-wpcodetool'),
-            );
-        }
-
-        if (!$store->delete($requested_id)) {
-            return array(
-                'success' => false,
-                'message' => $store->lastError() ?: __('The item could not be deleted.', 'smbb-wpcodetool'),
-            );
-        }
-
-        return array('success' => true);
+            'action' => 'delete',
+            'not_found_message' => __('The item to delete was not found.', 'smbb-wpcodetool'),
+            'blocked_message' => __('Deletion was blocked by the resource hooks.', 'smbb-wpcodetool'),
+            'delete_failed_message' => __('The item could not be deleted.', 'smbb-wpcodetool'),
+        ));
     }
 
     /**
      * Execute la duplication d'une ligne sans gerer la redirection.
      */
-    private function duplicateTableItem(ResourceDefinition $resource, TableStore $store, $hooks, $requested_id)
+    private function duplicateTableItem(ResourceDefinition $resource, TableStore $store, $requested_id)
     {
-        $primary_key = $resource->primaryKey();
-        $source = $store->find($requested_id);
-
-        if (!$source) {
-            return array(
-                'success' => false,
-                'message' => __('The item to duplicate was not found.', 'smbb-wpcodetool'),
-            );
-        }
-
-        unset($source[$primary_key]);
-
-        $context = array(
-            'action' => 'duplicate',
-            'source_id' => $requested_id,
-            'resource' => $resource,
+        $result = $this->mutations->duplicateTable($resource, $requested_id, array(
             'store' => $store,
-        );
-        $data = $this->callDataHook($hooks, 'beforeValidate', $source, $context);
-        $errors = $this->normalizeValidationErrors($this->callValidateHook($hooks, $data, $context));
+            'action' => 'duplicate',
+            'not_found_message' => __('The item to duplicate was not found.', 'smbb-wpcodetool'),
+            'validation_message' => __('The cloned item contains errors.', 'smbb-wpcodetool'),
+            'save_failed_message' => __('The item could not be duplicated.', 'smbb-wpcodetool'),
+        ));
 
-        if ($errors) {
-            return array(
-                'success' => false,
-                'message' => __('The cloned item contains errors.', 'smbb-wpcodetool'),
-                'details' => ValidationErrors::noticeDetails($errors),
-            );
+        if (!empty($result['success']) || empty($result['errors']) || !is_array($result['errors'])) {
+            return $result;
         }
 
-        $data = $this->applyManagedColumns($resource, $data, true);
-        $data = $this->callDataHook($hooks, 'beforeSave', $data, $context);
-        $new_id = $store->create($data);
+        $errors = $this->normalizeValidationErrors($result['errors']);
+        $result['details'] = ValidationErrors::noticeDetails($errors);
 
-        if ($new_id === false) {
-            return array(
-                'success' => false,
-                'message' => $store->lastError() ?: __('The item could not be duplicated.', 'smbb-wpcodetool'),
-            );
-        }
-
-        $row = $store->find($new_id);
-        $this->callAfterSaveHook($hooks, is_array($row) ? $row : $data, array_merge($context, array('id' => $new_id)));
-
-        return array(
-            'success' => true,
-            'id' => $new_id,
-        );
+        return $result;
     }
 
     /**
      * Prépare les variables attendues par les views puis inclut le fichier PHP.
      */
-    private function renderView(ResourceDefinition $resource, $view, $view_path)
+    public function renderResourceView(ResourceDefinition $resource, $view, $view_path)
     {
         $admin_url = admin_url('admin.php?page=' . $resource->adminSlug());
         $primary_key = $resource->primaryKey();
@@ -1729,6 +1900,9 @@ final class AdminManager
         $store = null;
         $pagination = array();
         $requested_id = $this->requestedResourceId($primary_key);
+        $current_view = $view;
+        $resource_views = $resource->views();
+        $resources = $this->resources();
 
         // Pour les ressources table, on lit maintenant vraiment la base via TableStore.
         // Si la table n'existe pas encore, le store retourne simplement un tableau vide :
@@ -1762,27 +1936,33 @@ final class AdminManager
             $item = $store->get();
         }
 
-        if (is_array($this->runtime_item_override)) {
-            $item = $this->runtime_item_override;
+        $item_override = $this->state->itemOverride();
+
+        if (is_array($item_override)) {
+            $item = $item_override;
         }
 
         $create_url = add_query_arg(array('view' => 'form'), $admin_url);
         $list_url = $admin_url;
         $edit_url = $requested_id !== null ? add_query_arg(array('view' => 'form', $primary_key => $requested_id), $admin_url) : add_query_arg(array('view' => 'form'), $admin_url);
         $action_url = $requested_id !== null ? $edit_url : $admin_url;
+        $view_url = function ($target_view, array $args = array()) use ($admin_url) {
+            return add_query_arg(array_merge(array('view' => sanitize_key((string) $target_view)), $args), $admin_url);
+        };
         $button = $this->formButtonLabel($resource, $requested_id);
         $notices_html = $this->runtimeNoticesHtml();
         $page_header_html = $this->pageHeaderHtml($resource_label, $resource_subtitle, $resource_icon);
         $filter_fields = $resource->storageType() === 'custom_table' ? $this->tableFilterFields($resource) : array();
         $search_term = $resource->storageType() === 'custom_table' ? $this->tableSearchTerm($resource) : '';
+        $hooks = $this->runtime->hooksFor($resource);
 
         // Helpers injectés dans les views. C'est cette injection qui permet aux views
         // de rester courtes et déclaratives.
         $table = new Table(array(
             'admin_url' => $admin_url,
-            'create_url' => $resource->adminType() === 'settings_page' ? '' : $create_url,
-            'orderby' => isset($_GET['orderby']) ? sanitize_key(wp_unslash($_GET['orderby'])) : '',
-            'order' => isset($_GET['order']) ? sanitize_key(wp_unslash($_GET['order'])) : '',
+            'create_url' => $resource->adminType() === 'resource' ? $create_url : '',
+            'orderby' => $this->request->queryKey('orderby'),
+            'order' => $this->request->queryKey('order'),
             'primary_key' => $primary_key,
             'resource_label' => $resource_label,
             'resource_subtitle' => $resource_subtitle,
@@ -1803,7 +1983,7 @@ final class AdminManager
         $form = new Form(array(
             'action_url' => $action_url,
             'item' => $item,
-            'field_errors' => $this->runtime_form_errors,
+            'field_errors' => $this->state->formErrors(),
             'nonce_action' => 'smbb_codetool_save_' . $resource_name,
             'resource_name' => $resource_name,
             'resource' => $resource,
@@ -1811,6 +1991,61 @@ final class AdminManager
             'resources' => $this->resources,
             'store' => $store,
         ));
+
+        $dashboard_ui = new Dashboard(array(
+            'action_url' => $action_url,
+            'admin_url' => $admin_url,
+            'create_url' => $create_url,
+            'edit_url' => $edit_url,
+            'item' => $item,
+            'notices_html' => $notices_html,
+            'page_header_html' => $page_header_html,
+            'resource' => $resource,
+            'resource_icon' => $resource_icon,
+            'resource_label' => $resource_label,
+            'resource_name' => $resource_name,
+            'resource_subtitle' => $resource_subtitle,
+            'resources' => $resources,
+            'rows' => $rows,
+            'view' => $current_view,
+        ));
+
+        // Contexte standard injecte dans toutes les views de ressource.
+        // Les pages "UX only" peuvent ainsi rester simples cote template et deleguer
+        // les calculs a une classe via hooks.viewContext().
+        $context = array(
+            'action_url' => $action_url,
+            'admin_url' => $admin_url,
+            'button' => $button,
+            'create_url' => $create_url,
+            'current_filter' => $this->tableFilterArgs($resource),
+            'dashboard_ui' => $dashboard_ui,
+            'edit_url' => $edit_url,
+            'filter_fields' => $filter_fields,
+            'form' => $form,
+            'hooks' => $hooks,
+            'item' => $item,
+            'list_url' => $list_url,
+            'notices_html' => $notices_html,
+            'page_header_html' => $page_header_html,
+            'pagination' => $pagination,
+            'primary_key' => $primary_key,
+            'requested_id' => $requested_id,
+            'resource' => $resource,
+            'resource_icon' => $resource_icon,
+            'resource_label' => $resource_label,
+            'resource_name' => $resource_name,
+            'resource_subtitle' => $resource_subtitle,
+            'resources' => $resources,
+            'resource_views' => $resource_views,
+            'rows' => $rows,
+            'search_term' => $search_term,
+            'store' => $store,
+            'table' => $table,
+            'view' => $current_view,
+            'view_url' => $view_url,
+        );
+        $context = $this->runtime->callViewContextHook($hooks, $context);
 
         // Les variables ci-dessus sont volontairement disponibles dans le scope de la view.
         include $view_path;
@@ -1852,6 +2087,35 @@ final class AdminManager
     }
 
     /**
+     * Header partage suivi des notices associees.
+     *
+     * Les vues CRUD rendent deja le header puis les notices juste en dessous.
+     * On reutilise ici exactement ce pattern pour les pages systeme.
+     *
+     * @param string|array<int,string> $notices_html
+     */
+    public function pageIntroHtml($title, $subtitle = '', $icon = '', $notices_html = '')
+    {
+        $fragments = is_array($notices_html) ? $notices_html : array($notices_html);
+
+        ob_start();
+        echo '<div class="smbb-codetool-page-intro">';
+        echo $this->pageHeaderHtml($title, $subtitle, $icon);
+
+        foreach ($fragments as $fragment) {
+            if ((string) $fragment === '') {
+                continue;
+            }
+
+            echo (string) $fragment;
+        }
+
+        echo '</div>';
+
+        return (string) ob_get_clean();
+    }
+
+    /**
      * Arguments de lecture pour TableStore depuis la query admin.
      */
     private function tableQueryArgs(ResourceDefinition $resource)
@@ -1860,15 +2124,15 @@ final class AdminManager
         $search = $this->tableSearchTerm($resource);
         $args = array(
             'search' => $search,
-            'orderby' => isset($_GET['orderby']) ? sanitize_key(wp_unslash($_GET['orderby'])) : '',
-            'order' => isset($_GET['order']) ? sanitize_key(wp_unslash($_GET['order'])) : '',
+            'orderby' => $this->request->queryKey('orderby'),
+            'order' => $this->request->queryKey('order'),
             'filter' => $this->tableFilterArgs($resource),
-            'per_page' => isset($_GET['per_page']) ? max(1, (int) $_GET['per_page']) : (isset($config['perPage']) ? (int) $config['perPage'] : 20),
-            'page' => isset($_GET['paged']) ? max(1, (int) $_GET['paged']) : 1,
+            'per_page' => $this->request->queryHas('per_page') ? max(1, $this->request->queryInt('per_page')) : (isset($config['perPage']) ? (int) $config['perPage'] : 20),
+            'page' => $this->request->queryHas('paged') ? max(1, $this->request->queryInt('paged')) : 1,
         );
 
         if ($search !== '' && $resource->listSearchProvider() === 'hook') {
-            $search_clause = $this->tableSearchClause($resource, $search);
+            $search_clause = $this->runtime->tableSearchClause($resource, $search);
 
             if ($search_clause) {
                 $args['search_clause'] = $search_clause;
@@ -1893,7 +2157,7 @@ final class AdminManager
             );
         }
 
-        $filter = isset($_GET['filter']) && is_array($_GET['filter']) ? wp_unslash($_GET['filter']) : array();
+        $filter = $this->request->queryArray('filter');
         $field = isset($filter['field']) ? sanitize_key((string) $filter['field']) : '';
 
         if ($resource && $field !== '' && !in_array($field, $resource->listFilterColumns(), true)) {
@@ -1939,32 +2203,7 @@ final class AdminManager
             return '';
         }
 
-        return isset($_GET['s']) ? sanitize_text_field(wp_unslash($_GET['s'])) : '';
-    }
-
-    /**
-     * Clause de recherche custom delegatee au hook PHP de la ressource.
-     */
-    private function tableSearchClause(ResourceDefinition $resource, $search)
-    {
-        $hooks = $this->hooksForResource($resource);
-
-        if (!is_object($hooks) || !method_exists($hooks, 'listSearchClause')) {
-            return array();
-        }
-
-        $result = call_user_func(array($hooks, 'listSearchClause'), $search, array(
-            'resource' => $resource,
-        ));
-
-        if (!is_array($result) || empty($result['sql']) || !is_string($result['sql'])) {
-            return array();
-        }
-
-        return array(
-            'sql' => $result['sql'],
-            'params' => isset($result['params']) && is_array($result['params']) ? array_values($result['params']) : array(),
-        );
+        return $this->request->queryText('s');
     }
 
     /**
@@ -1972,11 +2211,11 @@ final class AdminManager
      */
     private function requestedResourceId($primary_key)
     {
-        if (!isset($_GET[$primary_key])) {
+        if (!$this->request->queryHas($primary_key)) {
             return null;
         }
 
-        $value = sanitize_text_field(wp_unslash($_GET[$primary_key]));
+        $value = sanitize_text_field((string) $this->request->queryValue($primary_key));
 
         return $value === '' ? null : $value;
     }
@@ -1998,7 +2237,7 @@ final class AdminManager
      */
     private function postedResourceData(ResourceDefinition $resource)
     {
-        $posted = wp_unslash($_POST);
+        $posted = $this->request->postData();
         $data = array();
 
         foreach ($resource->columns() as $column => $definition) {
@@ -2031,7 +2270,7 @@ final class AdminManager
      */
     private function postedOptionData()
     {
-        $posted = wp_unslash($_POST);
+        $posted = $this->request->postData();
         $data = array();
         $ignored = array('_wpnonce', '_wp_http_referer', 'submit');
 
@@ -2064,7 +2303,7 @@ final class AdminManager
      */
     private function requiredFieldErrors(array $data)
     {
-        $posted = wp_unslash($_POST);
+        $posted = $this->request->postData();
         $required_fields = isset($posted['_smbb_required']) && is_array($posted['_smbb_required']) ? $posted['_smbb_required'] : array();
         $required_fields = array_values(array_unique(array_filter(array_map('strval', $required_fields))));
         $posted_source = $this->postedValuesForRequiredValidation($posted);
@@ -2148,167 +2387,36 @@ final class AdminManager
     }
 
     /**
-     * Indique si la cle primaire de la ressource est un type numerique.
-     */
-    private function resourcePrimaryKeyIsNumeric(ResourceDefinition $resource)
-    {
-        $primary_key = $resource->primaryKey();
-        $columns = $resource->columns();
-        $definition = isset($columns[$primary_key]) && is_array($columns[$primary_key]) ? $columns[$primary_key] : array();
-        $type = isset($definition['type']) ? strtolower((string) $definition['type']) : '';
-
-        return in_array($type, array('bigint', 'int', 'integer', 'mediumint', 'smallint', 'tinyint'), true);
-    }
-
-    /**
-     * Ajoute les champs geres par le moteur : dates et utilisateurs.
-     */
-    private function applyManagedColumns(ResourceDefinition $resource, array $data, $is_create)
-    {
-        $now = current_time('mysql');
-        $user_id = get_current_user_id();
-
-        foreach ($resource->columns() as $column => $definition) {
-            if (!is_array($definition) || empty($definition['managed'])) {
-                continue;
-            }
-
-            switch ((string) $definition['managed']) {
-                case 'create_datetime':
-                    if ($is_create) {
-                        $data[$column] = $now;
-                    }
-                    break;
-
-                case 'update_datetime':
-                    $data[$column] = $now;
-                    break;
-
-                case 'create_user':
-                    if ($is_create) {
-                        $data[$column] = $user_id;
-                    }
-                    break;
-
-                case 'update_user':
-                    $data[$column] = $user_id;
-                    break;
-            }
-        }
-
-        return $data;
-    }
-
-    /**
-     * Instancie la classe de hooks declaree par une ressource.
-     */
-    private function hooksForResource(ResourceDefinition $resource)
-    {
-        $cache_key = $resource->name();
-
-        if (array_key_exists($cache_key, $this->hooks_cache)) {
-            return $this->hooks_cache[$cache_key];
-        }
-
-        $file = $resource->hookFilePath();
-        $class = $resource->hookClass();
-
-        if ($file && is_readable($file)) {
-            require_once $file;
-        }
-
-        if ($class && class_exists($class)) {
-            $this->hooks_cache[$cache_key] = new $class();
-
-            return $this->hooks_cache[$cache_key];
-        }
-
-        $this->hooks_cache[$cache_key] = null;
-
-        return null;
-    }
-
-    /**
-     * Appelle un hook qui transforme les donnees.
-     */
-    private function callDataHook($hooks, $method, array $data, array $context)
-    {
-        if (is_object($hooks) && method_exists($hooks, $method)) {
-            $result = call_user_func(array($hooks, $method), $data, $context);
-
-            return is_array($result) ? $result : $data;
-        }
-
-        return $data;
-    }
-
-    /**
-     * Appelle le hook validate() et normalise ses erreurs.
-     */
-    private function callValidateHook($hooks, array $data, array $context)
-    {
-        if (!is_object($hooks) || !method_exists($hooks, 'validate')) {
-            return array();
-        }
-
-        $errors = call_user_func(array($hooks, 'validate'), $data, $context);
-
-        return is_array($errors) ? array_filter($errors) : array();
-    }
-
-    /**
-     * Appelle le hook afterSave().
-     */
-    private function callAfterSaveHook($hooks, array $row, array $context)
-    {
-        if (is_object($hooks) && method_exists($hooks, 'afterSave')) {
-            call_user_func(array($hooks, 'afterSave'), $row, $context);
-        }
-    }
-
-    /**
-     * Appelle le hook beforeDelete().
-     */
-    private function callBeforeDeleteHook($hooks, array $row, array $context)
-    {
-        if (is_object($hooks) && method_exists($hooks, 'beforeDelete')) {
-            $result = call_user_func(array($hooks, 'beforeDelete'), $row, $context);
-
-            if (function_exists('is_wp_error') && is_wp_error($result)) {
-                return $result->get_error_message();
-            }
-
-            return $result === null ? true : $result;
-        }
-
-        return true;
-    }
-
-    /**
      * Ajoute une notice a rendre sur la page courante.
      */
-    private function addRuntimeNotice($type, $message, array $details = array())
+    public function addRuntimeNotice($type, $message, array $details = array())
     {
-        $this->runtime_notices[] = array(
-            'type' => $type,
-            'message' => $message,
-            'details' => $details,
-        );
+        $this->state->addNotice($type, $message, $details);
     }
 
     /**
      * Ajoute une notice de succes apres redirection.
      */
-    private function addNoticeFromQuery()
+    public function addNoticeFromQuery()
     {
-        $notice = isset($_GET['codetool_notice']) ? sanitize_key(wp_unslash($_GET['codetool_notice'])) : '';
-        $count = isset($_GET['codetool_count']) ? max(0, (int) $_GET['codetool_count']) : 0;
+        $notice = $this->request->queryKey('codetool_notice');
+        $count = $this->request->queryHas('codetool_count') ? max(0, $this->request->queryInt('codetool_count')) : 0;
         $messages = array(
             'created' => __('Item created.', 'smbb-wpcodetool'),
             'duplicated' => __('Item duplicated.', 'smbb-wpcodetool'),
             'updated' => __('Item updated.', 'smbb-wpcodetool'),
             'deleted' => __('Item deleted.', 'smbb-wpcodetool'),
             'settings_saved' => __('Settings saved.', 'smbb-wpcodetool'),
+            'api_visibility_saved' => __('API visibility saved.', 'smbb-wpcodetool'),
+            'api_token_created' => __('API token created.', 'smbb-wpcodetool'),
+            'api_token_enabled' => __('API token enabled.', 'smbb-wpcodetool'),
+            'api_token_disabled' => __('API token disabled.', 'smbb-wpcodetool'),
+            'api_token_deleted' => __('API token deleted.', 'smbb-wpcodetool'),
+            'api_client_created' => __('API client created.', 'smbb-wpcodetool'),
+            'api_client_updated' => __('API client updated.', 'smbb-wpcodetool'),
+            'api_client_enabled' => __('API client enabled.', 'smbb-wpcodetool'),
+            'api_client_disabled' => __('API client disabled.', 'smbb-wpcodetool'),
+            'api_client_deleted' => __('API client deleted.', 'smbb-wpcodetool'),
         );
 
         if ($notice === 'batch_deleted' && $count > 0) {
@@ -2346,16 +2454,18 @@ final class AdminManager
      * On ne les affiche plus avant la vue elle-meme, parce qu'on veut pouvoir les
      * placer juste apres le header CodeTool et avant le contenu principal.
      */
-    private function runtimeNoticesHtml()
+    public function runtimeNoticesHtml()
     {
-        if (!$this->runtime_notices) {
+        $notices = $this->state->notices();
+
+        if (!$notices) {
             return '';
         }
 
         ob_start();
         echo '<div class="smbb-codetool-notices">';
 
-        foreach ($this->runtime_notices as $notice) {
+        foreach ($notices as $notice) {
             $type = $notice['type'] === 'success' ? 'success' : ($notice['type'] === 'error' ? 'error' : 'info');
             echo '<div class="smbb-codetool-notice is-' . esc_attr($type) . '">';
             echo '<div class="smbb-codetool-notice-body">';
@@ -2398,7 +2508,7 @@ final class AdminManager
     /**
      * Affiche une erreur lisible quand une view déclarée manque.
      */
-    private function renderMissingView(ResourceDefinition $resource, $view, $view_path)
+    public function renderMissingView(ResourceDefinition $resource, $view, $view_path)
     {
         ?>
         <div class="wrap smbb-codetool">

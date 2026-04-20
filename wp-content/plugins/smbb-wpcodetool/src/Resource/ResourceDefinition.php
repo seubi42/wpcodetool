@@ -105,13 +105,15 @@ final class ResourceDefinition
      * Type d'écran admin.
      *
      * - resource : liste/form/details autour d'une table ou d'un store ;
-     * - settings_page : formulaire unique, typiquement stocké dans wp_options.
+     * - settings_page : formulaire unique, typiquement stocké dans wp_options ;
+     * - page : écran purement UX, sans persistence obligatoire.
      */
     public function adminType()
     {
         $admin = $this->admin();
+        $type = isset($admin['type']) ? sanitize_key((string) $admin['type']) : 'resource';
 
-        return isset($admin['type']) ? (string) $admin['type'] : 'resource';
+        return in_array($type, array('resource', 'settings_page', 'page'), true) ? $type : 'resource';
     }
 
     /**
@@ -293,6 +295,59 @@ final class ResourceDefinition
         $admin = $this->admin();
 
         return isset($admin['views']) && is_array($admin['views']) ? $admin['views'] : array();
+    }
+
+    /**
+     * Configuration optionnelle d'une page admin purement UX.
+     *
+     * Exemple :
+     * "page": {
+     *   "defaultView": "dashboard",
+     *   "hero": {...},
+     *   "quickLinks": [...]
+     * }
+     */
+    public function pageConfig()
+    {
+        $admin = $this->admin();
+
+        return isset($admin['page']) && is_array($admin['page']) ? $admin['page'] : array();
+    }
+
+    /**
+     * Vue admin ouverte par defaut pour cette ressource.
+     *
+     * - resource      -> list ;
+     * - settings_page -> form ;
+     * - page          -> page.defaultView, puis views.view/dashboard/page, puis premiere vue.
+     */
+    public function defaultAdminView()
+    {
+        if ($this->adminType() === 'settings_page') {
+            return 'form';
+        }
+
+        if ($this->adminType() !== 'page') {
+            return 'list';
+        }
+
+        $views = $this->views();
+        $page = $this->pageConfig();
+        $configured = isset($page['defaultView']) ? sanitize_key((string) $page['defaultView']) : '';
+
+        if ($configured !== '' && !empty($views[$configured])) {
+            return $configured;
+        }
+
+        foreach (array('view', 'dashboard', 'page', 'form', 'list') as $candidate) {
+            if (!empty($views[$candidate])) {
+                return $candidate;
+            }
+        }
+
+        $keys = array_keys($views);
+
+        return !empty($keys) ? sanitize_key((string) reset($keys)) : 'view';
     }
 
     /**
@@ -698,14 +753,16 @@ final class ResourceDefinition
      * Type de stockage.
      *
      * Par convention du prototype :
-     * - option si storage.type vaut "option" ;
-     * - custom_table sinon.
+     * - custom_table : ressource CRUD stockée en table SQL ;
+     * - option       : objet unique stocké dans wp_options ;
+     * - none         : aucune persistence gérée par CodeTool.
      */
     public function storageType()
     {
         $storage = $this->storage();
+        $type = isset($storage['type']) ? sanitize_key((string) $storage['type']) : 'custom_table';
 
-        return isset($storage['type']) ? (string) $storage['type'] : 'custom_table';
+        return in_array($type, array('custom_table', 'option', 'none'), true) ? $type : 'custom_table';
     }
 
     /**
@@ -813,11 +870,188 @@ final class ResourceDefinition
     }
 
     /**
+     * Bloc api du JSON.
+     */
+    public function api()
+    {
+        return isset($this->data['api']) && is_array($this->data['api']) ? $this->data['api'] : array();
+    }
+
+    /**
+     * Indique si la ressource expose une API REST.
+     */
+    public function apiEnabled()
+    {
+        $api = $this->api();
+
+        return !empty($api['enabled']);
+    }
+
+    /**
+     * Namespace REST WordPress de la ressource.
+     */
+    public function apiNamespace()
+    {
+        $api = $this->api();
+        $namespace = isset($api['namespace']) ? (string) $api['namespace'] : 'smbb-wpcodetool/v1';
+        $segments = array_filter(array_map('sanitize_key', explode('/', trim(str_replace('\\', '/', $namespace), '/'))));
+
+        return $segments ? implode('/', $segments) : 'smbb-wpcodetool/v1';
+    }
+
+    /**
+     * Base path REST de la ressource dans son namespace.
+     */
+    public function apiBase()
+    {
+        $api = $this->api();
+        $base = isset($api['base']) ? (string) $api['base'] : $this->name();
+        $segments = array_filter(array_map('sanitize_key', explode('/', trim(str_replace('\\', '/', $base), '/'))));
+
+        return $segments ? implode('/', $segments) : $this->name();
+    }
+
+    /**
+     * Capability requise pour la ressource cote API.
+     */
+    public function apiCapability()
+    {
+        $api = $this->api();
+
+        return isset($api['capability']) ? (string) $api['capability'] : $this->capability();
+    }
+
+    /**
+     * Configuration normalisee des actions REST standard.
+     */
+    public function apiActions()
+    {
+        $api = $this->api();
+        $actions = isset($api['actions']) && is_array($api['actions']) ? $api['actions'] : array();
+
+        $normalized = array(
+            'list' => $this->normalizeApiAction(isset($actions['list']) ? $actions['list'] : false, array(
+                'enabled' => false,
+            )),
+            'get' => $this->normalizeApiAction(isset($actions['get']) ? $actions['get'] : false, array(
+                'enabled' => false,
+            )),
+            'create' => $this->normalizeApiAction(isset($actions['create']) ? $actions['create'] : false, array(
+                'enabled' => false,
+            )),
+            'patch' => $this->normalizeApiAction(isset($actions['patch']) ? $actions['patch'] : false, array(
+                'enabled' => false,
+                'missingFields' => 'keep',
+                'nullFields' => 'set_null',
+            )),
+            'put' => $this->normalizeApiAction(isset($actions['put']) ? $actions['put'] : false, array(
+                'enabled' => false,
+                'missingFields' => 'reject',
+                'nullFields' => 'set_null',
+            )),
+            'delete' => $this->normalizeApiAction(isset($actions['delete']) ? $actions['delete'] : false, array(
+                'enabled' => false,
+            )),
+        );
+
+        foreach (array('patch', 'put') as $action) {
+            $normalized[$action]['missingFields'] = $this->normalizeApiMode(
+                isset($normalized[$action]['missingFields']) ? $normalized[$action]['missingFields'] : '',
+                array('keep', 'reject', 'set_null'),
+                $action === 'patch' ? 'keep' : 'reject'
+            );
+            $normalized[$action]['nullFields'] = $this->normalizeApiMode(
+                isset($normalized[$action]['nullFields']) ? $normalized[$action]['nullFields'] : '',
+                array('set_null', 'ignore', 'reject'),
+                'set_null'
+            );
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * Configuration d'une action REST standard.
+     */
+    public function apiActionConfig($action)
+    {
+        $action = sanitize_key((string) $action);
+        $actions = $this->apiActions();
+
+        return isset($actions[$action]) ? $actions[$action] : array('enabled' => false);
+    }
+
+    /**
+     * Indique si une action REST standard est active.
+     */
+    public function apiActionEnabled($action)
+    {
+        $config = $this->apiActionConfig($action);
+
+        return !empty($config['enabled']);
+    }
+
+    /**
+     * Routes custom declarees dans le JSON.
+     */
+    public function apiCustomRoutes()
+    {
+        $api = $this->api();
+        $custom = isset($api['custom']) && is_array($api['custom']) ? $api['custom'] : array();
+        $routes = array();
+
+        foreach ($custom as $name => $definition) {
+            if (!is_array($definition)) {
+                continue;
+            }
+
+            $method = strtoupper(isset($definition['method']) ? (string) $definition['method'] : 'GET');
+
+            if (!in_array($method, array('GET', 'POST', 'PUT', 'PATCH', 'DELETE'), true)) {
+                $method = 'GET';
+            }
+
+            $routes[sanitize_key((string) $name)] = array(
+                'enabled' => !array_key_exists('enabled', $definition) || (bool) $definition['enabled'],
+                'method' => $method,
+                'path' => $this->normalizeApiPath(isset($definition['path']) ? (string) $definition['path'] : '/' . $this->apiBase()),
+                'file' => isset($definition['file']) ? (string) $definition['file'] : '',
+                'class' => isset($definition['class']) ? (string) $definition['class'] : '',
+                'callback' => isset($definition['callback']) ? (string) $definition['callback'] : '',
+                'summary' => isset($definition['summary']) ? (string) $definition['summary'] : '',
+                'description' => isset($definition['description']) ? (string) $definition['description'] : '',
+                'args' => isset($definition['args']) && is_array($definition['args']) ? $definition['args'] : array(),
+            );
+        }
+
+        return $routes;
+    }
+
+    /**
+     * Chemin absolu du fichier PHP d'une route custom.
+     */
+    public function apiCustomRouteFilePath($route_name)
+    {
+        $routes = $this->apiCustomRoutes();
+
+        if (empty($routes[$route_name]['file'])) {
+            return '';
+        }
+
+        return $this->plugin_dir . DIRECTORY_SEPARATOR . 'codetool' . DIRECTORY_SEPARATOR . str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $routes[$route_name]['file']);
+    }
+
+    /**
      * Chemin absolu du fichier JSON source, utile pour les pages debug.
      */
     public function modelFile()
     {
         return $this->model_file;
+    }
+
+    public function pluginDir()
+    {
+        return $this->plugin_dir;
     }
 
     /**
@@ -826,5 +1060,49 @@ final class ResourceDefinition
     public function raw()
     {
         return $this->data;
+    }
+
+    /**
+     * Normalise une action REST declaree en bool ou en objet.
+     */
+    private function normalizeApiAction($value, array $defaults)
+    {
+        if (!is_array($value)) {
+            return array_merge($defaults, array(
+                'enabled' => (bool) $value,
+            ));
+        }
+
+        return array_merge(
+            $defaults,
+            $value,
+            array(
+                'enabled' => !array_key_exists('enabled', $value) || (bool) $value['enabled'],
+            )
+        );
+    }
+
+    /**
+     * Normalise un mode connu d'action REST.
+     */
+    private function normalizeApiMode($value, array $allowed, $default)
+    {
+        $value = sanitize_key((string) $value);
+
+        return in_array($value, $allowed, true) ? $value : $default;
+    }
+
+    /**
+     * Garantit un path REST avec slash initial.
+     */
+    private function normalizeApiPath($path)
+    {
+        $path = trim((string) $path);
+
+        if ($path === '') {
+            return '/' . $this->apiBase();
+        }
+
+        return '/' . ltrim($path, '/');
     }
 }

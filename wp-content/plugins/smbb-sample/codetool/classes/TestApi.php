@@ -42,6 +42,11 @@ final class TestApi
     {
         $store = $this->api->store($context, array('search'));
 
+        // parametres attendus:
+        $name = $this->api->param($request, 'name', '');
+        $limit = $this->api->limitParam($request, 'limit', 10, 1, 50);
+
+
         if (!$store) {
             return $this->api->error('missing_store', 'The test store is not available.');
         }
@@ -49,9 +54,10 @@ final class TestApi
         // Le helper lit les paramètres de requête et borne la limite à 50 résultats.
         // Le détail SQL reste dans le store, pas dans cette classe API.
         return $store->search(array(
-            'name' => $this->api->param($request, 'name', ''),
-            'limit' => $this->api->limitParam($request, 'limit', 10, 1, 50),
+            'name' => $name,
+            'limit' => $limit,
         ));
+
     }
 
     /**
@@ -69,6 +75,7 @@ final class TestApi
 
         // On récupère l'id avec intParam() pour éviter que chaque endpoint fasse son cast.
         $row = $store->find($this->api->intParam($request, 'id'));
+        $piou = (string) $this->api->param($request, 'piou', '');
 
         if (!$row) {
             return $this->api->notFound('Test item not found.');
@@ -78,6 +85,7 @@ final class TestApi
         return array(
             'id' => isset($row['id']) ? (int) $row['id'] : null,
             'title' => isset($row['name']) ? (string) $row['name'] : '',
+            'piou' => $piou,
             'summary' => sprintf('Test #%d: %s', (int) $row['id'], (string) $row['name']),
         );
     }

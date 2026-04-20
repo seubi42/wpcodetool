@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SMBB WP CodeTool
  * Description: Lightweight toolkit for declarative admin pages, custom table resources, option-backed settings pages, and REST API helpers.
- * Version: 0.1.19
+ * Version: 0.1.26
  * Author: SMBB
  * Text Domain: smbb-wpcodetool
  * Requires at least: 6.0
@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
 
 // Version interne du plugin. Elle servira plus tard pour les migrations, les caches compilés,
 // ou les éventuelles évolutions de format des fichiers codetool/*.json.
-define('SMBB_WPCODETOOL_VERSION', '0.1.19');
+define('SMBB_WPCODETOOL_VERSION', '0.1.26');
 
 // Chemins de référence du plugin. On les centralise ici pour éviter de recalculer les chemins
 // dans chaque classe du moteur.
@@ -73,12 +73,20 @@ add_action('plugins_loaded', 'smbb_wpcodetool_loaded');
  */
 function smbb_wpcodetool_loaded()
 {
+    $scanner = new \Smbb\WpCodeTool\Resource\ResourceScanner();
+
     // Premier branchement concret : si on est dans l'admin, on prépare le gestionnaire
     // qui scanne les ressources et enregistre les menus WordPress.
     if (is_admin()) {
-        $admin = new \Smbb\WpCodeTool\Admin\AdminManager(new \Smbb\WpCodeTool\Resource\ResourceScanner());
+        $admin = new \Smbb\WpCodeTool\Admin\AdminManager($scanner);
         $admin->hooks();
     }
+
+    $api = new \Smbb\WpCodeTool\Api\ApiManager($scanner);
+    $api->hooks();
+
+    $docs = new \Smbb\WpCodeTool\Api\ApiDocsShortcode($scanner);
+    $docs->hooks();
 
     do_action('smbb_wpcodetool_loaded');
 }

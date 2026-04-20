@@ -1,0 +1,43 @@
+{
+  "name": "sample_dashboard",
+  "label": "Sample dashboard",
+  "pluralLabel": "Sample dashboard",
+  "description": "Example of a pure admin UX page declared with CodeTool and no managed storage.",
+  "storage": {
+    "type": "none"
+  },
+  "admin": {
+    "enabled": true,
+    "type": "page",
+    "capability": "manage_options",
+    "menu": {
+      "placement": "submenu",
+      "parent": {
+        "slug": "smbb-sample-tools",
+        "title": "SMBB Sample",
+        "icon": "dashicons-admin-generic",
+        "position": 31
+      },
+      "title": "Dashboard",
+      "icon": "dashicons-chart-area",
+      "position": 30
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": true
+    },
+    "page": {
+      "defaultView": "dashboard"
+    },
+    "views": {
+      "dashboard": "views/sample-dashboard/dashboard.php"
+    }
+  },
+  "hooks": {
+    "file": "classes/SampleDashboardHooks.php",
+    "class": "Smbb\\Sample\\CodeTool\\SampleDashboardHooks"
+  },
+  "api": {
+    "enabled": false
+  }
+}

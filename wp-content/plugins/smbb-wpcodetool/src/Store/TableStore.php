@@ -18,6 +18,11 @@ final class TableStore
 {
     // Cache par requete de l'existence des tables pour eviter les SHOW TABLES repetes.
     private static $table_exists_cache = array();
+    private static $table_columns_cache = array();
+
+    private const SOFT_DELETE_FLAG_COLUMN = 'deleted_flag';
+    private const SOFT_DELETE_DATE_COLUMN = 'deleted_date';
+    private const SOFT_DELETE_BY_COLUMN = 'deleted_by';
 
     // Definition CodeTool de la ressource.
     private $resource;
@@ -38,7 +43,9 @@ final class TableStore
      * - orderby    : colonne de tri ;
      * - order      : asc|desc ;
      * - per_page   : limite ;
-     * - page       : page numerique, 1 minimum.
+     * - page       : page numerique, 1 minimum ;
+     * - include_deleted : inclut aussi les lignes supprimees logiquement ;
+     * - only_deleted    : ne renvoie que les lignes supprimees logiquement.
      */
     public function list(array $args = array())
     {
@@ -112,7 +119,7 @@ final class TableStore
     /**
      * Trouve une ligne par cle primaire.
      */
-    public function find($id)
+    public function find($id, array $args = array())
     {
         global $wpdb;
 
@@ -125,8 +132,17 @@ final class TableStore
         $primary_key = $this->identifier($this->resource->primaryKey());
         $format = $this->columnIsNumeric($this->resource->primaryKey()) ? '%d' : '%s';
         $value = $format === '%d' ? (int) $id : (string) $id;
+        $conditions = array(
+            $primary_key . ' = ' . $format,
+        );
+        $deleted_scope = $this->deletedScopeSql($args);
+
+        if ($deleted_scope !== '') {
+            $conditions[] = $deleted_scope;
+        }
+
         $sql = $wpdb->prepare(
-            'SELECT * FROM ' . $this->resource->tableName() . ' WHERE ' . $primary_key . ' = ' . $format . ' LIMIT 1',
+            'SELECT * FROM ' . $this->resource->tableName() . ' WHERE ' . implode(' AND ', $conditions) . ' LIMIT 1',
             $value
         );
 
@@ -184,7 +200,7 @@ final class TableStore
             return false;
         }
 
-        return isset($wpdb->insert_id) ? $wpdb->insert_id : true;
+        return $this->createdPrimaryKeyValue($data);
     }
 
     /**
@@ -218,7 +234,7 @@ final class TableStore
     }
 
     /**
-     * Supprime une ligne par cle primaire.
+     * Marque une ligne comme supprimee sans la retirer physiquement de la table.
      */
     public function delete($id)
     {
@@ -226,11 +242,37 @@ final class TableStore
 
         $this->last_error = '';
 
+        if (!$this->tableExists()) {
+            return false;
+        }
+
+        if (!$this->hasSoftDeleteFlagColumn()) {
+            $this->last_error = __('The database schema must be synchronized before records can be soft-deleted.', 'smbb-wpcodetool');
+            return false;
+        }
+
+        $user_id = get_current_user_id();
+        $data = array(
+            self::SOFT_DELETE_FLAG_COLUMN => 1,
+        );
+
+        if ($this->hasSoftDeleteDateColumn()) {
+            $data[self::SOFT_DELETE_DATE_COLUMN] = current_time('mysql');
+        }
+
+        if ($this->hasSoftDeleteByColumn()) {
+            $data[self::SOFT_DELETE_BY_COLUMN] = $user_id > 0 ? $user_id : null;
+        }
+
         $primary_key = $this->resource->primaryKey();
-        $where = array($primary_key => $this->normalizeValue($primary_key, $id));
-        $result = $wpdb->delete(
+        $where = array(
+            $primary_key => $this->normalizeValue($primary_key, $id),
+        );
+        $result = $wpdb->update(
             $this->resource->tableName(),
+            $data,
             $where,
+            $this->formatsForData($data),
             $this->formatsForData($where)
         );
 
@@ -253,7 +295,12 @@ final class TableStore
     private function whereSql(array $args, array &$params)
     {
         $conditions = array();
+        $deleted_scope = $this->deletedScopeSql($args);
         $search = isset($args['search']) ? trim((string) $args['search']) : '';
+
+        if ($deleted_scope !== '') {
+            $conditions[] = $deleted_scope;
+        }
 
         if ($search !== '') {
             $search_sql = $this->searchSql($args, $search, $params);
@@ -522,6 +569,31 @@ final class TableStore
     }
 
     /**
+     * Construit la clause de visibilite des lignes supprimees logiquement.
+     */
+    private function deletedScopeSql(array $args)
+    {
+        $only_deleted = !empty($args['only_deleted']);
+        $include_deleted = !$only_deleted && !empty($args['include_deleted']);
+
+        if (!$this->hasSoftDeleteFlagColumn()) {
+            return $only_deleted ? '1 = 0' : '';
+        }
+
+        $column = $this->identifier(self::SOFT_DELETE_FLAG_COLUMN);
+
+        if ($include_deleted) {
+            return '';
+        }
+
+        if ($only_deleted) {
+            return $column . ' = 1';
+        }
+
+        return '(' . $column . ' = 0 OR ' . $column . ' IS NULL)';
+    }
+
+    /**
      * Verifie l'existence de la table avant SELECT.
      */
     private function tableExists()
@@ -539,6 +611,44 @@ final class TableStore
         self::$table_exists_cache[$table_name] = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $like)) === $table_name;
 
         return self::$table_exists_cache[$table_name];
+    }
+
+    /**
+     * Colonnes SQL detectees physiquement pour la table courante.
+     */
+    private function tableColumns()
+    {
+        global $wpdb;
+
+        $table_name = $this->resource->tableName();
+
+        if (array_key_exists($table_name, self::$table_columns_cache)) {
+            return self::$table_columns_cache[$table_name];
+        }
+
+        if (!$this->tableExists()) {
+            self::$table_columns_cache[$table_name] = array();
+            return self::$table_columns_cache[$table_name];
+        }
+
+        $results = $wpdb->get_results('SHOW COLUMNS FROM ' . $table_name, ARRAY_A);
+
+        if (!is_array($results)) {
+            self::$table_columns_cache[$table_name] = array();
+            return self::$table_columns_cache[$table_name];
+        }
+
+        $columns = array();
+
+        foreach ($results as $result) {
+            if (!empty($result['Field'])) {
+                $columns[] = sanitize_key((string) $result['Field']);
+            }
+        }
+
+        self::$table_columns_cache[$table_name] = array_values(array_unique($columns));
+
+        return self::$table_columns_cache[$table_name];
     }
 
     /**
@@ -583,6 +693,10 @@ final class TableStore
             }
         }
 
+        foreach (array_keys($this->internalColumnDefinitions()) as $column) {
+            unset($row[$column]);
+        }
+
         return $row;
     }
 
@@ -614,6 +728,45 @@ final class TableStore
         }
 
         return $prepared;
+    }
+
+    /**
+     * Determine la valeur de cle primaire creee apres un INSERT.
+     *
+     * Cas couverts :
+     * - cle primaire auto-increment : on utilise insert_id, avec un fallback SQL
+     *   LAST_INSERT_ID() sur la meme connexion MySQL si WordPress a laisse 0 ;
+     * - cle primaire fournie explicitement dans $data : on la renvoie telle quelle ;
+     * - sinon : true, pour signaler un succes sans identifiant resolu.
+     *
+     * @param array $data Donnees preparees envoyees a wpdb->insert().
+     * @return int|string|true
+     */
+    private function createdPrimaryKeyValue(array $data)
+    {
+        global $wpdb;
+
+        $primary_key = $this->resource->primaryKey();
+
+        if ($this->primaryKeyIsAutoIncrement() && $this->columnIsNumeric($primary_key)) {
+            $insert_id = isset($wpdb->insert_id) ? (int) $wpdb->insert_id : 0;
+
+            if ($insert_id > 0) {
+                return $insert_id;
+            }
+
+            $fallback_id = (int) $wpdb->get_var('SELECT LAST_INSERT_ID()');
+
+            if ($fallback_id > 0) {
+                return $fallback_id;
+            }
+        }
+
+        if (array_key_exists($primary_key, $data)) {
+            return $data[$primary_key];
+        }
+
+        return true;
     }
 
     /**
@@ -736,7 +889,23 @@ final class TableStore
     {
         $columns = $this->resource->columns();
 
-        return isset($columns[$column]) && is_array($columns[$column]) ? $columns[$column] : array();
+        if (isset($columns[$column]) && is_array($columns[$column])) {
+            return $columns[$column];
+        }
+
+        $internal = $this->internalColumnDefinitions();
+
+        return isset($internal[$column]) && is_array($internal[$column]) ? $internal[$column] : array();
+    }
+
+    /**
+     * Indique si la cle primaire declaree est auto-incrementee.
+     */
+    private function primaryKeyIsAutoIncrement()
+    {
+        $definition = $this->columnDefinition($this->resource->primaryKey());
+
+        return !empty($definition['primary']) && !empty($definition['autoIncrement']);
     }
 
     /**
@@ -749,5 +918,57 @@ final class TableStore
         $name = trim($name, '_');
 
         return $name !== '' ? $name : 'field';
+    }
+
+    /**
+     * Colonnes reservees au moteur pour le soft delete.
+     */
+    private function internalColumnDefinitions()
+    {
+        return array(
+            self::SOFT_DELETE_FLAG_COLUMN => array(
+                'type' => 'tinyint',
+                'unsigned' => true,
+                'nullable' => false,
+                'default' => 0,
+            ),
+            self::SOFT_DELETE_DATE_COLUMN => array(
+                'type' => 'datetime',
+                'nullable' => true,
+                'default' => null,
+            ),
+            self::SOFT_DELETE_BY_COLUMN => array(
+                'type' => 'bigint',
+                'unsigned' => true,
+                'nullable' => true,
+                'default' => null,
+            ),
+        );
+    }
+
+    /**
+     * Presence physique des colonnes de soft delete.
+     */
+    private function hasSoftDeleteFlagColumn()
+    {
+        return $this->tableHasColumn(self::SOFT_DELETE_FLAG_COLUMN);
+    }
+
+    private function hasSoftDeleteDateColumn()
+    {
+        return $this->tableHasColumn(self::SOFT_DELETE_DATE_COLUMN);
+    }
+
+    private function hasSoftDeleteByColumn()
+    {
+        return $this->tableHasColumn(self::SOFT_DELETE_BY_COLUMN);
+    }
+
+    /**
+     * Indique si une colonne existe reellement dans la table.
+     */
+    private function tableHasColumn($column)
+    {
+        return in_array(sanitize_key((string) $column), $this->tableColumns(), true);
     }
 }

@@ -32,6 +32,8 @@ final class SchemaBuilder
             return '';
         }
 
+        $columns = $this->effectiveColumns($columns);
+
         global $wpdb;
 
         $lines = array();
@@ -72,6 +74,49 @@ final class SchemaBuilder
         return 'CREATE TABLE ' . $resource->tableName() . " (\n"
             . implode(",\n", $lines)
             . "\n) " . $charset_collate . ';';
+    }
+
+    /**
+     * Colonnes effectivement posees dans chaque table custom.
+     *
+     * Les colonnes de soft delete sont injectees automatiquement pour garder une corbeille
+     * minimale sans obliger chaque modele JSON a les redeclarer.
+     */
+    private function effectiveColumns(array $columns)
+    {
+        foreach ($this->softDeleteColumns() as $column_name => $definition) {
+            if (!array_key_exists($column_name, $columns)) {
+                $columns[$column_name] = $definition;
+            }
+        }
+
+        return $columns;
+    }
+
+    /**
+     * Colonnes reservees au soft delete.
+     */
+    private function softDeleteColumns()
+    {
+        return array(
+            'deleted_flag' => array(
+                'type' => 'tinyint',
+                'unsigned' => true,
+                'nullable' => false,
+                'default' => 0,
+            ),
+            'deleted_date' => array(
+                'type' => 'datetime',
+                'nullable' => true,
+                'default' => null,
+            ),
+            'deleted_by' => array(
+                'type' => 'bigint',
+                'unsigned' => true,
+                'nullable' => true,
+                'default' => null,
+            ),
+        );
     }
 
     /**

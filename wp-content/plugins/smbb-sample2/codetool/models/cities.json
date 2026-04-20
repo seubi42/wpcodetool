@@ -1,0 +1,106 @@
+{
+  "name": "cities",
+  "label": "City",
+  "pluralLabel": "Cities",
+  "description": "Minimal sample resource used to validate a second namespace and a second plugin integration.",
+  "storage": {
+    "table": "smbb_sample2_cities",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "name": {
+      "type": "varchar",
+      "length": 120,
+      "nullable": false
+    },
+    "lat": {
+      "type": "decimal",
+      "precision": 10,
+      "scale": 6,
+      "nullable": false
+    },
+    "lng": {
+      "type": "decimal",
+      "precision": 10,
+      "scale": 6,
+      "nullable": false
+    },
+    "population": {
+      "type": "int",
+      "nullable": true
+    },
+    "surface": {
+      "type": "int",
+      "nullable": true
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_name",
+      "type": "index",
+      "columns": ["name"]
+    }
+  ],
+  "admin": {
+    "enabled": true,
+    "capability": "manage_options",
+    "menu": {
+      "placement": "main",
+      "title": "Cities",
+      "icon": "dashicons-database",
+      "position": 31
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "list": {
+      "perPage": 20,
+      "search": {
+        "enabled": true,
+        "provider": "default",
+        "fields": ["name"],
+        "mode": "or",
+        "placeholder": "Search cities"
+      },
+      "defaultOrder": {
+        "by": "name",
+        "direction": "asc"
+      }
+    },
+    "views": {
+      "list": "views/cities/list.php",
+      "form": "views/cities/form.php",
+      "details": "views/cities/details.php"
+    }
+  },
+  "api": {
+    "enabled": true,
+    "namespace": "smbb-sample2/v1",
+    "base": "cities",
+    "capability": "manage_options",
+    "actions": {
+      "list": true,
+      "get": true,
+      "create": true,
+      "patch": {
+        "enabled": true,
+        "missingFields": "keep",
+        "nullFields": "set_null"
+      },
+      "put": {
+        "enabled": false,
+        "missingFields": "reject",
+        "nullFields": "set_null"
+      },
+      "delete": true
+    }
+  }
+}
