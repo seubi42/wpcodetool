@@ -5,7 +5,7 @@ namespace Smbb\WpCodeTool\Api;
 defined('ABSPATH') || exit;
 
 /**
- * Stores API bearer tokens managed by CodeTool.
+ * Stocke les bearer tokens geres directement par CodeTool dans wp_options.
  */
 final class ApiTokenStore
 {

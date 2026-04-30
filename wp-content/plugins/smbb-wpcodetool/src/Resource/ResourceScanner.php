@@ -20,12 +20,19 @@ final class ResourceScanner
     private const CACHE_GROUP = 'smbb_wpcodetool';
     private const CACHE_KEY = 'resource_scan';
     private const CACHE_OPTION = 'smbb_wpcodetool_resource_scan_cache';
+    private const CACHE_SCHEMA_VERSION = '2';
 
     // Erreurs rencontrees pendant le scan. La page debug les affichera.
     private $errors = array();
     private $memory_fingerprint = '';
     private $memory_resources = array();
     private $memory_errors = array();
+    private $validator;
+
+    public function __construct(ResourceModelValidator $validator = null)
+    {
+        $this->validator = $validator ?: new ResourceModelValidator();
+    }
 
     /**
      * Lance le scan et retourne les ressources valides.
@@ -113,6 +120,13 @@ final class ResourceScanner
                     continue;
                 }
 
+                $validation_errors = $this->validator->validate($data, $plugin_dir, $model_file);
+
+                if ($validation_errors) {
+                    $this->errors = array_merge($this->errors, $validation_errors);
+                    continue;
+                }
+
                 $resource = new ResourceDefinition($data, $plugin_dir, $model_file);
 
                 if (isset($resources[$resource->name()])) {
@@ -143,7 +157,7 @@ final class ResourceScanner
      */
     private function fingerprint()
     {
-        $parts = array();
+        $parts = array('scanner_schema:' . self::CACHE_SCHEMA_VERSION);
 
         foreach ($this->activePluginDirs() as $plugin_dir) {
             $parts[] = $plugin_dir;

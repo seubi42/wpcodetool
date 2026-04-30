@@ -4,6 +4,9 @@ namespace Smbb\WpCodeTool\Admin\Pages;
 
 defined('ABSPATH') || exit;
 
+/**
+ * Liste les ressources detectees et les erreurs de scan/validation.
+ */
 final class ResourcesIndexPage extends AbstractAdminPage
 {
     public function render()
@@ -100,7 +103,7 @@ final class ResourcesIndexPage extends AbstractAdminPage
             <?php endif; ?>
 
             <?php if ($errors) : ?>
-                <h2><?php esc_html_e('Scan errors', 'smbb-wpcodetool'); ?></h2>
+                <h2><?php esc_html_e('Scan and validation errors', 'smbb-wpcodetool'); ?></h2>
                 <table class="widefat striped smbb-codetool-table">
                     <thead>
                         <tr>

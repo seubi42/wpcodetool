@@ -5,7 +5,7 @@ namespace Smbb\WpCodeTool\Api;
 defined('ABSPATH') || exit;
 
 /**
- * Stores and resolves OpenAPI/Swagger visibility rules per namespace.
+ * Stocke et resolve les regles de visibilite OpenAPI/Swagger par namespace.
  */
 final class ApiVisibilitySettings
 {

@@ -4,6 +4,9 @@ namespace Smbb\WpCodeTool\Admin\Pages;
 
 defined('ABSPATH') || exit;
 
+/**
+ * Page parent minimale pour les menus thematiques geres par CodeTool.
+ */
 final class ParentPage extends AbstractAdminPage
 {
     public function render($parent_slug)

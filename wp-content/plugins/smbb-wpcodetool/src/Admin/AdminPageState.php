@@ -5,7 +5,7 @@ namespace Smbb\WpCodeTool\Admin;
 defined('ABSPATH') || exit;
 
 /**
- * Mutable per-request state for CodeTool admin screens.
+ * Porte l'etat mutable d'une requete admin CodeTool.
  */
 final class AdminPageState
 {

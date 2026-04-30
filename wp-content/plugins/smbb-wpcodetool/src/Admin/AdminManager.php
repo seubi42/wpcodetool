@@ -3,6 +3,7 @@
 namespace Smbb\WpCodeTool\Admin;
 
 use Smbb\WpCodeTool\Api\ApiClientStore;
+use Smbb\WpCodeTool\Api\ApiScopeAuthorizer;
 use Smbb\WpCodeTool\Api\ApiVisibilitySettings;
 use Smbb\WpCodeTool\Admin\Pages\ApiClientsPage;
 use Smbb\WpCodeTool\Admin\Pages\ApiPage;
@@ -10,10 +11,13 @@ use Smbb\WpCodeTool\Admin\Pages\OverviewPage;
 use Smbb\WpCodeTool\Admin\Pages\ParentPage;
 use Smbb\WpCodeTool\Admin\Pages\ResourcePage;
 use Smbb\WpCodeTool\Admin\Pages\ResourcesIndexPage;
+use Smbb\WpCodeTool\Admin\Pages\RoutesPage;
 use Smbb\WpCodeTool\Resource\ResourceDefinition;
 use Smbb\WpCodeTool\Resource\ResourceMutationService;
 use Smbb\WpCodeTool\Resource\ResourceRuntime;
 use Smbb\WpCodeTool\Resource\ResourceScanner;
+use Smbb\WpCodeTool\Route\PublicRouteDefinition;
+use Smbb\WpCodeTool\Route\PublicRouteScanner;
 use Smbb\WpCodeTool\Schema\SchemaSynchronizer;
 use Smbb\WpCodeTool\Store\OptionStore;
 use Smbb\WpCodeTool\Store\TableStore;
@@ -65,6 +69,15 @@ final class AdminManager
     // Clients API geres dans l'admin CodeTool.
     private $api_clients;
 
+    // Scanner des routes publiques declarees dans codetool/routes/public.php.
+    private $route_scanner;
+
+    // Routes publiques valides du dernier scan.
+    private $public_routes = array();
+
+    // Erreurs de scan des routes publiques.
+    private $route_errors = array();
+
     public function __construct(ResourceScanner $scanner)
     {
         $this->scanner = $scanner;
@@ -74,7 +87,8 @@ final class AdminManager
         $this->request = new AdminRequest();
         $this->state = new AdminPageState();
         $this->api_visibility = new ApiVisibilitySettings();
-        $this->api_clients = new ApiClientStore();
+        $this->api_clients = new ApiClientStore(null, new ApiScopeAuthorizer());
+        $this->route_scanner = new PublicRouteScanner();
     }
 
     /**
@@ -252,6 +266,15 @@ final class AdminManager
             'manage_options',
             'smbb-wpcodetool-api',
             array($this, 'renderApiPage')
+        );
+
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('Routes', 'smbb-wpcodetool'),
+            __('Routes', 'smbb-wpcodetool'),
+            'manage_options',
+            'smbb-wpcodetool-routes',
+            array($this, 'renderRoutesPage')
         );
 
         add_submenu_page(
@@ -615,6 +638,14 @@ final class AdminManager
     }
 
     /**
+     * Public route registry page.
+     */
+    public function renderRoutesPage()
+    {
+        (new RoutesPage($this))->render();
+    }
+
+    /**
      * Managed API clients page.
      */
     public function renderApiTokensPage()
@@ -668,9 +699,10 @@ final class AdminManager
             case 'create':
                 $label = $this->request->postText('client_label');
                 $contact_email = $this->request->postEmail('contact_email');
+                $scopes = $this->request->postValue('client_scopes', '');
                 $token_ttl_seconds = $this->request->postAbsInt('token_ttl_seconds', 259200);
                 $expires_at = $this->request->postText('expires_at');
-                $created = $this->api_clients->create($label, $contact_email, $token_ttl_seconds, $expires_at);
+                $created = $this->api_clients->create($label, $contact_email, $token_ttl_seconds, $expires_at, $scopes);
 
                 if (!$created) {
                     $this->addRuntimeNotice('error', __('Unable to create the API client.', 'smbb-wpcodetool'));
@@ -693,9 +725,10 @@ final class AdminManager
                 if ($token_id !== '') {
                     $label = $this->request->postText('client_label');
                     $contact_email = $this->request->postEmail('contact_email');
+                    $scopes = $this->request->postValue('client_scopes', '');
                     $token_ttl_seconds = $this->request->postAbsInt('token_ttl_seconds', 259200);
                     $expires_at = $this->request->postText('expires_at');
-                    $updated = $this->api_clients->update($token_id, $label, $contact_email, $token_ttl_seconds, $expires_at);
+                    $updated = $this->api_clients->update($token_id, $label, $contact_email, $token_ttl_seconds, $expires_at, $scopes);
 
                     if (!$updated) {
                         $this->addRuntimeNotice('error', __('Unable to update the API client.', 'smbb-wpcodetool'));
@@ -865,6 +898,30 @@ final class AdminManager
 
         $this->resources = $this->scanner->scan();
         $this->errors = $this->scanner->errors();
+    }
+
+    public function ensurePublicRoutes()
+    {
+        if ($this->public_routes || $this->route_errors) {
+            return;
+        }
+
+        $this->public_routes = $this->route_scanner->scan();
+        $this->route_errors = $this->route_scanner->errors();
+    }
+
+    public function publicRoutes()
+    {
+        $this->ensurePublicRoutes();
+
+        return $this->public_routes;
+    }
+
+    public function publicRouteErrors()
+    {
+        $this->ensurePublicRoutes();
+
+        return $this->route_errors;
     }
 
     /**
@@ -1434,6 +1491,47 @@ final class AdminManager
         foreach ($groups as &$group) {
             usort($group['resources'], function (ResourceDefinition $left, ResourceDefinition $right) {
                 return strcasecmp($left->name(), $right->name());
+            });
+        }
+        unset($group);
+
+        uasort($groups, function (array $left, array $right) {
+            return strcasecmp((string) $left['label'], (string) $right['label']);
+        });
+
+        return array_values($groups);
+    }
+
+    /**
+     * Regroupe les routes publiques detectees par plugin pour la page Routes.
+     *
+     * @return array<int,array<string,mixed>>
+     */
+    public function publicRoutesGroupedByPlugin()
+    {
+        $this->ensurePublicRoutes();
+
+        $groups = array();
+
+        foreach ($this->public_routes as $route) {
+            $plugin_dir = $route->pluginDir();
+
+            if (!isset($groups[$plugin_dir])) {
+                $groups[$plugin_dir] = array(
+                    'label' => $this->pluginDisplayName($plugin_dir),
+                    'path' => $this->displayPath($plugin_dir),
+                    'routes' => array(),
+                );
+            }
+
+            $groups[$plugin_dir]['routes'][] = $route;
+        }
+
+        foreach ($groups as &$group) {
+            usort($group['routes'], function (PublicRouteDefinition $left, PublicRouteDefinition $right) {
+                $method = strcasecmp($left->method(), $right->method());
+
+                return $method !== 0 ? $method : strcasecmp($left->pattern(), $right->pattern());
             });
         }
         unset($group);

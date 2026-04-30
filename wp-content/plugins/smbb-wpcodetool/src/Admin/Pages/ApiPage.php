@@ -4,6 +4,9 @@ namespace Smbb\WpCodeTool\Admin\Pages;
 
 defined('ABSPATH') || exit;
 
+/**
+ * Ecran de reglage de la visibilite OpenAPI par namespace.
+ */
 final class ApiPage extends AbstractAdminPage
 {
     public function render()

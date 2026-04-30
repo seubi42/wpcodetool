@@ -5,10 +5,11 @@ namespace Smbb\WpCodeTool\Resource;
 defined('ABSPATH') || exit;
 
 /**
- * Shared runtime helpers for resource hooks and metadata.
+ * Regroupe les helpers runtime partages autour des hooks et metadonnees de ressource.
  *
- * This keeps AdminManager and ApiManager focused on transport concerns
- * while a single service owns hook resolution and managed columns.
+ * Cela permet de garder l'admin et l'API concentres sur le transport, pendant qu'un
+ * seul service porte la resolution des hooks, les colonnes gerees et quelques aides
+ * transverses.
  */
 final class ResourceRuntime
 {

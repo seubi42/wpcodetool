@@ -4,6 +4,9 @@ namespace Smbb\WpCodeTool\Admin\Pages;
 
 defined('ABSPATH') || exit;
 
+/**
+ * Ecran d'administration des clients API geres par CodeTool.
+ */
 final class ApiClientsPage extends AbstractAdminPage
 {
     public function render()
@@ -65,6 +68,13 @@ final class ApiClientsPage extends AbstractAdminPage
                                     <p class="description"><?php esc_html_e('Optional. Once reached, the client is auto-disabled and its issued tokens stop working.', 'smbb-wpcodetool'); ?></p>
                                 </td>
                             </tr>
+                            <tr>
+                                <th scope="row"><label for="codetool_api_client_scopes"><?php esc_html_e('Scopes', 'smbb-wpcodetool'); ?></label></th>
+                                <td>
+                                    <textarea name="client_scopes" id="codetool_api_client_scopes" rows="5" class="large-text code">*</textarea>
+                                    <p class="description"><?php esc_html_e('One scope per line. Leave "*" for full access. Examples: resource:orders:read, resource:invoices:write, namespace:partner/v1:read.', 'smbb-wpcodetool'); ?></p>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     <p><button type="submit" class="button button-primary"><?php esc_html_e('Create API client', 'smbb-wpcodetool'); ?></button></p>
@@ -83,6 +93,7 @@ final class ApiClientsPage extends AbstractAdminPage
                         <th><?php esc_html_e('Client ID', 'smbb-wpcodetool'); ?></th>
                         <th><?php esc_html_e('Secret hint', 'smbb-wpcodetool'); ?></th>
                         <th><?php esc_html_e('Contact', 'smbb-wpcodetool'); ?></th>
+                        <th><?php esc_html_e('Scopes', 'smbb-wpcodetool'); ?></th>
                         <th><?php esc_html_e('Default TTL', 'smbb-wpcodetool'); ?></th>
                         <th><?php esc_html_e('Expires', 'smbb-wpcodetool'); ?></th>
                         <th><?php esc_html_e('Last token', 'smbb-wpcodetool'); ?></th>
@@ -93,7 +104,7 @@ final class ApiClientsPage extends AbstractAdminPage
                 <tbody>
                     <?php if (!$clients) : ?>
                         <tr>
-                            <td colspan="9"><?php esc_html_e('No API client has been created yet.', 'smbb-wpcodetool'); ?></td>
+                            <td colspan="10"><?php esc_html_e('No API client has been created yet.', 'smbb-wpcodetool'); ?></td>
                         </tr>
                     <?php else : ?>
                         <?php foreach ($clients as $client) : ?>
@@ -126,6 +137,14 @@ final class ApiClientsPage extends AbstractAdminPage
                                         form="<?php echo esc_attr($client_form_id); ?>"
                                         value="<?php echo esc_attr(isset($client['contact_email']) ? $client['contact_email'] : ''); ?>"
                                     >
+                                </td>
+                                <td style="min-width: 240px;">
+                                    <textarea
+                                        class="large-text code"
+                                        rows="4"
+                                        name="client_scopes"
+                                        form="<?php echo esc_attr($client_form_id); ?>"
+                                    ><?php echo esc_textarea($manager->apiClients()->scopesTextarea(isset($client['scopes']) ? $client['scopes'] : array('*'))); ?></textarea>
                                 </td>
                                 <td>
                                     <input

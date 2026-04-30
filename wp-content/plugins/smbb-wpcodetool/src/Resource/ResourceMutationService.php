@@ -3,14 +3,16 @@
 namespace Smbb\WpCodeTool\Resource;
 
 use Smbb\WpCodeTool\Store\OptionStore;
+use Smbb\WpCodeTool\Store\OptionStoreInterface;
 use Smbb\WpCodeTool\Store\TableStore;
+use Smbb\WpCodeTool\Store\TableStoreInterface;
 
 defined('ABSPATH') || exit;
 
 /**
- * Shared mutation pipeline for admin and API writes.
+ * Centralise le pipeline de mutation partage entre l'admin et l'API.
  *
- * The goal is to centralize the resource lifecycle:
+ * Le but est de garder un cycle de vie unique pour les ressources :
  * beforeValidate -> validate -> managed columns -> beforeSave -> persist -> afterSave.
  */
 final class ResourceMutationService
@@ -344,11 +346,11 @@ final class ResourceMutationService
 
     /**
      * @param array<string,mixed> $options
-     * @return OptionStore
+     * @return OptionStoreInterface
      */
     private function optionStore(ResourceDefinition $resource, array $options)
     {
-        if (isset($options['store']) && $options['store'] instanceof OptionStore) {
+        if (isset($options['store']) && $options['store'] instanceof OptionStoreInterface) {
             return $options['store'];
         }
 
@@ -357,11 +359,11 @@ final class ResourceMutationService
 
     /**
      * @param array<string,mixed> $options
-     * @return TableStore
+     * @return TableStoreInterface
      */
     private function tableStore(ResourceDefinition $resource, array $options)
     {
-        if (isset($options['store']) && $options['store'] instanceof TableStore) {
+        if (isset($options['store']) && $options['store'] instanceof TableStoreInterface) {
             return $options['store'];
         }
 

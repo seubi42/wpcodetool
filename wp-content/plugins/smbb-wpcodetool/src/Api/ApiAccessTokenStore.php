@@ -5,7 +5,7 @@ namespace Smbb\WpCodeTool\Api;
 defined('ABSPATH') || exit;
 
 /**
- * Issues and verifies bearer access tokens backed by a dedicated SQL table.
+ * Emet et verifie les bearer access tokens stockes dans une table SQL dediee.
  */
 final class ApiAccessTokenStore
 {
@@ -14,10 +14,12 @@ final class ApiAccessTokenStore
     private const OPTION_LAST_PURGE = 'smbb_wpcodetool_api_access_token_last_purge';
 
     private $schema;
+    private $scope_authorizer;
 
-    public function __construct(ApiAuthSchema $schema = null)
+    public function __construct(ApiAuthSchema $schema = null, ApiScopeAuthorizer $scope_authorizer = null)
     {
         $this->schema = $schema ?: new ApiAuthSchema();
+        $this->scope_authorizer = $scope_authorizer ?: new ApiScopeAuthorizer();
     }
 
     /**
@@ -67,6 +69,16 @@ final class ApiAccessTokenStore
      */
     public function verify($plain_token)
     {
+        return $this->resolveClient($plain_token) !== null;
+    }
+
+    /**
+     * Resolve one active client from a bearer token.
+     *
+     * @return array<string,mixed>|null
+     */
+    public function resolveClient($plain_token)
+    {
         global $wpdb;
 
         $this->schema->ensureInstalled();
@@ -83,7 +95,17 @@ final class ApiAccessTokenStore
         $now = current_time('mysql');
         $row = $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT t.id, t.last_used_at
+                "SELECT
+                    t.id AS token_id,
+                    t.last_used_at,
+                    c.id AS api_client_id,
+                    c.client_id,
+                    c.label,
+                    c.contact_email,
+                    c.scopes,
+                    c.token_ttl_seconds,
+                    c.expires_at,
+                    c.active
                 FROM {$token_table} t
                 INNER JOIN {$client_table} c ON c.id = t.api_client_id
                 WHERE t.token_hash = %s
@@ -100,12 +122,13 @@ final class ApiAccessTokenStore
         );
 
         if (!$row) {
-            return false;
+            return null;
         }
 
         $this->touchLastUsedIfDue($token_table, $row);
+        $row['scopes'] = $this->scope_authorizer->normalizeScopeList(isset($row['scopes']) ? $row['scopes'] : null);
 
-        return true;
+        return $row;
     }
 
     /**
@@ -150,7 +173,7 @@ final class ApiAccessTokenStore
         $wpdb->update(
             $token_table,
             array('last_used_at' => current_time('mysql')),
-            array('id' => (int) $row['id']),
+            array('id' => (int) $row['token_id']),
             array('%s'),
             array('%d')
         );

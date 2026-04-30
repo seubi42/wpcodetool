@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
  * decide pas des regles metier. Validation, hooks, droits et champs d'audit sont orchestres
  * par AdminManager/API autour de lui.
  */
-final class TableStore
+final class TableStore implements TableStoreInterface
 {
     // Cache par requete de l'existence des tables pour eviter les SHOW TABLES repetes.
     private static $table_exists_cache = array();

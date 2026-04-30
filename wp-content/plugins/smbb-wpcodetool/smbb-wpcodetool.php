@@ -23,12 +23,38 @@ define('SMBB_WPCODETOOL_FILE', __FILE__);
 define('SMBB_WPCODETOOL_PATH', plugin_dir_path(__FILE__));
 define('SMBB_WPCODETOOL_URL', plugin_dir_url(__FILE__));
 
+if (!function_exists('codetool_route')) {
+    /**
+     * Declare une route publique CodeTool dans codetool/routes/public.php.
+     */
+    function codetool_route()
+    {
+        return \Smbb\WpCodeTool\Route\PublicRouteContext::route();
+    }
+}
+
+if (!function_exists('smbb_codetool_route')) {
+    /**
+     * Alias explicite de codetool_route().
+     */
+    function smbb_codetool_route()
+    {
+        return codetool_route();
+    }
+}
+
 // Autoloader minimal du plugin.
 // L'objectif est volontairement simple pour le début du projet :
 // Smbb\WpCodeTool\Api\ApiHelper  -> src/Api/ApiHelper.php
 // Smbb\WpCodeTool\Admin\Table    -> src/Admin/Table.php
 // Smbb\WpCodeTool\Store\...      -> src/Store/...
-spl_autoload_register('smbb_wpcodetool_autoload');
+$smbb_wpcodetool_composer_autoload = SMBB_WPCODETOOL_PATH . 'vendor/autoload.php';
+
+if (is_readable($smbb_wpcodetool_composer_autoload)) {
+    require_once $smbb_wpcodetool_composer_autoload;
+} else {
+    spl_autoload_register('smbb_wpcodetool_autoload');
+}
 
 /**
  * Charge automatiquement les classes du namespace Smbb\WpCodeTool.
@@ -87,6 +113,9 @@ function smbb_wpcodetool_loaded()
 
     $docs = new \Smbb\WpCodeTool\Api\ApiDocsShortcode($scanner);
     $docs->hooks();
+
+    $routes = new \Smbb\WpCodeTool\Route\PublicRouteDispatcher();
+    $routes->hooks();
 
     do_action('smbb_wpcodetool_loaded');
 }

@@ -563,7 +563,7 @@
     align-items: center;
     display: grid;
     gap: 28px 42px;
-    grid-template-columns: minmax(0, 1.05fr) minmax(320px, 416px);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     margin: 0 auto;
     max-width: 1080px;
     min-height: 310px;
@@ -680,7 +680,7 @@
 .smbb-codetool-hero-grid {
     display: grid;
     gap: 16px;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .smbb-codetool-hero-tile {
@@ -903,6 +903,61 @@
     background: #fee4e2;
     border-color: #f3b3b4;
     color: #b42318;
+}
+
+.smbb-codetool-route-method {
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    color: #135e96;
+    display: inline-flex;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    min-height: 26px;
+    padding: 0 10px;
+}
+
+.smbb-codetool-route-method.is-get {
+    background: #e8f6ee;
+    border-color: #b9e4ca;
+    color: #159947;
+}
+
+.smbb-codetool-route-method.is-post {
+    background: #fff5d9;
+    border-color: #f3d88a;
+    color: #b98200;
+}
+
+.smbb-codetool-route-method.is-put {
+    background: #eaf0ff;
+    border-color: #b9caff;
+    color: #1456d9;
+}
+
+.smbb-codetool-route-method.is-patch {
+    background: #f4eafe;
+    border-color: #d7b8ee;
+    color: #7f3bb7;
+}
+
+.smbb-codetool-route-method.is-delete {
+    background: #fdecec;
+    border-color: #f0b8b8;
+    color: #c03535;
+}
+
+.smbb-codetool-route-method.is-head {
+    background: #e8f6ee;
+    border-color: #b9e4ca;
+    color: #159947;
+}
+
+.smbb-codetool-route-method.is-options {
+    background: #fdeaf4;
+    border-color: #f2bad8;
+    color: #d63384;
 }
 
 .smbb-codetool-status-actions {

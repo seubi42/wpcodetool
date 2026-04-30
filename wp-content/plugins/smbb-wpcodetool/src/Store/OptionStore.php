@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
  * une table avec plusieurs lignes, mais un seul objet de configuration sérialisé par
  * WordPress dans la table des options.
  */
-final class OptionStore
+final class OptionStore implements OptionStoreInterface
 {
     // Contrôle du champ autoload de wp_options.
     // null signifie : laisser WordPress garder son comportement par défaut.

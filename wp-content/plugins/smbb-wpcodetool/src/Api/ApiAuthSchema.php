@@ -5,12 +5,12 @@ namespace Smbb\WpCodeTool\Api;
 defined('ABSPATH') || exit;
 
 /**
- * Creates and tracks the dedicated SQL tables used for API clients and access tokens.
+ * Cree et maintient les tables SQL dediees aux clients API et aux access tokens.
  */
 final class ApiAuthSchema
 {
     private const OPTION_VERSION = 'smbb_wpcodetool_api_auth_schema_version';
-    private const SCHEMA_VERSION = '1';
+    private const SCHEMA_VERSION = '2';
     private static $installed = array();
 
     /**
@@ -106,6 +106,7 @@ final class ApiAuthSchema
             . "secret_prefix varchar(16) NOT NULL DEFAULT '',\n"
             . "label varchar(191) NOT NULL,\n"
             . "contact_email varchar(191) NOT NULL DEFAULT '',\n"
+            . "scopes longtext DEFAULT NULL,\n"
             . "token_ttl_seconds int(10) unsigned NOT NULL DEFAULT 259200,\n"
             . "expires_at datetime DEFAULT NULL,\n"
             . "last_token_at datetime DEFAULT NULL,\n"

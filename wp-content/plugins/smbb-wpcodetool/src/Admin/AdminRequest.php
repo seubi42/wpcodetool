@@ -5,7 +5,7 @@ namespace Smbb\WpCodeTool\Admin;
 defined('ABSPATH') || exit;
 
 /**
- * Small helper around the WordPress admin request.
+ * Petit helper autour de la requete admin WordPress.
  */
 final class AdminRequest
 {

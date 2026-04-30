@@ -8,7 +8,7 @@ use Smbb\WpCodeTool\Resource\ResourceScanner;
 defined('ABSPATH') || exit;
 
 /**
- * Frontend Swagger UI renderer via shortcode.
+ * Rend une UI Swagger en frontend via shortcode.
  */
 final class ApiDocsShortcode
 {

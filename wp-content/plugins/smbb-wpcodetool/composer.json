@@ -1,0 +1,23 @@
+{
+    "name": "smbb/wpcodetool",
+    "description": "Lightweight toolkit for declarative admin pages, custom tables, option-backed settings pages, and REST API helpers.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": "^7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Smbb\\WpCodeTool\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Smbb\\WpCodeTool\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "php tests/run.php",
+        "test:unit": "php tests/run.php"
+    }
+}

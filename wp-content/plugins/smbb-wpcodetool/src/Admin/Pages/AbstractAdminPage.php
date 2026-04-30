@@ -6,6 +6,9 @@ use Smbb\WpCodeTool\Admin\AdminManager;
 
 defined('ABSPATH') || exit;
 
+/**
+ * Base commune des pages admin CodeTool.
+ */
 abstract class AbstractAdminPage
 {
     private $manager;

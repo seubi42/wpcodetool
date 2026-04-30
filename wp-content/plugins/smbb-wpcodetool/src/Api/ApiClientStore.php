@@ -5,7 +5,7 @@ namespace Smbb\WpCodeTool\Api;
 defined('ABSPATH') || exit;
 
 /**
- * CRUD-like helpers around the dedicated API clients SQL table.
+ * Regroupe les operations de lecture/ecriture autour de la table SQL des clients API.
  */
 final class ApiClientStore
 {
@@ -16,10 +16,12 @@ final class ApiClientStore
     private const OPTION_LAST_SWEEP = 'smbb_wpcodetool_api_client_expiration_sweep';
 
     private $schema;
+    private $scope_authorizer;
 
-    public function __construct(ApiAuthSchema $schema = null)
+    public function __construct(ApiAuthSchema $schema = null, ApiScopeAuthorizer $scope_authorizer = null)
     {
         $this->schema = $schema ?: new ApiAuthSchema();
+        $this->scope_authorizer = $scope_authorizer ?: new ApiScopeAuthorizer();
     }
 
     /**
@@ -36,7 +38,13 @@ final class ApiClientStore
 
         $table = $this->schema->clientTableName();
 
-        return $wpdb->get_results("SELECT * FROM {$table} ORDER BY created_at DESC, id DESC", ARRAY_A);
+        $rows = $wpdb->get_results("SELECT * FROM {$table} ORDER BY created_at DESC, id DESC", ARRAY_A);
+
+        if (!is_array($rows)) {
+            return array();
+        }
+
+        return array_map(array($this, 'normalizeClientRow'), $rows);
     }
 
     /**
@@ -71,7 +79,7 @@ final class ApiClientStore
     /**
      * Create a new client and return the plain credentials once.
      */
-    public function create($label, $contact_email = '', $token_ttl_seconds = 259200, $expires_at = '')
+    public function create($label, $contact_email = '', $token_ttl_seconds = 259200, $expires_at = '', $scopes = array())
     {
         global $wpdb;
 
@@ -80,6 +88,7 @@ final class ApiClientStore
         $label = trim((string) $label);
         $label = $label !== '' ? $label : __('API client', 'smbb-wpcodetool');
         $contact_email = sanitize_email((string) $contact_email);
+        $scopes = $this->scope_authorizer->normalizeScopeList($scopes);
         $token_ttl_seconds = $this->normalizeDefaultTtl($token_ttl_seconds);
         $expires_at = $this->normalizeDateTime($expires_at);
         $client_id = $this->generateUniqueClientId();
@@ -94,6 +103,7 @@ final class ApiClientStore
                 'secret_prefix' => substr($client_secret, 0, 12),
                 'label' => $label,
                 'contact_email' => $contact_email,
+                'scopes' => $this->encodeScopes($scopes),
                 'token_ttl_seconds' => $token_ttl_seconds,
                 'expires_at' => $expires_at !== '' ? $expires_at : null,
                 'last_token_at' => null,
@@ -113,6 +123,7 @@ final class ApiClientStore
             'client_id' => $client_id,
             'client_secret' => $client_secret,
             'contact_email' => $contact_email,
+            'scopes' => $scopes,
             'token_ttl_seconds' => $token_ttl_seconds,
             'expires_at' => $expires_at,
         );
@@ -162,7 +173,7 @@ final class ApiClientStore
     /**
      * Update the editable metadata of one client.
      */
-    public function update($id, $label, $contact_email = '', $token_ttl_seconds = 259200, $expires_at = '')
+    public function update($id, $label, $contact_email = '', $token_ttl_seconds = 259200, $expires_at = '', $scopes = array())
     {
         global $wpdb;
 
@@ -177,6 +188,7 @@ final class ApiClientStore
         $label = trim((string) $label);
         $label = $label !== '' ? $label : __('API client', 'smbb-wpcodetool');
         $contact_email = sanitize_email((string) $contact_email);
+        $scopes = $this->scope_authorizer->normalizeScopeList($scopes);
         $token_ttl_seconds = $this->normalizeDefaultTtl($token_ttl_seconds);
         $expires_at = $this->normalizeDateTime($expires_at);
         $is_expired = $expires_at !== '' && strtotime($expires_at) !== false && strtotime($expires_at) <= time();
@@ -187,13 +199,14 @@ final class ApiClientStore
             array(
                 'label' => $label,
                 'contact_email' => $contact_email,
+                'scopes' => $this->encodeScopes($scopes),
                 'token_ttl_seconds' => $token_ttl_seconds,
                 'expires_at' => $expires_at !== '' ? $expires_at : null,
                 'active' => $active,
                 'updated_at' => current_time('mysql'),
             ),
             array('id' => $id),
-            array('%s', '%s', '%d', '%s', '%d', '%s'),
+            array('%s', '%s', '%s', '%d', '%s', '%d', '%s'),
             array('%d')
         );
 
@@ -255,7 +268,15 @@ final class ApiClientStore
         $expected_hash = isset($row['client_secret_hash']) ? (string) $row['client_secret_hash'] : '';
         $provided_hash = $this->hashSecret($client_secret);
 
-        return ($expected_hash !== '' && hash_equals($expected_hash, $provided_hash)) ? $row : null;
+        return ($expected_hash !== '' && hash_equals($expected_hash, $provided_hash)) ? $this->normalizeClientRow($row) : null;
+    }
+
+    /**
+     * @param mixed $value
+     */
+    public function scopesTextarea($value)
+    {
+        return $this->scope_authorizer->textareaValue($value);
     }
 
     /**
@@ -358,7 +379,7 @@ final class ApiClientStore
             ARRAY_A
         );
 
-        return $row ?: null;
+        return $row ? $this->normalizeClientRow($row) : null;
     }
 
     /**
@@ -502,5 +523,24 @@ final class ApiClientStore
     private function hashSecret($client_secret)
     {
         return hash_hmac('sha256', trim((string) $client_secret), wp_salt('auth'));
+    }
+
+    /**
+     * @param array<string,mixed> $row
+     * @return array<string,mixed>
+     */
+    private function normalizeClientRow(array $row)
+    {
+        $row['scopes'] = $this->scope_authorizer->normalizeScopeList(isset($row['scopes']) ? $row['scopes'] : null);
+
+        return $row;
+    }
+
+    /**
+     * @param array<int,string> $scopes
+     */
+    private function encodeScopes(array $scopes)
+    {
+        return json_encode(array_values($scopes));
     }
 }

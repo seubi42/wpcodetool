@@ -6,6 +6,9 @@ use Smbb\WpCodeTool\Resource\ResourceDefinition;
 
 defined('ABSPATH') || exit;
 
+/**
+ * Page d'accueil admin qui resume l'etat global du plugin.
+ */
 final class OverviewPage extends AbstractAdminPage
 {
     public function render()
@@ -18,7 +21,11 @@ final class OverviewPage extends AbstractAdminPage
         $resource_count = count($resources);
         $namespace_count = count($manager->apiNamespaces());
         $client_count = $manager->apiClients()->count();
+        $route_count = count($manager->publicRoutes());
+        $scan_errors = $manager->errors();
+        $scan_error_count = count($scan_errors);
         $resources_url = admin_url('admin.php?page=smbb-wpcodetool-resources');
+        $routes_url = admin_url('admin.php?page=smbb-wpcodetool-routes');
         $table_resource_count = 0;
         $option_resource_count = 0;
         $ui_page_count = 0;
@@ -84,6 +91,11 @@ final class OverviewPage extends AbstractAdminPage
                 'meta' => sprintf(_n('%d API resource', '%d API resources', $api_resource_count, 'smbb-wpcodetool'), $api_resource_count),
             ),
             array(
+                'icon' => 'dashicons-randomize',
+                'label' => __('Public routes', 'smbb-wpcodetool'),
+                'meta' => sprintf(_n('%d route detected', '%d routes detected', $route_count, 'smbb-wpcodetool'), $route_count),
+            ),
+            array(
                 'icon' => 'dashicons-editor-code',
                 'label' => __('Resource registry', 'smbb-wpcodetool'),
                 'meta' => sprintf(_n('%d model detected', '%d models detected', $resource_count, 'smbb-wpcodetool'), $resource_count),
@@ -100,6 +112,11 @@ final class OverviewPage extends AbstractAdminPage
                 'title' => __('Browse resources', 'smbb-wpcodetool'),
                 'description' => __('Inspect detected models, menu placement, schema state, and generated admin pages.', 'smbb-wpcodetool'),
                 'url' => $resources_url,
+            ),
+            array(
+                'title' => __('Browse routes', 'smbb-wpcodetool'),
+                'description' => __('Inspect public URL patterns declared in codetool/routes/public.php files.', 'smbb-wpcodetool'),
+                'url' => $routes_url,
             ),
             array(
                 'title' => __('Manage OpenAPI visibility', 'smbb-wpcodetool'),
@@ -126,6 +143,25 @@ final class OverviewPage extends AbstractAdminPage
                             'smbb-wpcodetool'
                         ),
                         $schema_pending_count
+                    ),
+                    'url' => $resources_url,
+                )
+            );
+        }
+
+        if ($scan_error_count > 0) {
+            array_unshift(
+                $quick_access,
+                array(
+                    'title' => __('Review model issues', 'smbb-wpcodetool'),
+                    'description' => sprintf(
+                        _n(
+                            '%d model file currently has a scan or validation issue.',
+                            '%d model files currently have scan or validation issues.',
+                            $scan_error_count,
+                            'smbb-wpcodetool'
+                        ),
+                        $scan_error_count
                     ),
                     'url' => $resources_url,
                 )
@@ -250,11 +286,57 @@ final class OverviewPage extends AbstractAdminPage
                 </section>
 
                 <section class="smbb-codetool-metric">
+                    <p class="smbb-codetool-metric-label"><?php esc_html_e('Public routes', 'smbb-wpcodetool'); ?></p>
+                    <p class="smbb-codetool-metric-value"><?php echo esc_html((string) $route_count); ?></p>
+                    <p class="smbb-codetool-metric-copy"><?php esc_html_e('Non-REST endpoints declared by active plugins.', 'smbb-wpcodetool'); ?></p>
+                </section>
+
+                <section class="smbb-codetool-metric <?php echo $scan_error_count > 0 ? 'is-warning' : ''; ?>">
+                    <p class="smbb-codetool-metric-label"><?php esc_html_e('Model issues', 'smbb-wpcodetool'); ?></p>
+                    <p class="smbb-codetool-metric-value"><?php echo esc_html((string) $scan_error_count); ?></p>
+                    <p class="smbb-codetool-metric-copy">
+                        <?php
+                        echo esc_html(
+                            $scan_error_count > 0
+                                ? __('Some JSON models could not be loaded cleanly and need attention.', 'smbb-wpcodetool')
+                                : __('No scan or validation issue is currently reported on detected model files.', 'smbb-wpcodetool')
+                        );
+                        ?>
+                    </p>
+                </section>
+
+                <section class="smbb-codetool-metric">
                     <p class="smbb-codetool-metric-label"><?php esc_html_e('Pure UI pages', 'smbb-wpcodetool'); ?></p>
                     <p class="smbb-codetool-metric-value"><?php echo esc_html((string) $ui_page_count); ?></p>
                     <p class="smbb-codetool-metric-copy"><?php esc_html_e('Admin pages rendered without managed storage.', 'smbb-wpcodetool'); ?></p>
                 </section>
             </div>
+
+            <?php if ($scan_error_count > 0) : ?>
+                <section class="smbb-codetool-panel smbb-codetool-panel-attention is-warning">
+                    <div class="smbb-codetool-panel-header">
+                        <h2><?php esc_html_e('Model validation issues', 'smbb-wpcodetool'); ?></h2>
+                        <span class="smbb-codetool-badge is-warning">
+                            <?php
+                            echo esc_html(
+                                sprintf(
+                                    _n('%d issue', '%d issues', $scan_error_count, 'smbb-wpcodetool'),
+                                    $scan_error_count
+                                )
+                            );
+                            ?>
+                        </span>
+                    </div>
+
+                    <p><?php esc_html_e('At least one JSON model could not be parsed or validated cleanly. Open the resource registry to inspect file-level errors.', 'smbb-wpcodetool'); ?></p>
+
+                    <p>
+                        <a class="button button-secondary" href="<?php echo esc_url($resources_url); ?>">
+                            <?php esc_html_e('Open resource registry', 'smbb-wpcodetool'); ?>
+                        </a>
+                    </p>
+                </section>
+            <?php endif; ?>
 
             <?php if ($schema_pending_count > 0) : ?>
                 <section class="smbb-codetool-panel smbb-codetool-panel-attention <?php echo esc_attr($schema_attention_variant); ?>">
@@ -374,6 +456,10 @@ final class OverviewPage extends AbstractAdminPage
                             <tr>
                                 <th><?php esc_html_e('API-enabled resources', 'smbb-wpcodetool'); ?></th>
                                 <td><?php echo esc_html((string) $api_resource_count); ?></td>
+                            </tr>
+                            <tr>
+                                <th><?php esc_html_e('Public routes', 'smbb-wpcodetool'); ?></th>
+                                <td><?php echo esc_html((string) $route_count); ?></td>
                             </tr>
                             <tr>
                                 <th><?php esc_html_e('Schemas pending', 'smbb-wpcodetool'); ?></th>

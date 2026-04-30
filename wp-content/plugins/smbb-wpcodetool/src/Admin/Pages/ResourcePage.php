@@ -6,6 +6,9 @@ use Smbb\WpCodeTool\Resource\ResourceDefinition;
 
 defined('ABSPATH') || exit;
 
+/**
+ * Rend l'ecran principal d'une ressource CodeTool.
+ */
 final class ResourcePage extends AbstractAdminPage
 {
     public function render(ResourceDefinition $resource)
