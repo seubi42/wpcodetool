@@ -1,0 +1,1439 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SignConnect 0.1.44\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-09 00:00+0000\n"
+"PO-Revision-Date: 2026-05-09 00:00+0000\n"
+"Last-Translator: SMBB\n"
+"Language-Team: French\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: smbb-signconnect/codetool/views/signstorage/form.php:45
+msgid "Access key"
+msgstr "Clé d’accès"
+
+#: smbb-signconnect/codetool/views/signstorage/form.php:42
+msgid "Access keys used to connect to the S3-compatible storage."
+msgstr "Clés d’accès utilisées pour se connecter au stockage compatible S3."
+
+#: smbb-signconnect/codetool/views/signconnect/dashboard.php:83
+msgid "Access the document table and link each record to a storage path."
+msgstr "Accédez à la table des documents et reliez chaque entrée à un chemin de stockage."
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:159
+msgid "Account SID Twilio."
+msgstr "Account SID Twilio."
+
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:58
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:119
+msgid "Action"
+msgstr "Action"
+
+#: smbb-signconnect/codetool/views/signstorage/form.php:55
+#: smbb-signconnect/codetool/views/signstorage/list.php:45
+msgid "Active"
+msgstr "Actif"
+
+#: smbb-signconnect/codetool/views/signconnect/dashboard.php:46
+msgid "Admin"
+msgstr "Admin"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:105
+msgid "AI"
+msgstr "IA"
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:23
+msgid "AI analysis..."
+msgstr "Analyse IA..."
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:344
+msgid "AI suggestion failed."
+msgstr "La suggestion IA a échoué."
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:133
+msgid "Another document"
+msgstr "Autre document"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:49
+msgid "Appearance"
+msgstr "Apparence"
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:76
+msgid "Area ignored: draw a larger rectangle."
+msgstr "Zone ignorée : tracez un rectangle plus grand."
+
+#: smbb-signconnect/src/Service/SignedPdfGenerator.php:241
+msgid "Attached to the electronic signature of %s on %s%s"
+msgstr "Jointe é la signature électronique de %s le %s%s"
+
+#: smbb-signconnect/src/Service/SignedPdfGenerator.php:44
+msgid "Aucune zone de signature n'est définie."
+msgstr "Aucune zone de signature n'est définie."
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:115
+msgid "Automatic message suggestion"
+msgstr "Suggestion automatique de message"
+
+#: smbb-signconnect/codetool/views/signdocument/details.php:81
+#: smbb-signconnect/codetool/views/signstorage/details.php:61
+msgid "Back to list"
+msgstr "Retour à la liste"
+
+#: smbb-signconnect/codetool/views/signstorage/form.php:35
+msgid "Base prefix"
+msgstr "Préfixe de base"
+
+#: smbb-signconnect/codetool/views/signstorage/form.php:32
+#: smbb-signconnect/codetool/views/signstorage/list.php:37
+msgid "Bucket"
+msgstr "Bucket"
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:48
+#: smbb-signconnect/codetool/views/signdocument/list.php:58
+msgid "Channel"
+msgstr "Canal"
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:581
+msgid "Choose a page, then draw the area(s) where the signer should sign."
+msgstr "Choisissez une page, puis tracez la ou les zone(s) où le signataire devra signer."
+
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:218
+msgid "City or signing place"
+msgstr "Ville ou lieu de signature"
+
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:235
+msgid "Clear"
+msgstr "Effacer"
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:144
+msgid "Click or drag to upload your file"
+msgstr "Cliquez ou glisser pour télécharger votre fichier"
+
+#: smbb-signconnect/src/Service/SignedPdfGenerator.php:177
+msgid "Comment:"
+msgstr "Commentaire :"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:110
+msgid "Configuration reserved for document intelligence features."
+msgstr "Configuration reserved for document intelligence features."
+
+#: smbb-signconnect/smbb-signconnect.php:114
+msgid "Connection failed: %s"
+msgstr "Échec de la connexion : %s"
+
+#: smbb-signconnect/smbb-signconnect.php:103
+msgid "Connection successful. Bucket \"%s\" is reachable."
+msgstr "Connexion réussie. Le bucket « %s » est accessible."
+
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:124
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:590
+msgid "Continue"
+msgstr "Continuer"
+
+#: smbb-signconnect/codetool/views/signdocument/list.php:33
+msgid "Created by"
+msgstr "Créé par"
+
+#: smbb-signconnect/codetool/views/signdocument/list.php:29
+msgid "Creation date"
+msgstr "Date de création"
+
+#: smbb-signconnect/codetool/views/signstorage/form.php:41
+msgid "Credentials"
+msgstr "Identifiants"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:90
+msgid "Default expiration"
+msgstr "Expiration par défaut"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:86
+msgid "Default message"
+msgstr "Message par défaut"
+
+#: smbb-signconnect/src/User/UserStorageProfileFields.php:40
+msgid "Default storage"
+msgstr "Stockage par défaut"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:84
+msgid "Default values used in the sending step."
+msgstr "Valeurs proposées par défaut dans l’étape d’envoi."
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:580
+msgid "Define signature areas"
+msgstr "Définir les zones de signature"
+
+#: assets/front.js
+msgid "Delete this area"
+msgstr "Supprimer cette zone"
+
+#: smbb-signconnect/smbb-signconnect.php:61
+msgid "Deletes unsigned documents whose link has expired, including S3 cleanup."
+msgstr "Supprime les documents non signés dont le lien a expiré, y compris le nettoyage S3."
+
+#: smbb-signconnect/src/Service/DocumentSendMessageSuggestionService.php:41
+msgid "document"
+msgstr "document"
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:17
+#: smbb-signconnect/codetool/views/signdocumentfield/list.php:18
+#: smbb-signconnect/src/Service/DocumentSendDeliveryService.php:66
+#: smbb-signconnect/src/Service/DocumentSendDeliveryService.php:99
+msgid "Document"
+msgstr "Document"
+
+#: smbb-signconnect/codetool/views/signdocumentfield/form.php:13
+msgid "Document ID"
+msgstr "ID document"
+
+#: smbb-signconnect/src/Service/DocumentSendMessageSuggestionService.php:34
+#: smbb-signconnect/src/Service/DocumentSendPreparationService.php:38
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:85
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:259
+msgid "Document not found or inaccessible."
+msgstr "Document introuvable ou inaccessible."
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:375
+msgid "Document not found."
+msgstr "Document introuvable."
+
+#: smbb-signconnect/src/Service/PublicSignatureService.php:121
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:113
+msgid "Document signed successfully."
+msgstr "Document signé avec succès."
+
+#: smbb-signconnect/src/Service/PublicSignatureService.php:137
+msgid "Document signed: %s"
+msgstr "Document signé : %s"
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:68
+msgid "Document signed."
+msgstr "Document signé."
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:24
+msgid "Document summary..."
+msgstr "Résumé de l’objet du document..."
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:151
+msgid "Document upload in progress"
+msgstr "Dépôt du document en cours"
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:48
+msgid "Document upload in progress..."
+msgstr "Dépôt du document en cours..."
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:182
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:202
+msgid "Document uploaded successfully."
+msgstr "Document déposé avec succès."
+
+#: smbb-signconnect/codetool/views/signconnect/dashboard.php:51
+#: smbb-signconnect/codetool/views/signconnect/dashboard.php:64
+#: smbb-signconnect/codetool/views/signconnect/dashboard.php:82
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:47
+msgid "Documents"
+msgstr "Documents"
+
+#: smbb-signconnect/codetool/views/signdocument/details.php:72
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:128
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:518
+msgid "Download"
+msgstr "Télécharger"
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:70
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:184
+msgid "Download PDF"
+msgstr "Télécharger le PDF"
+
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:150
+msgid "Draft"
+msgstr "éBéréoéuéiéléléoéné"
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:588
+msgid "Drawing mode"
+msgstr "Mode dessin"
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:72
+msgid "Drawing mode disabled: you can scroll the page."
+msgstr "Mode dessin désactivé : vous pouvez faire défiler la page."
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:71
+msgid "Drawing mode enabled: draw an area with one finger."
+msgstr "Mode dessin activé : tracez une zone avec un doigt."
+
+#: smbb-signconnect/codetool/views/signdocument/details.php:66
+#: smbb-signconnect/codetool/views/signstorage/details.php:44
+msgid "Edit"
+msgstr "Modifier"
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:52
+#: smbb-signconnect/src/Shortcode/SendStepRenderer.php:53
+msgid "Email"
+msgstr "Email"
+
+#: smbb-signconnect/src/Shortcode/SendStepRenderer.php:54
+msgid "email@example.com"
+msgstr "adresse@email.fr"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:112
+msgid "Enable AI"
+msgstr "Activer l’IA"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:136
+msgid "Enable geo.smbb-logiciel.com"
+msgstr "Activer geo.smbb-logiciel.com"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:151
+msgid "Enable Twilio"
+msgstr "Activer Twilio"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:149
+msgid "Enables the SMS option in the sending form when the three fields are filled in."
+msgstr "Enables the SMS option in the sending form when the three fields are filled in."
+
+#: smbb-signconnect/codetool/views/signstorage/form.php:24
+#: smbb-signconnect/codetool/views/signstorage/list.php:29
+msgid "Endpoint"
+msgstr "Endpoint"
+
+#: smbb-signconnect/src/Shortcode/SendStepRenderer.php:39
+msgid "Envoyer"
+msgstr "Envoyer"
+
+#: smbb-signconnect/src/Shortcode/SendStepRenderer.php:76
+msgid "Expected response"
+msgstr "Retour attendu"
+
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:58
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:117
+msgid "Expiration"
+msgstr "Expiration"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:96
+msgid "Expiration maximum"
+msgstr "Expiration maximale"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:93
+msgid "Expiration minimum"
+msgstr "Expiration minimale"
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:515
+msgid "Expiration: %s"
+msgstr "Expiration : %s"
+
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:145
+msgid "Expired"
+msgstr "Expiré"
+
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:58
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:115
+msgid "File"
+msgstr "Dossier"
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:35
+msgid "File size (bytes)"
+msgstr "Poids du fichier (octets)"
+
+#: smbb-signconnect/src/Service/S3DocumentUploader.php:105
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:174
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:197
+msgid "File upload failed."
+msgstr "Le dépôt du fichier a échoué."
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:20
+#: smbb-signconnect/codetool/views/signdocument/list.php:24
+msgid "Filename"
+msgstr "Nom du fichier"
+
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:214
+msgid "First name"
+msgstr "Prénom"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:63
+msgid "Flow pages"
+msgstr "Pages du parcours"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:45
+msgid "General"
+msgstr "Général"
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:73
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:220
+msgid "Geolocate"
+msgstr "Géolocaliser"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:129
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:133
+msgid "Geolocation"
+msgstr "Géolocalisation"
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:64
+msgid "Geolocation is not available on this device."
+msgstr "La géolocalisation n’est pas disponible sur cet appareil."
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:65
+msgid "Geolocation was refused or failed."
+msgstr "La géolocalisation a été refusée ou a échoué."
+
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:206
+msgid "Good for approval"
+msgstr "Bon pour accord"
+
+#: smbb-signconnect/src/Shortcode/SendStepRenderer.php:86
+msgid "Good for approval/refusal"
+msgstr "Bon pour accord/refus"
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:66
+msgid "GPS coordinates saved. The city name will be enriched later."
+msgstr "Coordonnées GPS enregistrées. Le nom de la ville sera enrichi plus tard."
+
+#: smbb-signconnect/codetool/views/signdocumentfield/form.php:21
+msgid "Height"
+msgstr "Hauteur"
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:54
+msgid "Here we go!"
+msgstr "C’est parti !"
+
+#: smbb-signconnect/src/Shortcode/SendStepRenderer.php:129
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:228
+msgid "Identity photo"
+msgstr "Photo d’identité"
+
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:231
+msgid "Identity photo preview"
+msgstr "Aperçu de la photo d’identité"
+
+#: smbb-signconnect/src/Service/IdentityPhotoAttachmentService.php:141
+msgid "Identity photo upload failed."
+msgstr "Le dépôt de la photo d’identité a échoué."
+
+#: smbb-signconnect/src/Service/DocumentSendDeliveryService.php:118
+msgid "If the button does not work, copy the following link into your browser:"
+msgstr "Si le bouton ne fonctionne pas, copiez le lien suivant dans votre navigateur :"
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:221
+msgid "Invalid download link."
+msgstr "Lien de téléchargement invalide."
+
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:134
+msgid "Invalid or expired signature link."
+msgstr "Lien de signature invalide ou expiré."
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:238
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:70
+msgid "Invalid PDF link."
+msgstr "Lien PDF invalide."
+
+#: smbb-signconnect/src/Service/DocumentSendDeliveryService.php:60
+msgid "Invalid recipient email."
+msgstr "Email destinataire invalide."
+
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:79
+msgid "Invalid request."
+msgstr "Demande invalide."
+
+#: smbb-signconnect/src/Service/PublicSignatureService.php:36
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:100
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:124
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:164
+msgid "Invalid signature link."
+msgstr "Lien de signature invalide."
+
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:230
+msgid "JPG or PNG photo, added as an appendix to the signed PDF."
+msgstr "Photo JPG ou PNG, ajoutée comme annexe au PDF signé."
+
+#: smbb-signconnect/src/Service/DocumentSendDeliveryService.php:75
+msgid "L'email de signature n'a pas pu être envoyé."
+msgstr "L'email de signature n'a pas pu être envoyé."
+
+#: smbb-signconnect/src/Service/DocumentSendMessageSuggestionService.php:28
+msgid "L'IA est désactivée ou non configurée."
+msgstr "L'IA est désactivée ou non configurée."
+
+#: smbb-signconnect/src/Service/DocumentSendMessageSuggestionService.php:58
+msgid "L'IA n'a pas retourné de message exploitable."
+msgstr "L'IA n'a pas retourné de message exploitable."
+
+#: smbb-signconnect/src/Service/PublicSignatureService.php:114
+msgid "La signature n'a pas pu être enregistrée."
+msgstr "La signature n'a pas pu être enregistrée."
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:272
+msgid "La zone de signature n'a pas pu être enregistrée."
+msgstr "La zone de signature n'a pas pu être enregistrée."
+
+#: smbb-signconnect/codetool/views/signdocumentfield/form.php:23
+#: smbb-signconnect/codetool/views/signdocumentfield/list.php:27
+msgid "Label"
+msgstr "Libellé"
+
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:215
+msgid "Last name"
+msgstr "Nom"
+
+#: smbb-signconnect/src/Service/S3DocumentUploader.php:101
+msgid "Le fichier n'a été envoyé que partiellement."
+msgstr "Le fichier n'a été envoyé que partiellement."
+
+#: smbb-signconnect/src/Service/DocumentSendPreparationService.php:59
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:317
+msgid "Les informations d'envoi n'ont pas pu etre enregistrées."
+msgstr "Les informations d'envoi n'ont pas pu etre enregistrées."
+
+#: smbb-signconnect/src/Shortcode/SendStepRenderer.php:131
+msgid "Link expiration, in days"
+msgstr "Expiration du lien, en jours"
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:55
+msgid "Link expires at"
+msgstr "Lien expirant le"
+
+#: smbb-signconnect/src/Service/DocumentSendDeliveryService.php:114
+msgid "Link valid until %s."
+msgstr "Lien valable jusqu’au %s."
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:95
+msgid "Lower bound accepted on both the front end and server side."
+msgstr "Lower bound accepted on both the front end and server side."
+
+#: smbb-signconnect/codetool/views/signconnect/dashboard.php:88
+msgid "Manage and test S3-compatible storage connections."
+msgstr "Gérez et testez les connexions de stockage compatibles S3."
+
+#: smbb-signconnect/codetool/views/signconnect/dashboard.php:48
+msgid "Manage documents to sign and the S3-compatible storages used to keep their files."
+msgstr "Gérez les documents à signer et les stockages compatibles S3 utilisés pour conserver leurs fichiers."
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:37
+#: smbb-signconnect/codetool/views/signdocument/form.php:64
+#: smbb-signconnect/src/Shortcode/SendStepRenderer.php:109
+msgid "Message"
+msgstr "Message"
+
+#: smbb-signconnect/smbb-signconnect.php:84
+msgid "Missing storage id."
+msgstr "Identifiant de stockage manquant."
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:58
+msgid "Mission started!"
+msgstr "Mission lancée !"
+
+#: smbb-signconnect/codetool/views/signstorage/form.php:20
+#: smbb-signconnect/codetool/views/signstorage/list.php:24
+msgid "Name"
+msgstr "Nom"
+
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:47
+msgid "New document"
+msgstr "Nouveau document"
+
+#: smbb-signconnect/codetool/views/signdocument/details.php:95
+msgid "No document data available."
+msgstr "Aucune donnée de document disponible."
+
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:51
+msgid "No documents yet."
+msgstr "Aucun document pour le moment."
+
+#: smbb-signconnect/codetool/views/signdocumentfield/details.php:14
+msgid "No signature field data available."
+msgstr "Aucune donnée de champ de signature disponible."
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:88
+msgid "No SignConnect storage is configured for your user account."
+msgstr "Aucun stockage SignConnect n’est configuré pour votre compte utilisateur."
+
+#: smbb-signconnect/codetool/views/signstorage/details.php:85
+msgid "No storage data available."
+msgstr "Aucune donnée de stockage disponible."
+
+#: smbb-signconnect/src/User/UserStorageProfileFields.php:44
+msgid "No storage selected"
+msgstr "Aucun stockage sélectionné"
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:432
+msgid "No valid SignConnect storage is configured for your account."
+msgstr "Aucun stockage SignConnect valide n’est configuré pour votre compte."
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:51
+msgid "Not selected"
+msgstr "Non sélectionné"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:92
+msgid "Number of days pre-filled in the sending form."
+msgstr "Number of days pre-filled in the sending form."
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:582
+msgid "On mobile, scroll normally, then enable drawing mode to draw an area with one finger."
+msgstr "Sur mobile, faites défiler normalement, puis activez le mode dessin pour tracer une zone avec un doigt."
+
+#: smbb-signconnect/src/Service/S3DocumentUploader.php:56
+msgid "Only PDF files are allowed."
+msgstr "Seuls les fichiers PDF sont autorisés."
+
+#: smbb-signconnect/codetool/views/signconnect/dashboard.php:84
+msgid "Open documents"
+msgstr "Ouvrir les documents"
+
+#: smbb-signconnect/codetool/views/signconnect/dashboard.php:89
+msgid "Open storages"
+msgstr "Ouvrir les stockages"
+
+#: smbb-signconnect/src/Service/DocumentSendDeliveryService.php:111
+msgid "Open the document"
+msgstr "Ouvrir le document"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:109
+msgid "OpenAI"
+msgstr "OpenAI"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:121
+msgid "OpenAI API key"
+msgstr "Clé API OpenAI"
+
+#: smbb-signconnect/codetool/views/signdocumentfield/form.php:14
+#: smbb-signconnect/codetool/views/signdocumentfield/list.php:23
+msgid "Page"
+msgstr "Page"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:59
+msgid "Pages"
+msgstr "Pages"
+
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:195
+msgid "PDF loading..."
+msgstr "Chargement du PDF..."
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:143
+msgid "PDF upload"
+msgstr "Dépôt du PDF"
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:56
+msgid "Perfect!"
+msgstr "Parfait !"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:36
+msgid "Phone"
+msgstr "Téléphone"
+
+#: smbb-signconnect/src/Shortcode/SendStepRenderer.php:62
+msgid "Phone number"
+msgstr "Téléphone"
+
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:218
+msgid "Place"
+msgstr "Lieu"
+
+#: smbb-signconnect/src/Service/SignedPdfGenerator.php:169
+msgid "Place:"
+msgstr "Lieu :"
+
+#: smbb-signconnect/src/Service/PublicSignatureService.php:55
+msgid "Please add a message to explain the refusal."
+msgstr "Merci d’accompagner le refus avec un message."
+
+#: smbb-signconnect/src/Service/IdentityPhotoAttachmentService.php:73
+#: smbb-signconnect/src/Service/IdentityPhotoAttachmentService.php:139
+msgid "Please add an identity photo."
+msgstr "Merci d’ajouter une photo d’identité."
+
+#: smbb-signconnect/src/Service/S3DocumentUploader.php:103
+msgid "Please choose a file to upload."
+msgstr "Merci de choisir un fichier é déposer."
+
+#: smbb-signconnect/src/Service/DocumentSendPreparationService.php:107
+msgid "Please enter a phone number."
+msgstr "Merci de renseigner un numéro de téléphone."
+
+#: smbb-signconnect/smbb-signconnect.php:136
+msgid "Please enter a test phone number."
+msgstr "Veuillez saisir un numéro de téléphone de test."
+
+#: smbb-signconnect/src/Service/DocumentSendPreparationService.php:103
+msgid "Please enter a valid email address."
+msgstr "Merci de renseigner un email valide."
+
+#: smbb-signconnect/src/Service/PublicSignatureService.php:72
+msgid "Please enter the signing place or use geolocation."
+msgstr "Merci de renseigner le lieu de signature ou d’utiliser la géolocalisation."
+
+#: smbb-signconnect/src/Service/PublicSignatureService.php:68
+msgid "Please enter your first and last name."
+msgstr "Merci de renseigner votre nom et votre prénom."
+
+#: smbb-signconnect/src/Service/DocumentSendDeliveryService.php:109
+msgid "Please review and sign this document."
+msgstr "Merci de consulter et signer ce document."
+
+#: smbb-signconnect/src/Service/PublicSignatureService.php:58
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:67
+msgid "Please sign in the expected area."
+msgstr "Merci de signer dans la zone prévue."
+
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:37
+msgid "Please sign in to track your documents."
+msgstr "Merci de vous connecter pour suivre vos documents."
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:189
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:479
+msgid "Please sign in to upload a document."
+msgstr "Merci de vous connecter pour déposer un document."
+
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:72
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:231
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:247
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:304
+msgid "Please sign in."
+msgstr "Merci de vous connecter."
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:66
+msgid "Posting page"
+msgstr "Page de dépôt"
+
+#: smbb-signconnect/codetool/views/signstorage/list.php:41
+msgid "Prefix"
+msgstr "Préfixe"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:52
+msgid "Primary color"
+msgstr "Couleur principale"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:70
+msgid "Public signing page"
+msgstr "Page publique de signature"
+
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:154
+msgid "Purged"
+msgstr "Purgé"
+
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:151
+msgid "Ready to send"
+msgstr "Prêt à envoyer"
+
+#: smbb-signconnect/src/Service/SignedPdfGenerator.php:159
+#: smbb-signconnect/src/Service/SignedPdfGenerator.php:242
+msgid "recipient"
+msgstr "destinataire"
+
+#: smbb-signconnect/codetool/views/signdocument/list.php:62
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:58
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:118
+msgid "Recipient"
+msgstr "Destinataire"
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:59
+msgid "Recipient email"
+msgstr "Email destinataire"
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:61
+msgid "Recipient phone"
+msgstr "Téléphone destinataire"
+
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:207
+msgid "Refusal"
+msgstr "Refus"
+
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:209
+msgid "Refusal message"
+msgstr "Message de refus"
+
+#: smbb-signconnect/codetool/views/signstorage/form.php:27
+#: smbb-signconnect/codetool/views/signstorage/list.php:33
+msgid "Region"
+msgstr "Région"
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:63
+msgid "Reminder impossible."
+msgstr "Relance impossible."
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:62
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:99
+msgid "Reminder sent."
+msgstr "Relance envoyée."
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:45
+msgid "Remote signature delivery settings."
+msgstr "Remote signature delivery settings."
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:55
+msgid "Request sent!"
+msgstr "Demande envoyée !"
+
+#: smbb-signconnect/src/Shortcode/SendStepRenderer.php:129
+msgid "Require a photo when signing."
+msgstr "Demander une photo au moment de la signature."
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:66
+msgid "Require identity photo"
+msgstr "Require identity photo"
+
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:132
+msgid "Resend"
+msgstr "Relancer"
+
+#: assets/front.js
+msgid "Resize"
+msgstr "Redimensionner"
+
+#: smbb-signconnect/src/Service/SignedPdfGenerator.php:173
+msgid "Response: Good for approval"
+msgstr "Retour : Bon pour accord"
+
+#: smbb-signconnect/src/Service/SignedPdfGenerator.php:175
+msgid "Response: Refusal"
+msgstr "Retour : Refus"
+
+#: smbb-signconnect/codetool/views/signconnect/dashboard.php:75
+msgid "S3 endpoint, bucket, credentials"
+msgstr "Endpoint S3, bucket, identifiants"
+
+#: smbb-signconnect/codetool/views/signstorage/form.php:18
+msgid "S3-compatible connection settings."
+msgstr "Réglages de connexion compatible S3."
+
+#: assets/front.js
+msgid "Save failed."
+msgstr "L’enregistrement a échoué."
+
+#: assets/front.js
+msgid "Saved."
+msgstr "Enregistré."
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:29
+msgid "Search storage..."
+msgstr "Search storage..."
+
+#: smbb-signconnect/codetool/views/signstorage/form.php:48
+msgid "Secret key"
+msgstr "Clé secrète"
+
+#: smbb-signconnect/src/Shortcode/SendStepRenderer.php:125
+msgid "Security"
+msgstr "Sécurité"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:15
+msgid "Select a page"
+msgstr "Sélectionner une page"
+
+#: smbb-signconnect/src/Shortcode/SendStepRenderer.php:31
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:615
+msgid "Send"
+msgstr "Envoyer"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:39
+msgid "Send test SMS"
+msgstr "Envoyer un SMS de test"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:79
+#: smbb-signconnect/codetool/views/signdocument/form.php:44
+msgid "Sending"
+msgstr "Envoi"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:83
+msgid "Sending preferences"
+msgstr "Préférences d’envoi"
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:323
+msgid "Sending settings saved."
+msgstr "Paramètres d’envoi enregistrés."
+
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:152
+msgid "Sent"
+msgstr "Envoyé"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:154
+msgid "Service"
+msgstr "Service"
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:253
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:310
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:337
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:425
+msgid "Session expired. Please reload the page."
+msgstr "Session expirée. Merci de recharger la page."
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:134
+msgid "Settings used during public signing."
+msgstr "Settings used during public signing."
+
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:47
+msgid "Shipments and reminders tracking."
+msgstr "Suivi des envois et relances."
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:157
+msgid "SID"
+msgstr "SID"
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:71
+#: smbb-signconnect/codetool/views/signdocument/list.php:73
+msgid "Sign date"
+msgstr "Date de signature"
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:13
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:235
+msgid "Sign document"
+msgstr "Document de signature"
+
+#: smbb-signconnect/codetool/views/signdocument/details.php:10
+msgid "Sign document details"
+msgstr "Détails du document de signature"
+
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:38
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:480
+msgid "Sign in"
+msgstr "Se connecter"
+
+#: smbb-signconnect/codetool/views/signstorage/form.php:13
+msgid "Sign storage"
+msgstr "Stockage de signature"
+
+#: smbb-signconnect/codetool/views/signstorage/details.php:10
+msgid "Sign storage details"
+msgstr "Détails du stockage de signature"
+
+#: smbb-signconnect/src/Repository/SignatureFieldRepository.php:54
+#: smbb-signconnect/src/Shortcode/SendStepRenderer.php:81
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:234
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:273
+msgid "Signature"
+msgstr "Signature"
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:28
+msgid "Signature area detection..."
+msgstr "Détection d’une zone de signature..."
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:266
+msgid "Signature areas are invalid."
+msgstr "Les zones de signature sont invalides."
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:276
+msgid "Signature areas saved."
+msgstr "Zones de signature enregistrées."
+
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:107
+msgid "Signature failed."
+msgstr "La signature a échoué."
+
+#: smbb-signconnect/codetool/views/signdocumentfield/details.php:9
+#: smbb-signconnect/codetool/views/signdocumentfield/form.php:6
+#: smbb-signconnect/codetool/views/signdocumentfield/form.php:10
+msgid "Signature field"
+msgstr "Champ de signature"
+
+#: smbb-signconnect/src/Service/DocumentSendPreparationService.php:71
+msgid "Signature link sent."
+msgstr "Lien de signature envoyé."
+
+#: smbb-signconnect/codetool/views/signconnect/dashboard.php:47
+msgid "Signature operations"
+msgstr "Opérations de signature"
+
+#: smbb-signconnect/codetool/views/signdocumentfield/form.php:11
+msgid "Signature placement coordinates are stored as page ratios."
+msgstr "Signature placement coordinates are stored as page ratios."
+
+#: smbb-signconnect/src/Service/DocumentSendDeliveryService.php:107
+msgid "Signature requested"
+msgstr "Signature demandée"
+
+#: smbb-signconnect/src/Service/DocumentSendDeliveryService.php:65
+msgid "Signature requested: %s"
+msgstr "Signature demandée : %s"
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:41
+msgid "Signature token"
+msgstr "Token de signature"
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:18
+msgid "Signature tracking information."
+msgstr "Signature tracking information."
+
+#: smbb-signconnect/codetool/views/signconnect/dashboard.php:45
+#: smbb-signconnect/src/User/UserStorageProfileFields.php:37
+msgid "SignConnect"
+msgstr "SignConnect"
+
+#: smbb-signconnect/smbb-signconnect.php:60
+msgid "SignConnect - expired document purge"
+msgstr "Purge des documents expirés SignConnect"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:13
+msgid "SignConnect settings"
+msgstr "Réglages SignConnect"
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:624
+msgid "SignConnect steps"
+msgstr "Étapes SignConnect"
+
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:153
+msgid "Signed"
+msgstr "Signé"
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:73
+#: smbb-signconnect/codetool/views/signdocument/list.php:77
+msgid "Signed by"
+msgstr "Signé par"
+
+#: smbb-signconnect/src/Service/SignedPdfGenerator.php:165
+msgid "Signer:"
+msgstr "Signataire :"
+
+#: smbb-signconnect/codetool/views/signdocument/list.php:45
+msgid "Size"
+msgstr "Poids"
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:53
+#: smbb-signconnect/src/Shortcode/SendStepRenderer.php:61
+msgid "SMS"
+msgstr "SMS"
+
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:58
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:116
+msgid "State"
+msgstr "État"
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:37
+#: smbb-signconnect/codetool/views/signdocument/list.php:54
+msgid "Status"
+msgstr "Statut"
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:24
+#: smbb-signconnect/codetool/views/signdocument/list.php:37
+#: smbb-signconnect/codetool/views/signstorage/form.php:17
+msgid "Storage"
+msgstr "Stockage"
+
+#: smbb-signconnect/smbb-signconnect.php:90
+msgid "Storage not found."
+msgstr "Stockage introuvable."
+
+#: smbb-signconnect/codetool/views/signdocument/form.php:32
+#: smbb-signconnect/codetool/views/signdocument/list.php:41
+msgid "Storage path"
+msgstr "Chemin de stockage"
+
+#: smbb-signconnect/src/User/UserStorageProfileFields.php:51
+msgid "Storage used by the [signconnect_post] form for this user."
+msgstr "Storage used by the [signconnect_post] form for this user."
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:148
+msgid "Storage:"
+msgstr "Stockage :"
+
+#: smbb-signconnect/codetool/views/signconnect/dashboard.php:56
+#: smbb-signconnect/codetool/views/signconnect/dashboard.php:74
+#: smbb-signconnect/codetool/views/signconnect/dashboard.php:87
+msgid "Storages"
+msgstr "Stockages"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:123
+msgid "Stored in WordPress options. Server-side use only."
+msgstr "Stored in WordPress options. Server-side use only."
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:118
+msgid "Suggest signature area"
+msgstr "Proposer une zone de signature"
+
+#: smbb-signconnect/src/Shortcode/SendStepRenderer.php:112
+msgid "Suggest with AI"
+msgstr "Suggérer avec IA"
+
+#: smbb-signconnect/src/Service/DocumentAiEnrichmentService.php:522
+msgid "Suggested signature"
+msgstr "Signature suggérée"
+
+#: assets/front.js
+msgid "Suggestion failed."
+msgstr "La suggestion a échoué."
+
+#: smbb-signconnect/codetool/views/signstorage/details.php:54
+msgid "Test connection"
+msgstr "Tester la connexion"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:30
+msgid "Test SMS sending"
+msgstr "Test d’envoi SMS"
+
+#: smbb-signconnect/smbb-signconnect.php:174
+msgid "Test SMS sent. SID: %1$s. Status: %2$s."
+msgstr "SMS de test envoyé. SID : %1$s. Statut : %2$s."
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:37
+#: smbb-signconnect/smbb-signconnect.php:140
+msgid "Test SMS SignConnect."
+msgstr "SMS de test SignConnect."
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:69
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:182
+msgid "Thank you, the document is signed."
+msgstr "Merci, le document est signé."
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:77
+msgid "The areas could not be saved."
+msgstr "Les zones n’ont pas pu être enregistrées."
+
+#: smbb-signconnect/src/Service/S3DocumentStreamer.php:20
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:381
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:81
+msgid "The associated file is unavailable."
+msgstr "Le fichier associé est indisponible."
+
+#: smbb-signconnect/src/Service/DocumentSendDeliveryService.php:29
+msgid "The document does not have a signature token."
+msgstr "Le document ne possède pas de token de signature."
+
+#: smbb-signconnect/src/Service/IdentityPhotoAttachmentService.php:38
+msgid "The document storage is unavailable."
+msgstr "Le stockage du document est indisponible."
+
+#: smbb-signconnect/src/Service/DocumentSendDeliveryService.php:45
+msgid "The document was sent, but its status could not be updated."
+msgstr "Le document a été envoyé, mais son statut n’a pas pu être mis à jour."
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:465
+msgid "The document was uploaded, but the database record could not be created."
+msgstr "Le document a été envoyé, mais l’enregistrement en base n’a pas pu être créé."
+
+#: smbb-signconnect/src/Service/SignedPdfGenerator.php:93
+msgid "The FPDI/FPDF PDF libraries are unavailable."
+msgstr "Les bibliothèques PDF FPDI/FPDF sont indisponibles."
+
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:141
+msgid "The geolocation connector is unavailable."
+msgstr "Le connecteur de géolocalisation est indisponible."
+
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:128
+msgid "The geolocation service is disabled."
+msgstr "Le service de géolocalisation est désactivé."
+
+#: smbb-signconnect/src/Service/IdentityPhotoAttachmentService.php:47
+msgid "The identity photo cannot be read."
+msgstr "La photo d’identité ne peut pas être lue."
+
+#: smbb-signconnect/src/Service/IdentityPhotoAttachmentService.php:135
+msgid "The identity photo is too large."
+msgstr "La photo d’identité est trop volumineuse."
+
+#: smbb-signconnect/src/Service/IdentityPhotoAttachmentService.php:96
+msgid "The identity photo must be a JPG or PNG image."
+msgstr "La photo d’identité doit être une image JPG ou PNG."
+
+#: smbb-signconnect/src/Service/IdentityPhotoAttachmentService.php:137
+msgid "The identity photo was only partially uploaded."
+msgstr "La photo d’identité n’a été envoyée que partiellement."
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:74
+msgid "The PDF cannot be displayed. You can still download it after signing."
+msgstr "Le PDF ne peut pas être affiché. Vous pouvez tout de même le télécharger après signature."
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:75
+msgid "The PDF cannot be loaded."
+msgstr "Le PDF ne peut pas être chargé."
+
+#: smbb-signconnect/src/Service/S3DocumentStreamer.php:28
+msgid "The PDF file cannot be read."
+msgstr "Le fichier PDF ne peut pas être lu."
+
+#: smbb-signconnect/src/Service/SignedPdfGenerator.php:133
+msgid "The received signature is invalid."
+msgstr "La signature reçue est invalide."
+
+#: smbb-signconnect/src/Service/IdentityPhotoAttachmentService.php:29
+#: smbb-signconnect/src/Service/S3DocumentRemover.php:22
+#: smbb-signconnect/src/Service/S3DocumentStreamer.php:12
+#: smbb-signconnect/src/Service/S3DocumentUploader.php:12
+msgid "The S3 connector from SMBB WP CodeTool is unavailable."
+msgstr "Le connecteur S3 de SMBB WP CodeTool est indisponible."
+
+#: smbb-signconnect/codetool/hooks/SignDocumentHooks.php:39
+msgid "The S3 file could not be deleted: %s"
+msgstr "Le fichier S3 n’a pas pu être supprimé : %s"
+
+#: smbb-signconnect/src/Service/SignedPdfGenerator.php:146
+msgid "The signature image could not be written."
+msgstr "L’image de signature ne peut pas être écrite."
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:96
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:438
+msgid "The SignConnect storage configured for your account is unavailable."
+msgstr "Le stockage SignConnect configuré pour votre compte est indisponible."
+
+#: smbb-signconnect/src/Service/SignedPdfGenerator.php:64
+msgid "The signed PDF could not be reread."
+msgstr "Le PDF signé ne peut pas être relu."
+
+#: smbb-signconnect/src/Service/DocumentSendMessageSuggestionService.php:38
+msgid "The SMBB WP CodeTool OpenAI connector is unavailable."
+msgstr "Le connecteur OpenAI de SMBB WP CodeTool est indisponible."
+
+#: smbb-signconnect/smbb-signconnect.php:163
+#: smbb-signconnect/src/Service/DocumentSendDeliveryService.php:82
+msgid "The SMBB WP CodeTool Twilio connector is unavailable."
+msgstr "Le connecteur Twilio de SMBB WP CodeTool est indisponible."
+
+#: smbb-signconnect/src/Service/SignedPdfGenerator.php:38
+msgid "The source file is unavailable."
+msgstr "Le fichier source est indisponible."
+
+#: smbb-signconnect/src/Service/SignedPdfGenerator.php:104
+msgid "The source PDF could not be read."
+msgstr "Le PDF source ne peut pas être lu."
+
+#: smbb-signconnect/codetool/hooks/SignDocumentHooks.php:31
+msgid "The storage linked to this document was not found. S3 file deletion is impossible."
+msgstr "Le stockage lié à ce document est introuvable. La suppression du fichier S3 est impossible."
+
+#: smbb-signconnect/src/Service/SignedPdfGenerator.php:139
+msgid "The temporary signature image could not be created."
+msgstr "L’image de signature temporaire ne peut pas être créée."
+
+#: smbb-signconnect/src/Service/SignedPdfGenerator.php:55
+msgid "The temporary signed file could not be created."
+msgstr "Le fichier signé temporaire ne peut pas être créé."
+
+#: smbb-signconnect/src/Service/SignedPdfGenerator.php:111
+msgid "The temporary source PDF could not be created."
+msgstr "Le PDF source temporaire ne peut pas être créé."
+
+#: smbb-signconnect/src/Service/S3DocumentUploader.php:36
+msgid "The uploaded file cannot be read."
+msgstr "Le fichier envoyé ne peut pas être lu."
+
+#: smbb-signconnect/src/Service/S3DocumentUploader.php:70
+msgid "The uploaded file does not appear to be a valid PDF."
+msgstr "Le fichier envoyé ne semble pas être un PDF valide."
+
+#: smbb-signconnect/src/Service/S3DocumentUploader.php:16
+msgid "The uploaded file is missing."
+msgstr "Le fichier envoyé est introuvable."
+
+#: smbb-signconnect/src/Service/S3DocumentUploader.php:99
+msgid "The uploaded file is too large."
+msgstr "Le fichier envoyé est trop volumineux."
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:57
+msgid "There we go!"
+msgstr "Et voilà !"
+
+#: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:89
+msgid "This document cannot be resent."
+msgstr "Ce document ne peut pas être relancé."
+
+#: smbb-signconnect/src/Service/PublicSignatureService.php:44
+msgid "This document is already signed."
+msgstr "Ce document est déjà signé."
+
+#: smbb-signconnect/src/Service/PublicSignatureService.php:40
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:75
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:168
+msgid "This signature link has expired."
+msgstr "Ce lien de signature a expiré."
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:160
+#: smbb-signconnect/codetool/views/signdocument/form.php:39
+#: smbb-signconnect/codetool/views/signdocument/list.php:81
+msgid "Token"
+msgstr "Token"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:144
+msgid "Twilio"
+msgstr "Twilio"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:162
+msgid "Twilio auth token. If this field is empty, SMS remains unavailable."
+msgstr "Twilio auth token. If this field is empty, SMS remains unavailable."
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:148
+msgid "Twilio configuration"
+msgstr "Configuration Twilio"
+
+#: smbb-signconnect/smbb-signconnect.php:159
+msgid "Twilio is disabled in settings."
+msgstr "Twilio est désactivé dans les réglages."
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:156
+msgid "Twilio service identifier used for SMS sending."
+msgstr "Identifiant du service Twilio utilisé pour l’envoi SMS."
+
+#: smbb-signconnect/smbb-signconnect.php:185
+msgid "Twilio test failed: %s"
+msgstr "Échec du test Twilio : %s"
+
+#: assets/front.js
+msgid "Upload failed."
+msgstr "Le dépôt a échoué."
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:98
+msgid "Upper bound accepted on both the front end and server side."
+msgstr "Upper bound accepted on both the front end and server side."
+
+#: smbb-signconnect/codetool/views/signstorage/form.php:53
+msgid "Use path style endpoint"
+msgstr "Utiliser le endpoint en style chemin"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:88
+msgid "Used when the document does not yet have a custom message."
+msgstr "Used when the document does not yet have a custom message."
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:31
+msgid "Uses the Twilio fields currently entered on this screen. Remember to save afterwards if the test is successful."
+msgstr "Utilise les champs Twilio actuellement saisis sur cet écran. Pensez à enregistrer ensuite si le test réussit."
+
+#: smbb-signconnect/codetool/views/signdocument/details.php:75
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:519
+msgid "View PDF"
+msgstr "Voir le PDF"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:50
+msgid "Visual preferences for the front-end flow."
+msgstr "Préférences visuelles du parcours front."
+
+#: smbb-signconnect/src/Service/PublicSignatureService.php:142
+msgid "Votre document vient d'être signé par %s."
+msgstr "Votre document vient d'être signé par %s."
+
+#: smbb-signconnect/src/Service/PublicSignatureService.php:143
+msgid "Votre document vient d'être signé."
+msgstr "Votre document vient d'être signé."
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:53
+msgid "Well done!"
+msgstr "Bien joué !"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:114
+msgid "When disabled, the key remains stored but no AI suggestion is offered."
+msgstr "When disabled, the key remains stored but no AI suggestion is offered."
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:153
+msgid "When disabled, the SMS channel is hidden and SMS sending is blocked."
+msgstr "When disabled, the SMS channel is hidden and SMS sending is blocked."
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:120
+msgid "When enabled, a likely signature area is created automatically after upload."
+msgstr "When enabled, a likely signature area is created automatically after upload."
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:138
+msgid "When enabled, the geolocation button converts GPS coordinates into a city name through the SMBB service."
+msgstr "When enabled, the geolocation button converts GPS coordinates into a city name through the SMBB service."
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:117
+msgid "When enabled, the message is prepared server-side just after the PDF upload."
+msgstr "When enabled, the message is prepared server-side just after the PDF upload."
+
+#: smbb-signconnect/codetool/views/signdocumentfield/form.php:20
+msgid "Width"
+msgstr "Largeur"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:69
+msgid "WordPress page containing the [signconnect_post] shortcode."
+msgstr "WordPress page containing the [signconnect_post] shortcode."
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:73
+msgid "WordPress page containing the [signconnect_sign] shortcode."
+msgstr "WordPress page containing the [signconnect_sign] shortcode."
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php:64
+msgid "WordPress pages used by the front-end shortcodes."
+msgstr "Pages WordPress utilisées par les shortcodes front."
+
+#: smbb-signconnect/codetool/views/signdocumentfield/form.php:16
+msgid "X"
+msgstr "X"
+
+#: smbb-signconnect/codetool/views/signdocumentfield/form.php:17
+msgid "Y"
+msgstr "Y"
+
+#: smbb-signconnect/smbb-signconnect.php:70
+msgid "You are not allowed to test SignConnect storages."
+msgstr "Vous n’êtes pas autorisé à tester les stockages SignConnect."
+
+#: smbb-signconnect/smbb-signconnect.php:124
+msgid "You are not allowed to test SignConnect Twilio settings."
+msgstr "Vous n’êtes pas autorisé à tester les réglages Twilio SignConnect."
+
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:183
+msgid "You can download the PDF below."
+msgstr "Vous pouvez télécharger le PDF ci-dessous."
+
+#: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:205
+msgid "Your response"
+msgstr "Votre retour"
+
+#: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:61
+msgid "Your signature request has been sent."
+msgstr "Votre demande de signature est envoyée."
+
+#: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:614
+msgid "Zone"
+msgstr "Zone"
+
+
+#: generated
+msgid "The sending settings could not be saved."
+msgstr "Les paramètres d’envoi n’ont pas pu être enregistrés."
+
+#: generated
+msgid "Your signature will appear here"
+msgstr "Votre signature sera ici"
+
+#: generated
+msgid "The signature area could not be saved."
+msgstr "La zone de signature n’a pas pu être enregistrée."
+
+#: generated
+msgid "AI is disabled or not configured."
+msgstr "L’IA est désactivée ou non configurée."
+
+#: generated
+msgid "AI did not return a usable message."
+msgstr "L’IA n’a pas retourné de message exploitable."
+
+#: generated
+msgid "The signature email could not be sent."
+msgstr "L’e-mail de signature n’a pas pu être envoyé."
+
+#: generated
+msgid "The signature could not be saved."
+msgstr "La signature n’a pas pu être enregistrée."
+
+#: generated
+msgid "Your document has just been signed by %s."
+msgstr "Votre document vient d’être signé par %s."
+
+#: generated
+msgid "Your document has just been signed."
+msgstr "Votre document vient d’être signé."
+
+#: generated
+msgid "No signature area is defined."
+msgstr "Aucune zone de signature n’est définie."
+
+#: generated
+msgid "The file was only partially uploaded."
+msgstr "Le fichier n’a été envoyé que partiellement."
+
+#: generated
+msgid "Electronically signed from %s on %s"
+msgstr "Signée électroniquement depuis %s le %s"
+
+#: generated
+msgid "Appendix - identity photo"
+msgstr "Annexe - photo d’identité"
+
+#: generated
+msgid "Message suggestion..."
+msgstr "Suggestion du message..."
+
+#: generated
+msgid "Locating..."
+msgstr "Localisation..."
+
+#: generated
+msgid "City..."
+msgstr "Ville..."

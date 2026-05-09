@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SMBB WP CodeTool
  * Description: Lightweight toolkit for declarative admin pages, custom table resources, option-backed settings pages, and REST API helpers.
- * Version: 0.1.26
+ * Version: 0.1.31
  * Author: SMBB
  * Text Domain: smbb-wpcodetool
  * Requires at least: 6.0
@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
 
 // Version interne du plugin. Elle servira plus tard pour les migrations, les caches compilés,
 // ou les éventuelles évolutions de format des fichiers codetool/*.json.
-define('SMBB_WPCODETOOL_VERSION', '0.1.26');
+define('SMBB_WPCODETOOL_VERSION', '0.1.31');
 
 // Chemins de référence du plugin. On les centralise ici pour éviter de recalculer les chemins
 // dans chaque classe du moteur.
@@ -116,6 +116,9 @@ function smbb_wpcodetool_loaded()
 
     $routes = new \Smbb\WpCodeTool\Route\PublicRouteDispatcher();
     $routes->hooks();
+
+    $cron = new \Smbb\WpCodeTool\Cron\CronManager();
+    $cron->hooks();
 
     do_action('smbb_wpcodetool_loaded');
 }

@@ -288,12 +288,10 @@ final class AdminManager
 
         $this->registerManagedParentMenus();
 
-        foreach ($this->resources as $resource) {
-            if (!$resource->adminEnabled()) {
-                continue;
+        foreach ($this->menuRegistrationOrder($this->resources) as $resource) {
+            if ($resource->adminEnabled()) {
+                $this->registerResourceMenu($resource);
             }
-
-            $this->registerResourceMenu($resource);
         }
     }
 
@@ -429,7 +427,8 @@ final class AdminManager
                     $resource->menuTitle(),
                     $resource->capability(),
                     $resource->adminSlug(),
-                    $callback
+                    $callback,
+                    $resource->menuPosition()
                 );
                 break;
 
@@ -442,7 +441,8 @@ final class AdminManager
                     $resource->menuTitle(),
                     $resource->capability(),
                     $resource->adminSlug(),
-                    $callback
+                    $callback,
+                    $resource->menuPosition()
                 );
                 break;
 
@@ -459,6 +459,53 @@ final class AdminManager
                 );
                 break;
         }
+    }
+
+    /**
+     * Les menus top-level declares par les ressources doivent exister avant leurs enfants.
+     *
+     * Sans ce tri, l'ordre du scan de fichiers peut enregistrer un sous-menu avant son
+     * parent, ce qui produit des liens admin erratiques pour les plugins metier.
+     *
+     * @param array<int,ResourceDefinition> $resources
+     * @return array<int,ResourceDefinition>
+     */
+    private function menuRegistrationOrder(array $resources)
+    {
+        usort($resources, function (ResourceDefinition $left, ResourceDefinition $right) {
+            $left_rank = $this->menuRegistrationRank($left);
+            $right_rank = $this->menuRegistrationRank($right);
+
+            if ($left_rank !== $right_rank) {
+                return $left_rank < $right_rank ? -1 : 1;
+            }
+
+            $left_position = $left->menuPosition();
+            $right_position = $right->menuPosition();
+
+            if ($left_position !== $right_position) {
+                return $left_position < $right_position ? -1 : 1;
+            }
+
+            return strcmp($left->adminSlug(), $right->adminSlug());
+        });
+
+        return $resources;
+    }
+
+    private function menuRegistrationRank(ResourceDefinition $resource)
+    {
+        $placement = $resource->menuPlacement();
+
+        if ($placement === 'main') {
+            return 10;
+        }
+
+        if ($placement === 'submenu') {
+            return 20;
+        }
+
+        return 30;
     }
 
     /**

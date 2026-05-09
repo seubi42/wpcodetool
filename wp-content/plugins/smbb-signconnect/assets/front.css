@@ -1,0 +1,1148 @@
+.smbb-signconnect-post {
+    --smbb-signconnect-brand: #2271b1;
+    --smbb-signconnect-brand-hover: color-mix(in srgb, var(--smbb-signconnect-brand) 82%, #000);
+    --smbb-signconnect-brand-line: color-mix(in srgb, var(--smbb-signconnect-brand) 54%, #fff);
+    --smbb-signconnect-brand-soft: color-mix(in srgb, var(--smbb-signconnect-brand) 9%, #fff);
+    --smbb-signconnect-brand-softer: color-mix(in srgb, var(--smbb-signconnect-brand) 5%, #fff);
+    max-width: 720px;
+}
+
+.smbb-signconnect-post.is-editor-mode {
+    max-width: min(1180px, 100%);
+}
+
+.smbb-signconnect-post.is-public-sign-mode {
+    max-width: min(980px, 100%);
+}
+
+.smbb-signconnect-post.is-dashboard-mode {
+    max-width: min(1040px, 100%);
+}
+
+.smbb-signconnect-steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 0 0 18px;
+}
+
+.smbb-signconnect-step {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    min-width: 0;
+}
+
+.smbb-signconnect-step::before {
+    content: "";
+    position: absolute;
+    left: calc(-50% + 24px);
+    right: calc(50% + 24px);
+    top: 17px;
+    height: 4px;
+    border-radius: 999px;
+    background: #e8eef4;
+}
+
+.smbb-signconnect-step:first-child::before {
+    display: none;
+}
+
+.smbb-signconnect-step.is-done::before,
+.smbb-signconnect-step.is-active::before {
+    background: var(--smbb-signconnect-brand-line);
+}
+
+.smbb-signconnect-step > a,
+.smbb-signconnect-step > span {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 7px;
+    color: #646970;
+    text-decoration: none;
+}
+
+.smbb-signconnect-step-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 2px solid #e8eef4;
+    border-radius: 999px;
+    background: #fff;
+    color: #8a96a3;
+    font-weight: 700;
+}
+
+.smbb-signconnect-step.is-done .smbb-signconnect-step-dot,
+.smbb-signconnect-step.is-active .smbb-signconnect-step-dot {
+    border-color: var(--smbb-signconnect-brand);
+    background: var(--smbb-signconnect-brand);
+    color: #fff;
+}
+
+.smbb-signconnect-step-label {
+    font-size: 14px;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.smbb-signconnect-step.is-active .smbb-signconnect-step-label {
+    color: #1d2327;
+    font-weight: 700;
+}
+
+.smbb-signconnect-post-form,
+.smbb-signconnect-document-card,
+.smbb-signconnect-send-step,
+.smbb-signconnect-public-sign,
+.smbb-signconnect-upload-state,
+.smbb-signconnect-notice {
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    background: #fff;
+    padding: 18px;
+    margin: 0 0 16px;
+}
+
+.smbb-signconnect-post-form label,
+.smbb-signconnect-document-card strong {
+    font-weight: 600;
+}
+
+.smbb-signconnect-document-expiration,
+.smbb-signconnect-expiration {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #646970;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.smbb-signconnect-document-expiration.is-expired,
+.smbb-signconnect-expiration.is-expired {
+    color: #b32d2e;
+}
+
+.smbb-signconnect-post-form input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+}
+
+.smbb-signconnect-file-drop {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 7px;
+    min-height: 148px;
+    border: 2px dashed var(--smbb-signconnect-brand-line);
+    border-radius: 6px;
+    background: var(--smbb-signconnect-brand-softer);
+    color: #1d2327;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.14s ease, border-color 0.14s ease;
+}
+
+.smbb-signconnect-file-drop:hover,
+.smbb-signconnect-file-drop.is-dragging {
+    border-color: var(--smbb-signconnect-brand);
+    background: var(--smbb-signconnect-brand-soft);
+}
+
+.smbb-signconnect-file-title {
+    color: var(--smbb-signconnect-brand);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.smbb-signconnect-file-subtitle {
+    color: #646970;
+    font-size: 14px;
+}
+
+.smbb-signconnect-form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+    margin-top: 12px;
+}
+
+.smbb-signconnect-storage-note {
+    color: #646970;
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: right;
+}
+
+.smbb-signconnect-post-form button,
+.smbb-signconnect-document-card .button,
+.smbb-signconnect-post .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 36px;
+    border: 1px solid var(--smbb-signconnect-brand);
+    border-radius: 4px;
+    background: var(--smbb-signconnect-brand);
+    color: #fff;
+    padding: 0 14px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.smbb-signconnect-post-form button:hover,
+.smbb-signconnect-document-card .button:hover,
+.smbb-signconnect-post .button:hover {
+    background: var(--smbb-signconnect-brand-hover);
+    color: #fff;
+}
+
+.smbb-signconnect-post .button.is-secondary {
+    background: #fff;
+    color: var(--smbb-signconnect-brand);
+}
+
+.smbb-signconnect-post .button.is-secondary:hover {
+    background: var(--smbb-signconnect-brand-soft);
+    color: var(--smbb-signconnect-brand-hover);
+}
+
+.smbb-signconnect-post .button:disabled,
+.smbb-signconnect-post button:disabled {
+    cursor: default;
+    opacity: 0.45;
+}
+
+.smbb-signconnect-button-icon {
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.smbb-signconnect-upload-state {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    min-height: 180px;
+    border-color: transparent;
+    background: transparent;
+    padding: 0;
+    margin: 32px auto 40px;
+}
+
+.smbb-signconnect-upload-state[hidden],
+.smbb-signconnect-post-form[hidden],
+.smbb-signconnect-post [hidden] {
+    display: none !important;
+}
+
+.smbb-signconnect-upload-state p,
+.smbb-signconnect-notice p {
+    margin: 0;
+}
+
+.smbb-signconnect-upload-state p {
+    color: #50575e;
+    font-size: 15px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.smbb-signconnect-spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid var(--smbb-signconnect-brand-line);
+    border-top-color: var(--smbb-signconnect-brand);
+    border-radius: 50%;
+    animation: smbb-signconnect-spin 0.8s linear infinite;
+    flex: 0 0 auto;
+}
+
+.smbb-signconnect-notice {
+    border-left-width: 4px;
+}
+
+.smbb-signconnect-notice.is-success {
+    border-left-color: #00a32a;
+    background: #f0f8f1;
+}
+
+.smbb-signconnect-notice.is-error {
+    border-left-color: #d63638;
+    background: #fcf0f1;
+}
+
+.smbb-signconnect-notice.is-info {
+    border-left-color: var(--smbb-signconnect-brand);
+    background: var(--smbb-signconnect-brand-soft);
+}
+
+.smbb-signconnect-document-title {
+    margin: 0;
+    overflow-wrap: anywhere;
+    font-size: 22px;
+    line-height: 1.25;
+}
+
+.smbb-signconnect-document-meta {
+    margin: 8px 0 0;
+    color: #646970;
+    font-size: 14px;
+}
+
+.smbb-signconnect-document-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.smbb-signconnect-secondary-action {
+    margin: 0;
+}
+
+.smbb-signconnect-send-step h3,
+.smbb-signconnect-send-step p {
+    margin-top: 0;
+}
+
+.smbb-signconnect-send-step h3 {
+    color: #1d2327;
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.25;
+    margin-bottom: 18px;
+}
+
+.smbb-signconnect-send-form {
+    display: grid;
+    gap: 24px;
+}
+
+.smbb-signconnect-channel-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.smbb-signconnect-channel-card {
+    display: grid;
+    gap: 10px;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    background: #fff;
+    padding: 14px;
+}
+
+.smbb-signconnect-radio-card {
+    position: relative;
+    cursor: pointer;
+    padding: 18px;
+}
+
+.smbb-signconnect-radio-card input[type="radio"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.smbb-signconnect-choice-dot {
+    position: absolute;
+    top: 20px;
+    right: 18px;
+    display: block;
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid #8c8f94;
+    border-radius: 50%;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.smbb-signconnect-choice-dot::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    background: transparent;
+}
+
+.smbb-signconnect-radio-card input[type="radio"]:checked + .smbb-signconnect-choice-dot {
+    border-color: var(--smbb-signconnect-brand);
+}
+
+.smbb-signconnect-radio-card input[type="radio"]:checked + .smbb-signconnect-choice-dot::after {
+    background: var(--smbb-signconnect-brand);
+}
+
+.smbb-signconnect-radio-card input[type="radio"]:focus-visible + .smbb-signconnect-choice-dot {
+    outline: 2px solid var(--smbb-signconnect-brand);
+    outline-offset: 2px;
+}
+
+.smbb-signconnect-channel-card.is-active {
+    border-color: var(--smbb-signconnect-brand);
+    background: var(--smbb-signconnect-brand-softer);
+}
+
+.smbb-signconnect-card-title,
+.smbb-signconnect-field > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #1d2327;
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 1.25;
+}
+
+.smbb-signconnect-card-title {
+    padding-right: 34px;
+    min-height: 24px;
+}
+
+.smbb-signconnect-field-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.smbb-signconnect-field-header > span {
+    color: #1d2327;
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 1.25;
+}
+
+.smbb-signconnect-channel-card input[type="email"],
+.smbb-signconnect-channel-card input[type="tel"],
+.smbb-signconnect-field input:not([type="radio"]):not([type="checkbox"]),
+.smbb-signconnect-field textarea {
+    width: 100%;
+    min-height: 38px;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 8px 10px;
+}
+
+.smbb-signconnect-field .smbb-signconnect-radio-card input[type="radio"],
+.smbb-signconnect-field .smbb-signconnect-checkbox-card input[type="checkbox"] {
+    position: absolute;
+    width: 1px;
+    min-width: 0;
+    height: 1px;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.smbb-signconnect-channel-card input:disabled {
+    opacity: 0.45;
+}
+
+.smbb-signconnect-field {
+    display: grid;
+    gap: 10px;
+}
+
+.smbb-signconnect-security-box {
+    display: grid;
+    gap: 16px;
+    border-top: 1px solid #dcdcde;
+    padding-top: 20px;
+}
+
+.smbb-signconnect-security-box h4 {
+    margin: 0;
+    color: #1d2327;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+.smbb-signconnect-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.smbb-signconnect-checkbox-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr);
+    align-items: center;
+    gap: 16px;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    background: #fff;
+    padding: 18px;
+    cursor: pointer;
+}
+
+.smbb-signconnect-checkbox-card.is-active,
+.smbb-signconnect-checkbox-card:has(input:checked) {
+    border-color: var(--smbb-signconnect-brand);
+    background: var(--smbb-signconnect-brand-softer);
+}
+
+.smbb-signconnect-checkbox-card input[type="checkbox"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.smbb-signconnect-checkmark {
+    display: grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid #8c8f94;
+    border-radius: 4px;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.smbb-signconnect-checkmark::after {
+    content: "";
+    width: 9px;
+    height: 5px;
+    border-left: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    opacity: 0;
+    transform: rotate(-45deg) translate(1px, -1px);
+}
+
+.smbb-signconnect-checkbox-card input[type="checkbox"]:checked + .smbb-signconnect-checkmark {
+    border-color: var(--smbb-signconnect-brand);
+    background: var(--smbb-signconnect-brand);
+}
+
+.smbb-signconnect-checkbox-card input[type="checkbox"]:checked + .smbb-signconnect-checkmark::after {
+    opacity: 1;
+}
+
+.smbb-signconnect-checkbox-card input[type="checkbox"]:focus-visible + .smbb-signconnect-checkmark {
+    outline: 2px solid var(--smbb-signconnect-brand);
+    outline-offset: 2px;
+}
+
+.smbb-signconnect-checkbox-copy {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+}
+
+.smbb-signconnect-checkbox-card strong {
+    color: #1d2327;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.25;
+}
+
+.smbb-signconnect-checkbox-card small,
+.smbb-signconnect-photo-field small {
+    color: #646970;
+    font-size: 13px;
+    line-height: 1.35;
+}
+
+.smbb-signconnect-hidden-file {
+    position: absolute;
+    width: 1px;
+    min-width: 0;
+    height: 1px;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.smbb-signconnect-photo-field {
+    position: relative;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    background: #fff;
+    padding: 16px;
+}
+
+.smbb-signconnect-photo-native-input {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-height: 44px;
+    border: 1px solid #c3c4c7;
+    border-radius: 6px;
+    background: #fff;
+    box-sizing: border-box;
+    padding: 10px;
+    color: #1d2327;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.smbb-signconnect-photo-preview {
+    display: block;
+    width: min(220px, 100%);
+    max-height: 180px;
+    object-fit: cover;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    background: #f6f7f7;
+}
+
+.smbb-signconnect-photo-preview[hidden] {
+    display: none;
+}
+
+.smbb-signconnect-field.is-inline {
+    align-items: center;
+    grid-template-columns: minmax(0, 1fr) 96px;
+    gap: 18px;
+}
+
+.smbb-signconnect-send-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.smbb-signconnect-send-success {
+    display: grid;
+    place-items: center;
+    gap: 12px;
+    min-height: 320px;
+    padding: 36px 20px;
+    text-align: center;
+    animation: smbb-signconnect-success-enter 0.28s ease-out both;
+}
+
+.smbb-signconnect-send-success h3 {
+    margin: 0;
+    color: #1d2327;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+.smbb-signconnect-send-success p {
+    margin: 0;
+    color: #50575e;
+    font-size: 17px;
+    line-height: 1.45;
+}
+
+.smbb-signconnect-send-success-mark {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 86px;
+    height: 86px;
+    border-radius: 50%;
+    background: var(--smbb-signconnect-brand);
+    box-shadow: 0 12px 34px rgba(34, 113, 177, 0.22);
+}
+
+.smbb-signconnect-send-success-mark span {
+    display: block;
+    width: 38px;
+    height: 22px;
+    border-left: 5px solid #fff;
+    border-bottom: 5px solid #fff;
+    transform: rotate(-45deg) translate(3px, -2px);
+    animation: smbb-signconnect-success-check 0.38s ease-out 0.12s both;
+}
+
+.smbb-signconnect-send-success-mark i {
+    position: absolute;
+    display: block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--smbb-signconnect-brand);
+    opacity: 0;
+    animation: smbb-signconnect-success-pop 0.72s ease-out 0.2s both;
+}
+
+.smbb-signconnect-send-success-mark i:nth-child(2) {
+    top: -8px;
+    left: 14px;
+}
+
+.smbb-signconnect-send-success-mark i:nth-child(3) {
+    top: 10px;
+    right: -10px;
+    animation-delay: 0.28s;
+}
+
+.smbb-signconnect-send-success-mark i:nth-child(4) {
+    right: 6px;
+    bottom: -8px;
+    animation-delay: 0.34s;
+}
+
+.smbb-signconnect-send-success-mark i:nth-child(5) {
+    bottom: 4px;
+    left: -10px;
+    animation-delay: 0.4s;
+}
+
+@keyframes smbb-signconnect-success-enter {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes smbb-signconnect-success-check {
+    from {
+        opacity: 0;
+        transform: rotate(-45deg) translate(3px, -2px) scale(0.72);
+    }
+
+    to {
+        opacity: 1;
+        transform: rotate(-45deg) translate(3px, -2px) scale(1);
+    }
+}
+
+@keyframes smbb-signconnect-success-pop {
+    0% {
+        opacity: 0;
+        transform: scale(0.4);
+    }
+
+    35% {
+        opacity: 0.45;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-16px) scale(0.6);
+    }
+}
+
+.smbb-signconnect-public-sign {
+    display: grid;
+    gap: 16px;
+}
+
+.smbb-signconnect-public-sign h3 {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.smbb-signconnect-public-pdf-viewer {
+    display: grid;
+    gap: 14px;
+}
+
+.smbb-signconnect-public-pdf-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 180px;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    background: #f6f7f7;
+    color: #50575e;
+}
+
+.smbb-signconnect-public-pdf-status[hidden] {
+    display: none;
+}
+
+.smbb-signconnect-public-pdf-pages {
+    display: grid;
+    gap: 18px;
+    min-width: 0;
+}
+
+.smbb-signconnect-public-pdf-page {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 14px;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    background: #f6f7f7;
+}
+
+.smbb-signconnect-public-pdf-page canvas {
+    display: block;
+    max-width: 100%;
+    height: auto !important;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.smbb-signconnect-public-pdf-stage {
+    position: relative;
+    max-width: 100%;
+}
+
+.smbb-signconnect-public-signature-zone {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    min-height: 24px;
+    border: 1px solid rgba(80, 87, 94, 0.74);
+    border-radius: 3px;
+    background: rgba(80, 87, 94, 0.18);
+    color: #1d2327;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    padding: 4px;
+    cursor: pointer;
+    overflow: hidden;
+    text-align: center;
+    transition: background 0.14s ease, border-color 0.14s ease, transform 0.14s ease;
+}
+
+.smbb-signconnect-public-signature-zone:hover,
+.smbb-signconnect-public-signature-zone:focus {
+    border-color: var(--smbb-signconnect-brand);
+    background: color-mix(in srgb, var(--smbb-signconnect-brand) 18%, transparent);
+    outline: none;
+    transform: translateY(-1px);
+}
+
+.smbb-signconnect-public-pdf-page figcaption {
+    color: #646970;
+    font-size: 13px;
+}
+
+.smbb-signconnect-public-sign-form {
+    display: grid;
+    gap: 14px;
+}
+
+.smbb-signconnect-signer-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.smbb-signconnect-location-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 10px;
+}
+
+.smbb-signconnect-signature-pad {
+    width: 100%;
+    max-width: 100%;
+    height: 190px;
+    border: 1px solid #c3c4c7;
+    border-radius: 6px;
+    background: #fff;
+    touch-action: none;
+}
+
+.smbb-signconnect-thank-you {
+    display: grid;
+    justify-items: start;
+    gap: 10px;
+    padding: 18px 0;
+}
+
+.smbb-signconnect-thank-you h3,
+.smbb-signconnect-thank-you p {
+    margin: 0;
+}
+
+.smbb-signconnect-dashboard {
+    display: grid;
+    gap: 14px;
+}
+
+.smbb-signconnect-dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.smbb-signconnect-dashboard-header h3,
+.smbb-signconnect-dashboard-header p {
+    margin: 0;
+}
+
+.smbb-signconnect-dashboard-header h3 {
+    font-size: 22px;
+    line-height: 1.25;
+}
+
+.smbb-signconnect-dashboard-header p {
+    color: #646970;
+    font-size: 14px;
+}
+
+.smbb-signconnect-dashboard-table-wrap {
+    overflow-x: auto;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    background: #fff;
+}
+
+.smbb-signconnect-dashboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #1d2327;
+    font-size: 14px;
+    line-height: 1.35;
+}
+
+.smbb-signconnect-dashboard-table th,
+.smbb-signconnect-dashboard-table td {
+    padding: 13px 14px;
+    border-bottom: 1px solid #eef0f2;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.smbb-signconnect-dashboard-table th {
+    color: #646970;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.25;
+    text-transform: uppercase;
+}
+
+.smbb-signconnect-dashboard-table td {
+    font-size: 14px;
+    line-height: 1.35;
+}
+
+.smbb-signconnect-dashboard-table td strong,
+.smbb-signconnect-dashboard-table td span {
+    display: block;
+}
+
+.smbb-signconnect-dashboard-table td strong {
+    margin-bottom: 3px;
+    font-size: 14px;
+    line-height: 1.3;
+}
+
+.smbb-signconnect-dashboard-table td > span {
+    color: #646970;
+    font-size: 12px;
+    line-height: 1.3;
+}
+
+.smbb-signconnect-dashboard-table td[data-label="Action"] {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.smbb-signconnect-dashboard-table .button {
+    min-height: 32px;
+    padding: 0 11px;
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+.smbb-signconnect-dashboard-table .button span {
+    display: inline;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+.smbb-signconnect-status {
+    display: inline-flex;
+    width: auto;
+    border-radius: 999px;
+    background: #eef0f2;
+    color: #50575e;
+    padding: 4px 9px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.smbb-signconnect-dashboard-table .smbb-signconnect-expiration,
+.smbb-signconnect-dashboard-table .smbb-signconnect-dashboard-muted {
+    font-size: 13px;
+    line-height: 1.3;
+}
+
+.smbb-signconnect-status.is-sent,
+.smbb-signconnect-status.is-ready_to_send {
+    background: var(--smbb-signconnect-brand-soft);
+    color: var(--smbb-signconnect-brand);
+}
+
+.smbb-signconnect-status.is-signed {
+    background: #edfaef;
+    color: #1b7f36;
+}
+
+.smbb-signconnect-status.is-expired,
+.smbb-signconnect-status.is-expired_deleted {
+    background: #fcf0f1;
+    color: #b32d2e;
+}
+
+.smbb-signconnect-dashboard-muted {
+    color: #8a96a3;
+}
+
+.smbb-signconnect-empty-state {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    background: #fff;
+    color: #646970;
+    padding: 28px;
+    text-align: center;
+}
+
+.smbb-signconnect-empty-state svg {
+    width: 28px;
+    height: 28px;
+}
+
+@keyframes smbb-signconnect-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 520px) {
+    .smbb-signconnect-steps {
+        gap: 4px;
+    }
+
+    .smbb-signconnect-step::before {
+        left: calc(-50% + 18px);
+        right: calc(50% + 18px);
+        top: 15px;
+    }
+
+    .smbb-signconnect-step-dot {
+        width: 34px;
+        height: 34px;
+    }
+
+    .smbb-signconnect-step-label {
+        font-size: 12px;
+    }
+
+    .smbb-signconnect-form-actions {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .smbb-signconnect-storage-note {
+        text-align: left;
+    }
+
+    .smbb-signconnect-upload-state {
+        min-height: 150px;
+        margin: 24px auto 32px;
+    }
+
+    .smbb-signconnect-channel-grid,
+    .smbb-signconnect-signer-grid,
+    .smbb-signconnect-location-row,
+    .smbb-signconnect-field.is-inline {
+        grid-template-columns: 1fr;
+    }
+
+    .smbb-signconnect-public-pdf-page {
+        padding: 8px;
+    }
+
+    .smbb-signconnect-dashboard-table-wrap {
+        overflow: visible;
+        border: 0;
+        background: transparent;
+    }
+
+    .smbb-signconnect-dashboard-table,
+    .smbb-signconnect-dashboard-table tbody,
+    .smbb-signconnect-dashboard-table tr,
+    .smbb-signconnect-dashboard-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .smbb-signconnect-dashboard-table thead {
+        display: none;
+    }
+
+    .smbb-signconnect-dashboard-table tr {
+        border: 1px solid #dcdcde;
+        border-radius: 6px;
+        background: #fff;
+        margin-bottom: 10px;
+        padding: 10px 12px;
+    }
+
+    .smbb-signconnect-dashboard-table td {
+        display: grid;
+        grid-template-columns: 96px minmax(0, 1fr);
+        gap: 10px;
+        border-bottom: 0;
+        padding: 7px 0;
+    }
+
+    .smbb-signconnect-dashboard-table td[data-label="Action"] {
+        display: grid;
+        align-items: center;
+    }
+
+    .smbb-signconnect-dashboard-table td::before {
+        content: attr(data-label);
+        color: #646970;
+        font-size: 12px;
+        font-weight: 700;
+    }
+}

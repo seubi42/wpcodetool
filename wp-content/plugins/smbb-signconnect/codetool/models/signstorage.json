@@ -1,0 +1,162 @@
+{
+  "name": "signstorage",
+  "label": "Sign storage",
+  "pluralLabel": "Sign storages",
+  "description": "S3-compatible storage settings used by SignConnect.",
+  "storage": {
+    "table": "signstorage",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "name": {
+      "type": "varchar",
+      "length": 120,
+      "nullable": false,
+      "default": ""
+    },
+    "endpoint": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": false,
+      "default": ""
+    },
+    "region": {
+      "type": "varchar",
+      "length": 100,
+      "nullable": false,
+      "default": "us-east-1"
+    },
+    "bucket": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": false,
+      "default": ""
+    },
+    "access_key": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": false,
+      "default": ""
+    },
+    "secret_key": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": false,
+      "default": ""
+    },
+    "use_path_style_endpoint": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 1
+    },
+    "base_prefix": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": true
+    },
+    "is_active": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 1
+    },
+    "creation_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "create_datetime"
+    },
+    "creation_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "create_user"
+    },
+    "lastupdate_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "update_datetime"
+    },
+    "lastupdate_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "update_user"
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_name",
+      "type": "index",
+      "columns": ["name"]
+    },
+    {
+      "name": "idx_bucket",
+      "type": "index",
+      "columns": ["bucket"]
+    },
+    {
+      "name": "idx_is_active",
+      "type": "index",
+      "columns": ["is_active"]
+    }
+  ],
+  "admin": {
+    "enabled": true,
+    "capability": "manage_options",
+    "menu": {
+      "placement": "submenu",
+      "parent": "smbb-codetool-signconnect",
+      "title": "Storages",
+      "position": 20
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "list": {
+      "perPage": 20,
+      "search": {
+        "enabled": true,
+        "provider": "default",
+        "fields": ["name", "endpoint", "bucket"],
+        "mode": "or",
+        "placeholder": "Search storages"
+      },
+      "filters": {
+        "enabled": true,
+        "fields": [
+          {
+            "field": "is_active",
+            "label": "Active",
+            "operators": ["eq"]
+          },
+          {
+            "field": "bucket",
+            "label": "Bucket",
+            "operators": ["contains", "eq", "starts_with", "ends_with", "empty", "not_empty"]
+          }
+        ]
+      },
+      "defaultOrder": {
+        "by": "name",
+        "direction": "asc"
+      }
+    },
+    "views": {
+      "list": "views/signstorage/list.php",
+      "form": "views/signstorage/form.php",
+      "details": "views/signstorage/details.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

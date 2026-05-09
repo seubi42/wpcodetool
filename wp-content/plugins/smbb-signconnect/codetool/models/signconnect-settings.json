@@ -1,0 +1,52 @@
+{
+  "name": "signconnect_settings",
+  "label": "SignConnect settings",
+  "pluralLabel": "SignConnect settings",
+  "description": "Front-end display preferences for SignConnect.",
+  "storage": {
+    "type": "option",
+    "optionName": "smbb_signconnect_settings",
+    "autoload": false,
+    "default": {
+      "brand_color": "#2271b1",
+      "posting_page_id": 0,
+      "signing_page_id": 0,
+      "signing_page_url": "",
+      "default_send_message": "",
+      "default_expiration_days": 7,
+      "min_expiration_days": 1,
+      "max_expiration_days": 90,
+      "geodecode_enabled": 0,
+      "openai_enabled": 0,
+      "openai_auto_suggest_message": 1,
+      "openai_suggest_signature_zone": 0,
+      "openai_api_key": "",
+      "twilio_enabled": 0,
+      "twilio_service": "",
+      "twilio_sid": "",
+      "twilio_token": ""
+    }
+  },
+  "admin": {
+    "enabled": true,
+    "type": "settings_page",
+    "capability": "manage_options",
+    "menu": {
+      "placement": "submenu",
+      "parent": "smbb-codetool-signconnect",
+      "title": "Settings",
+      "icon": "dashicons-admin-settings",
+      "position": 999
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "views": {
+      "form": "views/signconnect-settings/form.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

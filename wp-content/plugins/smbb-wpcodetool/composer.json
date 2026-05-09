@@ -4,7 +4,13 @@
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
     "require": {
-        "php": "^7.4"
+        "php": ">=7.4 <9.0",
+        "aws/aws-sdk-php": "^3.380",
+        "setasign/fpdf": "^1.8",
+        "setasign/fpdi": "^2.6"
+    },
+    "suggest": {
+        "aws/aws-sdk-php": "Required when using Smbb\\WpCodeTool\\Connector\\SmbbS3Client."
     },
     "autoload": {
         "psr-4": {

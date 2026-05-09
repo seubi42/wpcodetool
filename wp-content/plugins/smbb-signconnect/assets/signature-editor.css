@@ -1,0 +1,383 @@
+.smbb-signconnect-editor {
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    background: #fff;
+    padding: 18px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.smbb-signconnect-editor-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.smbb-signconnect-editor-header h3,
+.smbb-signconnect-editor-header p {
+    margin: 0;
+}
+
+.smbb-signconnect-editor-header p {
+    color: #646970;
+    margin-top: 4px;
+}
+
+.smbb-signconnect-mobile-hint {
+    display: none;
+}
+
+.smbb-signconnect-editor-message {
+    min-height: 20px;
+    margin: 0 0 12px;
+    color: #646970;
+}
+
+.smbb-signconnect-editor-message.is-success {
+    color: #008a20;
+}
+
+.smbb-signconnect-editor-message.is-error {
+    color: #b32d2e;
+}
+
+.smbb-signconnect-editor-layout {
+    display: grid;
+    grid-template-columns: minmax(112px, 170px) minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+    min-width: 0;
+}
+
+.smbb-signconnect-thumbs {
+    display: grid;
+    gap: 12px;
+    max-height: 72vh;
+    overflow: auto;
+    padding: 4px;
+}
+
+.smbb-signconnect-thumb {
+    position: relative;
+    display: grid;
+    gap: 6px;
+    justify-items: center;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    background: #f6f7f7;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.smbb-signconnect-thumb [data-field-count] {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    min-width: 24px;
+    height: 24px;
+    border: 3px solid #fff;
+    border-radius: 999px;
+    background: #d63638;
+    color: #fff;
+    font-size: 13px;
+    line-height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.smbb-signconnect-thumb.is-active {
+    border-color: var(--smbb-signconnect-brand);
+    background: var(--smbb-signconnect-brand-soft);
+}
+
+.smbb-signconnect-thumb canvas {
+    max-width: 100%;
+    height: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+    background: #fff;
+}
+
+.smbb-signconnect-page-stage {
+    min-width: 0;
+    overflow: hidden;
+}
+
+.smbb-signconnect-page-toolbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.smbb-signconnect-page-tools {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.smbb-signconnect-page-toolbar button,
+.smbb-signconnect-editor-actions button {
+    border: 1px solid var(--smbb-signconnect-brand);
+    border-radius: 4px;
+    background: var(--smbb-signconnect-brand);
+    color: #fff;
+    min-height: 34px;
+    padding: 0 12px;
+    cursor: pointer;
+}
+
+.smbb-signconnect-page-toolbar button {
+    border-color: var(--smbb-signconnect-brand);
+    background: #fff;
+    color: var(--smbb-signconnect-brand);
+}
+
+.smbb-signconnect-page-toolbar [data-editor-draw-mode] {
+    display: none;
+    border-color: var(--smbb-signconnect-brand);
+    color: var(--smbb-signconnect-brand);
+}
+
+.smbb-signconnect-page-toolbar [data-editor-draw-mode].is-active {
+    background: var(--smbb-signconnect-brand);
+    color: #fff;
+}
+
+.smbb-signconnect-page-shell {
+    position: relative;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: visible;
+    background: #f0f0f1;
+    padding: 18px;
+    box-sizing: border-box;
+}
+
+.smbb-signconnect-page-shell canvas {
+    display: block;
+    margin: 0 auto;
+    background: #fff;
+    box-shadow: 0 3px 16px rgba(0, 0, 0, 0.2);
+}
+
+.smbb-signconnect-sign-layer {
+    position: absolute;
+    left: 50%;
+    top: 18px;
+    transform: translateX(-50%);
+    touch-action: none;
+    cursor: crosshair;
+}
+
+.smbb-signconnect-sign-rect {
+    position: absolute;
+    min-width: 18px;
+    min-height: 18px;
+    border: 2px solid #d63638;
+    background: rgba(214, 54, 56, 0.12);
+    cursor: move;
+    box-sizing: border-box;
+}
+
+.smbb-signconnect-sign-rect.is-selected {
+    outline: 3px solid color-mix(in srgb, var(--smbb-signconnect-brand) 35%, transparent);
+}
+
+.smbb-signconnect-sign-rect span {
+    position: absolute;
+    left: 8px;
+    top: 6px;
+    border-radius: 4px;
+    background: #d63638;
+    color: #fff;
+    font-size: 12px;
+    line-height: 1;
+    padding: 5px 7px;
+    pointer-events: none;
+}
+
+.smbb-signconnect-sign-rect [data-resize-handle] {
+    position: absolute;
+    right: -7px;
+    bottom: -7px;
+    width: 14px;
+    height: 14px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: #d63638;
+    cursor: nwse-resize;
+}
+
+.smbb-signconnect-sign-rect [data-delete-rect] {
+    position: absolute;
+    right: 6px;
+    top: 6px;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: #d63638;
+    color: #fff;
+    font-size: 18px;
+    line-height: 18px;
+    padding: 0;
+    cursor: pointer;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+.smbb-signconnect-sign-rect.is-selected [data-delete-rect],
+.smbb-signconnect-sign-rect:hover [data-delete-rect] {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.smbb-signconnect-editor-actions {
+    margin-top: 14px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.smbb-signconnect-editor-actions [data-editor-save-state] {
+    display: none;
+}
+
+@media (max-width: 760px) {
+    .smbb-signconnect-editor {
+        padding: 12px;
+    }
+
+    .smbb-signconnect-editor-layout {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .smbb-signconnect-thumbs {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        display: flex;
+        gap: 10px;
+        max-height: none;
+        overflow-x: auto;
+        overflow-y: hidden;
+        margin: 0 -12px;
+        padding: 10px 12px;
+        background: rgba(255, 255, 255, 0.96);
+        border-bottom: 1px solid #dcdcde;
+        scroll-snap-type: x proximity;
+    }
+
+    .smbb-signconnect-thumb {
+        flex: 0 0 96px;
+        padding: 8px;
+        scroll-snap-align: start;
+    }
+
+    .smbb-signconnect-thumb canvas {
+        max-height: 122px;
+        width: auto;
+    }
+
+    .smbb-signconnect-editor-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .smbb-signconnect-mobile-hint {
+        display: block;
+        color: var(--smbb-signconnect-brand) !important;
+        font-size: 14px;
+    }
+
+    .smbb-signconnect-page-toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 4;
+        background: #fff;
+        padding: 8px 0;
+    }
+
+    .smbb-signconnect-page-toolbar [data-editor-draw-mode] {
+        display: inline-flex;
+    }
+
+    .smbb-signconnect-page-shell {
+        display: block;
+        width: 100%;
+        padding: 10px;
+    }
+
+    .smbb-signconnect-page-shell canvas {
+        max-width: none;
+    }
+
+    .smbb-signconnect-sign-layer {
+        left: 50%;
+        top: 10px;
+        touch-action: pan-y pinch-zoom;
+        cursor: default;
+    }
+
+    .smbb-signconnect-sign-layer.is-draw-mode {
+        touch-action: none;
+        cursor: crosshair;
+    }
+
+    .smbb-signconnect-sign-layer:not(.is-draw-mode) .smbb-signconnect-sign-rect {
+        background: rgba(214, 54, 56, 0.06);
+        border-color: rgba(214, 54, 56, 0.5);
+        cursor: default;
+        pointer-events: none;
+    }
+
+    .smbb-signconnect-sign-layer:not(.is-draw-mode) .smbb-signconnect-sign-rect span {
+        opacity: 0.55;
+    }
+
+    .smbb-signconnect-sign-layer:not(.is-draw-mode) .smbb-signconnect-sign-rect [data-delete-rect],
+    .smbb-signconnect-sign-layer:not(.is-draw-mode) .smbb-signconnect-sign-rect [data-resize-handle] {
+        display: none;
+    }
+
+    .smbb-signconnect-editor-actions button,
+    .smbb-signconnect-page-toolbar button {
+        width: auto;
+        min-height: 40px;
+    }
+}
+
+@media (max-width: 520px) {
+    .smbb-signconnect-editor-header .button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .smbb-signconnect-page-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .smbb-signconnect-page-tools {
+        width: 100%;
+    }
+
+    .smbb-signconnect-page-tools button {
+        flex: 1 1 0;
+        justify-content: center;
+    }
+
+    .smbb-signconnect-editor-actions button {
+        width: 100%;
+        justify-content: center;
+    }
+}

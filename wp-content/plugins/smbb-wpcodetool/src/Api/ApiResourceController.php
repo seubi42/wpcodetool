@@ -70,7 +70,7 @@ final class ApiResourceController
             return true;
         }
 
-        $provided = $this->bearerTokenFromRequest($request);
+        $provided = $this->requests->bearerToken($request);
 
         if ($provided !== '') {
             $client = $this->accessClientFromBearerToken($provided);

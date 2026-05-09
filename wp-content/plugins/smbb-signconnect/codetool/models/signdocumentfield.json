@@ -1,0 +1,130 @@
+{
+  "name": "signdocumentfield",
+  "label": "Signature field",
+  "pluralLabel": "Signature fields",
+  "description": "Signature placement fields configured on SignConnect PDF documents.",
+  "storage": {
+    "table": "signdocumentfield",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "document_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false
+    },
+    "page_number": {
+      "type": "int",
+      "unsigned": true,
+      "nullable": false,
+      "default": 1
+    },
+    "x": {
+      "type": "decimal",
+      "precision": 10,
+      "scale": 6,
+      "nullable": false,
+      "default": 0
+    },
+    "y": {
+      "type": "decimal",
+      "precision": 10,
+      "scale": 6,
+      "nullable": false,
+      "default": 0
+    },
+    "width": {
+      "type": "decimal",
+      "precision": 10,
+      "scale": 6,
+      "nullable": false,
+      "default": 0
+    },
+    "height": {
+      "type": "decimal",
+      "precision": 10,
+      "scale": 6,
+      "nullable": false,
+      "default": 0
+    },
+    "unit": {
+      "type": "varchar",
+      "length": 30,
+      "nullable": false,
+      "default": "page_ratio"
+    },
+    "label": {
+      "type": "varchar",
+      "length": 120,
+      "nullable": true
+    },
+    "creation_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "create_datetime"
+    },
+    "creation_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "create_user"
+    },
+    "lastupdate_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "update_datetime"
+    },
+    "lastupdate_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "update_user"
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_document_id",
+      "type": "index",
+      "columns": ["document_id"]
+    },
+    {
+      "name": "idx_document_page",
+      "type": "index",
+      "columns": ["document_id", "page_number"]
+    }
+  ],
+  "admin": {
+    "enabled": true,
+    "capability": "manage_options",
+    "menu": {
+      "placement": "hidden",
+      "title": "Signature fields"
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "list": {
+      "perPage": 20,
+      "defaultOrder": {
+        "by": "id",
+        "direction": "desc"
+      }
+    },
+    "views": {
+      "list": "views/signdocumentfield/list.php",
+      "form": "views/signdocumentfield/form.php",
+      "details": "views/signdocumentfield/details.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

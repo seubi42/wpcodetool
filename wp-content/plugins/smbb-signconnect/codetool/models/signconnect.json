@@ -1,0 +1,33 @@
+{
+  "name": "signconnect",
+  "label": "SignConnect",
+  "pluralLabel": "SignConnect",
+  "description": "Signature document operations dashboard.",
+  "storage": {
+    "type": "none"
+  },
+  "admin": {
+    "enabled": true,
+    "type": "page",
+    "capability": "manage_options",
+    "menu": {
+      "placement": "main",
+      "title": "SignConnect",
+      "icon": "dashicons-media-document",
+      "position": 32
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "page": {
+      "defaultView": "dashboard"
+    },
+    "views": {
+      "dashboard": "views/signconnect/dashboard.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}
