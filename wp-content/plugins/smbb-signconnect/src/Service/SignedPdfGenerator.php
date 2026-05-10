@@ -5,6 +5,7 @@ namespace Smbb\SignConnect\Service;
 use setasign\Fpdi\Fpdi;
 use Smbb\SignConnect\Repository\SignatureFieldRepository;
 use Smbb\SignConnect\Repository\StorageRepository;
+use Smbb\SignConnect\Support\SignConnectSettings;
 use Smbb\SignConnect\Support\SignatureFieldType;
 
 defined('ABSPATH') || exit;
@@ -47,6 +48,9 @@ final class SignedPdfGenerator
 
         $client = \Smbb\WpCodeTool\Connector\SmbbS3Client::fromSettings($storage);
         $source_pdf = $this->downloadSourcePdf($client, $storage_path);
+        $source_hash = SignConnectSettings::certificationHashProofEnabled() && is_readable($source_pdf)
+            ? hash_file('sha256', $source_pdf)
+            : '';
         $signature_png = $signature_data_url !== '' ? $this->writeSignatureImage($signature_data_url) : '';
         $signed_pdf = wp_tempnam('signconnect-signed.pdf');
 
@@ -57,7 +61,11 @@ final class SignedPdfGenerator
         }
 
         try {
-            $this->writeSignedPdf($source_pdf, $signed_pdf, $signature_png, $fields, $contact, $signed_at, $identity, $return, $identity_photo);
+            $cryptographic_signature_status = $this->cryptographicSignatureStatus();
+            $cryptographic_signature_applied = $this->writeSignedPdf($source_pdf, $signed_pdf, $signature_png, $fields, $contact, $signed_at, $identity, $return, $identity_photo, $cryptographic_signature_status);
+            $signed_hash = SignConnectSettings::certificationHashProofEnabled() && is_readable($signed_pdf)
+                ? hash_file('sha256', $signed_pdf)
+                : '';
             $signed_path = $this->signedStoragePath($storage_path);
             $body = fopen($signed_pdf, 'rb');
 
@@ -74,6 +82,11 @@ final class SignedPdfGenerator
             return array(
                 'storage_path' => $signed_path,
                 'file_size' => file_exists($signed_pdf) ? (int) filesize($signed_pdf) : 0,
+                'source_sha256' => is_string($source_hash) ? $source_hash : '',
+                'signed_sha256' => is_string($signed_hash) ? $signed_hash : '',
+                'certification_fingerprint' => SignConnectSettings::certificationCertificateFingerprint(),
+                'cryptographic_signature_applied' => $cryptographic_signature_applied ? 1 : 0,
+                'cryptographic_signature_status' => $cryptographic_signature_status['reason'],
             );
         } finally {
             @unlink($source_pdf);
@@ -150,9 +163,27 @@ final class SignedPdfGenerator
         return $temporary_path;
     }
 
-    private function writeSignedPdf($source_pdf, $signed_pdf, $signature_png, array $fields, $contact, $signed_at, array $identity, array $return, array $identity_photo)
+    private function writeSignedPdf($source_pdf, $signed_pdf, $signature_png, array $fields, $contact, $signed_at, array $identity, array $return, array $identity_photo, array $cryptographic_signature_status)
     {
-        $pdf = new Fpdi();
+        $cryptographic_signature = !empty($cryptographic_signature_status['enabled']);
+        $pdf = $cryptographic_signature ? new \setasign\Fpdi\Tcpdf\Fpdi() : new Fpdi();
+
+        if (method_exists($pdf, 'setPrintHeader')) {
+            $pdf->setPrintHeader(false);
+        }
+
+        if (method_exists($pdf, 'setPrintFooter')) {
+            $pdf->setPrintFooter(false);
+        }
+
+        if (method_exists($pdf, 'SetAutoPageBreak')) {
+            $pdf->SetAutoPageBreak(false, 0);
+        }
+
+        if ($cryptographic_signature) {
+            $this->applyCryptographicSignature($pdf, $contact, $signed_at, $identity);
+        }
+
         $page_count = $pdf->setSourceFile($source_pdf);
         $mention_lines = array();
         $mention_lines[] = sprintf(
@@ -200,10 +231,67 @@ final class SignedPdfGenerator
 
         $this->appendIdentityPhotoPage($pdf, $identity_photo, $contact, $signed_at, $identity);
 
-        $pdf->Output('F', $signed_pdf);
+        if ($cryptographic_signature) {
+            $pdf->Output($signed_pdf, 'F');
+        } else {
+            $pdf->Output('F', $signed_pdf);
+        }
+
+        return $cryptographic_signature;
     }
 
-    private function appendIdentityPhotoPage(Fpdi $pdf, array $identity_photo, $contact, $signed_at, array $identity)
+    private function cryptographicSignatureStatus()
+    {
+        $certificate_path = SignConnectSettings::certificationCertificatePath();
+        $private_key_path = SignConnectSettings::certificationPrivateKeyPath();
+
+        if (!SignConnectSettings::certificationEnabled()) {
+            return array('enabled' => false, 'reason' => 'certification_disabled');
+        }
+
+        if (!SignConnectSettings::certificationPdfSignatureEnabled()) {
+            return array('enabled' => false, 'reason' => 'pdf_signature_option_disabled');
+        }
+
+        if ($certificate_path === '' || !is_readable($certificate_path)) {
+            return array('enabled' => false, 'reason' => 'certificate_missing_or_unreadable');
+        }
+
+        if ($private_key_path === '' || !is_readable($private_key_path)) {
+            return array('enabled' => false, 'reason' => 'private_key_missing_or_unreadable');
+        }
+
+        if (!class_exists('\TCPDF')) {
+            return array('enabled' => false, 'reason' => 'tcpdf_missing');
+        }
+
+        if (!class_exists('\setasign\Fpdi\Tcpdf\Fpdi')) {
+            return array('enabled' => false, 'reason' => 'fpdi_tcpdf_missing');
+        }
+
+        return array('enabled' => true, 'reason' => 'ready');
+    }
+
+    private function applyCryptographicSignature($pdf, $contact, $signed_at, array $identity)
+    {
+        if (!method_exists($pdf, 'setSignature')) {
+            return;
+        }
+
+        $certificate_path = SignConnectSettings::certificationCertificatePath();
+        $private_key_path = SignConnectSettings::certificationPrivateKeyPath();
+        $name = trim((isset($identity['first_name']) ? (string) $identity['first_name'] : '') . ' ' . (isset($identity['last_name']) ? (string) $identity['last_name'] : ''));
+        $info = array(
+            'Name' => $name !== '' ? $name : 'SignConnect',
+            'Location' => isset($identity['place']) ? (string) $identity['place'] : '',
+            'Reason' => __('SignConnect electronic signature', 'smbb-signconnect'),
+            'ContactInfo' => (string) $contact,
+        );
+
+        $pdf->setSignature('file://' . $certificate_path, 'file://' . $private_key_path, SignConnectSettings::certificationPrivateKeyPassphrase(), '', 2, $info);
+    }
+
+    private function appendIdentityPhotoPage($pdf, array $identity_photo, $contact, $signed_at, array $identity)
     {
         $photo_path = isset($identity_photo['tmp_name']) ? (string) $identity_photo['tmp_name'] : '';
 
@@ -234,11 +322,11 @@ final class SignedPdfGenerator
 
         $pdf->AddPage('P', array($page_width, $page_height));
         $pdf->SetTextColor(35, 35, 35);
-        $pdf->SetFont('Arial', 'B', 14);
+        $pdf->SetFont($this->pdfFontFamily(), 'B', 14);
         $pdf->SetXY($margin, $margin);
-        $pdf->Cell($max_width, 8, utf8_decode(__('Appendix - identity photo', 'smbb-signconnect')), 0, 2, 'L');
-        $pdf->SetFont('Arial', '', 8);
-        $pdf->MultiCell($max_width, 4, utf8_decode(sprintf(
+        $pdf->Cell($max_width, 8, $this->pdfText($pdf, __('Appendix - identity photo', 'smbb-signconnect')), 0, 2, 'L');
+        $pdf->SetFont($this->pdfFontFamily(), '', 8);
+        $pdf->MultiCell($max_width, 4, $this->pdfText($pdf, sprintf(
             __('Attached to the electronic signature of %s on %s%s', 'smbb-signconnect'),
             $contact !== '' ? $contact : __('recipient', 'smbb-signconnect'),
             mysql2date('d/m/Y H:i', $signed_at),
@@ -247,7 +335,7 @@ final class SignedPdfGenerator
         $pdf->Image($photo_path, $x, $y, $draw_width, $draw_height, $image_type);
     }
 
-    private function drawFieldBlock(Fpdi $pdf, $signature_png, array $field, array $page_size, $mention, $index, $status, array $identity, $signed_at)
+    private function drawFieldBlock($pdf, $signature_png, array $field, array $page_size, $mention, $index, $status, array $identity, $signed_at)
     {
         $field_type = SignatureFieldType::normalize(isset($field['field_type']) ? $field['field_type'] : SignatureFieldType::SIGNATURE);
 
@@ -261,7 +349,7 @@ final class SignedPdfGenerator
         $width = max(12, (float) $field['width'] * (float) $page_size['width']);
         $height = max(10, (float) $field['height'] * (float) $page_size['height']);
         $padding = min(3, max(1, $height * 0.08));
-        $text_height = min(10, max(6, $height * 0.28));
+        $text_height = min(14, max(8, $height * 0.34));
         $image_height = max(4, $height - ($padding * 3) - $text_height);
 
         if ($status === 'approved') {
@@ -276,18 +364,22 @@ final class SignedPdfGenerator
         if ($signature_png !== '') {
             $pdf->Image($signature_png, $x + $padding, $y + $padding, $width - ($padding * 2), $image_height, 'PNG');
         } else {
-            $pdf->SetFont('Arial', 'B', 14);
+            $pdf->SetFont($this->pdfFontFamily(), 'B', 14);
             $pdf->SetTextColor(198, 40, 40);
             $pdf->SetXY($x + $padding, $y + $padding);
             $pdf->Cell($width - ($padding * 2), $image_height, 'REFUS', 0, 0, 'C');
         }
-        $pdf->SetFont('Arial', '', 6);
+        $mention_y = $y + $padding + $image_height + $padding;
+        $pdf->SetDrawColor(220, 220, 220);
+        $pdf->SetFillColor(255, 255, 255);
+        $pdf->Rect($x + $padding, $mention_y, $width - ($padding * 2), $text_height, 'DF');
+        $pdf->SetFont($this->pdfFontFamily(), '', 7);
         $pdf->SetTextColor(45, 45, 45);
-        $pdf->SetXY($x + $padding, $y + $padding + $image_height + $padding);
-        $pdf->MultiCell($width - ($padding * 2), 3, utf8_decode($mention), 0, 'L');
+        $pdf->SetXY($x + $padding + 1, $mention_y + 1);
+        $pdf->MultiCell($width - ($padding * 2) - 2, 3, $this->pdfText($pdf, $this->compactMention($mention)), 0, 'L');
     }
 
-    private function drawTextField(Fpdi $pdf, array $field, array $page_size, $field_type, array $identity, $signed_at, $status)
+    private function drawTextField($pdf, array $field, array $page_size, $field_type, array $identity, $signed_at, $status)
     {
         $value = $this->fieldTextValue($field_type, $identity, $signed_at, $status);
 
@@ -305,9 +397,9 @@ final class SignedPdfGenerator
         $pdf->SetFillColor(255, 255, 255);
         $pdf->Rect($x, $y, $width, $height, 'F');
         $pdf->SetTextColor(30, 30, 30);
-        $pdf->SetFont('Arial', $field_type === SignatureFieldType::APPROVAL ? 'B' : '', $font_size);
+        $pdf->SetFont($this->pdfFontFamily(), $field_type === SignatureFieldType::APPROVAL ? 'B' : '', $font_size);
         $pdf->SetXY($x + 1.5, $y + max(0.5, ($height - $font_size * 0.5) / 2));
-        $pdf->Cell($width - 3, max(4, $height - 1), utf8_decode($value), 0, 0, 'L');
+        $pdf->Cell($width - 3, max(4, $height - 1), $this->pdfText($pdf, $value), 0, 0, 'L');
     }
 
     private function fieldTextValue($field_type, array $identity, $signed_at, $status)
@@ -340,5 +432,31 @@ final class SignedPdfGenerator
         $filename = isset($info['filename']) ? $info['filename'] : 'document';
 
         return $directory . $filename . '_signed.pdf';
+    }
+
+    private function compactMention($mention)
+    {
+        $lines = array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', (string) $mention))));
+
+        return implode("\n", array_slice($lines, 0, 3));
+    }
+
+    private function pdfText($pdf, $text)
+    {
+        if (class_exists('\TCPDF') && $pdf instanceof \TCPDF) {
+            return (string) $text;
+        }
+
+        return utf8_decode((string) $text);
+    }
+
+    private function pdfFontFamily()
+    {
+        /*
+         * TCPDF ne charge pas "Arial" comme FPDF. Helvetica est une police coeur
+         * disponible dans les deux piles, ce qui garde le rendu stable avec ou sans
+         * signature cryptographique.
+         */
+        return 'helvetica';
     }
 }

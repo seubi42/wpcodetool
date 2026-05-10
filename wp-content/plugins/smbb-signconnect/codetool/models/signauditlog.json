@@ -130,6 +130,9 @@
         "by": "id",
         "direction": "desc"
       }
+    },
+    "views": {
+      "list": "views/signauditlog/list.php"
     }
   },
   "api": {

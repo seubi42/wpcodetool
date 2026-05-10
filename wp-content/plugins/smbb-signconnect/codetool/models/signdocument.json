@@ -48,6 +48,32 @@
       "nullable": false,
       "default": 0
     },
+    "source_sha256": {
+      "type": "varchar",
+      "length": 64,
+      "nullable": true
+    },
+    "signed_sha256": {
+      "type": "varchar",
+      "length": 64,
+      "nullable": true
+    },
+    "certification_fingerprint": {
+      "type": "varchar",
+      "length": 128,
+      "nullable": true
+    },
+    "cryptographic_signature_applied": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "cryptographic_signature_status": {
+      "type": "varchar",
+      "length": 120,
+      "nullable": true
+    },
     "document_status": {
       "type": "varchar",
       "length": 50,
@@ -269,6 +295,11 @@
       "name": "idx_file_size",
       "type": "index",
       "columns": ["file_size"]
+    },
+    {
+      "name": "idx_signed_sha256",
+      "type": "index",
+      "columns": ["signed_sha256"]
     },
     {
       "name": "idx_document_status",

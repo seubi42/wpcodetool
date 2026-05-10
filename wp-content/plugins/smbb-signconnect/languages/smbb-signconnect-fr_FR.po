@@ -1683,3 +1683,268 @@ msgstr "La réponse du destinataire a été enregistrée."
 #: generated
 msgid "Submit response"
 msgstr "Transmettre ma réponse"
+
+#: generated
+msgid "Adds hashes and certificate metadata to the signature proof. A self-signed certificate proves integrity, not a trusted legal identity."
+msgstr "Ajoute les empreintes et les métadonnées du certificat à la preuve de signature. Un certificat autosigné prouve l’intégrité, pas une identité légale de confiance."
+
+#: generated
+msgid "Certificate fingerprint"
+msgstr "Empreinte du certificat"
+
+#: generated
+msgid "Certificate generation failed: %s"
+msgstr "La génération du certificat a échoué : %s"
+
+#: generated
+msgid "Certification"
+msgstr "Certification"
+
+#: generated
+msgid "Common name"
+msgstr "Nom commun"
+
+#: generated
+msgid "Country"
+msgstr "Pays"
+
+#: generated
+msgid "Creates a local self-signed certificate for SignConnect integrity proofs. This does not replace a qualified third-party certificate."
+msgstr "Crée un certificat autosigné local pour les preuves d’intégrité SignConnect. Cela ne remplace pas un certificat tiers qualifié."
+
+#: generated
+msgid "Cryptographically sign generated PDFs"
+msgstr "Signer cryptographiquement les PDF générés"
+
+#: generated
+msgid "Current certificate fingerprint:"
+msgstr "Empreinte du certificat actuel :"
+
+#: generated
+msgid "Enable certification layer"
+msgstr "Activer la couche de certification"
+
+#: generated
+msgid "Enables SignConnect integrity proof features."
+msgstr "Active les fonctions de preuve d’intégrité SignConnect."
+
+#: generated
+msgid "Generate self-signed certificate"
+msgstr "Générer un certificat autosigné"
+
+#: generated
+msgid "Integrity proof"
+msgstr "Preuve d’intégrité"
+
+#: generated
+msgid "Organization"
+msgstr "Organisation"
+
+#: generated
+msgid "Original PDF SHA-256"
+msgstr "SHA-256 du PDF original"
+
+#: generated
+msgid "Record PDF SHA-256 hashes"
+msgstr "Enregistrer les empreintes SHA-256 des PDF"
+
+#: generated
+msgid "Requires a TCPDF-compatible PDF stack. With the current FPDF generator, this option is stored but not applied."
+msgstr "Nécessite une pile PDF compatible TCPDF. Avec le générateur FPDF actuel, cette option est enregistrée mais pas appliquée."
+
+#: generated
+msgid "Self-signed certificate"
+msgstr "Certificat autosigné"
+
+#: generated
+msgid "Self-signed certificate generated. Fingerprint: %s"
+msgstr "Certificat autosigné généré. Empreinte : %s"
+
+#: generated
+msgid "Signed PDF SHA-256"
+msgstr "SHA-256 du PDF signé"
+
+#: generated
+msgid "Stores the original and signed PDF hashes in the document proof when available."
+msgstr "Stocke les empreintes du PDF original et du PDF signé dans la preuve du document lorsqu’elles sont disponibles."
+
+#: generated
+msgid "The OpenSSL PHP extension is required to generate a certificate."
+msgstr "L’extension PHP OpenSSL est requise pour générer un certificat."
+
+#: generated
+msgid "The certificate directory could not be created."
+msgstr "Le dossier des certificats n’a pas pu être créé."
+
+#: generated
+msgid "The certificate files could not be written."
+msgstr "Les fichiers du certificat n’ont pas pu être écrits."
+
+#: generated
+msgid "The certificate request could not be generated."
+msgstr "La demande de certificat n’a pas pu être générée."
+
+#: generated
+msgid "The private key could not be generated."
+msgstr "La clé privée n’a pas pu être générée."
+
+#: generated
+msgid "The self-signed certificate could not be generated."
+msgstr "Le certificat autosigné n’a pas pu être généré."
+
+#: generated
+msgid "Validity, in days"
+msgstr "Validité, en jours"
+
+#: generated
+msgid "You are not allowed to manage SignConnect certification settings."
+msgstr "Vous n’êtes pas autorisé à gérer les réglages de certification SignConnect."
+
+#: generated
+msgid "PDF cryptographic signature:"
+msgstr "Signature cryptographique PDF :"
+
+#: generated
+msgid "TCPDF is available."
+msgstr "TCPDF est disponible."
+
+#: generated
+msgid "TCPDF is not available yet; hashes and certificate proof remain active."
+msgstr "TCPDF n’est pas encore disponible ; les empreintes et la preuve par certificat restent actives."
+
+#: generated
+msgid "Applied"
+msgstr "Appliquée"
+
+#: generated
+msgid "PDF cryptographic signature"
+msgstr "Signature cryptographique PDF"
+
+#: generated
+msgid "Requires TCPDF and a generated certificate. The signature proves integrity but remains self-signed unless the certificate is trusted by the reader."
+msgstr "Nécessite TCPDF et un certificat généré. La signature prouve l’intégrité, mais reste autosignée tant que le certificat n’est pas approuvé par le lecteur."
+
+#: generated
+msgid "SignConnect electronic signature"
+msgstr "Signature électronique SignConnect"
+
+#: smbb-signconnect/src/Service/PublicSignatureService.php
+#: smbb-signconnect/codetool/views/signdocument/details.php
+msgid "Not applied (%s)"
+msgstr "Non appliquée (%s)"
+
+#: smbb-signconnect/codetool/views/signdocument/details.php
+msgid "Yes"
+msgstr "Oui"
+
+#: smbb-signconnect/codetool/views/signdocument/details.php
+msgid "No"
+msgstr "Non"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php
+msgid "Readable"
+msgstr "Lisible"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php
+msgid "Missing or unreadable"
+msgstr "Manquant ou illisible"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php
+msgid "Certificate file:"
+msgstr "Fichier certificat :"
+
+#: smbb-signconnect/codetool/views/signconnect-settings/form.php
+msgid "Private key:"
+msgstr "Clé privée :"
+
+#: generated
+msgid "The OpenSSL PHP extension is required to import a certificate."
+msgstr "L’extension PHP OpenSSL est requise pour importer un certificat."
+
+#: generated
+msgid "Certificate file"
+msgstr "Fichier certificat"
+
+#: generated
+msgid "Private key"
+msgstr "Clé privée"
+
+#: generated
+msgid "The uploaded certificate is not a valid PEM certificate."
+msgstr "Le certificat envoyé n’est pas un certificat PEM valide."
+
+#: generated
+msgid "The uploaded private key is invalid or its passphrase is wrong."
+msgstr "La clé privée envoyée est invalide ou son mot de passe est incorrect."
+
+#: generated
+msgid "The certificate and private key do not match."
+msgstr "Le certificat et la clé privée ne correspondent pas."
+
+#: generated
+msgid "The imported certificate files could not be written."
+msgstr "Les fichiers du certificat importé n’ont pas pu être écrits."
+
+#: generated
+msgid "Missing upload: %s."
+msgstr "Fichier manquant : %s."
+
+#: generated
+msgid "Upload failed for %1$s. Error code: %2$d."
+msgstr "L’envoi de %1$s a échoué. Code erreur : %2$d."
+
+#: generated
+msgid "Invalid uploaded file: %s."
+msgstr "Fichier envoyé invalide : %s."
+
+#: generated
+msgid "Uploaded file is empty: %s."
+msgstr "Le fichier envoyé est vide : %s."
+
+#: generated
+msgid "External certificate imported. Fingerprint: %s"
+msgstr "Certificat externe importé. Empreinte : %s"
+
+#: generated
+msgid "Certificate import failed: %s"
+msgstr "L’import du certificat a échoué : %s"
+
+#: generated
+msgid "Current mode:"
+msgstr "Mode actuel :"
+
+#: generated
+msgid "Imported certificate"
+msgstr "Certificat importé"
+
+#: generated
+msgid "Imports an external PEM certificate and matching private key for PDF cryptographic signatures."
+msgstr "Importe un certificat PEM externe et la clé privée correspondante pour les signatures cryptographiques PDF."
+
+#: generated
+msgid "Certificate PEM"
+msgstr "Certificat PEM"
+
+#: generated
+msgid "Private key PEM"
+msgstr "Clé privée PEM"
+
+#: generated
+msgid "Private key passphrase"
+msgstr "Mot de passe de la clé privée"
+
+#: generated
+msgid "Leave empty if the private key is not encrypted."
+msgstr "Laisser vide si la clé privée n’est pas chiffrée."
+
+#: generated
+msgid "Import external certificate"
+msgstr "Importer un certificat externe"
+
+#: generated
+msgid "Certificate mode"
+msgstr "Mode de certificat"
+
+#: generated
+msgid "Choose how the active certificate was provided. Generating or importing a certificate updates this mode automatically."
+msgstr "Choisit comment le certificat actif a été fourni. La génération ou l’import d’un certificat met ce mode à jour automatiquement."

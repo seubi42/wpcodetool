@@ -118,6 +118,11 @@ final class PublicSignatureService
             'signer_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? substr(sanitize_text_field((string) wp_unslash($_SERVER['HTTP_USER_AGENT'])), 0, 255) : '',
             'signed_storage_path' => isset($signed_pdf['storage_path']) ? (string) $signed_pdf['storage_path'] : '',
             'signed_file_size' => isset($signed_pdf['file_size']) ? (int) $signed_pdf['file_size'] : 0,
+            'source_sha256' => isset($signed_pdf['source_sha256']) ? (string) $signed_pdf['source_sha256'] : '',
+            'signed_sha256' => isset($signed_pdf['signed_sha256']) ? (string) $signed_pdf['signed_sha256'] : '',
+            'certification_fingerprint' => isset($signed_pdf['certification_fingerprint']) ? (string) $signed_pdf['certification_fingerprint'] : '',
+            'cryptographic_signature_applied' => !empty($signed_pdf['cryptographic_signature_applied']) ? 1 : 0,
+            'cryptographic_signature_status' => isset($signed_pdf['cryptographic_signature_status']) ? (string) $signed_pdf['cryptographic_signature_status'] : '',
             'signed_pdf_date' => $signed_at,
             'identity_photo_storage_path' => isset($identity_photo['storage_path']) ? (string) $identity_photo['storage_path'] : '',
             'identity_photo_file_size' => isset($identity_photo['file_size']) ? (int) $identity_photo['file_size'] : 0,
@@ -137,6 +142,11 @@ final class PublicSignatureService
             'return_status' => $return_status,
             'signed_at' => $signed_at,
             'ip' => isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field((string) wp_unslash($_SERVER['REMOTE_ADDR'])) : '',
+            'source_sha256' => isset($signed_pdf['source_sha256']) ? (string) $signed_pdf['source_sha256'] : '',
+            'signed_sha256' => isset($signed_pdf['signed_sha256']) ? (string) $signed_pdf['signed_sha256'] : '',
+            'certification_fingerprint' => isset($signed_pdf['certification_fingerprint']) ? (string) $signed_pdf['certification_fingerprint'] : '',
+            'cryptographic_signature_applied' => !empty($signed_pdf['cryptographic_signature_applied']) ? 1 : 0,
+            'cryptographic_signature_status' => isset($signed_pdf['cryptographic_signature_status']) ? (string) $signed_pdf['cryptographic_signature_status'] : '',
             'has_identity_photo' => !empty($identity_photo),
         ), 'signer', null, $return_status === 'refused' ? __('Document refused.', 'smbb-signconnect') : __('Document signed.', 'smbb-signconnect'));
 
@@ -268,6 +278,29 @@ final class PublicSignatureService
             __('Signed on', 'smbb-signconnect') => $signed_at,
             __('Place', 'smbb-signconnect') => isset($document['signer_place']) ? (string) $document['signer_place'] : '',
             __('IP address', 'smbb-signconnect') => isset($document['signer_ip']) ? (string) $document['signer_ip'] : '',
+            __('Original PDF SHA-256', 'smbb-signconnect') => isset($document['source_sha256']) ? (string) $document['source_sha256'] : '',
+            __('Signed PDF SHA-256', 'smbb-signconnect') => isset($document['signed_sha256']) ? (string) $document['signed_sha256'] : '',
+            __('Certificate fingerprint', 'smbb-signconnect') => isset($document['certification_fingerprint']) ? (string) $document['certification_fingerprint'] : '',
+            __('PDF cryptographic signature', 'smbb-signconnect') => $this->cryptographicSignatureProofLabel($document),
+        );
+    }
+
+    private function cryptographicSignatureProofLabel(array $document)
+    {
+        if (!empty($document['cryptographic_signature_applied'])) {
+            return __('Applied', 'smbb-signconnect');
+        }
+
+        $status = isset($document['cryptographic_signature_status']) ? (string) $document['cryptographic_signature_status'] : '';
+
+        if ($status === '') {
+            return '';
+        }
+
+        return sprintf(
+            /* translators: %s: technical status code explaining why the cryptographic PDF signature was not applied. */
+            __('Not applied (%s)', 'smbb-signconnect'),
+            $status
         );
     }
 

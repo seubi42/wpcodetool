@@ -632,7 +632,7 @@ final class FormElement
     {
         $action_url = isset($this->context['action_url']) ? $this->context['action_url'] : '';
         $nonce_action = isset($this->context['nonce_action']) ? $this->context['nonce_action'] : 'smbb_codetool_save';
-        $html = '<form method="post" action="' . esc_url($action_url) . '">';
+        $html = '<form method="post" enctype="multipart/form-data" action="' . esc_url($action_url) . '">';
 
         ob_start();
         wp_nonce_field($nonce_action);

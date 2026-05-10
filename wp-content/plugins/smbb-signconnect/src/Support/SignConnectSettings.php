@@ -91,6 +91,90 @@ final class SignConnectSettings
         return !empty($settings['geodecode_enabled']);
     }
 
+    public static function certificationEnabled()
+    {
+        $settings = self::all();
+
+        return !empty($settings['certification_enabled']);
+    }
+
+    public static function certificationHashProofEnabled()
+    {
+        $settings = self::all();
+
+        return self::certificationEnabled() && !empty($settings['certification_hash_proof_enabled']);
+    }
+
+    public static function certificationPdfSignatureEnabled()
+    {
+        $settings = self::all();
+
+        return self::certificationEnabled() && !empty($settings['certification_pdf_signature_enabled']);
+    }
+
+    public static function certificationCertificateFingerprint()
+    {
+        $settings = self::all();
+        $key = self::certificationCertificateMode() === 'imported'
+            ? 'certification_imported_certificate_fingerprint'
+            : 'certification_self_signed_certificate_fingerprint';
+
+        if (!empty($settings[$key])) {
+            return sanitize_text_field((string) $settings[$key]);
+        }
+
+        return isset($settings['certification_certificate_fingerprint'])
+            ? sanitize_text_field((string) $settings['certification_certificate_fingerprint'])
+            : '';
+    }
+
+    public static function certificationCertificateMode()
+    {
+        $settings = self::all();
+        $mode = isset($settings['certification_certificate_mode']) ? sanitize_key((string) $settings['certification_certificate_mode']) : 'self_signed';
+
+        return in_array($mode, array('self_signed', 'imported'), true) ? $mode : 'self_signed';
+    }
+
+    public static function certificationCertificatePath()
+    {
+        $settings = self::all();
+        $key = self::certificationCertificateMode() === 'imported'
+            ? 'certification_imported_certificate_path'
+            : 'certification_self_signed_certificate_path';
+
+        if (!empty($settings[$key])) {
+            return (string) $settings[$key];
+        }
+
+        return isset($settings['certification_certificate_path']) ? (string) $settings['certification_certificate_path'] : '';
+    }
+
+    public static function certificationPrivateKeyPath()
+    {
+        $settings = self::all();
+        $key = self::certificationCertificateMode() === 'imported'
+            ? 'certification_imported_private_key_path'
+            : 'certification_self_signed_private_key_path';
+
+        if (!empty($settings[$key])) {
+            return (string) $settings[$key];
+        }
+
+        return isset($settings['certification_private_key_path']) ? (string) $settings['certification_private_key_path'] : '';
+    }
+
+    public static function certificationPrivateKeyPassphrase()
+    {
+        $settings = self::all();
+
+        if (self::certificationCertificateMode() === 'imported' && isset($settings['certification_imported_private_key_passphrase'])) {
+            return (string) $settings['certification_imported_private_key_passphrase'];
+        }
+
+        return isset($settings['certification_private_key_passphrase']) ? (string) $settings['certification_private_key_passphrase'] : '';
+    }
+
     public static function openAiEnabled()
     {
         $settings = self::all();

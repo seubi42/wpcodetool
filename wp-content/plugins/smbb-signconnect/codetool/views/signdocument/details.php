@@ -55,6 +55,18 @@ $proof_rows = array(
     __('Signed on', 'smbb-signconnect') => $signed_at,
     __('Place', 'smbb-signconnect') => isset($item['signer_place']) ? (string) $item['signer_place'] : '',
     __('IP address', 'smbb-signconnect') => isset($item['signer_ip']) ? (string) $item['signer_ip'] : '',
+    __('Original PDF SHA-256', 'smbb-signconnect') => isset($item['source_sha256']) ? (string) $item['source_sha256'] : '',
+    __('Signed PDF SHA-256', 'smbb-signconnect') => isset($item['signed_sha256']) ? (string) $item['signed_sha256'] : '',
+    __('Certificate fingerprint', 'smbb-signconnect') => isset($item['certification_fingerprint']) ? (string) $item['certification_fingerprint'] : '',
+    __('PDF cryptographic signature', 'smbb-signconnect') => !empty($item['cryptographic_signature_applied'])
+        ? __('Applied', 'smbb-signconnect')
+        : (!empty($item['cryptographic_signature_status'])
+            ? sprintf(
+                /* translators: %s: technical status code explaining why the cryptographic PDF signature was not applied. */
+                __('Not applied (%s)', 'smbb-signconnect'),
+                (string) $item['cryptographic_signature_status']
+            )
+            : ''),
 );
 $context_value = static function ($event) {
     if (empty($event['context'])) {
@@ -76,6 +88,10 @@ $context_value = static function ($event) {
 
         if ($value === null || $value === '') {
             continue;
+        }
+
+        if ((string) $key === 'cryptographic_signature_applied') {
+            $value = !empty($value) ? __('Yes', 'smbb-signconnect') : __('No', 'smbb-signconnect');
         }
 
         $parts[] = ucwords(str_replace('_', ' ', (string) $key)) . ': ' . (string) $value;
@@ -180,6 +196,8 @@ $context_value = static function ($event) {
                                     <span class="smbb-codetool-details-empty">&mdash;</span>
                                 <?php elseif (in_array((string) $key, array('file_size', 'signed_file_size'), true)) : ?>
                                     <?php echo esc_html($format_size($value)); ?>
+                                <?php elseif ((string) $key === 'cryptographic_signature_applied') : ?>
+                                    <?php echo !empty($value) ? esc_html__('Yes', 'smbb-signconnect') : esc_html__('No', 'smbb-signconnect'); ?>
                                 <?php elseif ((string) $key === 'system_log') : ?>
                                     <pre style="white-space: pre-wrap; max-height: 520px; overflow: auto; margin: 0;"><?php echo esc_html((string) $value); ?></pre>
                                 <?php else : ?>

@@ -496,34 +496,50 @@ final class DocumentRepository
         $return_status = isset($data['signer_return_status']) ? (string) $data['signer_return_status'] : '';
         $document_status = $return_status === 'refused' ? DocumentStatus::REFUSED : DocumentStatus::SIGNED;
         $table = $wpdb->prefix . 'signdocument';
+        $update_data = array(
+            'document_status' => $document_status,
+            'sign_date' => isset($data['sign_date']) ? (string) $data['sign_date'] : current_time('mysql'),
+            'signer_contact' => isset($data['signer_contact']) ? (string) $data['signer_contact'] : '',
+            'signer_first_name' => isset($data['signer_first_name']) ? (string) $data['signer_first_name'] : '',
+            'signer_last_name' => isset($data['signer_last_name']) ? (string) $data['signer_last_name'] : '',
+            'signer_place' => isset($data['signer_place']) ? (string) $data['signer_place'] : '',
+            'signer_return_status' => isset($data['signer_return_status']) ? (string) $data['signer_return_status'] : '',
+            'signer_return_message' => isset($data['signer_return_message']) ? (string) $data['signer_return_message'] : '',
+            'signer_latitude' => isset($data['signer_latitude']) && $data['signer_latitude'] !== '' ? (string) $data['signer_latitude'] : null,
+            'signer_longitude' => isset($data['signer_longitude']) && $data['signer_longitude'] !== '' ? (string) $data['signer_longitude'] : null,
+            'signature_data' => isset($data['signature_data']) ? (string) $data['signature_data'] : '',
+            'signer_ip' => isset($data['signer_ip']) ? (string) $data['signer_ip'] : '',
+            'signer_user_agent' => isset($data['signer_user_agent']) ? (string) $data['signer_user_agent'] : '',
+            'signed_storage_path' => isset($data['signed_storage_path']) ? (string) $data['signed_storage_path'] : '',
+            'signed_file_size' => isset($data['signed_file_size']) ? max(0, (int) $data['signed_file_size']) : 0,
+            'signed_pdf_date' => isset($data['signed_pdf_date']) ? (string) $data['signed_pdf_date'] : current_time('mysql'),
+            'identity_photo_storage_path' => isset($data['identity_photo_storage_path']) ? (string) $data['identity_photo_storage_path'] : '',
+            'identity_photo_file_size' => isset($data['identity_photo_file_size']) ? max(0, (int) $data['identity_photo_file_size']) : 0,
+            'identity_photo_mime_type' => isset($data['identity_photo_mime_type']) ? (string) $data['identity_photo_mime_type'] : '',
+            'identity_photo_filename' => isset($data['identity_photo_filename']) ? (string) $data['identity_photo_filename'] : '',
+        );
+        $formats = array('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%d', '%s', '%s');
+
+        foreach (array(
+            'source_sha256' => '%s',
+            'signed_sha256' => '%s',
+            'certification_fingerprint' => '%s',
+            'cryptographic_signature_applied' => '%d',
+            'cryptographic_signature_status' => '%s',
+        ) as $column => $format) {
+            if ($this->hasColumn($column)) {
+                $update_data[$column] = $format === '%d' ? (!empty($data[$column]) ? 1 : 0) : (isset($data[$column]) ? (string) $data[$column] : '');
+                $formats[] = $format;
+            }
+        }
+
         $result = $wpdb->update(
             $table,
-            array(
-                'document_status' => $document_status,
-                'sign_date' => isset($data['sign_date']) ? (string) $data['sign_date'] : current_time('mysql'),
-                'signer_contact' => isset($data['signer_contact']) ? (string) $data['signer_contact'] : '',
-                'signer_first_name' => isset($data['signer_first_name']) ? (string) $data['signer_first_name'] : '',
-                'signer_last_name' => isset($data['signer_last_name']) ? (string) $data['signer_last_name'] : '',
-                'signer_place' => isset($data['signer_place']) ? (string) $data['signer_place'] : '',
-                'signer_return_status' => isset($data['signer_return_status']) ? (string) $data['signer_return_status'] : '',
-                'signer_return_message' => isset($data['signer_return_message']) ? (string) $data['signer_return_message'] : '',
-                'signer_latitude' => isset($data['signer_latitude']) && $data['signer_latitude'] !== '' ? (string) $data['signer_latitude'] : null,
-                'signer_longitude' => isset($data['signer_longitude']) && $data['signer_longitude'] !== '' ? (string) $data['signer_longitude'] : null,
-                'signature_data' => isset($data['signature_data']) ? (string) $data['signature_data'] : '',
-                'signer_ip' => isset($data['signer_ip']) ? (string) $data['signer_ip'] : '',
-                'signer_user_agent' => isset($data['signer_user_agent']) ? (string) $data['signer_user_agent'] : '',
-                'signed_storage_path' => isset($data['signed_storage_path']) ? (string) $data['signed_storage_path'] : '',
-                'signed_file_size' => isset($data['signed_file_size']) ? max(0, (int) $data['signed_file_size']) : 0,
-                'signed_pdf_date' => isset($data['signed_pdf_date']) ? (string) $data['signed_pdf_date'] : current_time('mysql'),
-                'identity_photo_storage_path' => isset($data['identity_photo_storage_path']) ? (string) $data['identity_photo_storage_path'] : '',
-                'identity_photo_file_size' => isset($data['identity_photo_file_size']) ? max(0, (int) $data['identity_photo_file_size']) : 0,
-                'identity_photo_mime_type' => isset($data['identity_photo_mime_type']) ? (string) $data['identity_photo_mime_type'] : '',
-                'identity_photo_filename' => isset($data['identity_photo_filename']) ? (string) $data['identity_photo_filename'] : '',
-            ),
+            $update_data,
             array(
                 'id' => (int) $document_id,
             ),
-            array('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%d', '%s', '%s'),
+            $formats,
             array('%d')
         );
 

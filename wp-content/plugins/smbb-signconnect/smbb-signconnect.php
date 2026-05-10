@@ -43,6 +43,8 @@ add_action('plugins_loaded', 'smbb_signconnect_loaded');
 add_action('smbb_wpcodetool_register_cron_tasks', 'smbb_signconnect_register_cron_tasks');
 add_action('admin_post_smbb_signconnect_test_storage', 'smbb_signconnect_test_storage');
 add_action('admin_post_smbb_signconnect_test_twilio', 'smbb_signconnect_test_twilio');
+add_action('admin_post_smbb_signconnect_generate_certificate', 'smbb_signconnect_generate_certificate');
+add_action('admin_post_smbb_signconnect_import_certificate', 'smbb_signconnect_import_certificate');
 
 function smbb_signconnect_loaded()
 {
@@ -189,6 +191,76 @@ function smbb_signconnect_test_twilio()
     }
 }
 
+function smbb_signconnect_generate_certificate()
+{
+    if (!current_user_can('manage_options')) {
+        wp_die(esc_html__('You are not allowed to manage SignConnect certification settings.', 'smbb-signconnect'));
+    }
+
+    check_admin_referer('smbb_signconnect_generate_certificate', '_wpnonce_certification');
+
+    $redirect_url = add_query_arg(array(
+        'page' => 'smbb-codetool-signconnect_settings',
+    ), admin_url('admin.php'));
+
+    try {
+        $service = new \Smbb\SignConnect\Service\CertificationService();
+        $result = $service->generateSelfSignedCertificate(array(
+            'common_name' => isset($_POST['certification_common_name']) ? sanitize_text_field((string) wp_unslash($_POST['certification_common_name'])) : '',
+            'organization' => isset($_POST['certification_organization']) ? sanitize_text_field((string) wp_unslash($_POST['certification_organization'])) : '',
+            'email' => isset($_POST['certification_email']) ? sanitize_email((string) wp_unslash($_POST['certification_email'])) : '',
+            'country' => isset($_POST['certification_country']) ? strtoupper(substr(sanitize_text_field((string) wp_unslash($_POST['certification_country'])), 0, 2)) : 'FR',
+            'valid_days' => isset($_POST['certification_valid_days']) ? absint($_POST['certification_valid_days']) : 365,
+        ));
+
+        smbb_signconnect_redirect_certification($redirect_url, 'success', sprintf(
+            /* translators: %s: certificate fingerprint. */
+            __('Self-signed certificate generated. Fingerprint: %s', 'smbb-signconnect'),
+            isset($result['fingerprint']) ? (string) $result['fingerprint'] : ''
+        ));
+    } catch (\Throwable $exception) {
+        smbb_signconnect_redirect_certification($redirect_url, 'error', sprintf(
+            /* translators: %s: error message. */
+            __('Certificate generation failed: %s', 'smbb-signconnect'),
+            $exception->getMessage()
+        ));
+    }
+}
+
+function smbb_signconnect_import_certificate()
+{
+    if (!current_user_can('manage_options')) {
+        wp_die(esc_html__('You are not allowed to manage SignConnect certification settings.', 'smbb-signconnect'));
+    }
+
+    check_admin_referer('smbb_signconnect_import_certificate', '_wpnonce_certification_import');
+
+    $redirect_url = add_query_arg(array(
+        'page' => 'smbb-codetool-signconnect_settings',
+    ), admin_url('admin.php'));
+
+    try {
+        $service = new \Smbb\SignConnect\Service\CertificationService();
+        $result = $service->importExternalCertificate(
+            isset($_FILES['certification_import_certificate']) && is_array($_FILES['certification_import_certificate']) ? $_FILES['certification_import_certificate'] : array(),
+            isset($_FILES['certification_import_private_key']) && is_array($_FILES['certification_import_private_key']) ? $_FILES['certification_import_private_key'] : array(),
+            isset($_POST['certification_import_private_key_passphrase']) ? (string) wp_unslash($_POST['certification_import_private_key_passphrase']) : ''
+        );
+
+        smbb_signconnect_redirect_certification($redirect_url, 'success', sprintf(
+            /* translators: %s: certificate fingerprint. */
+            __('External certificate imported. Fingerprint: %s', 'smbb-signconnect'),
+            isset($result['fingerprint']) ? (string) $result['fingerprint'] : ''
+        ));
+    } catch (\Throwable $exception) {
+        smbb_signconnect_redirect_certification($redirect_url, 'error', sprintf(
+            /* translators: %s: error message. */
+            __('Certificate import failed: %s', 'smbb-signconnect'),
+            $exception->getMessage()
+        ));
+    }
+}
+
 function smbb_signconnect_get_storage($storage_id)
 {
     global $wpdb;
@@ -256,4 +328,32 @@ function smbb_signconnect_twilio_test_notice()
 function smbb_signconnect_twilio_test_notice_key()
 {
     return 'smbb_signconnect_twilio_test_' . get_current_user_id();
+}
+
+function smbb_signconnect_redirect_certification($redirect_url, $type, $message)
+{
+    set_transient(smbb_signconnect_certification_notice_key(), array(
+        'type' => $type === 'success' ? 'success' : 'error',
+        'message' => (string) $message,
+    ), 60);
+
+    wp_safe_redirect(add_query_arg('smbb_signconnect_certification', '1', $redirect_url));
+    exit;
+}
+
+function smbb_signconnect_certification_notice()
+{
+    $notice_key = smbb_signconnect_certification_notice_key();
+    $notice = get_transient($notice_key);
+
+    if ($notice !== false) {
+        delete_transient($notice_key);
+    }
+
+    return is_array($notice) ? $notice : null;
+}
+
+function smbb_signconnect_certification_notice_key()
+{
+    return 'smbb_signconnect_certification_' . get_current_user_id();
 }
