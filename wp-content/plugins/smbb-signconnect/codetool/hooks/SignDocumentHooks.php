@@ -3,6 +3,7 @@
 namespace Smbb\SignConnect\CodeTool;
 
 use Smbb\SignConnect\Repository\StorageRepository;
+use Smbb\SignConnect\Repository\DocumentAuditRepository;
 use Smbb\SignConnect\Service\S3DocumentRemover;
 
 defined('ABSPATH') || exit;
@@ -33,6 +34,10 @@ final class SignDocumentHooks
 
         try {
             $this->remover->delete($storage, $row);
+            (new DocumentAuditRepository())->record((int) $row['id'], 'admin_deleted', array(
+                'storage_id' => $storage_id,
+                'storage_path' => isset($row['storage_path']) ? (string) $row['storage_path'] : '',
+            ), 'admin', get_current_user_id(), __('Document deleted from admin.', 'smbb-signconnect'));
         } catch (\Throwable $exception) {
             return sprintf(
                 /* translators: %s: S3 error message. */

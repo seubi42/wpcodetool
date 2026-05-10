@@ -892,6 +892,33 @@
     margin: 0;
 }
 
+.smbb-signconnect-public-proof {
+    display: grid;
+    grid-template-columns: minmax(120px, auto) minmax(0, 1fr);
+    gap: 8px 18px;
+    max-width: 520px;
+    margin: 22px auto 0;
+    padding: 16px;
+    text-align: left;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.smbb-signconnect-public-proof dt {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.smbb-signconnect-public-proof dd {
+    margin: 0;
+    color: #1d2327;
+    font-size: 13px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
 .smbb-signconnect-dashboard {
     display: grid;
     gap: 14px;
@@ -917,6 +944,32 @@
 .smbb-signconnect-dashboard-header p {
     color: #646970;
     font-size: 14px;
+}
+
+.smbb-signconnect-dashboard-filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.smbb-signconnect-filter {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 12px;
+    border: 1px solid #dcdcde;
+    border-radius: 999px;
+    background: #fff;
+    color: #3c434a;
+    font-size: 13px;
+    line-height: 1.2;
+    text-decoration: none;
+}
+
+.smbb-signconnect-filter.is-active {
+    border-color: var(--smbb-signconnect-brand, #2271b1);
+    background: color-mix(in srgb, var(--smbb-signconnect-brand, #2271b1) 9%, #fff);
+    color: var(--smbb-signconnect-brand, #2271b1);
 }
 
 .smbb-signconnect-dashboard-table-wrap {

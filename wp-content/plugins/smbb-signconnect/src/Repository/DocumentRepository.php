@@ -2,11 +2,14 @@
 
 namespace Smbb\SignConnect\Repository;
 
+use Smbb\SignConnect\Support\DocumentStatus;
+
 defined('ABSPATH') || exit;
 
 final class DocumentRepository
 {
     private static $has_system_log_column = null;
+    private static $column_cache = array();
 
     public function find($document_id)
     {
@@ -64,13 +67,20 @@ final class DocumentRepository
 
         $table = $wpdb->prefix . 'signdocument';
         $sql = $wpdb->prepare(
-            "SELECT * FROM {$table} WHERE id = %d AND token = %s AND deleted_flag = 0 LIMIT 1",
-            (int) $document_id,
-            (string) $token
+            "SELECT * FROM {$table} WHERE id = %d AND deleted_flag = 0 LIMIT 1",
+            (int) $document_id
         );
         $row = $wpdb->get_row($sql, ARRAY_A);
 
-        return is_array($row) ? $row : null;
+        if (!is_array($row)) {
+            return null;
+        }
+
+        if ($this->publicTokenMatches($row, $token)) {
+            return $row;
+        }
+
+        return null;
     }
 
     public function createUploadedDocument(array $data)
@@ -93,16 +103,22 @@ final class DocumentRepository
             'storage_id' => isset($data['storage_id']) ? (int) $data['storage_id'] : null,
             'storage_path' => isset($data['storage_path']) ? (string) $data['storage_path'] : '',
             'file_size' => isset($data['file_size']) ? max(0, (int) $data['file_size']) : 0,
-            'document_status' => 'draft',
+            'document_status' => DocumentStatus::DRAFT,
             'creation_date' => $now,
             'creation_by' => $user_id,
             'token' => isset($data['token']) ? (string) $data['token'] : '',
         );
+        $formats = array('%s', '%d', '%s', '%d', '%s', '%s', '%d', '%s');
+
+        if ($this->hasColumn('token_hash') && !empty($insert_data['token'])) {
+            $insert_data['token_hash'] = wp_hash_password((string) $insert_data['token']);
+            $formats[] = '%s';
+        }
 
         $result = $wpdb->insert(
             $table,
             $insert_data,
-            array('%s', '%d', '%s', '%d', '%s', '%s', '%d', '%s')
+            $formats
         );
 
         if ($result === false) {
@@ -132,7 +148,7 @@ final class DocumentRepository
                AND link_expires_at <> '0000-00-00 00:00:00'
                AND link_expires_at <= %s
                AND (sign_date IS NULL OR sign_date = '' OR sign_date = '0000-00-00 00:00:00')
-               AND (document_status IS NULL OR document_status <> 'signed')
+               AND (document_status IS NULL OR document_status NOT IN ('signed', 'refused'))
              ORDER BY link_expires_at ASC
              LIMIT %d",
             $now,
@@ -151,7 +167,7 @@ final class DocumentRepository
         $result = $wpdb->update(
             $table,
             array(
-                'document_status' => 'expired_deleted',
+                'document_status' => DocumentStatus::EXPIRED_DELETED,
                 'deleted_flag' => 1,
                 'deleted_date' => current_time('mysql'),
                 'deleted_by' => 0,
@@ -177,6 +193,10 @@ final class DocumentRepository
             return false;
         }
 
+        if (!DocumentStatus::canPrepareSend(isset($document['document_status']) ? $document['document_status'] : '')) {
+            return false;
+        }
+
         $signature_token = !empty($document['signature_token'])
             ? (string) $document['signature_token']
             : wp_generate_password(48, false, false);
@@ -187,7 +207,7 @@ final class DocumentRepository
          * formulaire d\'envoi sans invalider un lien de signature déjà genere.
          */
         $update_data = array(
-            'document_status' => 'ready_to_send',
+            'document_status' => DocumentStatus::READY_TO_SEND,
             'send_channel' => isset($data['send_channel']) ? (string) $data['send_channel'] : 'email',
             'recipient_email' => isset($data['recipient_email']) ? (string) $data['recipient_email'] : '',
             'recipient_phone' => isset($data['recipient_phone']) ? (string) $data['recipient_phone'] : '',
@@ -214,6 +234,69 @@ final class DocumentRepository
         }
 
         return $this->findOwnedByUser($document_id, $user_id);
+    }
+
+    public function markZoneReady($document_id, $user_id)
+    {
+        global $wpdb;
+
+        $document = $this->findOwnedByUser($document_id, $user_id);
+
+        $status = DocumentStatus::normalize(isset($document['document_status']) ? $document['document_status'] : '');
+
+        if (!$document || !in_array($status, array(DocumentStatus::DRAFT, DocumentStatus::ZONE_READY, DocumentStatus::READY_TO_SEND), true)) {
+            return false;
+        }
+
+        $table = $wpdb->prefix . 'signdocument';
+        $result = $wpdb->update(
+            $table,
+            array(
+                'document_status' => DocumentStatus::ZONE_READY,
+            ),
+            array(
+                'id' => (int) $document_id,
+                'creation_by' => (int) $user_id,
+            ),
+            array('%s'),
+            array('%d', '%d')
+        );
+
+        return $result !== false ? $this->findOwnedByUser($document_id, $user_id) : false;
+    }
+
+    public function rotatePublicToken($document_id, $user_id = 0)
+    {
+        global $wpdb;
+
+        $document = $user_id > 0 ? $this->findOwnedByUser($document_id, $user_id) : $this->find($document_id);
+
+        if (!$document || !DocumentStatus::canSend(isset($document['document_status']) ? $document['document_status'] : '')) {
+            return '';
+        }
+
+        $token = wp_generate_password(48, false, false);
+        $update_data = array(
+            'token' => $this->hasColumn('token_hash') ? '' : $token,
+        );
+        $formats = array('%s');
+
+        if ($this->hasColumn('token_hash')) {
+            $update_data['token_hash'] = wp_hash_password($token);
+            $formats[] = '%s';
+        }
+
+        $where = array('id' => (int) $document_id);
+        $where_formats = array('%d');
+
+        if ($user_id > 0) {
+            $where['creation_by'] = (int) $user_id;
+            $where_formats[] = '%d';
+        }
+
+        $result = $wpdb->update($wpdb->prefix . 'signdocument', $update_data, $where, $formats, $where_formats);
+
+        return $result !== false ? $token : '';
     }
 
     public function saveAiSuggestedMessage($document_id, $user_id, $message)
@@ -292,17 +375,65 @@ final class DocumentRepository
 
     private function hasSystemLogColumn()
     {
+        self::$has_system_log_column = $this->hasColumn('system_log');
+
+        return self::$has_system_log_column;
+    }
+
+    public function notePublicOpen($document_id)
+    {
         global $wpdb;
 
-        if (self::$has_system_log_column !== null) {
-            return self::$has_system_log_column;
+        if (!$this->hasColumn('last_opened_date') || !$this->hasColumn('opened_count')) {
+            return false;
         }
 
         $table = $wpdb->prefix . 'signdocument';
-        $column = $wpdb->get_var("SHOW COLUMNS FROM {$table} LIKE 'system_log'");
-        self::$has_system_log_column = !empty($column);
+        $sql = $wpdb->prepare(
+            "UPDATE {$table}
+             SET last_opened_date = %s,
+                 opened_count = COALESCE(opened_count, 0) + 1
+             WHERE id = %d
+               AND deleted_flag = 0",
+            current_time('mysql'),
+            (int) $document_id
+        );
 
-        return self::$has_system_log_column;
+        return $wpdb->query($sql) !== false;
+    }
+
+    private function publicTokenMatches(array $document, $token)
+    {
+        $token = (string) $token;
+
+        if ($token === '') {
+            return false;
+        }
+
+        if (!empty($document['token_hash']) && function_exists('wp_check_password')) {
+            return wp_check_password($token, (string) $document['token_hash']);
+        }
+
+        $legacy_token = isset($document['token']) ? (string) $document['token'] : '';
+
+        return $legacy_token !== '' && hash_equals($legacy_token, $token);
+    }
+
+    private function hasColumn($column)
+    {
+        global $wpdb;
+
+        $column = (string) $column;
+
+        if (array_key_exists($column, self::$column_cache)) {
+            return self::$column_cache[$column];
+        }
+
+        $table = $wpdb->prefix . 'signdocument';
+        $found = $wpdb->get_var($wpdb->prepare("SHOW COLUMNS FROM {$table} LIKE %s", $column));
+        self::$column_cache[$column] = !empty($found);
+
+        return self::$column_cache[$column];
     }
 
     public function markSent($document_id, $user_id)
@@ -310,20 +441,44 @@ final class DocumentRepository
         global $wpdb;
 
         $table = $wpdb->prefix . 'signdocument';
-        $result = $wpdb->update(
-            $table,
-            array(
-                'document_status' => 'sent',
-                'sent_date' => current_time('mysql'),
-                'sent_by' => (int) $user_id,
-            ),
-            array(
-                'id' => (int) $document_id,
-                'creation_by' => (int) $user_id,
-            ),
-            array('%s', '%s', '%d'),
-            array('%d', '%d')
-        );
+        $document = $this->findOwnedByUser($document_id, $user_id);
+
+        if (!$document || !DocumentStatus::canSend(isset($document['document_status']) ? $document['document_status'] : '')) {
+            return false;
+        }
+
+        if ($this->hasColumn('sent_count')) {
+            $sql = $wpdb->prepare(
+                "UPDATE {$table}
+                 SET document_status = %s,
+                     sent_date = %s,
+                     sent_by = %d,
+                     sent_count = COALESCE(sent_count, 0) + 1
+                 WHERE id = %d
+                   AND creation_by = %d",
+                DocumentStatus::SENT,
+                current_time('mysql'),
+                (int) $user_id,
+                (int) $document_id,
+                (int) $user_id
+            );
+            $result = $wpdb->query($sql);
+        } else {
+            $result = $wpdb->update(
+                $table,
+                array(
+                    'document_status' => DocumentStatus::SENT,
+                    'sent_date' => current_time('mysql'),
+                    'sent_by' => (int) $user_id,
+                ),
+                array(
+                    'id' => (int) $document_id,
+                    'creation_by' => (int) $user_id,
+                ),
+                array('%s', '%s', '%d'),
+                array('%d', '%d')
+            );
+        }
 
         return $result !== false ? $this->findOwnedByUser($document_id, $user_id) : false;
     }
@@ -332,11 +487,19 @@ final class DocumentRepository
     {
         global $wpdb;
 
+        $document = $this->findByPublicToken($document_id, $token);
+
+        if (!$document || !DocumentStatus::canPublicAnswer(isset($document['document_status']) ? $document['document_status'] : '')) {
+            return false;
+        }
+
+        $return_status = isset($data['signer_return_status']) ? (string) $data['signer_return_status'] : '';
+        $document_status = $return_status === 'refused' ? DocumentStatus::REFUSED : DocumentStatus::SIGNED;
         $table = $wpdb->prefix . 'signdocument';
         $result = $wpdb->update(
             $table,
             array(
-                'document_status' => 'signed',
+                'document_status' => $document_status,
                 'sign_date' => isset($data['sign_date']) ? (string) $data['sign_date'] : current_time('mysql'),
                 'signer_contact' => isset($data['signer_contact']) ? (string) $data['signer_contact'] : '',
                 'signer_first_name' => isset($data['signer_first_name']) ? (string) $data['signer_first_name'] : '',
@@ -359,10 +522,9 @@ final class DocumentRepository
             ),
             array(
                 'id' => (int) $document_id,
-                'token' => (string) $token,
             ),
             array('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%d', '%s', '%s'),
-            array('%d', '%s')
+            array('%d')
         );
 
         return $result !== false ? $this->findByPublicToken($document_id, $token) : false;

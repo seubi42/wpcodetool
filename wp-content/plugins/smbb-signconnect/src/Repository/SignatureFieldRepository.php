@@ -2,6 +2,8 @@
 
 namespace Smbb\SignConnect\Repository;
 
+use Smbb\SignConnect\Support\SignatureFieldType;
+
 defined('ABSPATH') || exit;
 
 final class SignatureFieldRepository
@@ -51,11 +53,12 @@ final class SignatureFieldRepository
                 'width' => $this->ratio($field['width']),
                 'height' => $this->ratio($field['height']),
                 'unit' => 'page_ratio',
-                'label' => isset($field['label']) ? sanitize_text_field((string) $field['label']) : __('Signature', 'smbb-signconnect'),
+                'label' => isset($field['label']) ? sanitize_text_field((string) $field['label']) : SignatureFieldType::label(SignatureFieldType::SIGNATURE),
+                'field_type' => SignatureFieldType::normalize(isset($field['field_type']) ? $field['field_type'] : SignatureFieldType::SIGNATURE),
                 'lastupdate_date' => $now,
                 'lastupdate_by' => $user_id,
             );
-            $formats = array('%d', '%d', '%f', '%f', '%f', '%f', '%s', '%s', '%s', '%d');
+            $formats = array('%d', '%d', '%f', '%f', '%f', '%f', '%s', '%s', '%s', '%s', '%d');
 
             if ($field_id > 0 && $this->documentOwnsField($existing, $field_id)) {
                 $result = $wpdb->update($table, $data, array('id' => $field_id), $formats, array('%d'));

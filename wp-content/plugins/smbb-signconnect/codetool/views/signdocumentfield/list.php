@@ -23,6 +23,10 @@ $table->setColumns(array(
         'label' => __('Page', 'smbb-signconnect'),
         'sort' => true,
     ),
+    'field_type' => array(
+        'label' => __('Type', 'smbb-signconnect'),
+        'sort' => true,
+    ),
     'label' => array(
         'label' => __('Label', 'smbb-signconnect'),
         'sort' => true,

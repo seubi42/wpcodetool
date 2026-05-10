@@ -6,6 +6,7 @@ use Smbb\SignConnect\Repository\DocumentRepository;
 use Smbb\SignConnect\Service\DocumentSendDeliveryService;
 use Smbb\SignConnect\Support\FileSizeFormatter;
 use Smbb\SignConnect\Support\FrontIcons;
+use Smbb\SignConnect\Support\DocumentStatus;
 use Smbb\SignConnect\Support\SignConnectSettings;
 
 defined('ABSPATH') || exit;
@@ -42,9 +43,12 @@ final class SignConnectDashboardShortcode extends AbstractFrontShortcode
 
         $user_id = get_current_user_id();
         $documents = $this->documents->listOwnedByUser($user_id, 80);
+        $active_filter = isset($_GET['signconnect_status']) ? sanitize_key((string) wp_unslash($_GET['signconnect_status'])) : '';
+        $documents = $this->filterDocuments($documents, $active_filter);
         $new_document_url = SignConnectSettings::postingPageUrl();
         $html = '<section class="smbb-signconnect-dashboard">';
         $html .= '<header class="smbb-signconnect-dashboard-header"><div><h3>' . esc_html__('Documents', 'smbb-signconnect') . '</h3><p>' . esc_html__('Shipments and reminders tracking.', 'smbb-signconnect') . '</p></div><a class="button" href="' . esc_url($new_document_url) . '">' . FrontIcons::icon('plus') . '<span>' . esc_html__('New document', 'smbb-signconnect') . '</span></a></header>';
+        $html .= $this->renderFilters($active_filter);
         $html .= '<div data-signconnect-dashboard-message></div>';
 
         if (!$documents) {
@@ -110,9 +114,15 @@ final class SignConnectDashboardShortcode extends AbstractFrontShortcode
         $can_resend = $this->canResend($document);
         $nonce = wp_create_nonce('smbb_signconnect_resend_' . $document_id);
         $created = !empty($document['creation_date']) ? mysql2date(get_option('date_format'), (string) $document['creation_date']) : '';
+        $sent_count = isset($document['sent_count']) ? (int) $document['sent_count'] : 0;
+        $opened_count = isset($document['opened_count']) ? (int) $document['opened_count'] : 0;
+        $meta = FileSizeFormatter::format(isset($document['file_size']) ? (int) $document['file_size'] : 0);
+        $meta .= $created !== '' ? ' · ' . $created : '';
+        $meta .= $sent_count > 0 ? ' · ' . sprintf(_n('%d send', '%d sends', $sent_count, 'smbb-signconnect'), $sent_count) : '';
+        $meta .= $opened_count > 0 ? ' · ' . sprintf(_n('%d open', '%d opens', $opened_count, 'smbb-signconnect'), $opened_count) : '';
 
         $html = '<tr data-signconnect-dashboard-row="' . esc_attr((string) $document_id) . '">';
-        $html .= '<td data-label="' . esc_attr__('File', 'smbb-signconnect') . '"><strong>' . esc_html(isset($document['filename']) ? (string) $document['filename'] : '') . '</strong><span>' . esc_html(FileSizeFormatter::format(isset($document['file_size']) ? (int) $document['file_size'] : 0)) . ($created !== '' ? ' · ' . esc_html($created) : '') . '</span></td>';
+        $html .= '<td data-label="' . esc_attr__('File', 'smbb-signconnect') . '"><strong>' . esc_html(isset($document['filename']) ? (string) $document['filename'] : '') . '</strong><span>' . esc_html($meta) . '</span></td>';
         $html .= '<td data-label="' . esc_attr__('State', 'smbb-signconnect') . '"><span class="smbb-signconnect-status is-' . esc_attr($status['class']) . '">' . esc_html($status['label']) . '</span></td>';
         $html .= '<td data-label="' . esc_attr__('Expiration', 'smbb-signconnect') . '">' . $expires . '</td>';
         $html .= '<td data-label="' . esc_attr__('Recipient', 'smbb-signconnect') . '">' . esc_html($recipient !== '' ? $recipient : '-') . '</td>';
@@ -145,17 +155,10 @@ final class SignConnectDashboardShortcode extends AbstractFrontShortcode
             return array('label' => __('Expired', 'smbb-signconnect'), 'class' => 'expired');
         }
 
-        $status = isset($document['document_status']) ? (string) $document['document_status'] : 'draft';
-        $labels = array(
-            'draft' => __('Draft', 'smbb-signconnect'),
-            'ready_to_send' => __('Ready to send', 'smbb-signconnect'),
-            'sent' => __('Sent', 'smbb-signconnect'),
-            'signed' => __('Signed', 'smbb-signconnect'),
-            'expired_deleted' => __('Purged', 'smbb-signconnect'),
-        );
+        $status = isset($document['document_status']) ? (string) $document['document_status'] : DocumentStatus::DRAFT;
 
         return array(
-            'label' => isset($labels[$status]) ? $labels[$status] : ucfirst(str_replace('_', ' ', $status)),
+            'label' => DocumentStatus::label($status),
             'class' => sanitize_html_class($status),
         );
     }
@@ -189,7 +192,7 @@ final class SignConnectDashboardShortcode extends AbstractFrontShortcode
 
         $status = isset($document['document_status']) ? (string) $document['document_status'] : '';
 
-        return in_array($status, array('ready_to_send', 'sent'), true) && $this->recipient($document) !== '';
+        return in_array($status, array(DocumentStatus::READY_TO_SEND, DocumentStatus::SENT), true) && $this->recipient($document) !== '';
     }
 
     private function continueUrl(array $document)
@@ -204,13 +207,13 @@ final class SignConnectDashboardShortcode extends AbstractFrontShortcode
             return '';
         }
 
-        $status = isset($document['document_status']) ? (string) $document['document_status'] : 'draft';
+        $status = isset($document['document_status']) ? (string) $document['document_status'] : DocumentStatus::DRAFT;
 
-        if (in_array($status, array('sent', 'signed', 'expired_deleted'), true)) {
+        if (in_array($status, array(DocumentStatus::SENT, DocumentStatus::SIGNED, DocumentStatus::REFUSED, DocumentStatus::EXPIRED_DELETED), true)) {
             return '';
         }
 
-        $step = $status === 'ready_to_send' ? 'send' : 'zone';
+        $step = $status === DocumentStatus::READY_TO_SEND ? 'send' : 'zone';
 
         return add_query_arg(array(
             'signconnect_document' => $document_id,
@@ -223,7 +226,7 @@ final class SignConnectDashboardShortcode extends AbstractFrontShortcode
         $document_id = isset($document['id']) ? (int) $document['id'] : 0;
         $status = isset($document['document_status']) ? (string) $document['document_status'] : '';
 
-        if ($document_id < 1 || $status !== 'signed' || empty($document['signed_storage_path'])) {
+        if ($document_id < 1 || !in_array($status, array(DocumentStatus::SIGNED, DocumentStatus::REFUSED), true) || empty($document['signed_storage_path'])) {
             return '';
         }
 
@@ -245,6 +248,48 @@ final class SignConnectDashboardShortcode extends AbstractFrontShortcode
         $expires_at = strtotime((string) $document['link_expires_at']);
 
         return $expires_at > 0 && $expires_at < current_time('timestamp');
+    }
+
+    private function filterDocuments(array $documents, $active_filter)
+    {
+        if ($active_filter === '') {
+            return $documents;
+        }
+
+        return array_values(array_filter($documents, function ($document) use ($active_filter) {
+            if ($active_filter === DocumentStatus::EXPIRED) {
+                return $this->isExpired($document) && empty($document['sign_date']);
+            }
+
+            $status = isset($document['document_status']) ? (string) $document['document_status'] : DocumentStatus::DRAFT;
+
+            return $status === $active_filter;
+        }));
+    }
+
+    private function renderFilters($active_filter)
+    {
+        $filters = array(
+            '' => __('All', 'smbb-signconnect'),
+            DocumentStatus::DRAFT => __('Drafts', 'smbb-signconnect'),
+            DocumentStatus::ZONE_READY => __('Ready areas', 'smbb-signconnect'),
+            DocumentStatus::SENT => __('Sent', 'smbb-signconnect'),
+            DocumentStatus::SIGNED => __('Signed', 'smbb-signconnect'),
+            DocumentStatus::REFUSED => __('Refused', 'smbb-signconnect'),
+            DocumentStatus::EXPIRED => __('Expired', 'smbb-signconnect'),
+        );
+        $base_url = remove_query_arg('signconnect_status', $this->currentUrl());
+        $html = '<nav class="smbb-signconnect-dashboard-filters" aria-label="' . esc_attr__('Document filters', 'smbb-signconnect') . '">';
+
+        foreach ($filters as $status => $label) {
+            $url = $status === '' ? $base_url : add_query_arg('signconnect_status', $status, $base_url);
+            $class = $active_filter === $status ? ' is-active' : '';
+            $html .= '<a class="smbb-signconnect-filter' . esc_attr($class) . '" href="' . esc_url($url) . '">' . esc_html($label) . '</a>';
+        }
+
+        $html .= '</nav>';
+
+        return $html;
     }
 
     private function currentUrl()

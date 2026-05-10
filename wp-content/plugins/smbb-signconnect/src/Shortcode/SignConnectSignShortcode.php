@@ -3,6 +3,7 @@
 namespace Smbb\SignConnect\Shortcode;
 
 use Smbb\SignConnect\Repository\DocumentRepository;
+use Smbb\SignConnect\Repository\DocumentAuditRepository;
 use Smbb\SignConnect\Repository\SignatureFieldRepository;
 use Smbb\SignConnect\Repository\StorageRepository;
 use Smbb\SignConnect\Service\PublicSignatureService;
@@ -26,19 +27,22 @@ final class SignConnectSignShortcode extends AbstractFrontShortcode
     private $signature_fields;
     private $streamer;
     private $public_signature;
+    private $audit;
 
     public function __construct(
         StorageRepository $storages = null,
         DocumentRepository $documents = null,
         S3DocumentStreamer $streamer = null,
         PublicSignatureService $public_signature = null,
-        SignatureFieldRepository $signature_fields = null
+        SignatureFieldRepository $signature_fields = null,
+        DocumentAuditRepository $audit = null
     ) {
         $this->storages = $storages ?: new StorageRepository();
         $this->documents = $documents ?: new DocumentRepository();
         $this->signature_fields = $signature_fields ?: new SignatureFieldRepository();
         $this->streamer = $streamer ?: new S3DocumentStreamer();
         $this->public_signature = $public_signature ?: new PublicSignatureService($this->documents);
+        $this->audit = $audit ?: new DocumentAuditRepository();
     }
 
     public function hooks()
@@ -110,7 +114,7 @@ final class SignConnectSignShortcode extends AbstractFrontShortcode
         }
 
         wp_send_json_success(array(
-            'message' => isset($result['message']) ? $result['message'] : __('Document signed successfully.', 'smbb-signconnect'),
+            'message' => isset($result['message']) ? $result['message'] : __('Your response has been transmitted.', 'smbb-signconnect'),
         ));
     }
 
@@ -168,6 +172,11 @@ final class SignConnectSignShortcode extends AbstractFrontShortcode
             return $this->renderNotice('error', __('This signature link has expired.', 'smbb-signconnect'));
         }
 
+        $this->documents->notePublicOpen($document_id);
+        $this->audit->record($document_id, 'public_opened', array(
+            'filename' => isset($document['filename']) ? (string) $document['filename'] : '',
+        ), 'signer', null, __('Public signature page opened.', 'smbb-signconnect'));
+
         $pdf_url = add_query_arg(array(
             'action' => 'smbb_signconnect_public_pdf_document',
             'document_id' => $encoded_id,
@@ -178,10 +187,12 @@ final class SignConnectSignShortcode extends AbstractFrontShortcode
 
         if (!empty($document['sign_date'])) {
             $html = '<section class="smbb-signconnect-public-sign">';
-            $html .= '<section class="smbb-signconnect-thank-you">';
-            $html .= '<h3>' . esc_html__('Thank you, the document is signed.', 'smbb-signconnect') . '</h3>';
-            $html .= '<p>' . esc_html__('You can download the PDF below.', 'smbb-signconnect') . '</p>';
-            $html .= '<a class="button" href="' . esc_url($download_url) . '">' . esc_html__('Download PDF', 'smbb-signconnect') . '</a>';
+            $html .= '<section class="smbb-signconnect-send-success smbb-signconnect-public-thanks" role="status" aria-live="polite">';
+            $html .= '<div class="smbb-signconnect-send-success-mark" aria-hidden="true"><span></span><i></i><i></i><i></i><i></i></div>';
+            $html .= '<h3>' . esc_html__('Thank you for your response.', 'smbb-signconnect') . '</h3>';
+            $html .= '<p>' . esc_html__('Your response has already been transmitted. You can download the PDF below.', 'smbb-signconnect') . '</p>';
+            $html .= $this->renderProofList($document);
+            $html .= '<p><a class="button" href="' . esc_url($download_url) . '">' . esc_html__('Download PDF', 'smbb-signconnect') . '</a></p>';
             $html .= '</section>';
             $html .= '</section>';
 
@@ -232,7 +243,7 @@ final class SignConnectSignShortcode extends AbstractFrontShortcode
             $html .= '</div>';
         }
         $html .= '<label class="smbb-signconnect-field" data-signconnect-signature-field><span>' . esc_html__('Signature', 'smbb-signconnect') . '</span><canvas class="smbb-signconnect-signature-pad" width="720" height="220" tabindex="0" data-signconnect-signature-pad></canvas></label>';
-        $html .= '<div class="smbb-signconnect-document-actions"><button type="button" class="button is-secondary" data-signconnect-clear-signature>' . esc_html__('Clear', 'smbb-signconnect') . '</button><button type="submit" class="button">' . esc_html__('Sign document', 'smbb-signconnect') . '</button></div>';
+        $html .= '<div class="smbb-signconnect-document-actions"><button type="button" class="button is-secondary" data-signconnect-clear-signature>' . esc_html__('Clear', 'smbb-signconnect') . '</button><button type="submit" class="button">' . esc_html__('Submit response', 'smbb-signconnect') . '</button></div>';
         $html .= '<div data-signconnect-public-sign-message></div>';
         $html .= '</form>';
         $html .= '</section>';
@@ -271,7 +282,39 @@ final class SignConnectSignShortcode extends AbstractFrontShortcode
                 'width' => (float) $field['width'],
                 'height' => (float) $field['height'],
                 'label' => isset($field['label']) ? (string) $field['label'] : __('Signature', 'smbb-signconnect'),
+                'field_type' => isset($field['field_type']) ? (string) $field['field_type'] : 'signature',
             );
         }, $this->signature_fields->listForDocument($document_id));
+    }
+
+    private function renderProofList(array $document)
+    {
+        $signed_at = !empty($document['sign_date'])
+            ? mysql2date(get_option('date_format') . ' ' . get_option('time_format'), (string) $document['sign_date'])
+            : '';
+        $name = trim((isset($document['signer_first_name']) ? (string) $document['signer_first_name'] : '') . ' ' . (isset($document['signer_last_name']) ? (string) $document['signer_last_name'] : ''));
+        $status = isset($document['signer_return_status']) ? (string) $document['signer_return_status'] : '';
+        $status_label = $status === 'approved'
+            ? __('Good for approval', 'smbb-signconnect')
+            : ($status === 'refused' ? __('Refusal', 'smbb-signconnect') : __('Signature', 'smbb-signconnect'));
+        $rows = array(
+            __('Response', 'smbb-signconnect') => $status_label,
+            __('Signer', 'smbb-signconnect') => $name,
+            __('Signed on', 'smbb-signconnect') => $signed_at,
+            __('Place', 'smbb-signconnect') => isset($document['signer_place']) ? (string) $document['signer_place'] : '',
+        );
+        $html = '<dl class="smbb-signconnect-public-proof">';
+
+        foreach ($rows as $label => $value) {
+            if ($value === '') {
+                continue;
+            }
+
+            $html .= '<dt>' . esc_html($label) . '</dt><dd>' . esc_html($value) . '</dd>';
+        }
+
+        $html .= '</dl>';
+
+        return $html;
     }
 }

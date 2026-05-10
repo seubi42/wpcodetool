@@ -3,6 +3,7 @@
 namespace Smbb\SignConnect\Service;
 
 use Smbb\SignConnect\Repository\DocumentRepository;
+use Smbb\SignConnect\Repository\DocumentAuditRepository;
 use Smbb\SignConnect\Repository\StorageRepository;
 
 defined('ABSPATH') || exit;
@@ -22,15 +23,18 @@ final class ExpiredDocumentPurgeService
     private $documents;
     private $storages;
     private $remover;
+    private $audit;
 
     public function __construct(
         DocumentRepository $documents = null,
         StorageRepository $storages = null,
-        S3DocumentRemover $remover = null
+        S3DocumentRemover $remover = null,
+        DocumentAuditRepository $audit = null
     ) {
         $this->documents = $documents ?: new DocumentRepository();
         $this->storages = $storages ?: new StorageRepository();
         $this->remover = $remover ?: new S3DocumentRemover();
+        $this->audit = $audit ?: new DocumentAuditRepository();
     }
 
     public function run($limit = 100)
@@ -56,6 +60,10 @@ final class ExpiredDocumentPurgeService
 
                 $this->remover->delete($storage, $document);
                 $this->documents->markDeletedByCron((int) $document['id']);
+                $this->audit->record((int) $document['id'], 'expired_deleted', array(
+                    'link_expires_at' => isset($document['link_expires_at']) ? (string) $document['link_expires_at'] : '',
+                    'storage_id' => $storage_id,
+                ), 'system', null, __('Expired document deleted.', 'smbb-signconnect'));
                 $result['deleted']++;
             } catch (\Throwable $exception) {
                 $result['failed']++;

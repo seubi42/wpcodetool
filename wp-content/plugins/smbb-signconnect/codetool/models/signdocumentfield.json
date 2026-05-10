@@ -65,6 +65,12 @@
       "length": 120,
       "nullable": true
     },
+    "field_type": {
+      "type": "varchar",
+      "length": 30,
+      "nullable": false,
+      "default": "signature"
+    },
     "creation_date": {
       "type": "datetime",
       "nullable": true,
@@ -98,6 +104,11 @@
       "name": "idx_document_page",
       "type": "index",
       "columns": ["document_id", "page_number"]
+    },
+    {
+      "name": "idx_field_type",
+      "type": "index",
+      "columns": ["field_type"]
     }
   ],
   "admin": {

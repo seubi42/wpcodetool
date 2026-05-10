@@ -307,6 +307,8 @@ final class SignConnectPostShortcode extends AbstractFrontShortcode
                 'y' => (float) $field['y'],
                 'width' => (float) $field['width'],
                 'height' => (float) $field['height'],
+                'field_type' => isset($field['field_type']) ? (string) $field['field_type'] : 'signature',
+                'label' => isset($field['label']) ? (string) $field['label'] : __('Signature', 'smbb-signconnect'),
             );
         }, $fields));
 

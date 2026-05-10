@@ -1,0 +1,138 @@
+{
+  "name": "signauditlog",
+  "label": "Sign audit log",
+  "pluralLabel": "Sign audit logs",
+  "description": "Audit trail for SignConnect document lifecycle events.",
+  "storage": {
+    "table": "signauditlog",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "document_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false
+    },
+    "event_type": {
+      "type": "varchar",
+      "length": 80,
+      "nullable": false,
+      "default": ""
+    },
+    "event_date": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "actor_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "actor_type": {
+      "type": "varchar",
+      "length": 30,
+      "nullable": false,
+      "default": "system"
+    },
+    "actor_ip": {
+      "type": "varchar",
+      "length": 60,
+      "nullable": true
+    },
+    "actor_user_agent": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": true
+    },
+    "message": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": true
+    },
+    "context": {
+      "type": "longtext",
+      "nullable": true
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_document_id",
+      "type": "index",
+      "columns": ["document_id"]
+    },
+    {
+      "name": "idx_event_type",
+      "type": "index",
+      "columns": ["event_type"]
+    },
+    {
+      "name": "idx_event_date",
+      "type": "index",
+      "columns": [
+        {
+          "name": "event_date",
+          "order": "desc"
+        }
+      ]
+    }
+  ],
+  "admin": {
+    "enabled": true,
+    "capability": "manage_options",
+    "menu": {
+      "placement": "submenu",
+      "parent": "smbb-codetool-signconnect",
+      "title": "Events",
+      "icon": "dashicons-clipboard",
+      "position": 30
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "list": {
+      "perPage": 30,
+      "search": {
+        "enabled": true,
+        "provider": "default",
+        "fields": ["event_type", "message", "context"],
+        "mode": "or",
+        "placeholder": "Search events"
+      },
+      "filters": {
+        "enabled": true,
+        "fields": [
+          {
+            "field": "document_id",
+            "label": "Document",
+            "operators": ["eq"]
+          },
+          {
+            "field": "event_type",
+            "label": "Event",
+            "operators": ["contains", "eq"]
+          },
+          {
+            "field": "event_date",
+            "label": "Date",
+            "operators": ["eq", "gt", "gte", "lt", "lte"]
+          }
+        ]
+      },
+      "defaultOrder": {
+        "by": "id",
+        "direction": "desc"
+      }
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

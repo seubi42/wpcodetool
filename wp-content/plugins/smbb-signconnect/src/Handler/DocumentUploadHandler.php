@@ -3,6 +3,7 @@
 namespace Smbb\SignConnect\Handler;
 
 use Smbb\SignConnect\Repository\DocumentRepository;
+use Smbb\SignConnect\Repository\DocumentAuditRepository;
 use Smbb\SignConnect\Repository\StorageRepository;
 use Smbb\SignConnect\Service\DocumentAiEnrichmentService;
 use Smbb\SignConnect\Service\S3DocumentUploader;
@@ -15,17 +16,20 @@ final class DocumentUploadHandler
 {
     private $storages;
     private $documents;
+    private $audit;
     private $uploader;
     private $ai_enrichment;
 
     public function __construct(
         StorageRepository $storages = null,
         DocumentRepository $documents = null,
+        DocumentAuditRepository $audit = null,
         S3DocumentUploader $uploader = null,
         DocumentAiEnrichmentService $ai_enrichment = null
     ) {
         $this->storages = $storages ?: new StorageRepository();
         $this->documents = $documents ?: new DocumentRepository();
+        $this->audit = $audit ?: new DocumentAuditRepository();
         $this->uploader = $uploader ?: new S3DocumentUploader();
         $this->ai_enrichment = $ai_enrichment ?: new DocumentAiEnrichmentService($this->documents);
     }
@@ -110,6 +114,13 @@ final class DocumentUploadHandler
             if (!$document_id) {
                 return array('success' => false, 'message' => __('The document was uploaded, but the database record could not be created.', 'smbb-signconnect'));
             }
+
+            $this->audit->record((int) $document_id, 'uploaded', array(
+                'filename' => isset($file['name']) ? (string) $file['name'] : '',
+                'storage_id' => $storage_id,
+                'storage_path' => $storage_path,
+                'file_size' => isset($file['size']) ? (int) $file['size'] : 0,
+            ), 'owner', $user_id, __('Document uploaded.', 'smbb-signconnect'));
 
             $this->ai_enrichment->enrichAfterUpload((int) $document_id, $user_id, $file);
 

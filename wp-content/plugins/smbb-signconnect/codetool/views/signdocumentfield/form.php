@@ -4,6 +4,9 @@ defined('ABSPATH') || exit;
 
 $button = isset($button) ? $button : 'Save';
 $resource_label = isset($resource_label) ? $resource_label : __('Signature field', 'smbb-signconnect');
+$type_options = class_exists('\Smbb\SignConnect\Support\SignatureFieldType')
+    ? array_flip(\Smbb\SignConnect\Support\SignatureFieldType::labels())
+    : array(__('Signature', 'smbb-signconnect') => 'signature');
 
 $fields = array(
     $form->section(
@@ -20,6 +23,7 @@ $fields = array(
                 $form->number(__('Width', 'smbb-signconnect'), array('step' => 0.000001))->setName('width')->required(),
                 $form->number(__('Height', 'smbb-signconnect'), array('step' => 0.000001))->setName('height')->required()
             ),
+            $form->select(__('Field type', 'smbb-signconnect'))->setName('field_type')->setOptions($type_options),
             $form->text(__('Label', 'smbb-signconnect'))->setName('label')
         )
     )->setIcon('dashicons-edit')

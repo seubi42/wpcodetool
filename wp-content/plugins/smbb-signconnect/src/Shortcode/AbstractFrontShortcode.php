@@ -3,6 +3,7 @@
 namespace Smbb\SignConnect\Shortcode;
 
 use Smbb\SignConnect\Support\SignConnectSettings;
+use Smbb\SignConnect\Support\SignatureFieldType;
 
 defined('ABSPATH') || exit;
 
@@ -72,6 +73,12 @@ abstract class AbstractFrontShortcode
                 __('There we go!', 'smbb-signconnect'),
                 __('Mission started!', 'smbb-signconnect'),
             ),
+            'publicThanksTitles' => array(
+                __('Thank you for your response.', 'smbb-signconnect'),
+                __('Response sent.', 'smbb-signconnect'),
+                __('Your response has been recorded.', 'smbb-signconnect'),
+                __('Thanks, it is transmitted.', 'smbb-signconnect'),
+            ),
             'i18n' => array(
                 'sendSuccessMessage' => __('Your signature request has been sent.', 'smbb-signconnect'),
                 'resendSent' => __('Reminder sent.', 'smbb-signconnect'),
@@ -81,7 +88,8 @@ abstract class AbstractFrontShortcode
                 'gpsSaved' => __('GPS coordinates saved. The city name will be enriched later.', 'smbb-signconnect'),
                 'pleaseSign' => __('Please sign in the expected area.', 'smbb-signconnect'),
                 'documentSigned' => __('Document signed.', 'smbb-signconnect'),
-                'publicThanksTitle' => __('Thank you, the document is signed.', 'smbb-signconnect'),
+                'publicThanksTitle' => __('Thank you for your response.', 'smbb-signconnect'),
+                'publicThanksMessage' => __('Your response has been transmitted.', 'smbb-signconnect'),
                 'downloadPdf' => __('Download PDF', 'smbb-signconnect'),
                 'signatureZoneLabel' => __('Your signature will appear here', 'smbb-signconnect'),
                 'drawModeOn' => __('Drawing mode enabled: draw an area with one finger.', 'smbb-signconnect'),
@@ -95,6 +103,17 @@ abstract class AbstractFrontShortcode
                 'locating' => __('Locating...', 'smbb-signconnect'),
                 'cityLookup' => __('City...', 'smbb-signconnect'),
                 'suggestWithAi' => __('Suggest with AI', 'smbb-signconnect'),
+                'fieldType' => __('Field type', 'smbb-signconnect'),
+                'fieldTypeLabels' => SignatureFieldType::labels(),
+                'fieldTypePublicLabels' => array(
+                    SignatureFieldType::SIGNATURE => __('Your signature will appear here', 'smbb-signconnect'),
+                    SignatureFieldType::LAST_NAME => __('Your last name will appear here', 'smbb-signconnect'),
+                    SignatureFieldType::FIRST_NAME => __('Your first name will appear here', 'smbb-signconnect'),
+                    SignatureFieldType::FULL_NAME => __('Your full name will appear here', 'smbb-signconnect'),
+                    SignatureFieldType::PLACE => __('The signing place will appear here', 'smbb-signconnect'),
+                    SignatureFieldType::DATE => __('The signing date will appear here', 'smbb-signconnect'),
+                    SignatureFieldType::APPROVAL => __('Good for approval will appear here', 'smbb-signconnect'),
+                ),
             ),
         ));
     }

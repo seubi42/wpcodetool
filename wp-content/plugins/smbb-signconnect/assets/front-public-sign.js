@@ -265,7 +265,7 @@
                     throw new Error(payload && payload.data && payload.data.message ? payload.data.message : 'Signature failed.');
                 }
 
-                showPublicSignatureThanks(form, payload.data.message || configText('documentSigned') || 'Document signed.');
+                showPublicSignatureThanks(form, payload.data.message || configText('publicThanksMessage') || 'Your response has been transmitted.', payload.data.proof || {});
             })
             .catch(function (error) {
                 showMessage(message, 'error', error.message || 'Signature failed.');
@@ -321,9 +321,20 @@
         }
     }
 
-    function showPublicSignatureThanks(form, message) {
+    function showPublicSignatureThanks(form, message, proof) {
         var shell = form.closest('.smbb-signconnect-public-sign');
         var downloadUrl = form.dataset.downloadUrl || '';
+        var titles = [
+            'Thank you for your response.',
+            'Response sent.',
+            'Your response has been recorded.',
+            'Thanks, it is transmitted.'
+        ];
+        var configuredTitles = window.SmbbSignConnect && SmbbSignConnect.publicThanksTitles ? SmbbSignConnect.publicThanksTitles : [];
+        var title;
+
+        titles = configuredTitles.length ? configuredTitles : titles;
+        title = titles[Math.floor(Math.random() * titles.length)];
 
         if (!shell) {
             showMessage(form.querySelector('[data-signconnect-public-sign-message]'), 'success', message);
@@ -331,10 +342,31 @@
         }
 
         shell.innerHTML = ''
-            + '<section class="smbb-signconnect-thank-you">'
-            + '<h3>' + escapeHtml(configText('publicThanksTitle') || 'Thank you, the document is signed.') + '</h3>'
-            + '<p>' + escapeHtml(message) + '</p>'
-            + (downloadUrl ? '<a class="button" href="' + escapeHtml(downloadUrl) + '">Download PDF</a>' : '')
+            + '<section class="smbb-signconnect-send-success smbb-signconnect-public-thanks" role="status" aria-live="polite">'
+            + '<div class="smbb-signconnect-send-success-mark" aria-hidden="true">'
+            + '<span></span>'
+            + '<i></i><i></i><i></i><i></i>'
+            + '</div>'
+            + '<h3>' + escapeHtml(title || configText('publicThanksTitle') || 'Thank you for your response.') + '</h3>'
+            + '<p>' + escapeHtml(message || configText('publicThanksMessage') || 'Your response has been transmitted.') + '</p>'
+            + renderProof(proof || {})
+            + (downloadUrl ? '<p><a class="button" href="' + escapeHtml(downloadUrl) + '">' + escapeHtml(configText('downloadPdf') || 'Download PDF') + '</a></p>' : '')
             + '</section>';
+    }
+
+    function renderProof(proof) {
+        var rows = [];
+
+        Object.keys(proof || {}).forEach(function (label) {
+            if (proof[label]) {
+                rows.push('<dt>' + escapeHtml(label) + '</dt><dd>' + escapeHtml(proof[label]) + '</dd>');
+            }
+        });
+
+        if (!rows.length) {
+            return '';
+        }
+
+        return '<dl class="smbb-signconnect-public-proof">' + rows.join('') + '</dl>';
     }
 }());

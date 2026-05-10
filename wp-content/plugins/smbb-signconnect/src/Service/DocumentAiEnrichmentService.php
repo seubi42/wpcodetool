@@ -230,6 +230,7 @@ final class DocumentAiEnrichmentService
             'width' => $this->ratio(isset($zone['width']) ? $zone['width'] : 0.32, 0.32),
             'height' => $this->ratio(isset($zone['height']) ? $zone['height'] : 0.10, 0.10),
             'label' => __('Suggested signature', 'smbb-signconnect'),
+            'field_type' => 'signature',
         );
 
         $field['width'] = max(0.18, min(0.45, $field['width']));

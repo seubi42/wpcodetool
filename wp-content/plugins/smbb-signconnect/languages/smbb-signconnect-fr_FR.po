@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: SignConnect 0.1.44\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-09 00:00+0000\n"
-"PO-Revision-Date: 2026-05-09 00:00+0000\n"
+"PO-Revision-Date: 2026-05-10 00:00+0000\n"
 "Last-Translator: SMBB\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -877,7 +877,7 @@ msgstr "Date de signature"
 #: smbb-signconnect/codetool/views/signdocument/form.php:13
 #: smbb-signconnect/src/Shortcode/SignConnectSignShortcode.php:235
 msgid "Sign document"
-msgstr "Document de signature"
+msgstr "Document à signer"
 
 #: smbb-signconnect/codetool/views/signdocument/details.php:10
 msgid "Sign document details"
@@ -1437,3 +1437,249 @@ msgstr "Localisation..."
 #: generated
 msgid "City..."
 msgstr "Ville..."
+
+#: generated
+msgid "Actor"
+msgstr "Acteur"
+
+#: generated
+msgid "All"
+msgstr "Tous"
+
+#: generated
+msgid "Audit trail"
+msgstr "Journal d’audit"
+
+#: generated
+msgid "Date"
+msgstr "Date"
+
+#: generated
+msgid "Document deleted from admin."
+msgstr "Document supprimé depuis l’administration."
+
+#: generated
+msgid "Document filters"
+msgstr "Filtres des documents"
+
+#: generated
+msgid "Document refused"
+msgstr "Document refusé"
+
+#: generated
+msgid "Document refused."
+msgstr "Document refusé."
+
+#: generated
+msgid "Document refused: %s"
+msgstr "Document refusé : %s"
+
+#: generated
+msgid "Document signed"
+msgstr "Document signé"
+
+#: generated
+msgid "Document uploaded."
+msgstr "Document déposé."
+
+#: generated
+msgid "Drafts"
+msgstr "Brouillons"
+
+#: generated
+msgid "Event"
+msgstr "Événement"
+
+#: generated
+msgid "Expired and deleted"
+msgstr "Expiré et supprimé"
+
+#: generated
+msgid "Expired document deleted."
+msgstr "Document expiré supprimé."
+
+#: generated
+msgid "Field type"
+msgstr "Type de champ"
+
+#: generated
+msgid "Full name"
+msgstr "Nom et prénom"
+
+#: generated
+msgid "Good for approval will appear here"
+msgstr "Le bon pour accord sera ici"
+
+#: generated
+msgid "Please define at least one signature area before sending."
+msgstr "Veuillez définir au moins une zone de signature avant l’envoi."
+
+#: generated
+msgid "Public signature page opened."
+msgstr "Page publique de signature ouverte."
+
+#: generated
+msgid "Ready areas"
+msgstr "Zones prêtes"
+
+#: generated
+msgid "Refused"
+msgstr "Refusé"
+
+#: generated
+msgid "Signature area ready"
+msgstr "Zone de signature prête"
+
+#: generated
+msgid "The document does not exist."
+msgstr "Le document n’existe pas."
+
+#: generated
+msgid "The document was signed by %s."
+msgstr "Le document a été signé par %s."
+
+#: generated
+msgid "The document was signed."
+msgstr "Le document a été signé."
+
+#: generated
+msgid "The final PDF is attached to this email when available."
+msgstr "Le PDF final est joint à cet e-mail lorsqu’il est disponible."
+
+#: generated
+msgid "The recipient refused the document."
+msgstr "Le destinataire a refusé le document."
+
+#: generated
+msgid "The recipient replied to %s."
+msgstr "Le destinataire a répondu à %s."
+
+#: generated
+msgid "The signing date will appear here"
+msgstr "La date de signature sera ici"
+
+#: generated
+msgid "The signing place will appear here"
+msgstr "Le lieu de signature sera ici"
+
+#: generated
+msgid "This document can no longer be edited."
+msgstr "Ce document ne peut plus être modifié."
+
+#: generated
+msgid "This document can no longer be sent."
+msgstr "Ce document ne peut plus être envoyé."
+
+#: generated
+msgid "This document is not waiting for a signature anymore."
+msgstr "Ce document n’attend plus de signature."
+
+#: generated
+msgid "Too many attempts. Please wait a moment before trying again."
+msgstr "Trop de tentatives. Veuillez patienter un instant avant de réessayer."
+
+#: generated
+msgid "Type"
+msgstr "Type"
+
+#: generated
+msgid "Your first name will appear here"
+msgstr "Votre prénom sera ici"
+
+#: generated
+msgid "Your full name will appear here"
+msgstr "Votre nom et prénom seront ici"
+
+#: generated
+msgid "Your last name will appear here"
+msgstr "Votre nom sera ici"
+
+#: generated
+msgid "%1$s document, %2$s stored"
+msgid_plural "%1$s documents, %2$s stored"
+msgstr[0] "%1$s document, %2$s stocké"
+msgstr[1] "%1$s documents, %2$s stockés"
+
+#: generated
+msgid "%d open"
+msgid_plural "%d opens"
+msgstr[0] "%d ouverture"
+msgstr[1] "%d ouvertures"
+
+#: generated
+msgid "%d send"
+msgid_plural "%d sends"
+msgstr[0] "%d envoi"
+msgstr[1] "%d envois"
+
+#: generated
+msgid "Thank you for your response."
+msgstr "Merci pour votre retour."
+
+#: generated
+msgid "Response sent."
+msgstr "Réponse transmise."
+
+#: generated
+msgid "Your response has been recorded."
+msgstr "Votre réponse a été enregistrée."
+
+#: generated
+msgid "Thanks, it is transmitted."
+msgstr "Merci, c’est transmis."
+
+#: generated
+msgid "Your response has been transmitted."
+msgstr "Votre réponse a été transmise."
+
+#: generated
+msgid "Your response has already been transmitted. You can download the PDF below."
+msgstr "Votre réponse a déjà été transmise. Vous pouvez télécharger le PDF ci-dessous."
+
+#: generated
+msgid "A document is waiting for your response."
+msgstr "Un document attend votre retour."
+
+#: generated
+msgid "Approval or refusal"
+msgstr "Accord ou refus"
+
+#: generated
+msgid "Contact"
+msgstr "Contact"
+
+#: generated
+msgid "Details"
+msgstr "Détails"
+
+#: generated
+msgid "IP address"
+msgstr "Adresse IP"
+
+#: generated
+msgid "Response"
+msgstr "Réponse"
+
+#: generated
+msgid "Return message"
+msgstr "Message de retour"
+
+#: generated
+msgid "Signature proof"
+msgstr "Preuve de signature"
+
+#: generated
+msgid "Signed on"
+msgstr "Signé le"
+
+#: generated
+msgid "Signer"
+msgstr "Signataire"
+
+#: generated
+msgid "The recipient response has been recorded."
+msgstr "La réponse du destinataire a été enregistrée."
+
+#: generated
+msgid "Submit response"
+msgstr "Transmettre ma réponse"

@@ -1,6 +1,7 @@
 const ajaxUrl = window.SmbbSignConnect?.ajaxUrl || '/wp-admin/admin-ajax.php';
-const MIN_DRAW_PIXELS = 50;
+const MIN_DRAW_PIXELS = 17;
 const MIN_RESIZE_RATIO = 0.04;
+const FIELD_TYPES = ['signature', 'last_name', 'first_name', 'full_name', 'place', 'date', 'approval'];
 let pdfjsPromise = null;
 
 document.querySelectorAll('[data-signconnect-signature-editor]').forEach((root) => {
@@ -15,6 +16,7 @@ async function initEditor(root) {
         pageNumber: firstPageWithField(root),
         fields: parseFields(root.dataset.existingFields),
         selectedId: null,
+        typeMenuOpenId: null,
         tempId: -1,
         scale: 1.5,
         drawing: null,
@@ -163,6 +165,19 @@ function bindLayer(root, state, layer, message) {
             return;
         }
 
+        if (event.target.matches('[data-field-type-option]') && rectEl) {
+            updateFieldType(root, state, layer, message, Number(rectEl.dataset.fieldId), event.target.dataset.fieldType);
+            return;
+        }
+
+        if (event.target.matches('[data-field-type-toggle]') && rectEl) {
+            const fieldId = Number(rectEl.dataset.fieldId);
+            state.typeMenuOpenId = state.typeMenuOpenId === fieldId ? null : fieldId;
+            selectField(state, fieldId, layer);
+            event.preventDefault();
+            return;
+        }
+
         if (event.target.matches('[data-resize-handle]') && rectEl) {
             selectField(state, Number(rectEl.dataset.fieldId), layer);
             state.resizing = { start: point, field: { ...currentField(state) } };
@@ -189,6 +204,8 @@ function bindLayer(root, state, layer, message) {
             y: point.y,
             width: 1 / Math.max(1, layer.getBoundingClientRect().width),
             height: 1 / Math.max(1, layer.getBoundingClientRect().height),
+            field_type: 'signature',
+            label: fieldTypeLabel('signature'),
         };
 
         state.fields.push(newField);
@@ -265,6 +282,7 @@ function finishInteraction(root, state, layer, message) {
         if (!field || field.width < minWidth || field.height < minHeight) {
             state.fields = state.fields.filter((item) => item.id !== state.selectedId);
             state.selectedId = null;
+            state.typeMenuOpenId = null;
             drawRects(layer, state);
             updateAllBadges(root, state.fields);
             showMessage(message, 'info', editorText('areaIgnored') || 'Area ignored: draw a larger rectangle.');
@@ -329,14 +347,27 @@ function drawRects(layer, state) {
         .filter((field) => Number(field.page_number) === state.pageNumber)
         .forEach((field, index) => {
             const rect = document.createElement('div');
+            const fieldType = normalizeFieldType(field.field_type);
+            const fieldLabel = field.label || fieldTypeLabel(fieldType);
             rect.dataset.signRect = '1';
             rect.dataset.fieldId = String(field.id);
-            rect.className = 'smbb-signconnect-sign-rect' + (field.id === state.selectedId ? ' is-selected' : '');
+            rect.dataset.fieldType = fieldType;
+            rect.className = 'smbb-signconnect-sign-rect' + (field.id === state.selectedId ? ' is-selected' : '') + (field.id === state.typeMenuOpenId ? ' is-type-menu-open' : '');
             rect.style.left = `${field.x * 100}%`;
             rect.style.top = `${field.y * 100}%`;
             rect.style.width = `${field.width * 100}%`;
             rect.style.height = `${field.height * 100}%`;
-            rect.innerHTML = `<span>Signature ${index + 1}</span><button type="button" data-delete-rect aria-label="Delete this area">x</button><button type="button" data-resize-handle aria-label="Resize"></button>`;
+            rect.innerHTML = [
+                '<button type="button" class="smbb-signconnect-rect-label" data-field-type-toggle aria-label="' + escapeHtml(editorText('fieldType') || 'Field type') + '">',
+                escapeHtml(fieldLabel),
+                ' ',
+                fieldType === 'signature' ? escapeHtml(String(index + 1)) : '',
+                '</button>',
+                '<button type="button" data-field-type-toggle aria-label="' + escapeHtml(editorText('fieldType') || 'Field type') + '">⌄</button>',
+                fieldTypeMenu(fieldType),
+                '<button type="button" data-delete-rect aria-label="Delete this area">x</button>',
+                '<button type="button" data-resize-handle aria-label="Resize"></button>',
+            ].join('');
             layer.appendChild(rect);
         });
 }
@@ -373,10 +404,13 @@ function selectField(state, id, layer) {
 function deleteField(state, id, layer) {
     state.fields = state.fields.filter((field) => field.id !== id);
     state.selectedId = null;
+    state.typeMenuOpenId = null;
     drawRects(layer, state);
 }
 
 function normalizeForSave(field) {
+    const fieldType = normalizeFieldType(field.field_type);
+
     return {
         id: field.id > 0 ? field.id : 0,
         page_number: field.page_number,
@@ -384,7 +418,8 @@ function normalizeForSave(field) {
         y: Number(field.y).toFixed(6),
         width: Number(field.width).toFixed(6),
         height: Number(field.height).toFixed(6),
-        label: 'Signature',
+        field_type: fieldType,
+        label: field.label || fieldTypeLabel(fieldType),
     };
 }
 
@@ -432,10 +467,73 @@ function layerPoint(layer, event) {
 function parseFields(value) {
     try {
         const parsed = JSON.parse(value || '[]');
-        return Array.isArray(parsed) ? parsed : [];
+        if (!Array.isArray(parsed)) {
+            return [];
+        }
+
+        return parsed.map((field) => {
+            const fieldType = normalizeFieldType(field.field_type);
+
+            return {
+                ...field,
+                field_type: fieldType,
+                label: field.label || fieldTypeLabel(fieldType),
+            };
+        });
     } catch (error) {
         return [];
     }
+}
+
+function updateFieldType(root, state, layer, message, fieldId, fieldType) {
+    fieldType = normalizeFieldType(fieldType);
+    state.typeMenuOpenId = null;
+    state.fields = state.fields.map((field) => {
+        if (Number(field.id) !== Number(fieldId)) {
+            return field;
+        }
+
+        return {
+            ...field,
+            field_type: fieldType,
+            label: fieldTypeLabel(fieldType),
+        };
+    });
+    drawRects(layer, state);
+    scheduleAutosave(state, message, root);
+}
+
+function fieldTypeMenu(activeType) {
+    const options = FIELD_TYPES.map((type) => {
+        const active = type === activeType ? ' is-active' : '';
+
+        return '<button type="button" class="' + active + '" data-field-type-option data-field-type="' + escapeHtml(type) + '">' + escapeHtml(fieldTypeLabel(type)) + '</button>';
+    }).join('');
+
+    return '<div class="smbb-signconnect-field-type-menu" role="menu">' + options + '</div>';
+}
+
+function normalizeFieldType(type) {
+    type = String(type || 'signature');
+
+    return FIELD_TYPES.includes(type) ? type : 'signature';
+}
+
+function fieldTypeLabel(type) {
+    return window.SmbbSignConnect?.i18n?.fieldTypeLabels?.[normalizeFieldType(type)] || 'Signature';
+}
+
+function editorText(key) {
+    return window.SmbbSignConnect?.i18n?.[key] || '';
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
 }
 
 function label(text) {

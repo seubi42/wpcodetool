@@ -39,6 +39,50 @@ $format_size = static function ($value) {
 
     return function_exists('size_format') ? size_format($bytes, 1) : number_format_i18n($bytes) . ' B';
 };
+$events = $document_id > 0 && class_exists('\Smbb\SignConnect\Repository\DocumentAuditRepository')
+    ? (new \Smbb\SignConnect\Repository\DocumentAuditRepository())->listForDocument($document_id, 40)
+    : array();
+$signed_at = !empty($item['sign_date']) ? mysql2date(get_option('date_format') . ' ' . get_option('time_format'), (string) $item['sign_date']) : '';
+$signer_name = trim((isset($item['signer_first_name']) ? (string) $item['signer_first_name'] : '') . ' ' . (isset($item['signer_last_name']) ? (string) $item['signer_last_name'] : ''));
+$return_status = isset($item['signer_return_status']) ? (string) $item['signer_return_status'] : '';
+$return_status_label = $return_status === 'approved'
+    ? __('Good for approval', 'smbb-signconnect')
+    : ($return_status === 'refused' ? __('Refusal', 'smbb-signconnect') : __('Signature', 'smbb-signconnect'));
+$proof_rows = array(
+    __('Response', 'smbb-signconnect') => $return_status_label,
+    __('Signer', 'smbb-signconnect') => $signer_name,
+    __('Contact', 'smbb-signconnect') => isset($item['signer_contact']) ? (string) $item['signer_contact'] : '',
+    __('Signed on', 'smbb-signconnect') => $signed_at,
+    __('Place', 'smbb-signconnect') => isset($item['signer_place']) ? (string) $item['signer_place'] : '',
+    __('IP address', 'smbb-signconnect') => isset($item['signer_ip']) ? (string) $item['signer_ip'] : '',
+);
+$context_value = static function ($event) {
+    if (empty($event['context'])) {
+        return '';
+    }
+
+    $context = json_decode((string) $event['context'], true);
+
+    if (!is_array($context)) {
+        return (string) $event['context'];
+    }
+
+    $parts = array();
+
+    foreach ($context as $key => $value) {
+        if (is_array($value) || is_object($value)) {
+            $value = wp_json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        }
+
+        if ($value === null || $value === '') {
+            continue;
+        }
+
+        $parts[] = ucwords(str_replace('_', ' ', (string) $key)) . ': ' . (string) $value;
+    }
+
+    return implode("\n", $parts);
+};
 ?>
 
 <div class="wrap smbb-codetool smbb-signconnect">
@@ -89,6 +133,37 @@ $format_size = static function ($value) {
         <?php echo $notices_html; ?>
     <?php endif; ?>
 
+    <?php if (!empty($item['sign_date'])) : ?>
+        <div class="smbb-codetool-details-panel" style="margin-bottom:16px;">
+            <h2><?php esc_html_e('Signature proof', 'smbb-signconnect'); ?></h2>
+            <table class="widefat smbb-codetool-details-table">
+                <tbody>
+                    <?php foreach ($proof_rows as $label => $value) : ?>
+                        <?php if ($value === '') continue; ?>
+                        <tr>
+                            <th scope="row"><?php echo esc_html($label); ?></th>
+                            <td><?php echo esc_html((string) $value); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+
+                    <?php if (!empty($item['signer_return_message'])) : ?>
+                        <tr>
+                            <th scope="row"><?php esc_html_e('Return message', 'smbb-signconnect'); ?></th>
+                            <td><?php echo nl2br(esc_html((string) $item['signer_return_message'])); ?></td>
+                        </tr>
+                    <?php endif; ?>
+
+                    <?php if (!empty($item['identity_photo_storage_path'])) : ?>
+                        <tr>
+                            <th scope="row"><?php esc_html_e('Identity photo', 'smbb-signconnect'); ?></th>
+                            <td><?php echo esc_html((string) $item['identity_photo_filename']); ?></td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif; ?>
+
     <div class="smbb-codetool-details-panel">
         <?php if (!$item) : ?>
             <div class="smbb-codetool-details-empty-state">
@@ -117,4 +192,33 @@ $format_size = static function ($value) {
             </table>
         <?php endif; ?>
     </div>
+
+    <?php if ($events) : ?>
+        <div class="smbb-codetool-details-panel" style="margin-top:16px;">
+            <h2><?php esc_html_e('Audit trail', 'smbb-signconnect'); ?></h2>
+            <table class="widefat striped">
+                <thead>
+                    <tr>
+                        <th><?php esc_html_e('Date', 'smbb-signconnect'); ?></th>
+                        <th><?php esc_html_e('Event', 'smbb-signconnect'); ?></th>
+                        <th><?php esc_html_e('Actor', 'smbb-signconnect'); ?></th>
+                        <th><?php esc_html_e('Message', 'smbb-signconnect'); ?></th>
+                        <th><?php esc_html_e('Details', 'smbb-signconnect'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($events as $event) : ?>
+                        <?php $context = $context_value($event); ?>
+                        <tr>
+                            <td><?php echo esc_html(!empty($event['event_date']) ? mysql2date(get_option('date_format') . ' ' . get_option('time_format'), (string) $event['event_date']) : ''); ?></td>
+                            <td><?php echo esc_html(isset($event['event_type']) ? (string) $event['event_type'] : ''); ?></td>
+                            <td><?php echo esc_html(trim((isset($event['actor_type']) ? (string) $event['actor_type'] : '') . ' #' . (isset($event['actor_id']) ? (string) $event['actor_id'] : ''))); ?></td>
+                            <td><?php echo esc_html(isset($event['message']) ? (string) $event['message'] : ''); ?></td>
+                            <td><?php echo $context !== '' ? '<pre style="white-space:pre-wrap;margin:0;max-width:520px;">' . esc_html($context) . '</pre>' : '<span class="smbb-codetool-details-empty">&mdash;</span>'; ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif; ?>
 </div>

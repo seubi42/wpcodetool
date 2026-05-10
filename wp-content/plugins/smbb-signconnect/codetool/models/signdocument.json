@@ -124,6 +124,27 @@
       "length": 255,
       "nullable": true
     },
+    "token_hash": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": true
+    },
+    "sent_count": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "last_opened_date": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "opened_count": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
     "signer_contact": {
       "type": "varchar",
       "length": 255,
@@ -268,6 +289,21 @@
       "name": "idx_signature_token",
       "type": "index",
       "columns": ["signature_token"]
+    },
+    {
+      "name": "idx_token_hash",
+      "type": "index",
+      "columns": ["token_hash"]
+    },
+    {
+      "name": "idx_last_opened_date",
+      "type": "index",
+      "columns": [
+        {
+          "name": "last_opened_date",
+          "order": "desc"
+        }
+      ]
     },
     {
       "name": "idx_sent_date",

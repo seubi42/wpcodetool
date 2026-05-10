@@ -191,17 +191,97 @@
     outline: 3px solid color-mix(in srgb, var(--smbb-signconnect-brand) 35%, transparent);
 }
 
-.smbb-signconnect-sign-rect span {
+.smbb-signconnect-sign-rect .smbb-signconnect-rect-label {
     position: absolute;
     left: 8px;
     top: 6px;
+    border: 0;
     border-radius: 4px;
     background: #d63638;
     color: #fff;
+    cursor: pointer;
     font-size: 12px;
     line-height: 1;
     padding: 5px 7px;
-    pointer-events: none;
+    text-align: left;
+}
+
+.smbb-signconnect-sign-rect .smbb-signconnect-rect-label::after {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-left: 7px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: translateY(-2px) rotate(45deg);
+}
+
+.smbb-signconnect-sign-rect > button[data-field-type-toggle]:not(.smbb-signconnect-rect-label) {
+    display: none;
+}
+
+.smbb-signconnect-sign-rect [data-field-type-toggle]:not(.smbb-signconnect-rect-label) {
+    position: absolute;
+    left: auto;
+    top: 5px;
+    right: 34px;
+    width: 24px;
+    height: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 4px;
+    background: #d63638;
+    color: #fff;
+    font-size: 15px;
+    line-height: 20px;
+    padding: 0;
+    cursor: pointer;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+.smbb-signconnect-sign-rect.is-selected [data-field-type-toggle]:not(.smbb-signconnect-rect-label),
+.smbb-signconnect-sign-rect:hover [data-field-type-toggle]:not(.smbb-signconnect-rect-label) {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.smbb-signconnect-field-type-menu {
+    position: absolute;
+    left: 8px;
+    top: 36px;
+    z-index: 5;
+    display: none;
+    min-width: 150px;
+    padding: 5px;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+}
+
+.smbb-signconnect-sign-rect.is-type-menu-open .smbb-signconnect-field-type-menu {
+    display: grid;
+    gap: 3px;
+}
+
+.smbb-signconnect-field-type-menu button {
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: #1d2327;
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 1.2;
+    padding: 7px 8px;
+    text-align: left;
+}
+
+.smbb-signconnect-field-type-menu button:hover,
+.smbb-signconnect-field-type-menu button.is-active {
+    background: var(--smbb-signconnect-brand-soft);
+    color: var(--smbb-signconnect-brand);
 }
 
 .smbb-signconnect-sign-rect [data-resize-handle] {
@@ -340,12 +420,14 @@
         pointer-events: none;
     }
 
-    .smbb-signconnect-sign-layer:not(.is-draw-mode) .smbb-signconnect-sign-rect span {
+    .smbb-signconnect-sign-layer:not(.is-draw-mode) .smbb-signconnect-sign-rect .smbb-signconnect-rect-label {
         opacity: 0.55;
     }
 
     .smbb-signconnect-sign-layer:not(.is-draw-mode) .smbb-signconnect-sign-rect [data-delete-rect],
-    .smbb-signconnect-sign-layer:not(.is-draw-mode) .smbb-signconnect-sign-rect [data-resize-handle] {
+    .smbb-signconnect-sign-layer:not(.is-draw-mode) .smbb-signconnect-sign-rect [data-resize-handle],
+    .smbb-signconnect-sign-layer:not(.is-draw-mode) .smbb-signconnect-sign-rect [data-field-type-toggle],
+    .smbb-signconnect-sign-layer:not(.is-draw-mode) .smbb-signconnect-sign-rect .smbb-signconnect-field-type-menu {
         display: none;
     }
 

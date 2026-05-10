@@ -5,6 +5,7 @@ namespace Smbb\SignConnect\Service;
 use setasign\Fpdi\Fpdi;
 use Smbb\SignConnect\Repository\SignatureFieldRepository;
 use Smbb\SignConnect\Repository\StorageRepository;
+use Smbb\SignConnect\Support\SignatureFieldType;
 
 defined('ABSPATH') || exit;
 
@@ -193,7 +194,7 @@ final class SignedPdfGenerator
                     continue;
                 }
 
-                $this->drawSignatureBlock($pdf, $signature_png, $field, $size, $mention, $index + 1, $status);
+                $this->drawFieldBlock($pdf, $signature_png, $field, $size, $mention, $index + 1, $status, $identity, $signed_at);
             }
         }
 
@@ -246,8 +247,15 @@ final class SignedPdfGenerator
         $pdf->Image($photo_path, $x, $y, $draw_width, $draw_height, $image_type);
     }
 
-    private function drawSignatureBlock(Fpdi $pdf, $signature_png, array $field, array $page_size, $mention, $index, $status)
+    private function drawFieldBlock(Fpdi $pdf, $signature_png, array $field, array $page_size, $mention, $index, $status, array $identity, $signed_at)
     {
+        $field_type = SignatureFieldType::normalize(isset($field['field_type']) ? $field['field_type'] : SignatureFieldType::SIGNATURE);
+
+        if ($field_type !== SignatureFieldType::SIGNATURE) {
+            $this->drawTextField($pdf, $field, $page_size, $field_type, $identity, $signed_at, $status);
+            return;
+        }
+
         $x = (float) $field['x'] * (float) $page_size['width'];
         $y = (float) $field['y'] * (float) $page_size['height'];
         $width = max(12, (float) $field['width'] * (float) $page_size['width']);
@@ -277,6 +285,52 @@ final class SignedPdfGenerator
         $pdf->SetTextColor(45, 45, 45);
         $pdf->SetXY($x + $padding, $y + $padding + $image_height + $padding);
         $pdf->MultiCell($width - ($padding * 2), 3, utf8_decode($mention), 0, 'L');
+    }
+
+    private function drawTextField(Fpdi $pdf, array $field, array $page_size, $field_type, array $identity, $signed_at, $status)
+    {
+        $value = $this->fieldTextValue($field_type, $identity, $signed_at, $status);
+
+        if ($value === '') {
+            return;
+        }
+
+        $x = (float) $field['x'] * (float) $page_size['width'];
+        $y = (float) $field['y'] * (float) $page_size['height'];
+        $width = max(12, (float) $field['width'] * (float) $page_size['width']);
+        $height = max(5, (float) $field['height'] * (float) $page_size['height']);
+        $font_size = max(7, min(13, $height * 0.42));
+
+        $pdf->SetDrawColor(255, 255, 255);
+        $pdf->SetFillColor(255, 255, 255);
+        $pdf->Rect($x, $y, $width, $height, 'F');
+        $pdf->SetTextColor(30, 30, 30);
+        $pdf->SetFont('Arial', $field_type === SignatureFieldType::APPROVAL ? 'B' : '', $font_size);
+        $pdf->SetXY($x + 1.5, $y + max(0.5, ($height - $font_size * 0.5) / 2));
+        $pdf->Cell($width - 3, max(4, $height - 1), utf8_decode($value), 0, 0, 'L');
+    }
+
+    private function fieldTextValue($field_type, array $identity, $signed_at, $status)
+    {
+        $first_name = isset($identity['first_name']) ? (string) $identity['first_name'] : '';
+        $last_name = isset($identity['last_name']) ? (string) $identity['last_name'] : '';
+
+        switch (SignatureFieldType::normalize($field_type)) {
+            case SignatureFieldType::LAST_NAME:
+                return $last_name;
+            case SignatureFieldType::FIRST_NAME:
+                return $first_name;
+            case SignatureFieldType::FULL_NAME:
+                return trim($first_name . ' ' . $last_name);
+            case SignatureFieldType::PLACE:
+                return isset($identity['place']) ? (string) $identity['place'] : '';
+            case SignatureFieldType::DATE:
+                return mysql2date('d/m/Y', $signed_at);
+            case SignatureFieldType::APPROVAL:
+                return $status === 'approved' ? __('Good for approval', 'smbb-signconnect') : ($status === 'refused' ? __('Refusal', 'smbb-signconnect') : '');
+            default:
+                return '';
+        }
     }
 
     private function signedStoragePath($storage_path)

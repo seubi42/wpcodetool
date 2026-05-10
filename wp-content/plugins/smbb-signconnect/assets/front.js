@@ -123,7 +123,9 @@
             })
             .forEach(function (field, index) {
                 var overlay = document.createElement('button');
-                var label = configText('signatureZoneLabel') || 'Your signature will appear here';
+                var fieldType = field.field_type || 'signature';
+                var labels = configText('fieldTypePublicLabels') || {};
+                var label = labels[fieldType] || configText('signatureZoneLabel') || 'Your signature will appear here';
 
                 overlay.type = 'button';
                 overlay.className = 'smbb-signconnect-public-signature-zone';
@@ -132,7 +134,7 @@
                 overlay.style.width = (Number(field.width) * 100) + '%';
                 overlay.style.height = (Number(field.height) * 100) + '%';
                 overlay.textContent = label;
-                overlay.setAttribute('aria-label', label + ' - go to the signature');
+                overlay.setAttribute('aria-label', label + ' - go to the signature form');
                 overlay.addEventListener('click', scrollToPublicSignaturePad);
 
                 stage.appendChild(overlay);

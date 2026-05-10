@@ -3,6 +3,9 @@
 namespace Smbb\SignConnect\Service;
 
 use Smbb\SignConnect\Repository\DocumentRepository;
+use Smbb\SignConnect\Repository\DocumentAuditRepository;
+use Smbb\SignConnect\Repository\SignatureFieldRepository;
+use Smbb\SignConnect\Support\DocumentStatus;
 use Smbb\SignConnect\Support\SignConnectSettings;
 
 defined('ABSPATH') || exit;
@@ -23,11 +26,20 @@ final class DocumentSendPreparationService
 {
     private $documents;
     private $delivery;
+    private $signature_fields;
+    private $audit;
 
-    public function __construct(DocumentRepository $documents = null, DocumentSendDeliveryService $delivery = null)
+    public function __construct(
+        DocumentRepository $documents = null,
+        DocumentSendDeliveryService $delivery = null,
+        SignatureFieldRepository $signature_fields = null,
+        DocumentAuditRepository $audit = null
+    )
     {
         $this->documents = $documents ?: new DocumentRepository();
         $this->delivery = $delivery ?: new DocumentSendDeliveryService($this->documents);
+        $this->signature_fields = $signature_fields ?: new SignatureFieldRepository();
+        $this->audit = $audit ?: new DocumentAuditRepository();
     }
 
     public function prepareFromPost($document_id, $user_id, array $post)
@@ -36,6 +48,14 @@ final class DocumentSendPreparationService
 
         if (!$document) {
             return $this->error(__('Document not found or inaccessible.', 'smbb-signconnect'), 404);
+        }
+
+        if (!DocumentStatus::canPrepareSend(isset($document['document_status']) ? $document['document_status'] : '')) {
+            return $this->error(__('This document can no longer be sent.', 'smbb-signconnect'), 409);
+        }
+
+        if (count($this->signature_fields->listForDocument($document_id)) < 1) {
+            return $this->error(__('Please define at least one signature area before sending.', 'smbb-signconnect'), 400);
         }
 
         $data = $this->sanitizePostData($post);
@@ -58,6 +78,12 @@ final class DocumentSendPreparationService
         if (!$saved) {
             return $this->error(__('The sending settings could not be saved.', 'smbb-signconnect'), 500);
         }
+
+        $this->audit->record($document_id, 'send_settings_saved', array(
+            'channel' => $data['send_channel'],
+            'return_expected' => $data['return_expected'],
+            'expires_at' => isset($saved['link_expires_at']) ? (string) $saved['link_expires_at'] : '',
+        ), 'owner', $user_id, __('Sending settings saved.', 'smbb-signconnect'));
 
         try {
             $delivery = $this->delivery->deliver($saved, $user_id);

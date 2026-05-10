@@ -3,7 +3,10 @@
 namespace Smbb\SignConnect\Handler;
 
 use Smbb\SignConnect\Repository\SignatureFieldRepository;
+use Smbb\SignConnect\Repository\DocumentRepository;
+use Smbb\SignConnect\Repository\DocumentAuditRepository;
 use Smbb\SignConnect\Service\DocumentAccessService;
+use Smbb\SignConnect\Support\DocumentStatus;
 
 defined('ABSPATH') || exit;
 
@@ -11,11 +14,20 @@ final class SignatureFieldHandler
 {
     private $signature_fields;
     private $access;
+    private $documents;
+    private $audit;
 
-    public function __construct(SignatureFieldRepository $signature_fields = null, DocumentAccessService $access = null)
+    public function __construct(
+        SignatureFieldRepository $signature_fields = null,
+        DocumentAccessService $access = null,
+        DocumentRepository $documents = null,
+        DocumentAuditRepository $audit = null
+    )
     {
         $this->signature_fields = $signature_fields ?: new SignatureFieldRepository();
         $this->access = $access ?: new DocumentAccessService();
+        $this->documents = $documents ?: new DocumentRepository();
+        $this->audit = $audit ?: new DocumentAuditRepository();
     }
 
     public function handleSaveSignatureField()
@@ -34,6 +46,13 @@ final class SignatureFieldHandler
             wp_send_json_error(array('message' => __('Document not found or inaccessible.', 'smbb-signconnect')), 404);
         }
 
+        $document = $this->documents->findOwnedByUser($document_id, get_current_user_id());
+        $status = $document ? DocumentStatus::normalize(isset($document['document_status']) ? $document['document_status'] : '') : DocumentStatus::DRAFT;
+
+        if (!in_array($status, array(DocumentStatus::DRAFT, DocumentStatus::ZONE_READY, DocumentStatus::READY_TO_SEND), true)) {
+            wp_send_json_error(array('message' => __('This document can no longer be edited.', 'smbb-signconnect')), 409);
+        }
+
         $fields_json = isset($_POST['fields']) ? wp_unslash((string) $_POST['fields']) : '[]';
         $fields = json_decode($fields_json, true);
 
@@ -47,6 +66,18 @@ final class SignatureFieldHandler
             wp_send_json_error(array('message' => __('The signature area could not be saved.', 'smbb-signconnect')), 500);
         }
 
+        $field_count = count(array_filter($field_ids, static function ($field_id) {
+            return (int) $field_id > 0;
+        }));
+
+        if ($field_count > 0) {
+            $this->documents->markZoneReady($document_id, get_current_user_id());
+        }
+
+        $this->audit->record($document_id, 'signature_fields_saved', array(
+            'field_count' => $field_count,
+        ), 'owner', get_current_user_id(), __('Signature areas saved.', 'smbb-signconnect'));
+
         wp_send_json_success(array(
             'message' => __('Signature areas saved.', 'smbb-signconnect'),
             'field_ids' => array_values(array_map('intval', $field_ids)),
@@ -58,6 +89,8 @@ final class SignatureFieldHandler
                     'y' => (float) $field['y'],
                     'width' => (float) $field['width'],
                     'height' => (float) $field['height'],
+                    'field_type' => isset($field['field_type']) ? (string) $field['field_type'] : 'signature',
+                    'label' => isset($field['label']) ? (string) $field['label'] : __('Signature', 'smbb-signconnect'),
                 );
             }, $this->signature_fields->listForDocument($document_id)),
         ));
