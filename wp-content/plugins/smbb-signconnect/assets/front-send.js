@@ -64,12 +64,25 @@
     document.querySelectorAll('form').forEach(updateChoiceCards);
     document.querySelectorAll('.smbb-signconnect-checkbox-card').forEach(updateCheckboxCard);
     document.querySelectorAll('[data-signconnect-send-form][data-ai-auto-suggest="1"]').forEach(autoSuggestSendMessage);
+    document.querySelectorAll('[data-signconnect-sender-signature-pad]').forEach(initSenderSignaturePad);
 
     function submitSendForm(form) {
         var message = form.querySelector('[data-signconnect-send-message]');
         var button = form.querySelector('button[type="submit"]');
-        var formData = new FormData(form);
+        var senderCanvas = form.querySelector('[data-signconnect-sender-signature-pad]');
+        var senderHidden = form.querySelector('[data-signconnect-sender-signature-data]');
+        var formData;
 
+        if (senderCanvas && senderHidden) {
+            if (senderCanvas.dataset.hasInk !== '1') {
+                showMessage(message, 'error', configText('pleaseSign') || 'Please sign in the expected area.');
+                return;
+            }
+
+            senderHidden.value = senderCanvas.toDataURL('image/png');
+        }
+
+        formData = new FormData(form);
         formData.set('action', 'smbb_signconnect_prepare_send');
 
         if (button) {
@@ -105,6 +118,78 @@
                     button.disabled = false;
                 }
             });
+    }
+
+    function initSenderSignaturePad(canvas) {
+        var form = canvas.closest('[data-signconnect-send-form]');
+        var clear = form ? form.querySelector('[data-signconnect-clear-sender-signature]') : null;
+        var drawing = false;
+        var hasInk = false;
+        var context = canvas.getContext('2d');
+        var existing = canvas.dataset.existingSignature || '';
+
+        context.lineWidth = 2.4;
+        context.lineCap = 'round';
+        context.strokeStyle = '#1d2327';
+
+        if (existing.indexOf('data:image/png;base64,') === 0) {
+            var image = new Image();
+            image.onload = function () {
+                context.drawImage(image, 0, 0, canvas.width, canvas.height);
+                hasInk = true;
+                canvas.dataset.hasInk = '1';
+            };
+            image.src = existing;
+        }
+
+        canvas.addEventListener('pointerdown', function (event) {
+            drawing = true;
+            hasInk = true;
+            canvas.setPointerCapture(event.pointerId);
+            var point = signaturePoint(canvas, event);
+            context.beginPath();
+            context.moveTo(point.x, point.y);
+            event.preventDefault();
+        });
+
+        canvas.addEventListener('pointermove', function (event) {
+            if (!drawing) {
+                return;
+            }
+
+            var point = signaturePoint(canvas, event);
+            context.lineTo(point.x, point.y);
+            context.stroke();
+            event.preventDefault();
+        });
+
+        canvas.addEventListener('pointerup', function () {
+            drawing = false;
+            canvas.dataset.hasInk = hasInk ? '1' : '0';
+        });
+
+        canvas.addEventListener('pointercancel', function () {
+            drawing = false;
+        });
+
+        canvas.dataset.hasInk = existing.indexOf('data:image/png;base64,') === 0 ? '1' : '0';
+
+        if (clear) {
+            clear.addEventListener('click', function () {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                hasInk = false;
+                canvas.dataset.hasInk = '0';
+            });
+        }
+    }
+
+    function signaturePoint(canvas, event) {
+        var rect = canvas.getBoundingClientRect();
+
+        return {
+            x: (event.clientX - rect.left) * (canvas.width / rect.width),
+            y: (event.clientY - rect.top) * (canvas.height / rect.height)
+        };
     }
 
     function showSendSuccess(form) {

@@ -2,15 +2,34 @@
 
 namespace Smbb\SignConnect\Repository;
 
+use Smbb\SignConnect\Support\CertificationMethod;
+use Smbb\SignConnect\Support\DocumentCriticality;
 use Smbb\SignConnect\Support\DocumentStatus;
 
 defined('ABSPATH') || exit;
 
+/**
+ * Accès aux données de la table wp_signdocument.
+ *
+ * Toutes les lectures filtrent sur deleted_flag = 0. Le flag est posé par
+ * markDeletedByCron() : on ne supprime jamais physiquement de lignes pour
+ * conserver la piste d'audit et simplifier les rollbacks manuels.
+ *
+ * La colonne token_hash (ajoutée en v0.1.x) remplace la colonne token en clair.
+ * Les méthodes rotatePublicToken / publicTokenMatches gèrent la compatibilité
+ * ascendante : si token_hash n'existe pas, on retombe sur un hash_equals sur token.
+ */
 final class DocumentRepository
 {
     private static $has_system_log_column = null;
     private static $column_cache = array();
 
+    /**
+     * Retourne un document par son identifiant, ou null s'il est introuvable / supprimé.
+     *
+     * @param int $document_id
+     * @return array<string,mixed>|null
+     */
     public function find($document_id)
     {
         global $wpdb;
@@ -25,6 +44,16 @@ final class DocumentRepository
         return is_array($row) ? $row : null;
     }
 
+    /**
+     * Retourne un document appartenant à un utilisateur précis, ou null.
+     *
+     * Utilisé pour les actions admin (édition, envoi, suppression) où on vérifie
+     * à la fois l'existence et la propriété en une seule requête.
+     *
+     * @param int $document_id
+     * @param int $user_id
+     * @return array<string,mixed>|null
+     */
     public function findOwnedByUser($document_id, $user_id)
     {
         global $wpdb;
@@ -40,6 +69,16 @@ final class DocumentRepository
         return is_array($row) ? $row : null;
     }
 
+    /**
+     * Liste les documents d'un utilisateur, du plus récent au plus ancien.
+     *
+     * La limite est plafonnée à 200 pour éviter des résultats trop larges depuis
+     * le dashboard frontend. Augmenter la limite nécessite une pagination.
+     *
+     * @param int $user_id
+     * @param int $limit  Nombre max de résultats (1–200, défaut 50).
+     * @return array<int,array<string,mixed>>
+     */
     public function listOwnedByUser($user_id, $limit = 50)
     {
         global $wpdb;
@@ -61,6 +100,20 @@ final class DocumentRepository
         return is_array($rows) ? $rows : array();
     }
 
+    /**
+     * Retourne un document si le token fourni correspond au document_id, ou null.
+     *
+     * La vérification du token se fait en PHP via publicTokenMatches() plutôt qu'en
+     * SQL pour deux raisons :
+     * - token_hash est un hash bcrypt (wp_hash_password) : il ne peut pas être comparé
+     *   directement en SQL sans stocker la valeur en clair ;
+     * - hash_equals() garantit une comparaison en temps constant sur l'ancien token,
+     *   ce qui résiste aux attaques timing.
+     *
+     * @param int    $document_id
+     * @param string $token  Token brut reçu depuis l'URL publique.
+     * @return array<string,mixed>|null
+     */
     public function findByPublicToken($document_id, $token)
     {
         global $wpdb;
@@ -83,6 +136,12 @@ final class DocumentRepository
         return null;
     }
 
+    /**
+     * Crée l'enregistrement métier lié à un PDF uploadé dans S3.
+     *
+     * @param array<string,mixed> $data  Doit contenir filename, storage_id, storage_path, file_size, token.
+     * @return int|false  ID de la ligne insérée, ou false en cas d'erreur SQL.
+     */
     public function createUploadedDocument(array $data)
     {
         global $wpdb;
@@ -128,6 +187,15 @@ final class DocumentRepository
         return isset($wpdb->insert_id) ? (int) $wpdb->insert_id : true;
     }
 
+    /**
+     * Retourne les documents expirés non signés éligibles à la purge automatique.
+     *
+     * La requête exclut les documents déjà signés ou refusés : l'expiration ne
+     * concerne que le lien de signature, pas la conservation du document final.
+     *
+     * @param int $limit  Nombre max de résultats par passage cron (1–500).
+     * @return array<int,array<string,mixed>>
+     */
     public function findExpiredUnsigned($limit = 100)
     {
         global $wpdb;
@@ -159,6 +227,14 @@ final class DocumentRepository
         return is_array($rows) ? $rows : array();
     }
 
+    /**
+     * Marque un document comme supprimé par la purge cron (soft delete).
+     *
+     * deleted_by = 0 indique une suppression automatique (pas un utilisateur).
+     *
+     * @param int $document_id
+     * @return bool
+     */
     public function markDeletedByCron($document_id)
     {
         global $wpdb;
@@ -182,6 +258,18 @@ final class DocumentRepository
         return $result !== false;
     }
 
+    /**
+     * Enregistre les paramètres d'envoi (destinataire, canal, expiration, etc.) et passe
+     * le statut à READY_TO_SEND.
+     *
+     * Le signature_token est conservé s'il existe déjà : cela permet à l'expéditeur de
+     * revenir corriger le formulaire sans invalider un lien déjà généré ou partagé.
+     *
+     * @param int                 $document_id
+     * @param int                 $user_id
+     * @param array<string,mixed> $data
+     * @return array<string,mixed>|false  Document mis à jour, ou false si règle métier bloquante.
+     */
     public function saveSendSettings($document_id, $user_id, array $data)
     {
         global $wpdb;
@@ -217,6 +305,17 @@ final class DocumentRepository
             'link_expires_at' => isset($data['link_expires_at']) ? (string) $data['link_expires_at'] : null,
             'signature_token' => $signature_token,
         );
+        $formats = array('%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s');
+
+        if ($this->hasColumn('criticality') && empty($document['criticality_locked'])) {
+            $update_data['criticality'] = DocumentCriticality::normalize(isset($data['criticality']) ? (string) $data['criticality'] : '');
+            $formats[] = '%s';
+        }
+
+        if ($this->hasColumn('certification_method')) {
+            $update_data['certification_method'] = CertificationMethod::normalize(isset($data['certification_method']) ? (string) $data['certification_method'] : '');
+            $formats[] = '%s';
+        }
 
         $result = $wpdb->update(
             $table,
@@ -225,7 +324,7 @@ final class DocumentRepository
                 'id' => (int) $document_id,
                 'creation_by' => (int) $user_id,
             ),
-            array('%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s'),
+            $formats,
             array('%d', '%d')
         );
 
@@ -236,6 +335,65 @@ final class DocumentRepository
         return $this->findOwnedByUser($document_id, $user_id);
     }
 
+    /**
+     * Applique la criticité d'un template au document et verrouille la valeur.
+     *
+     * Le verrou (criticality_locked) empêche saveSendSettings() d'écraser la criticité
+     * définie par le template, qui peut avoir des implications légales ou de traçabilité.
+     *
+     * @param int                 $document_id
+     * @param int                 $user_id
+     * @param array<string,mixed> $template
+     * @return bool
+     */
+    public function applyTemplateCriticality($document_id, $user_id, array $template)
+    {
+        if (!$this->hasColumn('criticality') || empty($template['criticality'])) {
+            return true;
+        }
+
+        global $wpdb;
+
+        $criticality = DocumentCriticality::normalize((string) $template['criticality']);
+        $update_data = array(
+            'criticality' => $criticality,
+        );
+        $formats = array('%s');
+
+        if ($this->hasColumn('criticality_locked')) {
+            $update_data['criticality_locked'] = 1;
+            $formats[] = '%d';
+        }
+
+        if ($this->hasColumn('criticality_source_template_id')) {
+            $update_data['criticality_source_template_id'] = isset($template['id']) ? absint($template['id']) : null;
+            $formats[] = '%d';
+        }
+
+        $result = $wpdb->update(
+            $wpdb->prefix . 'signdocument',
+            $update_data,
+            array(
+                'id' => (int) $document_id,
+                'creation_by' => (int) $user_id,
+            ),
+            $formats,
+            array('%d', '%d')
+        );
+
+        return $result !== false;
+    }
+
+    /**
+     * Passe le document en statut ZONE_READY après placement des zones de signature.
+     *
+     * N'écrase pas un statut plus avancé (READY_TO_SEND) si l'utilisateur retouche
+     * les zones après avoir déjà configuré l'envoi.
+     *
+     * @param int $document_id
+     * @param int $user_id
+     * @return array<string,mixed>|false  Document mis à jour, ou false si transition interdite.
+     */
     public function markZoneReady($document_id, $user_id)
     {
         global $wpdb;
@@ -265,6 +423,17 @@ final class DocumentRepository
         return $result !== false ? $this->findOwnedByUser($document_id, $user_id) : false;
     }
 
+    /**
+     * Génère un nouveau token public et invalide l'ancien.
+     *
+     * À appeler quand le lien de signature doit être régénéré (ex. : renvoi après
+     * expiration). Si token_hash est disponible, le token en clair n'est jamais
+     * écrit en base : on ne stocke que le hash bcrypt.
+     *
+     * @param int $document_id
+     * @param int $user_id     0 = pas de restriction par propriétaire (usage cron/admin).
+     * @return string  Nouveau token en clair, ou '' si la rotation est refusée.
+     */
     public function rotatePublicToken($document_id, $user_id = 0)
     {
         global $wpdb;
@@ -299,6 +468,18 @@ final class DocumentRepository
         return $result !== false ? $token : '';
     }
 
+    /**
+     * Pré-remplit le message d'envoi avec la suggestion IA, seulement si le champ est vide.
+     *
+     * Le double UPDATE (wpdb->update puis query manuel) est un contournement pour le cas
+     * où wpdb->update refuse de générer la clause WHERE send_message = '' quand la valeur
+     * attendue est une chaîne vide (certaines versions de wpdb sautent les valeurs falsy).
+     *
+     * @param int    $document_id
+     * @param int    $user_id
+     * @param string $message
+     * @return bool
+     */
     public function saveAiSuggestedMessage($document_id, $user_id, $message)
     {
         global $wpdb;
@@ -342,6 +523,18 @@ final class DocumentRepository
         return $result !== false;
     }
 
+    /**
+     * Ajoute une entrée JSON en fin de colonne system_log (format append-only).
+     *
+     * Chaque entrée est un objet JSON sur plusieurs lignes, séparé par une ligne vide.
+     * La colonne est un TEXT libre : pas de parsing structuré en lecture, elle sert
+     * uniquement à l'affichage dans l'écran admin pour les erreurs techniques.
+     *
+     * @param int                 $document_id
+     * @param string              $title    Clé courte identifiant l'événement (ex. 'public_signature_finalize_error').
+     * @param array<string,mixed> $context  Données libres associées à l'événement.
+     * @return bool
+     */
     public function appendSystemLog($document_id, $title, array $context = array())
     {
         global $wpdb;
@@ -380,6 +573,14 @@ final class DocumentRepository
         return self::$has_system_log_column;
     }
 
+    /**
+     * Enregistre une ouverture du lien de signature public (last_opened_date + opened_count).
+     *
+     * Silencieusement ignoré si les colonnes n'existent pas encore (déploiement progressif).
+     *
+     * @param int $document_id
+     * @return bool
+     */
     public function notePublicOpen($document_id)
     {
         global $wpdb;
@@ -402,6 +603,14 @@ final class DocumentRepository
         return $wpdb->query($sql) !== false;
     }
 
+    /**
+     * Vérifie que le token fourni correspond à l'enregistrement en base.
+     *
+     * Deux modes selon la version du schéma :
+     * - token_hash présent  → wp_check_password() (bcrypt, résistant aux fuites de BDD) ;
+     * - token_hash absent   → hash_equals() sur le token en clair (temps constant,
+     *   résistant aux attaques timing même si moins robuste qu'un hash).
+     */
     private function publicTokenMatches(array $document, $token)
     {
         $token = (string) $token;
@@ -419,6 +628,14 @@ final class DocumentRepository
         return $legacy_token !== '' && hash_equals($legacy_token, $token);
     }
 
+    /**
+     * Indique si une colonne existe dans la table (avec cache statique par requête).
+     *
+     * SHOW COLUMNS est utilisé plutôt qu'une introspection wpdb->get_col_info() car
+     * WordPress ne fournit pas d'API publique fiable pour interroger le schéma d'une
+     * table custom. Le cache static[] évite les SHOW COLUMNS répétés dans un même
+     * cycle de requête (ex. : markSigned() appelle hasColumn() pour ~5 colonnes).
+     */
     private function hasColumn($column)
     {
         global $wpdb;
@@ -436,6 +653,16 @@ final class DocumentRepository
         return self::$column_cache[$column];
     }
 
+    /**
+     * Passe le document en statut SENT et incrémente sent_count si la colonne existe.
+     *
+     * L'incrémentation se fait via un UPDATE SQL plutôt que read+write pour éviter
+     * les race conditions en cas de double-clic sur "Envoyer".
+     *
+     * @param int $document_id
+     * @param int $user_id
+     * @return array<string,mixed>|false  Document mis à jour, ou false si la transition est refusée.
+     */
     public function markSent($document_id, $user_id)
     {
         global $wpdb;
@@ -483,6 +710,22 @@ final class DocumentRepository
         return $result !== false ? $this->findOwnedByUser($document_id, $user_id) : false;
     }
 
+    /**
+     * Enregistre la réponse du signataire et passe le statut à SIGNED ou REFUSED.
+     *
+     * Le token est re-vérifié ici pour garantir que l'UPDATE ne s'applique qu'à un
+     * document dont le lien est encore valide (protection contre les replays après
+     * rotation de token).
+     *
+     * Les colonnes d'intégrité (source_sha256, signed_sha256, certification_fingerprint,
+     * cryptographic_signature_applied/status) sont écrites conditionnellement selon
+     * la version du schéma déployé.
+     *
+     * @param int                 $document_id
+     * @param string              $token  Token brut du lien public.
+     * @param array<string,mixed> $data   Champs de signature à persister.
+     * @return array<string,mixed>|false
+     */
     public function markSigned($document_id, $token, array $data)
     {
         global $wpdb;

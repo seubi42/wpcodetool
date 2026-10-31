@@ -7,6 +7,8 @@ use Smbb\SignConnect\Repository\DocumentAuditRepository;
 use Smbb\SignConnect\Repository\StorageRepository;
 use Smbb\SignConnect\Service\DocumentAiEnrichmentService;
 use Smbb\SignConnect\Service\S3DocumentUploader;
+use Smbb\SignConnect\Service\SignTemplateDetectionService;
+use Smbb\SignConnect\Support\SignConnectSettings;
 use Smbb\SignConnect\Support\UrlHelper;
 use Smbb\SignConnect\User\UserStorageProfileFields;
 
@@ -19,19 +21,22 @@ final class DocumentUploadHandler
     private $audit;
     private $uploader;
     private $ai_enrichment;
+    private $template_detection;
 
     public function __construct(
         StorageRepository $storages = null,
         DocumentRepository $documents = null,
         DocumentAuditRepository $audit = null,
         S3DocumentUploader $uploader = null,
-        DocumentAiEnrichmentService $ai_enrichment = null
+        DocumentAiEnrichmentService $ai_enrichment = null,
+        SignTemplateDetectionService $template_detection = null
     ) {
         $this->storages = $storages ?: new StorageRepository();
         $this->documents = $documents ?: new DocumentRepository();
         $this->audit = $audit ?: new DocumentAuditRepository();
         $this->uploader = $uploader ?: new S3DocumentUploader();
         $this->ai_enrichment = $ai_enrichment ?: new DocumentAiEnrichmentService($this->documents);
+        $this->template_detection = $template_detection ?: new SignTemplateDetectionService(null, null, $this->documents);
     }
 
     public function handleUpload()
@@ -122,6 +127,9 @@ final class DocumentUploadHandler
                 'file_size' => isset($file['size']) ? (int) $file['size'] : 0,
             ), 'owner', $user_id, __('Document uploaded.', 'smbb-signconnect'));
 
+            $template_result = $this->template_detection->applyAfterUpload((int) $document_id, $user_id, $file);
+            $this->recordTemplateDetectionResult((int) $document_id, $user_id, $template_result);
+
             $this->ai_enrichment->enrichAfterUpload((int) $document_id, $user_id, $file);
 
             return array('success' => true, 'document_id' => (int) $document_id);
@@ -139,5 +147,44 @@ final class DocumentUploadHandler
 
         wp_safe_redirect(add_query_arg('signconnect_upload', '1', $url));
         exit;
+    }
+
+    private function recordTemplateDetectionResult($document_id, $user_id, array $result)
+    {
+        if (!empty($result['matched'])) {
+            $this->audit->record($document_id, 'template_applied', array(
+                'template_id' => isset($result['template_id']) ? (int) $result['template_id'] : 0,
+                'template_name' => isset($result['template_name']) ? (string) $result['template_name'] : '',
+                'field_count' => isset($result['field_count']) ? (int) $result['field_count'] : 0,
+                'checks' => isset($result['checks']) ? $result['checks'] : array(),
+            ), 'owner', $user_id, __('Signature template applied.', 'smbb-signconnect'));
+
+            $this->recordTemplateDetectionDebug($document_id, $user_id, $result);
+
+            return;
+        }
+
+        $reason = isset($result['reason']) ? (string) $result['reason'] : '';
+
+        if (in_array($reason, array('text_position_extraction_failed', 'field_save_failed'), true)) {
+            $this->audit->record($document_id, 'template_detection_skipped', $result, 'owner', $user_id, __('Signature template detection was skipped.', 'smbb-signconnect'));
+        }
+
+        $this->recordTemplateDetectionDebug($document_id, $user_id, $result);
+    }
+
+    private function recordTemplateDetectionDebug($document_id, $user_id, array $result)
+    {
+        if (!SignConnectSettings::templateDetectionDebugEnabled()) {
+            return;
+        }
+
+        $this->audit->record($document_id, 'template_detection_debug', array(
+            'matched' => !empty($result['matched']),
+            'reason' => isset($result['reason']) ? (string) $result['reason'] : '',
+            'template_id' => isset($result['template_id']) ? (int) $result['template_id'] : 0,
+            'template_name' => isset($result['template_name']) ? (string) $result['template_name'] : '',
+            'debug' => isset($result['debug']) && is_array($result['debug']) ? $result['debug'] : array(),
+        ), 'owner', $user_id, __('Signature template detection debug.', 'smbb-signconnect'));
     }
 }

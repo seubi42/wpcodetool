@@ -1,0 +1,144 @@
+{
+  "name": "signtemplate",
+  "label": "Signature template",
+  "pluralLabel": "Signature templates",
+  "description": "Reusable SignConnect templates used to detect known PDF layouts and prefill signature fields.",
+  "storage": {
+    "table": "signtemplate",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "name": {
+      "type": "varchar",
+      "length": 180,
+      "nullable": false,
+      "default": ""
+    },
+    "description": {
+      "type": "text",
+      "nullable": true
+    },
+    "sample_pdf_attachment_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "sample_pdf_url": {
+      "type": "varchar",
+      "length": 1024,
+      "nullable": true
+    },
+    "detection_zones": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "signature_zones": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "criticality": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": true
+    },
+    "is_active": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 1
+    },
+    "creation_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "create_datetime"
+    },
+    "creation_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "create_user"
+    },
+    "lastupdate_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "update_datetime"
+    },
+    "lastupdate_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "update_user"
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_name",
+      "type": "index",
+      "columns": ["name"]
+    },
+    {
+      "name": "idx_is_active",
+      "type": "index",
+      "columns": ["is_active"]
+    }
+  ],
+  "admin": {
+    "enabled": true,
+    "capability": "manage_options",
+    "menu": {
+      "placement": "submenu",
+      "parent": "smbb-codetool-signconnect",
+      "title": "Templates",
+      "icon": "dashicons-layout",
+      "position": 15
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "list": {
+      "perPage": 20,
+      "search": {
+        "enabled": true,
+        "provider": "default",
+        "fields": ["name", "description"],
+        "mode": "or",
+        "placeholder": "Search templates"
+      },
+      "filters": {
+        "enabled": true,
+        "fields": [
+          {
+            "field": "name",
+            "label": "Name",
+            "operators": ["contains", "eq", "starts_with", "ends_with"]
+          },
+          {
+            "field": "is_active",
+            "label": "Active",
+            "operators": ["eq"]
+          }
+        ]
+      },
+      "defaultOrder": {
+        "by": "id",
+        "direction": "desc"
+      }
+    },
+    "views": {
+      "list": "views/signtemplate/list.php",
+      "form": "views/signtemplate/form.php",
+      "details": "views/signtemplate/details.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

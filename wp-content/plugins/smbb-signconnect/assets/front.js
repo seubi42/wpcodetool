@@ -126,19 +126,51 @@
                 var fieldType = field.field_type || 'signature';
                 var labels = configText('fieldTypePublicLabels') || {};
                 var label = labels[fieldType] || configText('signatureZoneLabel') || 'Your signature will appear here';
+                var isSenderField = fieldType.indexOf('sender_') === 0;
 
                 overlay.type = 'button';
-                overlay.className = 'smbb-signconnect-public-signature-zone';
+                overlay.className = 'smbb-signconnect-public-signature-zone' + (isSenderField ? ' is-sender-field' : '');
                 overlay.style.left = (Number(field.x) * 100) + '%';
                 overlay.style.top = (Number(field.y) * 100) + '%';
                 overlay.style.width = (Number(field.width) * 100) + '%';
                 overlay.style.height = (Number(field.height) * 100) + '%';
-                overlay.textContent = label;
-                overlay.setAttribute('aria-label', label + ' - go to the signature form');
-                overlay.addEventListener('click', scrollToPublicSignaturePad);
+                renderPublicFieldOverlayContent(overlay, field, label, isSenderField);
+                overlay.setAttribute('aria-label', isSenderField ? label : label + ' - go to the signature form');
+
+                if (!isSenderField) {
+                    overlay.addEventListener('click', scrollToPublicSignaturePad);
+                }
 
                 stage.appendChild(overlay);
             });
+    }
+
+    function renderPublicFieldOverlayContent(overlay, field, fallbackLabel, isSenderField) {
+        var preview = field.sender_preview || null;
+
+        if (!isSenderField || !preview) {
+            overlay.textContent = fallbackLabel;
+            return;
+        }
+
+        overlay.classList.add('has-sender-preview');
+
+        if (preview.type === 'image' && preview.src) {
+            var image = document.createElement('img');
+            image.src = preview.src;
+            image.alt = preview.alt || fallbackLabel;
+            overlay.appendChild(image);
+            return;
+        }
+
+        if (preview.type === 'text' && preview.text) {
+            var text = document.createElement('span');
+            text.textContent = preview.text;
+            overlay.appendChild(text);
+            return;
+        }
+
+        overlay.textContent = fallbackLabel;
     }
 
     function scrollToPublicSignaturePad() {

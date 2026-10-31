@@ -95,21 +95,33 @@ final class SignConnectSettings
     {
         $settings = self::all();
 
-        return !empty($settings['certification_enabled']);
+        return true;
     }
 
     public static function certificationHashProofEnabled()
     {
         $settings = self::all();
 
-        return self::certificationEnabled() && !empty($settings['certification_hash_proof_enabled']);
+        return !empty($settings['certification_hash_proof_enabled']);
     }
 
     public static function certificationPdfSignatureEnabled()
     {
+        return true;
+    }
+
+    public static function certificationSelfSignedEnabled()
+    {
         $settings = self::all();
 
-        return self::certificationEnabled() && !empty($settings['certification_pdf_signature_enabled']);
+        return !empty($settings['certification_self_signed_enabled']);
+    }
+
+    public static function certificationImportedEnabled()
+    {
+        $settings = self::all();
+
+        return !empty($settings['certification_imported_enabled']);
     }
 
     public static function certificationCertificateFingerprint()
@@ -138,8 +150,13 @@ final class SignConnectSettings
 
     public static function certificationCertificatePath()
     {
+        return self::certificationCertificatePathForMode(self::certificationCertificateMode());
+    }
+
+    public static function certificationCertificatePathForMode($mode)
+    {
         $settings = self::all();
-        $key = self::certificationCertificateMode() === 'imported'
+        $key = $mode === 'imported'
             ? 'certification_imported_certificate_path'
             : 'certification_self_signed_certificate_path';
 
@@ -152,8 +169,13 @@ final class SignConnectSettings
 
     public static function certificationPrivateKeyPath()
     {
+        return self::certificationPrivateKeyPathForMode(self::certificationCertificateMode());
+    }
+
+    public static function certificationPrivateKeyPathForMode($mode)
+    {
         $settings = self::all();
-        $key = self::certificationCertificateMode() === 'imported'
+        $key = $mode === 'imported'
             ? 'certification_imported_private_key_path'
             : 'certification_self_signed_private_key_path';
 
@@ -166,13 +188,329 @@ final class SignConnectSettings
 
     public static function certificationPrivateKeyPassphrase()
     {
+        return self::certificationPrivateKeyPassphraseForMode(self::certificationCertificateMode());
+    }
+
+    public static function certificationPrivateKeyPassphraseForMode($mode)
+    {
         $settings = self::all();
 
-        if (self::certificationCertificateMode() === 'imported' && isset($settings['certification_imported_private_key_passphrase'])) {
+        if ($mode === 'imported' && isset($settings['certification_imported_private_key_passphrase'])) {
             return (string) $settings['certification_imported_private_key_passphrase'];
         }
 
         return isset($settings['certification_private_key_passphrase']) ? (string) $settings['certification_private_key_passphrase'] : '';
+    }
+
+    public static function yousignSealEnabled()
+    {
+        $settings = self::all();
+
+        return !empty($settings['yousign_seal_enabled']);
+    }
+
+    public static function yousignSignatureFlowEnabled()
+    {
+        $settings = self::all();
+
+        return !empty($settings['yousign_signature_flow_enabled']);
+    }
+
+    public static function yousignSignatureDisableReturnRedirect()
+    {
+        $settings = self::all();
+
+        return !empty($settings['yousign_signature_disable_return_redirect']);
+    }
+
+    public static function yousignSandbox()
+    {
+        $settings = self::all();
+
+        return !empty($settings['yousign_sandbox']);
+    }
+
+    public static function yousignApiKey()
+    {
+        $settings = self::all();
+
+        return isset($settings['yousign_api_key'])
+            ? sanitize_text_field((string) $settings['yousign_api_key'])
+            : '';
+    }
+
+    public static function yousignSignatureLevel()
+    {
+        $settings = self::all();
+        $level = isset($settings['yousign_signature_level']) ? sanitize_key((string) $settings['yousign_signature_level']) : 'electronic_signature';
+        $levels = array('electronic_signature', 'advanced_electronic_signature', 'qualified_electronic_signature');
+
+        return in_array($level, $levels, true) ? $level : 'electronic_signature';
+    }
+
+    public static function yousignTimestamp()
+    {
+        $settings = self::all();
+
+        return !empty($settings['yousign_timestamp']);
+    }
+
+    public static function yousignTimeout()
+    {
+        $settings = self::all();
+        $value = isset($settings['yousign_timeout']) ? absint($settings['yousign_timeout']) : 30;
+
+        return max(5, min(120, $value));
+    }
+
+    public static function yousignPollInterval()
+    {
+        $settings = self::all();
+        $value = isset($settings['yousign_poll_interval']) ? absint($settings['yousign_poll_interval']) : 1;
+
+        return max(1, min(10, $value));
+    }
+
+    public static function yousignMaxWaitSeconds()
+    {
+        $settings = self::all();
+        $value = isset($settings['yousign_max_wait_seconds']) ? absint($settings['yousign_max_wait_seconds']) : 15;
+
+        return max(5, min(120, $value));
+    }
+
+    public static function universignSignatureFlowEnabled()
+    {
+        $settings = self::all();
+
+        return !empty($settings['universign_signature_flow_enabled']);
+    }
+
+    public static function universignDisableReturnRedirect()
+    {
+        $settings = self::all();
+
+        return !empty($settings['universign_disable_return_redirect']);
+    }
+
+    public static function universignSandbox()
+    {
+        $settings = self::all();
+
+        return !empty($settings['universign_sandbox']);
+    }
+
+    public static function universignApiKey()
+    {
+        $settings = self::all();
+
+        return isset($settings['universign_api_key'])
+            ? sanitize_text_field((string) $settings['universign_api_key'])
+            : '';
+    }
+
+    public static function universignBaseUrl()
+    {
+        $settings = self::all();
+        $url = isset($settings['universign_base_url']) ? esc_url_raw((string) $settings['universign_base_url']) : '';
+
+        if ($url !== '') {
+            return rtrim($url, '/');
+        }
+
+        return self::universignSandbox()
+            ? 'https://api.alpha.universign.com'
+            : 'https://api.universign.com';
+    }
+
+    public static function universignAuthMode()
+    {
+        $settings = self::all();
+        $mode = isset($settings['universign_auth_mode']) ? sanitize_key((string) $settings['universign_auth_mode']) : 'basic';
+
+        return in_array($mode, array('basic', 'bearer'), true) ? $mode : 'basic';
+    }
+
+    public static function universignReturnUrl()
+    {
+        $settings = self::all();
+        $url = isset($settings['universign_return_url']) ? esc_url_raw((string) $settings['universign_return_url']) : '';
+
+        return $url !== '' ? $url : self::signingPageUrl();
+    }
+
+    public static function universignMasterAccountId()
+    {
+        $settings = self::all();
+
+        return isset($settings['universign_master_account_id'])
+            ? sanitize_text_field((string) $settings['universign_master_account_id'])
+            : '';
+    }
+
+    public static function universignWorkspaceId()
+    {
+        $settings = self::all();
+
+        return isset($settings['universign_workspace_id'])
+            ? sanitize_text_field((string) $settings['universign_workspace_id'])
+            : '';
+    }
+
+    public static function universignPlanId()
+    {
+        $settings = self::all();
+
+        return isset($settings['universign_plan_id'])
+            ? sanitize_text_field((string) $settings['universign_plan_id'])
+            : '';
+    }
+
+    public static function universignSignatureLevel()
+    {
+        $settings = self::all();
+        $level = isset($settings['universign_signature_level']) ? sanitize_key((string) $settings['universign_signature_level']) : 'level1';
+        $levels = array('level0', 'level1', 'level2', 'level3', 'level4');
+
+        return in_array($level, $levels, true) ? $level : 'level1';
+    }
+
+    public static function universignTimeout()
+    {
+        $settings = self::all();
+        $value = isset($settings['universign_timeout']) ? absint($settings['universign_timeout']) : 30;
+
+        return max(5, min(120, $value));
+    }
+
+    public static function universignPollInterval()
+    {
+        $settings = self::all();
+        $value = isset($settings['universign_poll_interval']) ? absint($settings['universign_poll_interval']) : 1;
+
+        return max(1, min(10, $value));
+    }
+
+    public static function universignMaxWaitSeconds()
+    {
+        $settings = self::all();
+        $value = isset($settings['universign_max_wait_seconds']) ? absint($settings['universign_max_wait_seconds']) : 15;
+
+        return max(5, min(120, $value));
+    }
+
+    public static function certificationMethodForCriticality($criticality)
+    {
+        $settings = self::all();
+        $criticality = DocumentCriticality::normalize($criticality);
+        $key = 'criticality_' . $criticality . '_method';
+        $defaults = array(
+            DocumentCriticality::LOW => CertificationMethod::NONE,
+            DocumentCriticality::MEDIUM => CertificationMethod::YOUSIGN_QUALIFIED_SEAL,
+            DocumentCriticality::CRITICAL => CertificationMethod::YOUSIGN_SIGNATURE_FLOW,
+        );
+        $default = isset($defaults[$criticality]) ? $defaults[$criticality] : CertificationMethod::NONE;
+
+        return isset($settings[$key])
+            ? CertificationMethod::normalize((string) $settings[$key], $default)
+            : $default;
+    }
+
+    public static function documentCriticality(array $document)
+    {
+        return DocumentCriticality::normalize(isset($document['criticality']) ? (string) $document['criticality'] : DocumentCriticality::LOW);
+    }
+
+    public static function documentCertificationMethod(array $document)
+    {
+        if (isset($document['certification_method']) && (string) $document['certification_method'] !== '') {
+            return CertificationMethod::normalize((string) $document['certification_method']);
+        }
+
+        return self::certificationMethodForCriticality(self::documentCriticality($document));
+    }
+
+    public static function documentUsesYousignSeal(array $document)
+    {
+        return self::documentCertificationMethod($document) === CertificationMethod::YOUSIGN_QUALIFIED_SEAL;
+    }
+
+    public static function documentUsesYousignSignatureFlow(array $document)
+    {
+        return self::documentCertificationMethod($document) === CertificationMethod::YOUSIGN_SIGNATURE_FLOW;
+    }
+
+    public static function documentUsesUniversignSignatureFlow(array $document)
+    {
+        return self::documentCertificationMethod($document) === CertificationMethod::UNIVERSIGN_SIGNATURE_FLOW;
+    }
+
+    public static function documentUsesExternalSignatureFlow(array $document)
+    {
+        return self::documentUsesYousignSignatureFlow($document) || self::documentUsesUniversignSignatureFlow($document);
+    }
+
+    public static function documentUsesSignConnectCertification(array $document)
+    {
+        return in_array(self::documentCertificationMethod($document), array(CertificationMethod::SELF_SIGNED, CertificationMethod::LOCAL_CERTIFICATE), true);
+    }
+
+    public static function documentCertificationCertificateMode(array $document)
+    {
+        return self::documentCertificationMethod($document) === CertificationMethod::LOCAL_CERTIFICATE
+            ? 'imported'
+            : 'self_signed';
+    }
+
+    public static function certificationMethodAvailable($method)
+    {
+        $method = CertificationMethod::normalize($method);
+
+        if ($method === CertificationMethod::NONE) {
+            return true;
+        }
+
+        if ($method === CertificationMethod::SELF_SIGNED) {
+            return self::certificationSelfSignedEnabled();
+        }
+
+        if ($method === CertificationMethod::LOCAL_CERTIFICATE) {
+            return self::certificationImportedEnabled();
+        }
+
+        if ($method === CertificationMethod::YOUSIGN_QUALIFIED_SEAL) {
+            return self::yousignSealEnabled() && self::yousignApiKey() !== '';
+        }
+
+        if ($method === CertificationMethod::YOUSIGN_SIGNATURE_FLOW) {
+            return self::yousignSignatureFlowEnabled() && self::yousignApiKey() !== '';
+        }
+
+        if ($method === CertificationMethod::UNIVERSIGN_SIGNATURE_FLOW) {
+            return self::universignSignatureFlowEnabled() && self::universignApiKey() !== '';
+        }
+
+        return false;
+    }
+
+    public static function yousignConfigured()
+    {
+        return self::yousignSealEnabled() && self::yousignApiKey() !== '';
+    }
+
+    public static function yousignSealConfigured()
+    {
+        return self::yousignConfigured() && !self::yousignSignatureFlowEnabled();
+    }
+
+    public static function yousignSignatureFlowConfigured()
+    {
+        return self::yousignSignatureFlowEnabled() && self::yousignApiKey() !== '';
+    }
+
+    public static function universignSignatureFlowConfigured()
+    {
+        return self::universignSignatureFlowEnabled() && self::universignApiKey() !== '';
     }
 
     public static function openAiEnabled()
@@ -199,6 +537,22 @@ final class SignConnectSettings
         $settings = self::all();
 
         return self::openAiConfigured() && !empty($settings['openai_suggest_signature_zone']);
+    }
+
+    public static function templateDetectionDebugEnabled()
+    {
+        $settings = self::all();
+
+        return !empty($settings['template_detection_debug_enabled']);
+    }
+
+    public static function templateDetectionPdftotextPath()
+    {
+        $settings = self::all();
+
+        return isset($settings['template_detection_pdftotext_path'])
+            ? trim((string) $settings['template_detection_pdftotext_path'])
+            : '';
     }
 
     public static function twilioService()

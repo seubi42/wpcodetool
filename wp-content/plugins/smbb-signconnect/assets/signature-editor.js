@@ -1,7 +1,7 @@
 const ajaxUrl = window.SmbbSignConnect?.ajaxUrl || '/wp-admin/admin-ajax.php';
 const MIN_DRAW_PIXELS = 17;
 const MIN_RESIZE_RATIO = 0.04;
-const FIELD_TYPES = ['signature', 'last_name', 'first_name', 'full_name', 'place', 'date', 'approval'];
+const FIELD_TYPES = ['signature', 'last_name', 'first_name', 'full_name', 'place', 'date', 'approval', 'sender_signature', 'sender_full_name', 'sender_last_name', 'sender_first_name', 'sender_stamp'];
 let pdfjsPromise = null;
 
 document.querySelectorAll('[data-signconnect-signature-editor]').forEach((root) => {

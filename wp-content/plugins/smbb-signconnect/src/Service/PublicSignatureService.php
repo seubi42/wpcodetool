@@ -14,6 +14,11 @@ defined('ABSPATH') || exit;
  */
 final class PublicSignatureService
 {
+    // 2 Mo : taille maximale d'une data-URL PNG de signature manuscrite. Une signature
+    // vectorielle canvas typique fait 20–100 Ko ; 2 Mo laisse une marge confortable
+    // tout en bloquant les tentatives d'injection de fichiers volumineux via ce champ.
+    private const MAX_SIGNATURE_DATA_URL_BYTES = 2097152;
+
     private $documents;
     private $attachments;
     private $signed_pdfs;
@@ -100,7 +105,12 @@ final class PublicSignatureService
                 'message' => $return_message,
             ), $identity_photo);
         } catch (\Throwable $exception) {
-            return $this->error($exception->getMessage(), 500);
+            $this->documents->appendSystemLog($document_id, 'public_signature_finalize_error', array(
+                'message' => $exception->getMessage(),
+                'class' => get_class($exception),
+            ));
+
+            return $this->error(__('The document could not be finalized. Please try again later or contact the sender.', 'smbb-signconnect'), 500);
         }
 
         $saved = $this->documents->markSigned($document_id, $token, array(
@@ -304,6 +314,14 @@ final class PublicSignatureService
         );
     }
 
+    /**
+     * Indique si l'IP a dépassé le seuil de tentatives échouées sur ce document.
+     *
+     * Seuil : 8 tentatives échouées par IP et par document sur une fenêtre de 15 min.
+     * Le compteur n'est incrémenté que sur échec de token (signFromPost → incrementRateLimit),
+     * pas sur les erreurs de validation métier (signature manquante, etc.), pour ne pas
+     * pénaliser les utilisateurs légitimes qui corrigent leur formulaire.
+     */
     private function rateLimited($document_id)
     {
         $count = (int) get_transient($this->rateLimitKey($document_id));
@@ -328,6 +346,7 @@ final class PublicSignatureService
     private function isSignatureDataUrl($signature)
     {
         return is_string($signature)
+            && strlen($signature) <= self::MAX_SIGNATURE_DATA_URL_BYTES
             && preg_match('/^data:image\/png;base64,[a-zA-Z0-9+\/=]+$/', $signature) === 1
             && strlen($signature) > 200;
     }

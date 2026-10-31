@@ -1,0 +1,347 @@
+.editor-styles-wrapper .smbb-wpdocux-device {
+    padding: 12px;
+    border: 1px dashed #c4cbd6;
+    border-radius: 8px;
+}
+
+.smbb-wpdocux-device-editor-preview {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: inherit;
+    margin-bottom: 20px;
+}
+
+.smbb-wpdocux-device-editor-steps {
+    padding-top: 18px;
+    border-top: 1px solid #e3e7ee;
+}
+
+.smbb-wpdocux-device-editor-steps__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.smbb-wpdocux-device-editor-steps__header h3 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.smbb-wpdocux-device-editor-steps__header p {
+    margin: 3px 0 0;
+    color: #626976;
+    font-size: 12px;
+}
+
+.smbb-wpdocux-icon-button.components-button {
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    min-height: 32px;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid #d7dce4;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #334155;
+    box-shadow: 0 1px 1px rgba(15, 23, 42, 0.04);
+}
+
+.smbb-wpdocux-icon-button.components-button:hover:not(:disabled) {
+    border-color: #7bb7d9;
+    background: #f5fbff;
+    color: #0b5d86;
+}
+
+.smbb-wpdocux-icon-button.components-button:focus:not(:disabled) {
+    border-color: #2f94c8;
+    box-shadow: 0 0 0 1px #2f94c8;
+}
+
+.smbb-wpdocux-icon-button.components-button:disabled {
+    opacity: 0.38;
+    box-shadow: none;
+}
+
+.smbb-wpdocux-icon-button .dashicons {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+    line-height: 18px;
+}
+
+.smbb-wpdocux-device-editor-steps__add.components-button {
+    border-color: #c8d7e5;
+    background: #f8fbfd;
+}
+
+.smbb-wpdocux-device__notice {
+    color: #626976;
+}
+
+.smbb-wpdocux-device-editor-steps__blocks .block-editor-block-list__layout {
+    display: grid;
+    gap: 6px;
+}
+
+.smbb-wpdocux-device-step-editor {
+    display: grid;
+    gap: 0;
+    padding: 0;
+    border: 1px solid #d7dbe2;
+    border-radius: 8px;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.smbb-wpdocux-device-step-editor__header {
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+}
+
+.smbb-wpdocux-device-step-editor__toggle.components-button.is-active {
+    border-color: #2f94c8;
+    background: #eaf7fd;
+    color: #075985;
+}
+
+.smbb-wpdocux-device-step-editor__thumb {
+    width: 52px;
+    height: 36px;
+    border: 1px solid #d7dbe2;
+    border-radius: 5px;
+    background: #f4f5f7;
+    object-fit: cover;
+}
+
+.smbb-wpdocux-device-step-editor__thumb.is-empty {
+    display: block;
+    background: repeating-linear-gradient(135deg, #f4f5f7, #f4f5f7 6px, #e6e9ef 6px, #e6e9ef 12px);
+}
+
+.smbb-wpdocux-device-step-editor__summary {
+    display: grid;
+    min-width: 0;
+    gap: 2px;
+}
+
+.smbb-wpdocux-device-step-editor__summary strong {
+    overflow: hidden;
+    color: #1d232b;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.smbb-wpdocux-device-step-editor__summary span {
+    color: #626976;
+    font-size: 11px;
+}
+
+.smbb-wpdocux-device-step-editor__body {
+    display: grid;
+    gap: 10px;
+    padding: 10px;
+    border-top: 1px solid #e3e7ee;
+}
+
+.smbb-wpdocux-device-step-editor__media {
+    display: grid;
+    gap: 10px;
+}
+
+.smbb-wpdocux-device-step-editor__hotspot-canvas {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    border-radius: 6px;
+    background: #f8f9fb;
+    cursor: crosshair;
+    touch-action: none;
+    user-select: none;
+}
+
+.smbb-wpdocux-device-step-editor__editable-hotspot {
+    cursor: grab;
+}
+
+.smbb-wpdocux-device-step-editor__editable-hotspot.is-dragging {
+    cursor: grabbing;
+    z-index: 4;
+}
+
+.smbb-wpdocux-device-step-editor__editable-hotspot.is-dragging::before {
+    opacity: 0.7;
+}
+
+.smbb-wpdocux-device-step-editor__media img {
+    width: 100%;
+    height: auto;
+    max-height: none;
+    object-fit: contain;
+    border: 1px solid #e3e7ee;
+    border-radius: 6px;
+    background: #f8f9fb;
+}
+
+.smbb-wpdocux-device-step-editor__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.smbb-wpdocux-device-step-editor__hotspots {
+    display: grid;
+    gap: 10px;
+}
+
+.smbb-wpdocux-device-step-editor__hotspots-title {
+    display: grid;
+    gap: 2px;
+}
+
+.smbb-wpdocux-device-step-editor__hotspots-title strong {
+    font-size: 12px;
+}
+
+.smbb-wpdocux-device-step-editor__hotspots-title span,
+.smbb-wpdocux-device-step-editor__empty-note {
+    margin: 0;
+    color: #626976;
+    font-size: 12px;
+}
+
+.smbb-wpdocux-device-step-editor__hotspot-row {
+    display: grid;
+    gap: 8px;
+    padding: 8px;
+    border: 1px solid #dde4ed;
+    border-radius: 6px;
+    background: #fcfdff;
+}
+
+.smbb-wpdocux-device-step-editor__hotspot-row-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.smbb-wpdocux-device-step-editor__hotspot-row-header strong {
+    font-size: 12px;
+}
+
+.smbb-wpdocux-device-step-editor__hotspot-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    padding: 2px;
+    border: 1px solid #e3e8ef;
+    border-radius: 7px;
+    background: #f8fafc;
+}
+
+.smbb-wpdocux-device-step-editor__hotspot-action.components-button {
+    width: 26px;
+    min-width: 26px;
+    height: 26px;
+    min-height: 26px;
+    border-color: transparent;
+    border-radius: 5px;
+    background: transparent;
+    box-shadow: none;
+}
+
+.smbb-wpdocux-device-step-editor__hotspot-action.components-button:hover:not(:disabled) {
+    border-color: #c7d2de;
+    background: #ffffff;
+}
+
+.smbb-wpdocux-device-step-editor__hotspot-action.components-button.is-danger {
+    color: #8f1d1d;
+}
+
+.smbb-wpdocux-device-step-editor__hotspot-action.components-button.is-danger:hover:not(:disabled) {
+    border-color: #f2b8b8;
+    background: #fff5f5;
+    color: #b42318;
+}
+
+.smbb-wpdocux-device-step-editor__hotspot-action .dashicons {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    line-height: 16px;
+}
+
+.smbb-wpdocux-device-step-editor__hotspot-fields {
+    display: grid;
+    grid-template-columns: minmax(140px, 1fr) 70px 70px 130px;
+    gap: 8px;
+}
+
+.smbb-wpdocux-device-step-editor__hotspot-fields .components-base-control,
+.smbb-wpdocux-device-step-editor__hotspot-colors .components-base-control {
+    margin-bottom: calc(8px);
+}
+
+.smbb-wpdocux-device-step-editor__mini-label {
+    display: block;
+    margin-bottom: calc(8px);
+    color: #1d232b;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+.smbb-wpdocux-device-step-editor__color-toggle.components-button {
+    width: 100%;
+    height: 32px;
+    min-height: 32px;
+    justify-content: flex-start;
+    gap: 7px;
+    padding: 4px 8px;
+    border: 1px solid #8c8f94;
+    border-radius: 2px;
+    background: #ffffff;
+    color: #2f3540;
+    font-size: 12px;
+}
+
+.smbb-wpdocux-device-step-editor__color-swatch {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    border: 2px solid #ffffff;
+    border-radius: 999px;
+    box-shadow: 0 0 0 1px #c4cbd6;
+}
+
+.smbb-wpdocux-device-step-editor__color-menu {
+    display: grid;
+    width: 220px;
+    gap: 10px;
+    padding: 10px;
+}
+
+@media (max-width: 720px) {
+    .smbb-wpdocux-device-step-editor__hotspot-fields {
+        grid-template-columns: 1fr 70px 70px;
+    }
+
+    .smbb-wpdocux-device-step-editor__color-field {
+        grid-column: 1 / -1;
+    }
+}

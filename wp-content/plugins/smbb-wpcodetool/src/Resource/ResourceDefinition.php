@@ -53,7 +53,7 @@ final class ResourceDefinition
      */
     public function label()
     {
-        return isset($this->data['label']) ? (string) $this->data['label'] : ucfirst($this->name());
+        return $this->translateText(isset($this->data['label']) ? (string) $this->data['label'] : ucfirst($this->name()));
     }
 
     /**
@@ -61,7 +61,7 @@ final class ResourceDefinition
      */
     public function pluralLabel()
     {
-        return isset($this->data['pluralLabel']) ? (string) $this->data['pluralLabel'] : $this->label();
+        return $this->translateText(isset($this->data['pluralLabel']) ? (string) $this->data['pluralLabel'] : $this->label());
     }
 
     /**
@@ -72,7 +72,7 @@ final class ResourceDefinition
      */
     public function description()
     {
-        return isset($this->data['description']) ? (string) $this->data['description'] : '';
+        return $this->translateText(isset($this->data['description']) ? (string) $this->data['description'] : '');
     }
 
     /**
@@ -223,10 +223,10 @@ final class ResourceDefinition
         }
 
         if (!empty($menu['parent']['title'])) {
-            return (string) $menu['parent']['title'];
+            return $this->translateText((string) $menu['parent']['title']);
         }
 
-        return ucfirst(str_replace('-', ' ', $this->menuParentSlug()));
+        return $this->translateText(ucfirst(str_replace('-', ' ', $this->menuParentSlug())));
     }
 
     /**
@@ -264,7 +264,25 @@ final class ResourceDefinition
     {
         $menu = $this->menu();
 
-        return isset($menu['title']) ? (string) $menu['title'] : $this->pluralLabel();
+        return $this->translateText(isset($menu['title']) ? (string) $menu['title'] : $this->pluralLabel());
+    }
+
+    private function textDomain()
+    {
+        $domain = basename($this->plugin_dir);
+
+        return $domain !== '' ? $domain : 'smbb-wpcodetool';
+    }
+
+    private function translateText($text)
+    {
+        $text = (string) $text;
+
+        if ($text === '') {
+            return '';
+        }
+
+        return __($text, $this->textDomain());
     }
 
     /**

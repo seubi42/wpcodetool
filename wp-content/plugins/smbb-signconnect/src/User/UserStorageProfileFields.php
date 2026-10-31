@@ -3,18 +3,22 @@
 namespace Smbb\SignConnect\User;
 
 use Smbb\SignConnect\Repository\StorageRepository;
+use Smbb\SignConnect\Repository\StampRepository;
 
 defined('ABSPATH') || exit;
 
 final class UserStorageProfileFields
 {
     const META_KEY = 'smbb_signconnect_storage_id';
+    const STAMP_META_KEY = 'smbb_signconnect_stamp_id';
 
     private $storages;
+    private $stamps;
 
-    public function __construct(StorageRepository $storages = null)
+    public function __construct(StorageRepository $storages = null, StampRepository $stamps = null)
     {
         $this->storages = $storages ?: new StorageRepository();
+        $this->stamps = $stamps ?: new StampRepository();
     }
 
     public function hooks()
@@ -32,7 +36,9 @@ final class UserStorageProfileFields
         }
 
         $selected = (int) get_user_meta($user->ID, self::META_KEY, true);
+        $selected_stamp = (int) get_user_meta($user->ID, self::STAMP_META_KEY, true);
         $storages = $this->storages->allActive();
+        $stamps = $this->stamps->allActive();
         ?>
         <h2><?php esc_html_e('SignConnect', 'smbb-signconnect'); ?></h2>
         <table class="form-table" role="presentation">
@@ -49,6 +55,20 @@ final class UserStorageProfileFields
                         <?php endforeach; ?>
                     </select>
                     <p class="description"><?php esc_html_e('Storage used by the [signconnect_post] form for this user.', 'smbb-signconnect'); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="smbb-signconnect-stamp-id"><?php esc_html_e('Sender stamp', 'smbb-signconnect'); ?></label></th>
+                <td>
+                    <select name="smbb_signconnect_stamp_id" id="smbb-signconnect-stamp-id">
+                        <option value="0"><?php esc_html_e('No stamp selected', 'smbb-signconnect'); ?></option>
+                        <?php foreach ($stamps as $stamp) : ?>
+                            <option value="<?php echo esc_attr((string) $stamp['id']); ?>"<?php selected($selected_stamp, (int) $stamp['id']); ?>>
+                                <?php echo esc_html((string) $stamp['name']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <p class="description"><?php esc_html_e('Stamp applied when a document contains a sender stamp field.', 'smbb-signconnect'); ?></p>
                 </td>
             </tr>
         </table>
@@ -68,11 +88,18 @@ final class UserStorageProfileFields
         }
 
         $storage_id = isset($_POST['smbb_signconnect_storage_id']) ? absint($_POST['smbb_signconnect_storage_id']) : 0;
+        $stamp_id = isset($_POST['smbb_signconnect_stamp_id']) ? absint($_POST['smbb_signconnect_stamp_id']) : 0;
 
         if ($storage_id > 0) {
             update_user_meta($user_id, self::META_KEY, $storage_id);
         } else {
             delete_user_meta($user_id, self::META_KEY);
+        }
+
+        if ($stamp_id > 0) {
+            update_user_meta($user_id, self::STAMP_META_KEY, $stamp_id);
+        } else {
+            delete_user_meta($user_id, self::STAMP_META_KEY);
         }
     }
 }

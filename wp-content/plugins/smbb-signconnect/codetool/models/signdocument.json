@@ -132,6 +132,29 @@
       "nullable": false,
       "default": "signature"
     },
+    "criticality": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "low"
+    },
+    "criticality_locked": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "criticality_source_template_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "certification_method": {
+      "type": "varchar",
+      "length": 40,
+      "nullable": false,
+      "default": "none"
+    },
     "link_expires_at": {
       "type": "datetime",
       "nullable": true

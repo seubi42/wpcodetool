@@ -228,12 +228,13 @@
         var hidden = form.querySelector('[data-signconnect-signature-data]');
         var message = form.querySelector('[data-signconnect-public-sign-message]');
         var button = form.querySelector('button[type="submit"]');
+        var isYousignFlow = form.dataset.yousignSignatureFlow === '1';
 
         if (typeof form.reportValidity === 'function' && !form.reportValidity()) {
             return;
         }
 
-        if (!canvas || canvas.dataset.hasInk !== '1') {
+        if (!isYousignFlow && (!canvas || canvas.dataset.hasInk !== '1')) {
             var returnStatus = form.querySelector('[name="signer_return_status"]:checked');
 
             if (!returnStatus || returnStatus.value !== 'refused') {
@@ -242,13 +243,13 @@
             }
         }
 
-        hidden.value = canvas && canvas.dataset.hasInk === '1' ? canvas.toDataURL('image/png') : '';
+        if (hidden) {
+            hidden.value = canvas && canvas.dataset.hasInk === '1' ? canvas.toDataURL('image/png') : '';
+        }
         var formData = new FormData(form);
         formData.set('action', 'smbb_signconnect_public_sign_document');
 
-        if (button) {
-            button.disabled = true;
-        }
+        setPublicSignatureLoading(form, true, button);
 
         fetch((window.SmbbSignConnect && SmbbSignConnect.ajaxUrl) || '/wp-admin/admin-ajax.php', {
             method: 'POST',
@@ -265,14 +266,56 @@
                     throw new Error(payload && payload.data && payload.data.message ? payload.data.message : 'Signature failed.');
                 }
 
+                if (payload.data && payload.data.redirect_url) {
+                    window.location.href = payload.data.redirect_url;
+                    return;
+                }
+
                 showPublicSignatureThanks(form, payload.data.message || configText('publicThanksMessage') || 'Your response has been transmitted.', payload.data.proof || {});
             })
             .catch(function (error) {
                 showMessage(message, 'error', error.message || 'Signature failed.');
-                if (button) {
-                    button.disabled = false;
-                }
+                setPublicSignatureLoading(form, false, button);
             });
+    }
+
+    function setPublicSignatureLoading(form, isLoading, button) {
+        var shell = form ? form.closest('.smbb-signconnect-public-sign') : null;
+        var overlay = shell ? shell.querySelector('[data-signconnect-public-submit-loading]') : null;
+        var label = configText('publicSubmitLoading') || 'Transmission in progress...';
+
+        if (button) {
+            if (isLoading && !button.dataset.originalText) {
+                button.dataset.originalText = button.textContent;
+            }
+
+            button.disabled = !!isLoading;
+            button.textContent = isLoading ? label : (button.dataset.originalText || button.textContent);
+        }
+
+        if (form) {
+            form.setAttribute('aria-busy', isLoading ? 'true' : 'false');
+        }
+
+        if (!shell) {
+            return;
+        }
+
+        shell.classList.toggle('is-submitting', !!isLoading);
+
+        if (isLoading && !overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'smbb-signconnect-public-submit-loading';
+            overlay.setAttribute('role', 'status');
+            overlay.setAttribute('aria-live', 'polite');
+            overlay.setAttribute('data-signconnect-public-submit-loading', '1');
+            overlay.innerHTML = '<span class="smbb-signconnect-spinner" aria-hidden="true"></span><strong>' + escapeHtml(label) + '</strong><small>' + escapeHtml(configText('publicSubmitLoadingHelp') || 'Please keep this page open.') + '</small>';
+            shell.appendChild(overlay);
+        }
+
+        if (!isLoading && overlay) {
+            overlay.remove();
+        }
     }
 
     function updatePublicReturnForm(form) {

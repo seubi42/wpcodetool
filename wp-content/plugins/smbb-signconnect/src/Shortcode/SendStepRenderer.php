@@ -2,8 +2,13 @@
 
 namespace Smbb\SignConnect\Shortcode;
 
+use Smbb\SignConnect\Repository\SenderSignatureRepository;
+use Smbb\SignConnect\Repository\SignatureFieldRepository;
+use Smbb\SignConnect\Support\CertificationMethod;
+use Smbb\SignConnect\Support\DocumentCriticality;
 use Smbb\SignConnect\Support\FrontIcons;
 use Smbb\SignConnect\Support\SignConnectSettings;
+use Smbb\SignConnect\Support\SignatureFieldType;
 
 defined('ABSPATH') || exit;
 
@@ -18,6 +23,15 @@ defined('ABSPATH') || exit;
  */
 final class SendStepRenderer
 {
+    private $signature_fields;
+    private $sender_signatures;
+
+    public function __construct(SignatureFieldRepository $signature_fields = null, SenderSignatureRepository $sender_signatures = null)
+    {
+        $this->signature_fields = $signature_fields ?: new SignatureFieldRepository();
+        $this->sender_signatures = $sender_signatures ?: new SenderSignatureRepository();
+    }
+
     public function render($document_id, array $document)
     {
         $sms_enabled = SignConnectSettings::twilioConfigured();
@@ -35,6 +49,8 @@ final class SendStepRenderer
         $html .= $this->channelFields($document, $send_channel, $sms_enabled);
         $html .= $this->messageField($document, $auto_mode);
         $html .= $this->returnExpectedFields($document);
+        $html .= $this->criticalityFields($document);
+        $html .= $this->senderFields($document_id);
         $html .= $this->securityFields($document, $expiration_days);
         $html .= '<div class="smbb-signconnect-send-actions"><button type="submit" class="button"><span>' . esc_html__('Envoyer', 'smbb-signconnect') . '</span>' . FrontIcons::icon('arrow-right') . '</button></div>';
         $html .= '<div data-signconnect-send-message></div>';
@@ -42,6 +58,42 @@ final class SendStepRenderer
         $html .= '</section>';
 
         return $html;
+    }
+
+    private function senderFields($document_id)
+    {
+        if (!$this->requiresSenderSignature($document_id)) {
+            return '';
+        }
+
+        $user_id = get_current_user_id();
+        $stored = $this->sender_signatures->findReusableForUser($user_id);
+        $signature = $stored && !empty($stored['signature_data']) ? (string) $stored['signature_data'] : '';
+
+        $html = '<section class="smbb-signconnect-security-box smbb-signconnect-sender-signature-box">';
+        $html .= '<h4>' . esc_html__('Sender signature', 'smbb-signconnect') . '</h4>';
+        $html .= '<input type="hidden" name="sender_signature_data" value="' . esc_attr($signature) . '" data-signconnect-sender-signature-data>';
+        $html .= '<label class="smbb-signconnect-field"><span>' . esc_html__('Your signature', 'smbb-signconnect') . '</span><canvas class="smbb-signconnect-signature-pad" width="720" height="220" tabindex="0" data-signconnect-sender-signature-pad data-existing-signature="' . esc_attr($signature) . '"></canvas></label>';
+        $html .= '<label class="smbb-signconnect-checkbox-card">';
+        $html .= '<input type="checkbox" name="remember_sender_signature" value="1"' . checked($signature !== '', true, false) . '>';
+        $html .= '<span class="smbb-signconnect-checkmark" aria-hidden="true"></span>';
+        $html .= '<span class="smbb-signconnect-checkbox-copy"><strong>' . esc_html__('Remember this signature', 'smbb-signconnect') . '</strong><small>' . esc_html__('Reuse it for sender signature fields on future documents.', 'smbb-signconnect') . '</small></span>';
+        $html .= '</label>';
+        $html .= '<p><button type="button" class="button is-secondary" data-signconnect-clear-sender-signature>' . esc_html__('Clear signature', 'smbb-signconnect') . '</button></p>';
+        $html .= '</section>';
+
+        return $html;
+    }
+
+    private function requiresSenderSignature($document_id)
+    {
+        foreach ($this->signature_fields->listForDocument($document_id) as $field) {
+            if (SignatureFieldType::requiresSenderSignature(isset($field['field_type']) ? $field['field_type'] : '')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function channelFields(array $document, $send_channel, $sms_enabled)
@@ -61,6 +113,38 @@ final class SendStepRenderer
             $html .= '<span class="smbb-signconnect-card-title">' . FrontIcons::icon('message') . esc_html__('SMS', 'smbb-signconnect') . '</span>';
             $html .= '<input type="tel" name="recipient_phone" value="' . esc_attr(isset($document['recipient_phone']) ? (string) $document['recipient_phone'] : '') . '" placeholder="' . esc_attr__('Phone number', 'smbb-signconnect') . '" data-send-phone>';
             $html .= '</label>';
+        }
+
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    private function criticalityFields(array $document)
+    {
+        $criticality = SignConnectSettings::documentCriticality($document);
+        $locked = !empty($document['criticality_locked']);
+        $labels = DocumentCriticality::labels();
+
+        $html = '<div class="smbb-signconnect-field">';
+        $html .= '<span>' . esc_html__('Document criticality', 'smbb-signconnect') . '</span>';
+        $html .= '<div class="smbb-signconnect-channel-grid">';
+
+        foreach (DocumentCriticality::all() as $value) {
+            $method = SignConnectSettings::certificationMethodForCriticality($value);
+            $html .= '<label class="smbb-signconnect-channel-card smbb-signconnect-radio-card">';
+            $html .= '<input type="radio" name="criticality" value="' . esc_attr($value) . '"' . checked($criticality, $value, false) . disabled($locked, true, false) . '>';
+            $html .= '<span class="smbb-signconnect-choice-dot" aria-hidden="true"></span>';
+            $html .= '<span class="smbb-signconnect-card-title">' . esc_html(isset($labels[$value]) ? $labels[$value] : $value) . '</span>';
+            $html .= '<small>' . esc_html(CertificationMethod::label($method)) . '</small>';
+            $html .= '</label>';
+        }
+
+        $html .= '</div>';
+
+        if ($locked) {
+            $html .= '<input type="hidden" name="criticality" value="' . esc_attr($criticality) . '">';
+            $html .= '<small>' . esc_html__('This criticality is imposed by the matched template.', 'smbb-signconnect') . '</small>';
         }
 
         $html .= '</div>';

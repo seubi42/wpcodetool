@@ -1,0 +1,37 @@
+{
+  "apiVersion": 2,
+  "name": "smbb-wpdocux/device-step",
+  "title": "DocUX etape",
+  "category": "media",
+  "description": "A numbered screenshot step for the DocUX device block.",
+  "textdomain": "smbb-wpdocux",
+  "parent": [
+    "smbb-wpdocux/device-walkthrough"
+  ],
+  "supports": {
+    "html": false,
+    "reusable": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": ""
+    },
+    "imageId": {
+      "type": "number"
+    },
+    "imageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "imageAlt": {
+      "type": "string",
+      "default": ""
+    },
+    "hotspots": {
+      "type": "array",
+      "default": []
+    }
+  },
+  "editorScript": "file:../device-walkthrough/editor.js"
+}

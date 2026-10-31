@@ -13,6 +13,11 @@ final class SignatureFieldType
     const PLACE = 'place';
     const DATE = 'date';
     const APPROVAL = 'approval';
+    const SENDER_SIGNATURE = 'sender_signature';
+    const SENDER_FULL_NAME = 'sender_full_name';
+    const SENDER_LAST_NAME = 'sender_last_name';
+    const SENDER_FIRST_NAME = 'sender_first_name';
+    const SENDER_STAMP = 'sender_stamp';
 
     public static function all()
     {
@@ -24,7 +29,33 @@ final class SignatureFieldType
             self::PLACE,
             self::DATE,
             self::APPROVAL,
+            self::SENDER_SIGNATURE,
+            self::SENDER_FULL_NAME,
+            self::SENDER_LAST_NAME,
+            self::SENDER_FIRST_NAME,
+            self::SENDER_STAMP,
         );
+    }
+
+    public static function senderTypes()
+    {
+        return array(
+            self::SENDER_SIGNATURE,
+            self::SENDER_FULL_NAME,
+            self::SENDER_LAST_NAME,
+            self::SENDER_FIRST_NAME,
+            self::SENDER_STAMP,
+        );
+    }
+
+    public static function requiresSenderSignature($type)
+    {
+        return self::isSenderType($type);
+    }
+
+    public static function isSenderType($type)
+    {
+        return in_array(self::normalize($type), self::senderTypes(), true);
     }
 
     public static function normalize($type)
@@ -49,6 +80,16 @@ final class SignatureFieldType
                 return __('Date', 'smbb-signconnect');
             case self::APPROVAL:
                 return __('Good for approval', 'smbb-signconnect');
+            case self::SENDER_SIGNATURE:
+                return __('Sender signature', 'smbb-signconnect');
+            case self::SENDER_FULL_NAME:
+                return __('Sender full name', 'smbb-signconnect');
+            case self::SENDER_LAST_NAME:
+                return __('Sender last name', 'smbb-signconnect');
+            case self::SENDER_FIRST_NAME:
+                return __('Sender first name', 'smbb-signconnect');
+            case self::SENDER_STAMP:
+                return __('Sender stamp', 'smbb-signconnect');
             case self::SIGNATURE:
             default:
                 return __('Signature', 'smbb-signconnect');

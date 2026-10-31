@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SignConnect
  * Description: SMBB business plugin for managing documents to sign with CodeTool.
- * Version: 0.1.44
+ * Version: 0.1.46
  * Author: SMBB
  * Text Domain: smbb-signconnect
  * Domain Path: /languages
@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
 define('SMBB_SIGNCONNECT_FILE', __FILE__);
 define('SMBB_SIGNCONNECT_PATH', plugin_dir_path(__FILE__));
 define('SMBB_SIGNCONNECT_URL', plugin_dir_url(__FILE__));
-define('SMBB_SIGNCONNECT_VERSION', '0.1.44');
+define('SMBB_SIGNCONNECT_VERSION', '0.1.46');
 
 if (!defined('SMBB_SIGNCONNECT_KEEP_AI_TEMP_FILES')) {
     define('SMBB_SIGNCONNECT_KEEP_AI_TEMP_FILES', true);
@@ -63,6 +63,20 @@ function smbb_signconnect_register_cron_tasks($registry)
         'description' => __('Deletes unsigned documents whose link has expired, including S3 cleanup.', 'smbb-signconnect'),
         'schedule' => 'smbb_every_15_minutes',
         'callback' => array(new \Smbb\SignConnect\Service\ExpiredDocumentPurgeService(), 'run'),
+    ));
+
+    $registry->register('smbb_signconnect_yousign_signature_check', array(
+        'label' => __('SignConnect - Yousign pending signatures', 'smbb-signconnect'),
+        'description' => __('Checks pending Yousign signature requests and finalizes completed documents.', 'smbb-signconnect'),
+        'schedule' => 'smbb_every_15_minutes',
+        'callback' => array(new \Smbb\SignConnect\Service\YousignSignatureFlowCronService(), 'run'),
+    ));
+
+    $registry->register('smbb_signconnect_universign_signature_check', array(
+        'label' => __('SignConnect - Universign pending signatures', 'smbb-signconnect'),
+        'description' => __('Checks pending Universign transactions and finalizes completed documents.', 'smbb-signconnect'),
+        'schedule' => 'smbb_every_15_minutes',
+        'callback' => array(new \Smbb\SignConnect\Service\UniversignSignatureFlowCronService(), 'run'),
     ));
 }
 

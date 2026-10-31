@@ -16,6 +16,9 @@ defined('ABSPATH') || exit;
  */
 final class IdentityPhotoAttachmentService
 {
+    private const MAX_IMAGE_BYTES = 5242880;
+    private const MAX_IMAGE_DIMENSION = 6000;
+
     private $storages;
 
     public function __construct(StorageRepository $storages = null)
@@ -77,6 +80,12 @@ final class IdentityPhotoAttachmentService
             throw new \RuntimeException($this->uploadErrorMessage((int) $file['error']));
         }
 
+        $size = isset($file['size']) ? (int) $file['size'] : 0;
+
+        if ($size < 1 || $size > self::MAX_IMAGE_BYTES) {
+            throw new \RuntimeException(__('The identity photo must be smaller than 5 MB.', 'smbb-signconnect'));
+        }
+
         if (!function_exists('wp_check_filetype_and_ext')) {
             require_once ABSPATH . 'wp-admin/includes/file.php';
         }
@@ -94,6 +103,16 @@ final class IdentityPhotoAttachmentService
 
         if (empty($check['ext']) || empty($check['type']) || !in_array($check['type'], array('image/jpeg', 'image/png'), true)) {
             throw new \RuntimeException(__('The identity photo must be a JPG or PNG image.', 'smbb-signconnect'));
+        }
+
+        $dimensions = @getimagesize((string) $file['tmp_name']);
+
+        if (!$dimensions || empty($dimensions[0]) || empty($dimensions[1])) {
+            throw new \RuntimeException(__('The identity photo could not be inspected.', 'smbb-signconnect'));
+        }
+
+        if ((int) $dimensions[0] > self::MAX_IMAGE_DIMENSION || (int) $dimensions[1] > self::MAX_IMAGE_DIMENSION) {
+            throw new \RuntimeException(__('The identity photo dimensions are too large.', 'smbb-signconnect'));
         }
     }
 

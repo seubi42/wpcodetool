@@ -4,12 +4,18 @@ namespace Smbb\SignConnect\Shortcode;
 
 use Smbb\SignConnect\Repository\DocumentRepository;
 use Smbb\SignConnect\Repository\DocumentAuditRepository;
+use Smbb\SignConnect\Repository\SenderSignatureRepository;
 use Smbb\SignConnect\Repository\SignatureFieldRepository;
+use Smbb\SignConnect\Repository\StampRepository;
 use Smbb\SignConnect\Repository\StorageRepository;
 use Smbb\SignConnect\Service\PublicSignatureService;
 use Smbb\SignConnect\Service\S3DocumentStreamer;
+use Smbb\SignConnect\Service\UniversignSignatureFlowService;
+use Smbb\SignConnect\Service\YousignSignatureFlowService;
 use Smbb\SignConnect\Support\PublicSigningLink;
 use Smbb\SignConnect\Support\SignConnectSettings;
+use Smbb\SignConnect\Support\SignatureFieldType;
+use Smbb\SignConnect\User\UserStorageProfileFields;
 
 defined('ABSPATH') || exit;
 
@@ -25,8 +31,12 @@ final class SignConnectSignShortcode extends AbstractFrontShortcode
     private $storages;
     private $documents;
     private $signature_fields;
+    private $sender_signatures;
+    private $stamps;
     private $streamer;
     private $public_signature;
+    private $yousign_signature;
+    private $universign_signature;
     private $audit;
 
     public function __construct(
@@ -34,15 +44,23 @@ final class SignConnectSignShortcode extends AbstractFrontShortcode
         DocumentRepository $documents = null,
         S3DocumentStreamer $streamer = null,
         PublicSignatureService $public_signature = null,
+        YousignSignatureFlowService $yousign_signature = null,
+        UniversignSignatureFlowService $universign_signature = null,
         SignatureFieldRepository $signature_fields = null,
+        SenderSignatureRepository $sender_signatures = null,
+        StampRepository $stamps = null,
         DocumentAuditRepository $audit = null
     ) {
         $this->storages = $storages ?: new StorageRepository();
         $this->documents = $documents ?: new DocumentRepository();
         $this->signature_fields = $signature_fields ?: new SignatureFieldRepository();
+        $this->sender_signatures = $sender_signatures ?: new SenderSignatureRepository();
+        $this->stamps = $stamps ?: new StampRepository();
         $this->streamer = $streamer ?: new S3DocumentStreamer();
-        $this->public_signature = $public_signature ?: new PublicSignatureService($this->documents);
         $this->audit = $audit ?: new DocumentAuditRepository();
+        $this->public_signature = $public_signature ?: new PublicSignatureService($this->documents);
+        $this->yousign_signature = $yousign_signature ?: new YousignSignatureFlowService($this->documents, $this->storages, $this->signature_fields, $this->audit);
+        $this->universign_signature = $universign_signature ?: new UniversignSignatureFlowService($this->documents, $this->storages, $this->signature_fields, $this->audit);
     }
 
     public function hooks()
@@ -102,6 +120,56 @@ final class SignConnectSignShortcode extends AbstractFrontShortcode
 
         if ($document_id < 1 || $token === '' || !wp_verify_nonce($nonce, 'smbb_signconnect_public_sign_' . $document_id . '_' . $token)) {
             wp_send_json_error(array('message' => __('Invalid signature link.', 'smbb-signconnect')), 403);
+        }
+
+        $document = $this->publicDocument($document_id, $token);
+
+        if (!$document || $this->publicDocumentExpired($document)) {
+            wp_send_json_error(array('message' => __('Invalid or expired signature link.', 'smbb-signconnect')), 403);
+        }
+
+        if (SignConnectSettings::documentUsesYousignSignatureFlow($document)) {
+            try {
+                $result = $this->yousign_signature->start($document, isset($_POST['document_id']) ? sanitize_text_field((string) wp_unslash($_POST['document_id'])) : '', $token, $_POST);
+                wp_send_json_success(array(
+                    'redirect_url' => isset($result['signature_link']) ? (string) $result['signature_link'] : '',
+                    'message' => __('You will be redirected to Yousign to sign the document.', 'smbb-signconnect'),
+                ));
+            } catch (\Throwable $exception) {
+                $this->documents->appendSystemLog($document_id, 'yousign_signature_start_error', array(
+                    'message' => $exception->getMessage(),
+                    'class' => get_class($exception),
+                ));
+                $this->audit->record($document_id, 'yousign_signature_start_error', array(
+                    'message' => $exception->getMessage(),
+                    'class' => get_class($exception),
+                ), 'system', null, __('Yousign signing flow start failed.', 'smbb-signconnect'));
+                wp_send_json_error(array(
+                    'message' => __('The Yousign signing flow could not be started. Please try again later or contact the sender.', 'smbb-signconnect'),
+                ), 500);
+            }
+        }
+
+        if (SignConnectSettings::documentUsesUniversignSignatureFlow($document)) {
+            try {
+                $result = $this->universign_signature->start($document, isset($_POST['document_id']) ? sanitize_text_field((string) wp_unslash($_POST['document_id'])) : '', $token, $_POST);
+                wp_send_json_success(array(
+                    'redirect_url' => isset($result['signature_link']) ? (string) $result['signature_link'] : '',
+                    'message' => __('You will be redirected to Universign to sign the document.', 'smbb-signconnect'),
+                ));
+            } catch (\Throwable $exception) {
+                $this->documents->appendSystemLog($document_id, 'universign_signature_start_error', array(
+                    'message' => $exception->getMessage(),
+                    'class' => get_class($exception),
+                ));
+                $this->audit->record($document_id, 'universign_signature_start_error', array(
+                    'message' => $exception->getMessage(),
+                    'class' => get_class($exception),
+                ), 'system', null, __('Universign signing flow start failed.', 'smbb-signconnect'));
+                wp_send_json_error(array(
+                    'message' => __('The Universign signing flow could not be started. Please try again later or contact the sender.', 'smbb-signconnect'),
+                ), 500);
+            }
         }
 
         $result = $this->public_signature->signFromPost($document_id, $token, $_POST, $_FILES);
@@ -183,7 +251,37 @@ final class SignConnectSignShortcode extends AbstractFrontShortcode
             'token' => rawurlencode($token),
         ), admin_url('admin-ajax.php'));
         $download_url = add_query_arg('download', '1', $pdf_url);
-        $fields = $this->publicSignatureFields($document_id);
+        $fields = $this->publicSignatureFields($document_id, $document);
+
+        if (SignConnectSettings::documentUsesYousignSignatureFlow($document) && !empty($_GET['signconnect_yousign_return']) && empty($document['sign_date'])) {
+            $return_key = isset($_GET['signconnect_yousign_key']) ? sanitize_text_field((string) wp_unslash($_GET['signconnect_yousign_key'])) : '';
+
+            try {
+                $document = $this->yousign_signature->finalize($document, $token, $return_key);
+            } catch (\Throwable $exception) {
+                $this->documents->appendSystemLog($document_id, 'yousign_signature_finalize_error', array(
+                    'message' => $exception->getMessage(),
+                    'class' => get_class($exception),
+                ));
+
+                return $this->renderNotice('info', __('The Yousign signature is being finalized. Please refresh this page in a few seconds.', 'smbb-signconnect'));
+            }
+        }
+
+        if (SignConnectSettings::documentUsesUniversignSignatureFlow($document) && !empty($_GET['signconnect_universign_return']) && empty($document['sign_date'])) {
+            $return_key = isset($_GET['signconnect_universign_key']) ? sanitize_text_field((string) wp_unslash($_GET['signconnect_universign_key'])) : '';
+
+            try {
+                $document = $this->universign_signature->finalize($document, $token, $return_key);
+            } catch (\Throwable $exception) {
+                $this->documents->appendSystemLog($document_id, 'universign_signature_finalize_error', array(
+                    'message' => $exception->getMessage(),
+                    'class' => get_class($exception),
+                ));
+
+                return $this->renderNotice('info', __('The Universign signature is being finalized. Please refresh this page in a few seconds.', 'smbb-signconnect'));
+            }
+        }
 
         if (!empty($document['sign_date'])) {
             $html = '<section class="smbb-signconnect-public-sign">';
@@ -207,12 +305,15 @@ final class SignConnectSignShortcode extends AbstractFrontShortcode
         $html .= '<div class="smbb-signconnect-public-pdf-pages" data-signconnect-public-pdf-pages></div>';
         $html .= '</div>';
         $return_expected = isset($document['return_expected']) && (string) $document['return_expected'] === 'approval_refusal' ? 'approval_refusal' : 'signature';
-        $html .= '<form class="smbb-signconnect-public-sign-form" data-signconnect-public-sign-form data-download-url="' . esc_url($download_url) . '" data-geodecode-enabled="' . esc_attr(SignConnectSettings::geodecodeEnabled() ? '1' : '0') . '" data-return-expected="' . esc_attr($return_expected) . '">';
+        $uses_yousign_signature = SignConnectSettings::documentUsesYousignSignatureFlow($document);
+        $uses_universign_signature = SignConnectSettings::documentUsesUniversignSignatureFlow($document);
+        $uses_external_signature = $uses_yousign_signature || $uses_universign_signature;
+        $html .= '<form class="smbb-signconnect-public-sign-form" data-signconnect-public-sign-form data-download-url="' . esc_url($download_url) . '" data-geodecode-enabled="' . esc_attr(SignConnectSettings::geodecodeEnabled() ? '1' : '0') . '" data-return-expected="' . esc_attr($return_expected) . '" data-yousign-signature-flow="' . esc_attr($uses_external_signature ? '1' : '0') . '">';
         $html .= '<input type="hidden" name="document_id" value="' . esc_attr($encoded_id) . '">';
         $html .= '<input type="hidden" name="token" value="' . esc_attr($token) . '">';
         $html .= '<input type="hidden" name="_wpnonce" value="' . esc_attr($nonce) . '">';
         $html .= '<input type="hidden" name="signature_data" data-signconnect-signature-data>';
-        if ($return_expected === 'approval_refusal') {
+        if (!$uses_external_signature && $return_expected === 'approval_refusal') {
             $html .= '<div class="smbb-signconnect-field"><span>' . esc_html__('Your response', 'smbb-signconnect') . '</span><div class="smbb-signconnect-channel-grid">';
             $html .= '<label class="smbb-signconnect-channel-card"><input type="radio" name="signer_return_status" value="approved" checked data-signconnect-return-choice><span>' . esc_html__('Good for approval', 'smbb-signconnect') . '</span></label>';
             $html .= '<label class="smbb-signconnect-channel-card"><input type="radio" name="signer_return_status" value="refused" data-signconnect-return-choice><span>' . esc_html__('Refusal', 'smbb-signconnect') . '</span></label>';
@@ -233,7 +334,7 @@ final class SignConnectSignShortcode extends AbstractFrontShortcode
         $html .= '</div>';
         $html .= '<input type="hidden" name="signer_latitude" data-signconnect-latitude>';
         $html .= '<input type="hidden" name="signer_longitude" data-signconnect-longitude>';
-        if (!empty($document['require_identity_photo'])) {
+        if (!$uses_external_signature && !empty($document['require_identity_photo'])) {
             $photo_input_id = 'smbb-signconnect-identity-photo-' . absint($document_id);
             $html .= '<div class="smbb-signconnect-field smbb-signconnect-photo-field" data-signconnect-identity-photo-field>';
             $html .= '<span>' . esc_html__('Identity photo', 'smbb-signconnect') . '</span>';
@@ -242,8 +343,23 @@ final class SignConnectSignShortcode extends AbstractFrontShortcode
             $html .= '<img class="smbb-signconnect-photo-preview" alt="' . esc_attr__('Identity photo preview', 'smbb-signconnect') . '" data-signconnect-identity-photo-preview hidden>';
             $html .= '</div>';
         }
-        $html .= '<label class="smbb-signconnect-field" data-signconnect-signature-field><span>' . esc_html__('Signature', 'smbb-signconnect') . '</span><canvas class="smbb-signconnect-signature-pad" width="720" height="220" tabindex="0" data-signconnect-signature-pad></canvas></label>';
-        $html .= '<div class="smbb-signconnect-document-actions"><button type="button" class="button is-secondary" data-signconnect-clear-signature>' . esc_html__('Clear', 'smbb-signconnect') . '</button><button type="submit" class="button">' . esc_html__('Submit response', 'smbb-signconnect') . '</button></div>';
+        if ($uses_external_signature) {
+            $provider_name = $uses_universign_signature ? 'Universign' : 'Yousign';
+            $disable_return_redirect = $uses_universign_signature
+                ? SignConnectSettings::universignDisableReturnRedirect()
+                : SignConnectSettings::yousignSignatureDisableReturnRedirect();
+            $external_redirect_message = $disable_return_redirect
+                ? __('After confirmation, you will be redirected to Yousign to sign this document. Because return redirects are disabled, you will not automatically come back to this page after signing.', 'smbb-signconnect')
+                : __('After confirmation, you will be redirected to Yousign to sign this document. You will then return here to download the signed PDF.', 'smbb-signconnect');
+            $html .= '<section class="smbb-signconnect-yousign-redirect-box">';
+            $html .= '<h4>' . esc_html(sprintf(__('Secure signature with %s', 'smbb-signconnect'), $provider_name)) . '</h4>';
+            $html .= '<p>' . esc_html(str_replace('Yousign', $provider_name, $external_redirect_message)) . '</p>';
+            $html .= '</section>';
+            $html .= '<div class="smbb-signconnect-document-actions"><button type="submit" class="button">' . esc_html(sprintf(__('Continue to %s', 'smbb-signconnect'), $provider_name)) . '</button></div>';
+        } else {
+            $html .= '<label class="smbb-signconnect-field" data-signconnect-signature-field><span>' . esc_html__('Signature', 'smbb-signconnect') . '</span><canvas class="smbb-signconnect-signature-pad" width="720" height="220" tabindex="0" data-signconnect-signature-pad></canvas></label>';
+            $html .= '<div class="smbb-signconnect-document-actions"><button type="button" class="button is-secondary" data-signconnect-clear-signature>' . esc_html__('Clear', 'smbb-signconnect') . '</button><button type="submit" class="button">' . esc_html__('Submit response', 'smbb-signconnect') . '</button></div>';
+        }
         $html .= '<div data-signconnect-public-sign-message></div>';
         $html .= '</form>';
         $html .= '</section>';
@@ -271,10 +387,15 @@ final class SignConnectSignShortcode extends AbstractFrontShortcode
         return $expires_at && $expires_at <= current_time('timestamp');
     }
 
-    private function publicSignatureFields($document_id)
+    private function publicSignatureFields($document_id, array $document)
     {
-        return array_map(function ($field) {
-            return array(
+        $sender_identity = $this->senderIdentity($document);
+        $sender_signature = $this->senderSignatureData($document);
+        $sender_stamp_url = $this->senderStampUrl($document);
+
+        return array_map(function ($field) use ($sender_identity, $sender_signature, $sender_stamp_url) {
+            $field_type = SignatureFieldType::normalize(isset($field['field_type']) ? (string) $field['field_type'] : 'signature');
+            $public_field = array(
                 'id' => (int) $field['id'],
                 'page_number' => (int) $field['page_number'],
                 'x' => (float) $field['x'],
@@ -282,9 +403,93 @@ final class SignConnectSignShortcode extends AbstractFrontShortcode
                 'width' => (float) $field['width'],
                 'height' => (float) $field['height'],
                 'label' => isset($field['label']) ? (string) $field['label'] : __('Signature', 'smbb-signconnect'),
-                'field_type' => isset($field['field_type']) ? (string) $field['field_type'] : 'signature',
+                'field_type' => $field_type,
             );
+
+            $preview = $this->senderPreview($field_type, $sender_identity, $sender_signature, $sender_stamp_url);
+
+            if ($preview) {
+                $public_field['sender_preview'] = $preview;
+            }
+
+            return $public_field;
         }, $this->signature_fields->listForDocument($document_id));
+    }
+
+    private function senderPreview($field_type, array $identity, $signature_data, $stamp_url)
+    {
+        switch (SignatureFieldType::normalize($field_type)) {
+            case SignatureFieldType::SENDER_SIGNATURE:
+                return $signature_data !== ''
+                    ? array('type' => 'image', 'src' => $signature_data, 'alt' => __('Sender signature', 'smbb-signconnect'))
+                    : null;
+            case SignatureFieldType::SENDER_STAMP:
+                return $stamp_url !== ''
+                    ? array('type' => 'image', 'src' => $stamp_url, 'alt' => __('Sender stamp', 'smbb-signconnect'))
+                    : null;
+            case SignatureFieldType::SENDER_LAST_NAME:
+                return $identity['last_name'] !== '' ? array('type' => 'text', 'text' => $identity['last_name']) : null;
+            case SignatureFieldType::SENDER_FIRST_NAME:
+                return $identity['first_name'] !== '' ? array('type' => 'text', 'text' => $identity['first_name']) : null;
+            case SignatureFieldType::SENDER_FULL_NAME:
+                $name = trim($identity['first_name'] . ' ' . $identity['last_name']);
+                return $name !== '' ? array('type' => 'text', 'text' => $name) : null;
+            default:
+                return null;
+        }
+    }
+
+    private function senderSignatureData(array $document)
+    {
+        $user_id = isset($document['creation_by']) ? (int) $document['creation_by'] : 0;
+        $document_id = isset($document['id']) ? (int) $document['id'] : 0;
+
+        if ($user_id < 1) {
+            return '';
+        }
+
+        $row = $document_id > 0 ? $this->sender_signatures->findForDocument($document_id, $user_id) : null;
+
+        if (!$row) {
+            $row = $this->sender_signatures->findReusableForUser($user_id);
+        }
+
+        return $row && !empty($row['signature_data']) ? (string) $row['signature_data'] : '';
+    }
+
+    private function senderStampUrl(array $document)
+    {
+        $user_id = isset($document['creation_by']) ? (int) $document['creation_by'] : 0;
+        $stamp_id = $user_id > 0 ? (int) get_user_meta($user_id, UserStorageProfileFields::STAMP_META_KEY, true) : 0;
+        $stamp = $stamp_id > 0 ? $this->stamps->find($stamp_id) : null;
+        $attachment_id = $stamp && !empty($stamp['image_attachment_id']) ? (int) $stamp['image_attachment_id'] : 0;
+        $url = $attachment_id > 0 ? wp_get_attachment_url($attachment_id) : '';
+
+        return is_string($url) ? $url : '';
+    }
+
+    private function senderIdentity(array $document)
+    {
+        $user_id = isset($document['creation_by']) ? (int) $document['creation_by'] : 0;
+        $user = $user_id > 0 ? get_userdata($user_id) : false;
+
+        if (!$user) {
+            return array('first_name' => '', 'last_name' => '');
+        }
+
+        $first_name = get_user_meta($user_id, 'first_name', true);
+        $last_name = get_user_meta($user_id, 'last_name', true);
+
+        if ($first_name === '' && $last_name === '') {
+            $parts = preg_split('/\s+/', trim((string) $user->display_name));
+            $first_name = isset($parts[0]) ? (string) $parts[0] : '';
+            $last_name = count($parts) > 1 ? implode(' ', array_slice($parts, 1)) : '';
+        }
+
+        return array(
+            'first_name' => (string) $first_name,
+            'last_name' => (string) $last_name,
+        );
     }
 
     private function renderProofList(array $document)

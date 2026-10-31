@@ -625,6 +625,32 @@
     display: none;
 }
 
+.smbb-signconnect-yousign-redirect-box {
+    display: grid;
+    gap: 8px;
+    border: 1px solid var(--smbb-signconnect-brand-line);
+    border-radius: 6px;
+    background: var(--smbb-signconnect-brand-softer);
+    padding: 16px;
+}
+
+.smbb-signconnect-yousign-redirect-box h4,
+.smbb-signconnect-yousign-redirect-box p {
+    margin: 0;
+}
+
+.smbb-signconnect-yousign-redirect-box h4 {
+    color: #1d2327;
+    font-size: 18px;
+    line-height: 1.25;
+}
+
+.smbb-signconnect-yousign-redirect-box p {
+    color: #50575e;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
 .smbb-signconnect-field.is-inline {
     align-items: center;
     grid-template-columns: minmax(0, 1fr) 96px;
@@ -758,8 +784,39 @@
 }
 
 .smbb-signconnect-public-sign {
+    position: relative;
     display: grid;
     gap: 16px;
+}
+
+.smbb-signconnect-public-sign.is-submitting > :not(.smbb-signconnect-public-submit-loading) {
+    pointer-events: none;
+    user-select: none;
+}
+
+.smbb-signconnect-public-submit-loading {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 12px;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.88);
+    color: #1d2327;
+    text-align: center;
+}
+
+.smbb-signconnect-public-submit-loading strong {
+    font-size: 20px;
+    line-height: 1.25;
+}
+
+.smbb-signconnect-public-submit-loading small {
+    color: #646970;
+    font-size: 14px;
+    line-height: 1.35;
 }
 
 .smbb-signconnect-public-sign h3 {
@@ -845,6 +902,40 @@
     background: color-mix(in srgb, var(--smbb-signconnect-brand) 18%, transparent);
     outline: none;
     transform: translateY(-1px);
+}
+
+.smbb-signconnect-public-signature-zone.is-sender-field {
+    border-color: rgba(214, 54, 56, 0.78);
+    background: rgba(214, 54, 56, 0.12);
+    cursor: default;
+}
+
+.smbb-signconnect-public-signature-zone.is-sender-field:hover,
+.smbb-signconnect-public-signature-zone.is-sender-field:focus {
+    border-color: rgba(214, 54, 56, 0.78);
+    background: rgba(214, 54, 56, 0.12);
+    transform: none;
+}
+
+.smbb-signconnect-public-signature-zone.is-sender-field.has-sender-preview {
+    background: rgba(255, 255, 255, 0.72);
+}
+
+.smbb-signconnect-public-signature-zone.is-sender-field.has-sender-preview img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+.smbb-signconnect-public-signature-zone.is-sender-field.has-sender-preview span {
+    color: #1d2327;
+    font-size: 13px;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .smbb-signconnect-public-pdf-page figcaption {

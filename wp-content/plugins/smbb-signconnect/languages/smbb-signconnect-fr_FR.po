@@ -758,7 +758,7 @@ msgstr "Relance envoyée."
 
 #: smbb-signconnect/codetool/views/signdocument/form.php:45
 msgid "Remote signature delivery settings."
-msgstr "Remote signature delivery settings."
+msgstr "Réglages d’envoi distant de signature."
 
 #: smbb-signconnect/src/Shortcode/AbstractFrontShortcode.php:55
 msgid "Request sent!"
@@ -806,7 +806,7 @@ msgstr "Enregistré."
 
 #: smbb-signconnect/codetool/views/signdocument/form.php:29
 msgid "Search storage..."
-msgstr "Search storage..."
+msgstr "Rechercher un stockage..."
 
 #: smbb-signconnect/codetool/views/signstorage/form.php:48
 msgid "Secret key"
@@ -859,7 +859,7 @@ msgstr "Session expirée. Merci de recharger la page."
 
 #: smbb-signconnect/codetool/views/signconnect-settings/form.php:134
 msgid "Settings used during public signing."
-msgstr "Settings used during public signing."
+msgstr "Réglages utilisés pendant la signature publique."
 
 #: smbb-signconnect/src/Shortcode/SignConnectDashboardShortcode.php:47
 msgid "Shipments and reminders tracking."
@@ -1019,7 +1019,7 @@ msgstr "Chemin de stockage"
 
 #: smbb-signconnect/src/User/UserStorageProfileFields.php:51
 msgid "Storage used by the [signconnect_post] form for this user."
-msgstr "Storage used by the [signconnect_post] form for this user."
+msgstr "Stockage utilisé par le formulaire [signconnect_post] pour cet utilisateur."
 
 #: smbb-signconnect/src/Shortcode/SignConnectPostShortcode.php:148
 msgid "Storage:"
@@ -1948,3 +1948,457 @@ msgstr "Mode de certificat"
 #: generated
 msgid "Choose how the active certificate was provided. Generating or importing a certificate updates this mode automatically."
 msgstr "Choisit comment le certificat actif a été fourni. La génération ou l’import d’un certificat met ce mode à jour automatiquement."
+
+#: generated
+msgid "Templates"
+msgstr "Modèles"
+
+#: generated
+msgid "Open templates"
+msgstr "Ouvrir les modèles"
+
+#: generated
+msgid "Prepare reusable detection and signature zones from a sample PDF."
+msgstr "Préparez des zones de détection et de signature réutilisables à partir d’un PDF d’exemple."
+
+#: generated
+msgid "%s reusable layout"
+msgid_plural "%s reusable layouts"
+msgstr[0] "%s masque réutilisable"
+msgstr[1] "%s masques réutilisables"
+
+#: generated
+msgid "Stamps"
+msgstr "Tampons"
+
+#: generated
+msgid "Open stamps"
+msgstr "Ouvrir les tampons"
+
+#: generated
+msgid "Manage sender stamp images and select one on each user profile."
+msgstr "Gérez les images de tampon expéditeur et sélectionnez-en une sur chaque profil utilisateur."
+
+#: generated
+msgid "Sender signatures"
+msgstr "Signatures expéditeur"
+
+#: generated
+msgid "Open sender signatures"
+msgstr "Ouvrir les signatures expéditeur"
+
+#: generated
+msgid "Audit or remove sender signatures captured when documents are sent."
+msgstr "Auditez ou supprimez les signatures expéditeur capturées lors de l’envoi des documents."
+
+#: generated
+msgid "Sender signature"
+msgstr "Signature expéditeur"
+
+#: generated
+msgid "Sender full name"
+msgstr "Nom prénom expéditeur"
+
+#: generated
+msgid "Sender last name"
+msgstr "Nom expéditeur"
+
+#: generated
+msgid "Sender first name"
+msgstr "Prénom expéditeur"
+
+#: generated
+msgid "Sender stamp"
+msgstr "Tampon expéditeur"
+
+#: generated
+msgid "Sender signature will appear here"
+msgstr "La signature de l’expéditeur apparaîtra ici"
+
+#: generated
+msgid "Sender full name will appear here"
+msgstr "Le nom complet de l’expéditeur apparaîtra ici"
+
+#: generated
+msgid "Sender last name will appear here"
+msgstr "Le nom de l’expéditeur apparaîtra ici"
+
+#: generated
+msgid "Sender first name will appear here"
+msgstr "Le prénom de l’expéditeur apparaîtra ici"
+
+#: generated
+msgid "Sender stamp will appear here"
+msgstr "Le tampon de l’expéditeur apparaîtra ici"
+
+#: generated
+msgid "No stamp selected"
+msgstr "Aucun tampon sélectionné"
+
+#: generated
+msgid "Stamp applied when a document contains a sender stamp field."
+msgstr "Tampon appliqué lorsqu’un document contient un champ tampon expéditeur."
+
+#: generated
+msgid "Please sign as sender before sending this document."
+msgstr "Veuillez signer en tant qu’expéditeur avant d’envoyer ce document."
+
+#: generated
+msgid "Please select a sender stamp in your WordPress user profile before sending this document."
+msgstr "Veuillez sélectionner un tampon expéditeur dans votre profil utilisateur WordPress avant d’envoyer ce document."
+
+#: generated
+msgid "The sender signature could not be saved."
+msgstr "La signature expéditeur n’a pas pu être enregistrée."
+
+#: generated
+msgid "Your signature"
+msgstr "Votre signature"
+
+#: generated
+msgid "Remember this signature"
+msgstr "Mémoriser cette signature"
+
+#: generated
+msgid "Reuse it for sender signature fields on future documents."
+msgstr "La réutiliser pour les champs de signature expéditeur des prochains documents."
+
+#: generated
+msgid "Clear signature"
+msgstr "Effacer la signature"
+
+#: generated
+msgid "This PDF uses a compression format unsupported by the bundled FPDI parser. Install qpdf, Poppler pdftocairo, or Ghostscript on the server to enable automatic PDF normalization."
+msgstr "Ce PDF utilise un format de compression non pris en charge par le parseur FPDI fourni. Installez qpdf, Poppler pdftocairo ou Ghostscript sur le serveur pour activer la normalisation automatique des PDF."
+
+#: generated
+msgid "Template detection"
+msgstr "Détection de modèle"
+
+#: generated
+msgid "Diagnostics written to the document audit trail after upload."
+msgstr "Diagnostics écrits dans le journal d’audit du document après l’upload."
+
+#: generated
+msgid "Log template detection details"
+msgstr "Journaliser les détails de détection de modèle"
+
+#: generated
+msgid "When enabled, every upload records the tested templates, resolved pages, expected texts and extracted texts. Disable it after diagnosis."
+msgstr "Quand cette option est activée, chaque upload enregistre les modèles testés, les pages résolues, les textes attendus et les textes extraits. Désactivez-la après diagnostic."
+
+#: generated
+msgid "pdftotext path"
+msgstr "Chemin de pdftotext"
+
+#: generated
+msgid "Optional. Leave empty to use pdftotext from PATH, or set the full executable path if PHP cannot find it."
+msgstr "Optionnel. Laissez vide pour utiliser pdftotext depuis le PATH, ou indiquez le chemin complet de l’exécutable si PHP ne le trouve pas."
+
+#: generated
+msgid "SignConnect template detection needs Poppler pdftotext."
+msgstr "La détection de modèle SignConnect nécessite Poppler pdftotext."
+
+#: generated
+msgid "On Debian/Ubuntu servers, install it with:"
+msgstr "Sur les serveurs Debian/Ubuntu, installez-le avec :"
+
+#: generated
+msgid "Then verify from the server shell:"
+msgstr "Puis vérifiez depuis le shell du serveur :"
+
+#: generated
+msgid "If it is installed outside PHP PATH, set the full executable path in SignConnect Settings > Debug > pdftotext path."
+msgstr "S’il est installé hors du PATH de PHP, indiquez le chemin complet de l’exécutable dans Réglages SignConnect > Debug > Chemin de pdftotext."
+
+#: generated
+msgid "pdftotext is available for template detection."
+msgstr "pdftotext est disponible pour la détection de modèle."
+
+#: generated
+msgid "pdftotext is not available to PHP. Template detection cannot read text positions."
+msgstr "pdftotext n’est pas disponible pour PHP. La détection de modèle ne peut pas lire les positions de texte."
+
+#: generated
+msgid "pdftotext could not be started by PHP."
+msgstr "pdftotext n’a pas pu être lancé par PHP."
+
+#: generated
+msgid "proc_open is disabled, so SignConnect cannot test or run pdftotext for template detection."
+msgstr "proc_open est désactivé, SignConnect ne peut donc pas tester ou lancer pdftotext pour la détection de modèle."
+
+#: generated
+msgid "Executable:"
+msgstr "Exécutable :"
+
+#: generated
+msgid "Exit status:"
+msgstr "Code de sortie :"
+
+#: generated
+msgid "Output:"
+msgstr "Sortie :"
+
+#: generated
+msgid "Use Yousign signing flow"
+msgstr "Utiliser le parcours de signature Yousign"
+
+#: generated
+msgid "When enabled, the recipient will be redirected to Yousign to sign. When disabled, SignConnect keeps its own signing screen and only applies a Yousign seal after signing."
+msgstr "Quand cette option est activée, le destinataire sera redirigé vers Yousign pour signer. Quand elle est désactivée, SignConnect conserve son écran de signature et applique seulement un cachet Yousign après la signature."
+
+#: generated
+msgid "Disable return redirect"
+msgstr "Désactiver la redirection de retour"
+
+#: generated
+msgid "Trial Yousign subscriptions can require this option. The signer will not automatically return to SignConnect after signing."
+msgstr "Les abonnements Yousign d’essai peuvent nécessiter cette option. Le signataire ne reviendra pas automatiquement dans SignConnect après la signature."
+
+#: generated
+msgid "Yousign signing flow is not configured."
+msgstr "Le parcours de signature Yousign n’est pas configuré."
+
+#: generated
+msgid "Yousign signing requires a recipient email address."
+msgstr "Le parcours de signature Yousign nécessite une adresse e-mail destinataire."
+
+#: generated
+msgid "Yousign did not return a signature link."
+msgstr "Yousign n’a pas retourné de lien de signature."
+
+#: generated
+msgid "Yousign signing flow started."
+msgstr "Le parcours de signature Yousign a démarré."
+
+#: generated
+msgid "Invalid Yousign return link."
+msgstr "Le lien de retour Yousign est invalide."
+
+#: generated
+msgid "Yousign has not completed the signature yet."
+msgstr "Yousign n’a pas encore terminé la signature."
+
+#: generated
+msgid "The Yousign signed PDF could not be written."
+msgstr "Le PDF signé par Yousign n’a pas pu être écrit."
+
+#: generated
+msgid "Document signed through Yousign."
+msgstr "Document signé via Yousign."
+
+#: generated
+msgid "The PDF to sign could not be read."
+msgstr "Le PDF à signer n’a pas pu être lu."
+
+#: generated
+msgid "The prepared PDF could not be created."
+msgstr "Le PDF préparé n’a pas pu être créé."
+
+#: generated
+msgid "Yousign signature request id is missing."
+msgstr "L’identifiant de la demande de signature Yousign est manquant."
+
+#: generated
+msgid "Yousign pending signature cannot be finalized because the public token was not stored."
+msgstr "La signature Yousign en attente ne peut pas être finalisée car le jeton public n’a pas été stocké."
+
+#: generated
+msgid "Yousign pending signature check failed."
+msgstr "La vérification de signature Yousign en attente a échoué."
+
+#: generated
+msgid "SignConnect - Yousign pending signatures"
+msgstr "SignConnect - signatures Yousign en attente"
+
+#: generated
+msgid "Checks pending Yousign signature requests and finalizes completed documents."
+msgstr "Vérifie les demandes de signature Yousign en attente et finalise les documents terminés."
+
+#: generated
+msgid "You will be redirected to Yousign to sign the document."
+msgstr "Vous allez être redirigé vers Yousign pour signer le document."
+
+#: generated
+msgid "The Yousign signing flow could not be started. Please try again later or contact the sender."
+msgstr "Le parcours de signature Yousign n’a pas pu démarrer. Veuillez réessayer plus tard ou contacter l’expéditeur."
+
+#: generated
+msgid "The Yousign signature is being finalized. Please refresh this page in a few seconds."
+msgstr "La signature Yousign est en cours de finalisation. Veuillez actualiser cette page dans quelques secondes."
+
+#: generated
+msgid "Secure signature with Yousign"
+msgstr "Signature sécurisée avec Yousign"
+
+#: generated
+msgid "After confirmation, you will be redirected to Yousign to sign this document. You will then return here to download the signed PDF."
+msgstr "Après confirmation, vous serez redirigé vers Yousign pour signer ce document. Vous reviendrez ensuite ici pour télécharger le PDF signé."
+
+#: generated
+msgid "After confirmation, you will be redirected to Yousign to sign this document. Because return redirects are disabled, you will not automatically come back to this page after signing."
+msgstr "Après confirmation, vous serez redirigé vers Yousign pour signer ce document. Comme la redirection de retour est désactivée, vous ne reviendrez pas automatiquement sur cette page après la signature."
+
+#: generated
+msgid "Continue to Yousign"
+msgstr "Continuer vers Yousign"
+
+#: generated
+msgid "Low"
+msgstr "Faible"
+
+#: generated
+msgid "Medium"
+msgstr "Moyen"
+
+#: generated
+msgid "Critical"
+msgstr "Critique"
+
+#: generated
+msgid "No certification"
+msgstr "Aucune certification"
+
+#: generated
+msgid "SignConnect certification"
+msgstr "Certification SignConnect"
+
+#: generated
+msgid "Yousign signing flow"
+msgstr "Parcours de signature Yousign"
+
+#: generated
+msgid "Document criticality"
+msgstr "Criticité du document"
+
+#: generated
+msgid "This criticality is imposed by the matched template."
+msgstr "Cette criticité est imposée par le modèle détecté."
+
+#: generated
+msgid "No override"
+msgstr "Aucune surcharge"
+
+#: generated
+msgid "Document criticality override"
+msgstr "Surcharge de criticité du document"
+
+#: generated
+msgid "Optional. When this template matches a document, this criticality is imposed and the sender cannot change it."
+msgstr "Optionnel. Quand ce modèle correspond à un document, cette criticité est imposée et l’expéditeur ne peut pas la modifier."
+
+#: generated
+msgid "Criticality policy"
+msgstr "Politique de criticité"
+
+#: generated
+msgid "Choose the certification method applied to documents by criticality. Templates can impose a criticality on matched documents."
+msgstr "Choisissez la méthode de certification appliquée aux documents selon leur criticité. Les modèles peuvent imposer une criticité aux documents détectés."
+
+#: generated
+msgid "Certification methods"
+msgstr "Moyens de certification"
+
+#: generated
+msgid "Technical switches for local and Yousign certification methods. Strategy is configured in the next tab."
+msgstr "Interrupteurs techniques pour les méthodes de certification locales et Yousign. La stratégie se configure dans l’onglet suivant."
+
+#: generated
+msgid "Enable self-signed certificate method"
+msgstr "Activer la méthode certificat autosigné"
+
+#: generated
+msgid "Makes the self-signed local certificate available in certification strategy."
+msgstr "Rend le certificat local autosigné disponible dans la stratégie de certification."
+
+#: generated
+msgid "Enable local certificate method"
+msgstr "Activer la méthode certificat local"
+
+#: generated
+msgid "Makes the imported PEM certificate available in certification strategy."
+msgstr "Rend le certificat PEM importé disponible dans la stratégie de certification."
+
+#: generated
+msgid "Technical settings shared by Yousign seal and Yousign signing flow methods."
+msgstr "Réglages techniques partagés par le cachet Yousign et le parcours de signature Yousign."
+
+#: generated
+msgid "Enable qualified Yousign seal method"
+msgstr "Activer la méthode cachet qualifié Yousign"
+
+#: generated
+msgid "Makes the Yousign qualified seal available in certification strategy."
+msgstr "Rend le cachet qualifié Yousign disponible dans la stratégie de certification."
+
+#: generated
+msgid "Enable Yousign signing flow method"
+msgstr "Activer la méthode parcours de signature Yousign"
+
+#: generated
+msgid "Makes the Yousign signing journey available in certification strategy."
+msgstr "Rend le parcours de signature Yousign disponible dans la stratégie de certification."
+
+#: generated
+msgid "Certification strategy"
+msgstr "Stratégie de certification"
+
+#: generated
+msgid "Criticality strategy"
+msgstr "Stratégie par criticité"
+
+#: generated
+msgid "Choose the certification method applied to each document criticality. Disabled methods are shown but cannot be selected until enabled in Certification methods."
+msgstr "Choisissez la méthode de certification appliquée à chaque criticité. Les méthodes désactivées sont affichées mais ne peuvent pas être sélectionnées tant qu’elles ne sont pas activées dans Moyens de certification."
+
+#: generated
+msgid "not enabled"
+msgstr "non activé"
+
+#: generated
+msgid "Local certificate"
+msgstr "Certificat local"
+
+#: generated
+msgid "Qualified Yousign seal"
+msgstr "Cachet qualifié Yousign"
+
+#: generated
+msgid "Local PDF signature"
+msgstr "Signature PDF locale"
+
+#: generated
+msgid "Shared switch for local certificate methods. Strategy is configured in the next tab."
+msgstr "Interrupteur commun aux méthodes de certificat local. La stratégie se configure dans l’onglet suivant."
+
+#: generated
+msgid "Local PDF signing is controlled by the self-signed and imported certificate methods below. Strategy is configured in the next tab."
+msgstr "La signature PDF locale est pilotée par les méthodes certificat autosigné et certificat importé ci-dessous. La stratégie se configure dans l’onglet suivant."
+
+#: generated
+msgid "Integrity evidence"
+msgstr "Preuves d’intégrité"
+
+#: generated
+msgid "Optional evidence stored with the signed document, regardless of the certification method selected by strategy."
+msgstr "Preuves optionnelles stockées avec le document signé, quelle que soit la méthode de certification sélectionnée par la stratégie."
+
+#: generated
+msgid "Stores the original PDF hash and the final signed PDF hash when the files are available. Useful to prove that a downloaded document matches the archived proof."
+msgstr "Stocke l’empreinte du PDF original et celle du PDF signé final quand les fichiers sont disponibles. Utile pour prouver qu’un document téléchargé correspond à la preuve archivée."
+
+#: codetool/models/signconnect-settings.json
+msgid "Settings"
+msgstr "Réglages"
+
+#: codetool/models/signauditlog.json
+msgid "Events"
+msgstr "Événements"
+
+#: codetool/models/signstorage.json
+msgid "Sign storages"
+msgstr "Stockages de signature"
+
+#: codetool/models/signstamp.json
+msgid "Sender stamps"
+msgstr "Tampons expéditeur"

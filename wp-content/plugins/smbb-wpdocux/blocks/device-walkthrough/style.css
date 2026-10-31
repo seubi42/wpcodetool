@@ -1,0 +1,378 @@
+.wp-block-smbb-wpdocux-device-walkthrough,
+.smbb-wpdocux-device {
+    --smbb-wpdocux-ink: #111111;
+    --smbb-wpdocux-soft: #f4f5f7;
+    --smbb-wpdocux-line: #d7dbe2;
+    --smbb-wpdocux-muted: #626976;
+    --smbb-wpdocux-step-font-size: 14px;
+    box-sizing: border-box;
+    width: 100%;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.smbb-wpdocux-device *,
+.smbb-wpdocux-device *::before,
+.smbb-wpdocux-device *::after {
+    box-sizing: border-box;
+}
+
+.smbb-wpdocux-device.is-portrait,
+.smbb-wpdocux-device.is-computer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.smbb-wpdocux-device__steps {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.smbb-wpdocux-device.is-portrait .smbb-wpdocux-device__steps {
+    width: min(100%, 390px);
+    justify-content: center;
+}
+
+.smbb-wpdocux-device__step {
+    display: inline-flex;
+    min-height: 36px;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border: 1px solid var(--smbb-wpdocux-line);
+    border-radius: 6px;
+    background: #ffffff;
+    color: #4f5662;
+    font: inherit;
+    font-size: var(--smbb-wpdocux-step-font-size);
+    line-height: 1.2;
+    cursor: pointer;
+    transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.smbb-wpdocux-device__step:hover {
+    border-color: #aeb5c0;
+    color: #1d232b;
+}
+
+.smbb-wpdocux-device__step.is-active {
+    border-color: var(--smbb-wpdocux-ink);
+    background: var(--smbb-wpdocux-ink);
+    color: #ffffff;
+}
+
+.smbb-wpdocux-device__step-number {
+    font-size: 0.76em;
+    font-weight: 700;
+    letter-spacing: 0;
+    opacity: 0.8;
+}
+
+.smbb-wpdocux-device__step-title {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.smbb-wpdocux-device__step-dot {
+    display: none;
+}
+
+.smbb-wpdocux-device.has-indicators-dots .smbb-wpdocux-device__steps {
+    gap: 10px;
+}
+
+.smbb-wpdocux-device.has-indicators-dots .smbb-wpdocux-device__step {
+    min-height: 36px;
+    padding: 8px 14px;
+    border-radius: 6px;
+}
+
+.smbb-wpdocux-device.has-indicators-dots .smbb-wpdocux-device__step-number {
+    display: none;
+}
+
+.smbb-wpdocux-device.has-indicators-dots .smbb-wpdocux-device__step-dot {
+    display: inline-grid;
+    place-items: center;
+}
+
+.smbb-wpdocux-device.has-indicators-dots .smbb-wpdocux-device__step-dot::before {
+    content: "o";
+    font-weight: 700;
+    line-height: 1;
+}
+
+.smbb-wpdocux-device.has-indicators-dots .smbb-wpdocux-device__step.is-active .smbb-wpdocux-device__step-dot::before {
+    content: "\2713";
+}
+
+.smbb-wpdocux-device__shell {
+    width: min(100%, 920px);
+    padding: 18px;
+    border-radius: 30px;
+    background: #090909;
+    box-shadow: 0 18px 38px rgba(17, 24, 39, 0.16);
+}
+
+.smbb-wpdocux-device.is-landscape .smbb-wpdocux-device__shell {
+    width: min(100%, 747px);
+    aspect-ratio: 4 / 3;
+    max-height: 560px;
+}
+
+.smbb-wpdocux-device.is-computer .smbb-wpdocux-device__shell {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: min(100%, 980px);
+    aspect-ratio: 16 / 10;
+    max-height: 620px;
+    padding: 12px;
+    border: 1px solid #222936;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #171b22 0%, #0b0d12 100%);
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+}
+
+.smbb-wpdocux-device.is-portrait .smbb-wpdocux-device__shell {
+    width: min(100%, 390px);
+    aspect-ratio: 9 / 18.5;
+    border-radius: 36px;
+}
+
+.smbb-wpdocux-device__screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    border-radius: 15px;
+    background: #f8f9fb;
+}
+
+.smbb-wpdocux-device.is-portrait .smbb-wpdocux-device__screen {
+    border-radius: 24px;
+}
+
+.smbb-wpdocux-device.is-computer .smbb-wpdocux-device__screen {
+    flex: 1 1 auto;
+    min-height: 0;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+}
+
+.smbb-wpdocux-device__monitor-bar {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 6px;
+    height: 14px;
+    padding: 0 4px;
+}
+
+.smbb-wpdocux-device__monitor-bar span {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: #69717f;
+}
+
+.smbb-wpdocux-device__monitor-bar span:first-child {
+    background: #d15d5d;
+}
+
+.smbb-wpdocux-device__monitor-bar span:nth-child(2) {
+    background: #d6ad4f;
+}
+
+.smbb-wpdocux-device__monitor-bar span:nth-child(3) {
+    background: #5ca36d;
+}
+
+.smbb-wpdocux-device__stand {
+    position: relative;
+    width: min(34%, 210px);
+    height: 54px;
+}
+
+.smbb-wpdocux-device__stand::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 28%;
+    height: 38px;
+    transform: translateX(-50%);
+    background: linear-gradient(180deg, #222936, #12151c);
+    clip-path: polygon(22% 0, 78% 0, 100% 100%, 0 100%);
+}
+
+.smbb-wpdocux-device__stand span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 13px;
+    border-radius: 999px 999px 8px 8px;
+    background: linear-gradient(180deg, #252b36, #11141b);
+    box-shadow: 0 12px 22px rgba(15, 23, 42, 0.18);
+}
+
+.smbb-wpdocux-device__panel {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    border-radius: inherit;
+    opacity: 0;
+    transform: translateX(18px);
+    transition: opacity 240ms ease, transform 240ms ease;
+}
+
+.smbb-wpdocux-device__panel.is-active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.smbb-wpdocux-device.has-transition-fade .smbb-wpdocux-device__panel {
+    transform: none;
+}
+
+.smbb-wpdocux-device.has-transition-zoom .smbb-wpdocux-device__panel {
+    transform: scale(0.985);
+}
+
+.smbb-wpdocux-device.has-transition-zoom .smbb-wpdocux-device__panel.is-active {
+    transform: scale(1);
+}
+
+.smbb-wpdocux-device.has-transition-none .smbb-wpdocux-device__panel {
+    transition: none;
+    transform: none;
+}
+
+.smbb-wpdocux-device__panel[hidden] {
+    display: none;
+}
+
+.smbb-wpdocux-device__panel img,
+.smbb-wpdocux-device__screen > img {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    object-fit: cover;
+    display: block;
+}
+
+.smbb-wpdocux-device__hotspot {
+    position: absolute;
+    left: var(--hotspot-x);
+    top: var(--hotspot-y);
+    z-index: 7;
+    display: inline-grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    color: #ffffff;
+    cursor: help;
+    outline: none;
+    transform: translate(-50%, -50%);
+}
+
+.smbb-wpdocux-device__hotspot::before {
+    content: "";
+    position: absolute;
+    inset: -5px;
+    border: 2px solid var(--hotspot-color);
+    border-radius: inherit;
+    opacity: 0.48;
+    animation: smbb-wpdocux-hotspot-glow 1.8s ease-in-out infinite;
+}
+
+.smbb-wpdocux-device__hotspot-dot {
+    position: relative;
+    z-index: 1;
+    display: inline-grid;
+    width: 24px;
+    height: 24px;
+    place-items: center;
+    border-radius: inherit;
+    background: var(--hotspot-color);
+    box-shadow: 0 3px 10px rgba(15, 23, 42, 0.28);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.smbb-wpdocux-device__hotspot-tooltip {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 8px);
+    z-index: 7;
+    width: max-content;
+    max-width: 220px;
+    padding: 7px 9px;
+    border-radius: 6px;
+    background: #111111;
+    color: #ffffff;
+    font-size: 12px;
+    line-height: 1.35;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 4px);
+    transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.smbb-wpdocux-device__hotspot:hover .smbb-wpdocux-device__hotspot-tooltip,
+.smbb-wpdocux-device__hotspot:focus .smbb-wpdocux-device__hotspot-tooltip {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+@keyframes smbb-wpdocux-hotspot-glow {
+    0% {
+        opacity: 0.28;
+        transform: scale(0.92);
+    }
+
+    50% {
+        opacity: 0.72;
+        transform: scale(1.1);
+    }
+
+    100% {
+        opacity: 0.28;
+        transform: scale(0.92);
+    }
+}
+
+.smbb-wpdocux-device__empty {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    padding: 24px;
+    color: var(--smbb-wpdocux-muted);
+    font-size: 0.95rem;
+    text-align: center;
+}
+
+@media (max-width: 640px) {
+    .smbb-wpdocux-device__steps {
+        gap: 6px;
+    }
+
+    .smbb-wpdocux-device__step {
+        min-height: 34px;
+        padding: 7px 10px;
+    }
+
+    .smbb-wpdocux-device__shell {
+        padding: 12px;
+        border-radius: 24px;
+    }
+}
