@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SMBB WP CodeTool
  * Description: Lightweight toolkit for declarative admin pages, custom table resources, option-backed settings pages, and REST API helpers.
- * Version: 0.1.31
+ * Version: 0.3.1
  * Author: SMBB
  * Text Domain: smbb-wpcodetool
  * Requires at least: 6.0
@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
 
 // Version interne du plugin. Elle servira plus tard pour les migrations, les caches compilés,
 // ou les éventuelles évolutions de format des fichiers codetool/*.json.
-define('SMBB_WPCODETOOL_VERSION', '0.1.31');
+define('SMBB_WPCODETOOL_VERSION', '0.3.1');
 
 // Chemins de référence du plugin. On les centralise ici pour éviter de recalculer les chemins
 // dans chaque classe du moteur.
@@ -42,6 +42,19 @@ if (!function_exists('smbb_codetool_route')) {
         return codetool_route();
     }
 }
+
+// Thème GeneratePress (version gratuite) : « Built with GeneratePress » est remplacé
+// par le nom du site. Sans effet avec un autre thème.
+add_action('wp', function () {
+    if (has_action('generate_credits', 'generate_add_footer_info') === false) {
+        return;
+    }
+
+    remove_action('generate_credits', 'generate_add_footer_info');
+    add_action('generate_credits', function () {
+        echo '<span class="copyright">&copy; ' . esc_html(wp_date('Y')) . ' ' . esc_html(get_bloginfo('name')) . '</span>';
+    });
+});
 
 // Autoloader minimal du plugin.
 // L'objectif est volontairement simple pour le début du projet :

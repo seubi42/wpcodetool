@@ -66,7 +66,7 @@ final class ApiTokenStore
     public function create($label)
     {
         $label = trim((string) $label);
-        $label = $label !== '' ? $label : __('API token', 'smbb-wpcodetool');
+        $label = $label !== '' ? $label : __('Jeton API', 'smbb-wpcodetool');
         $plain_token = 'ct_' . wp_generate_password(40, false, false);
         $id = function_exists('wp_generate_uuid4') ? wp_generate_uuid4() : uniqid('token_', true);
         $now = current_time('mysql');

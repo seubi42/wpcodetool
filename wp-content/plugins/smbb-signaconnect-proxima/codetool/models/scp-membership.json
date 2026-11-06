@@ -1,0 +1,191 @@
+{
+  "name": "scp_membership",
+  "label": "Rattachement",
+  "pluralLabel": "Rattachements",
+  "description": "Lien utilisateur → organisation : forfait, équipes, rôle et droits.",
+  "storage": {
+    "table": "scp_membership",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "user_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "organization_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "plan_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "team_ids": {
+      "type": "json",
+      "nullable": true
+    },
+    "role": {
+      "type": "varchar",
+      "length": 30,
+      "nullable": false,
+      "default": "user"
+    },
+    "can_manage_templates": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "is_active": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 1
+    },
+    "active_since": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "inactive_since": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "creation_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "create_datetime"
+    },
+    "creation_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "create_user"
+    },
+    "lastupdate_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "update_datetime"
+    },
+    "lastupdate_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "update_user"
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_user_id",
+      "type": "index",
+      "columns": [
+        "user_id"
+      ]
+    },
+    {
+      "name": "idx_organization_id",
+      "type": "index",
+      "columns": [
+        "organization_id"
+      ]
+    },
+    {
+      "name": "idx_plan_id",
+      "type": "index",
+      "columns": [
+        "plan_id"
+      ]
+    },
+    {
+      "name": "idx_role",
+      "type": "index",
+      "columns": [
+        "role"
+      ]
+    }
+  ],
+  "hooks": {
+    "file": "hooks/MembershipHooks.php",
+    "class": "Smbb\\SignConnectProxima\\CodeTool\\MembershipHooks"
+  },
+  "admin": {
+    "enabled": true,
+    "capability": "manage_options",
+    "menu": {
+      "placement": "submenu",
+      "parent": "smbb-codetool-scp",
+      "title": "Utilisateurs",
+      "icon": "dashicons-admin-users",
+      "position": 40
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "list": {
+      "perPage": 25,
+      "search": {
+        "enabled": false,
+        "provider": "default",
+        "fields": [],
+        "mode": "or",
+        "placeholder": "Rechercher"
+      },
+      "filters": {
+        "enabled": true,
+        "fields": [
+          {
+            "field": "organization_id",
+            "label": "Organisation",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "plan_id",
+            "label": "Forfait",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "role",
+            "label": "Rôle",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "is_active",
+            "label": "Actif",
+            "operators": [
+              "eq"
+            ]
+          }
+        ]
+      },
+      "defaultOrder": {
+        "by": "user_id",
+        "direction": "asc"
+      }
+    },
+    "views": {
+      "list": "views/scp-membership/list.php",
+      "form": "views/scp-membership/form.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

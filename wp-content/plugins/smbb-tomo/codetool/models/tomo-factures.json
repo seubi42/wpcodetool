@@ -1,0 +1,35 @@
+{
+  "name": "tomo_factures",
+  "label": "Factures",
+  "pluralLabel": "Factures",
+  "description": "Factures et avoirs : liste, export pour la comptabilité, établissement des factures d'une commande.",
+  "storage": {
+    "type": "none"
+  },
+  "admin": {
+    "enabled": true,
+    "capability": "manage_tomo",
+    "menu": {
+      "placement": "submenu",
+      "title": "Factures",
+      "icon": "dashicons-media-spreadsheet",
+      "position": 50,
+      "parent": "smbb-codetool-tomo",
+      "group": "Suivi"
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "type": "page",
+    "page": {
+      "defaultView": "factures"
+    },
+    "views": {
+      "factures": "views/tomo-factures/factures.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

@@ -7,6 +7,7 @@ use Smbb\WpCodeTool\Api\ApiScopeAuthorizer;
 use Smbb\WpCodeTool\Api\ApiVisibilitySettings;
 use Smbb\WpCodeTool\Admin\Pages\ApiClientsPage;
 use Smbb\WpCodeTool\Admin\Pages\ApiPage;
+use Smbb\WpCodeTool\Admin\Pages\EncryptionPage;
 use Smbb\WpCodeTool\Admin\Pages\OverviewPage;
 use Smbb\WpCodeTool\Admin\Pages\ParentPage;
 use Smbb\WpCodeTool\Admin\Pages\ResourcePage;
@@ -98,6 +99,10 @@ final class AdminManager
     {
         add_action('admin_init', array($this, 'handleAdminActions'));
         add_action('admin_menu', array($this, 'registerMenus'));
+        add_action('admin_menu', array($this, 'insertMenuGroups'), 999);
+        add_action('admin_head', array($this, 'printMenuGroupStyles'));
+        add_filter('parent_file', array($this, 'highlightParentFile'));
+        add_filter('submenu_file', array($this, 'highlightSubmenuFile'));
         add_action('admin_bar_menu', array($this, 'registerAdminBarItems'), 90);
         add_action('admin_enqueue_scripts', array($this, 'enqueueAssets'));
         add_action('wp_ajax_smbb_codetool_lookup', array($this, 'ajaxLookup'));
@@ -115,9 +120,18 @@ final class AdminManager
 
         $this->state->reset();
 
+        // Valeurs secrètes encore en clair (ou chiffrées avec une ancienne clé) : chiffrées
+        // une fois par clé, à la première page d'admin chargée par un administrateur.
+        EncryptionPage::autoMigrate($this);
+
+        if ($page === EncryptionPage::SLUG) {
+            EncryptionPage::handle($this);
+            return;
+        }
+
         if ($page === 'smbb-wpcodetool-api') {
             if (!current_user_can('manage_options')) {
-                wp_die(esc_html__('You are not allowed to manage CodeTool API settings.', 'smbb-wpcodetool'));
+                wp_die(esc_html__('Vous n\'avez pas le droit de gérer les réglages de l\'API CodeTool.', 'smbb-wpcodetool'));
             }
 
             $this->handleApiVisibilityActions();
@@ -126,7 +140,7 @@ final class AdminManager
 
         if ($page === 'smbb-wpcodetool-api-tokens') {
             if (!current_user_can('manage_options')) {
-                wp_die(esc_html__('You are not allowed to manage CodeTool API clients.', 'smbb-wpcodetool'));
+                wp_die(esc_html__('Vous n\'avez pas le droit de gérer les clients API CodeTool.', 'smbb-wpcodetool'));
             }
 
             $this->handleApiTokenActions();
@@ -145,7 +159,7 @@ final class AdminManager
         }
 
         if (!current_user_can($resource->capability())) {
-            wp_die(esc_html__('You are not allowed to modify this CodeTool resource.', 'smbb-wpcodetool'));
+            wp_die(esc_html__('Vous n\'avez pas le droit de modifier cette ressource CodeTool.', 'smbb-wpcodetool'));
         }
         $this->handleResourceMutation($resource);
     }
@@ -200,21 +214,26 @@ final class AdminManager
             'smbb-wpcodetool-admin',
             'SmbbCodeToolAdmin',
             array(
-                'confirmRemove' => __('Remove this item?', 'smbb-wpcodetool'),
-                'confirmClear' => __('Remove all items?', 'smbb-wpcodetool'),
-                'collapse' => __('Collapse', 'smbb-wpcodetool'),
-                'expand' => __('Expand', 'smbb-wpcodetool'),
-                'selectMedia' => __('Select media', 'smbb-wpcodetool'),
-                'chooseMedia' => __('Choose media', 'smbb-wpcodetool'),
-                'noMedia' => __('No media selected.', 'smbb-wpcodetool'),
+                'confirmRemove' => __('Retirer cet élément ?', 'smbb-wpcodetool'),
+                'confirmClear' => __('Retirer tous les éléments ?', 'smbb-wpcodetool'),
+                'collapse' => __('Replier', 'smbb-wpcodetool'),
+                'expand' => __('Déplier', 'smbb-wpcodetool'),
+                'selectMedia' => __('Sélectionner un média', 'smbb-wpcodetool'),
+                'chooseMedia' => __('Choisir un média', 'smbb-wpcodetool'),
+                'noMedia' => __('Aucun média sélectionné.', 'smbb-wpcodetool'),
                 'ajaxUrl' => admin_url('admin-ajax.php'),
                 'lookupNonce' => wp_create_nonce('smbb_codetool_lookup'),
-                'searching' => __('Searching...', 'smbb-wpcodetool'),
-                'noResults' => __('No result found.', 'smbb-wpcodetool'),
-                'selectionEmpty' => __('No selection yet.', 'smbb-wpcodetool'),
-                'selectedNone' => __('No row selected', 'smbb-wpcodetool'),
-                'selectedSingle' => __('1 row selected', 'smbb-wpcodetool'),
-                'selectedPlural' => __('%d rows selected', 'smbb-wpcodetool'),
+                'searching' => __('Recherche…', 'smbb-wpcodetool'),
+                'noResults' => __('Aucun résultat.', 'smbb-wpcodetool'),
+                'selectionEmpty' => __('Aucune sélection pour l\'instant.', 'smbb-wpcodetool'),
+                'selectedNone' => __('Aucune ligne sélectionnée', 'smbb-wpcodetool'),
+                'selectedSingle' => __('1 ligne sélectionnée', 'smbb-wpcodetool'),
+                'selectedPlural' => __('%d lignes sélectionnées', 'smbb-wpcodetool'),
+                'dialogCancel' => __('Annuler', 'smbb-wpcodetool'),
+                'dialogConfirm' => __('Confirmer', 'smbb-wpcodetool'),
+                'dialogDelete' => __('Supprimer', 'smbb-wpcodetool'),
+                'dialogRemove' => __('Retirer', 'smbb-wpcodetool'),
+                'unsaved' => __('Modifications non enregistrées', 'smbb-wpcodetool'),
             )
         );
     }
@@ -243,8 +262,8 @@ final class AdminManager
         // plusieurs ressources dessous.
         add_submenu_page(
             'smbb-wpcodetool',
-            __('Overview', 'smbb-wpcodetool'),
-            __('Overview', 'smbb-wpcodetool'),
+            __('Vue d\'ensemble', 'smbb-wpcodetool'),
+            __('Vue d\'ensemble', 'smbb-wpcodetool'),
             'manage_options',
             'smbb-wpcodetool',
             array($this, 'renderOverviewPage')
@@ -252,8 +271,8 @@ final class AdminManager
 
         add_submenu_page(
             'smbb-wpcodetool',
-            __('Resources', 'smbb-wpcodetool'),
-            __('Resources', 'smbb-wpcodetool'),
+            __('Ressources', 'smbb-wpcodetool'),
+            __('Ressources', 'smbb-wpcodetool'),
             'manage_options',
             'smbb-wpcodetool-resources',
             array($this, 'renderIndexPage')
@@ -279,11 +298,20 @@ final class AdminManager
 
         add_submenu_page(
             'smbb-wpcodetool',
-            __('API Clients', 'smbb-wpcodetool'),
-            __('API Clients', 'smbb-wpcodetool'),
+            __('Clients API', 'smbb-wpcodetool'),
+            __('Clients API', 'smbb-wpcodetool'),
             'manage_options',
             'smbb-wpcodetool-api-tokens',
             array($this, 'renderApiTokensPage')
+        );
+
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('Chiffrement', 'smbb-wpcodetool'),
+            __('Chiffrement', 'smbb-wpcodetool'),
+            'manage_options',
+            EncryptionPage::SLUG,
+            array($this, 'renderEncryptionPage')
         );
 
         $this->registerManagedParentMenus();
@@ -332,7 +360,7 @@ final class AdminManager
         if ($has_new_content_item && !$wp_admin_bar->get_node('new-content')) {
             $wp_admin_bar->add_node(array(
                 'id' => 'new-content',
-                'title' => '<span class="ab-icon" aria-hidden="true"></span><span class="ab-label">' . esc_html__('New', 'smbb-wpcodetool') . '</span>',
+                'title' => '<span class="ab-icon" aria-hidden="true"></span><span class="ab-label">' . esc_html__('Nouveau', 'smbb-wpcodetool') . '</span>',
                 'href' => admin_url(),
             ));
         }
@@ -393,14 +421,14 @@ final class AdminManager
         if ($resource->adminType() !== 'resource') {
             return sprintf(
                 /* translators: %s: resource label. */
-                __('Open %s', 'smbb-wpcodetool'),
+                __('Ouvrir %s', 'smbb-wpcodetool'),
                 $resource->label()
             );
         }
 
         return sprintf(
             /* translators: %s: resource label. */
-            __('New %s', 'smbb-wpcodetool'),
+            __('Nouveau : %s', 'smbb-wpcodetool'),
             $resource->label()
         );
     }
@@ -457,8 +485,160 @@ final class AdminManager
                     $resource->menuIcon(),
                     $resource->menuPosition()
                 );
+
+                // Premier sous-menu renommé ("Tableau de bord" plutôt que "Tomo" > "Tomo").
+                if ($resource->menuSubmenuTitle() !== '') {
+                    add_submenu_page(
+                        $resource->adminSlug(),
+                        $resource->pluralLabel(),
+                        $resource->menuSubmenuTitle(),
+                        $resource->capability(),
+                        $resource->adminSlug(),
+                        $callback
+                    );
+                }
                 break;
         }
+    }
+
+    /**
+     * Titres de groupe à dessiner, classe CSS => libellé (rempli par insertMenuGroups).
+     *
+     * @var array<string,string>
+     */
+    private $menu_group_labels = array();
+
+    /**
+     * Marque le début de chaque groupe (admin.menu.group) dans les sous-menus.
+     *
+     * On passe après tous les add_submenu_page (priorité 999) : les entrées sont alors
+     * triées par position. La première entrée de chaque groupe reçoit une classe (5e élément
+     * d'une entrée de sous-menu, comme "hide-if-no-customize" dans le cœur) et le titre est
+     * dessiné en CSS au-dessus d'elle. Pas de fausse entrée : WordPress fait pointer le menu
+     * principal vers la première entrée du sous-menu, un titre factice y casserait le lien.
+     * Les entrées sans groupe (ajoutées par d'autres plugins) ne coupent pas le groupe en cours.
+     */
+    public function insertMenuGroups()
+    {
+        global $submenu;
+
+        if (empty($submenu) || !is_array($submenu)) {
+            return;
+        }
+
+        $groups = array();
+
+        foreach ((array) $this->resources as $resource) {
+            if ($resource->adminEnabled() && $resource->menuGroup() !== '') {
+                $groups[$resource->adminSlug()] = $resource->menuGroup();
+            }
+        }
+
+        if (!$groups) {
+            return;
+        }
+
+        foreach ($submenu as $parent => $items) {
+            if (!is_array($items)) {
+                continue;
+            }
+
+            $current = '';
+
+            foreach ($items as $key => $item) {
+                $group = isset($item[2]) && isset($groups[$item[2]]) ? $groups[$item[2]] : '';
+
+                if ($group === '' || $group === $current) {
+                    continue;
+                }
+
+                $class = 'smbb-menu-group-' . (count($this->menu_group_labels) + 1);
+                $this->menu_group_labels[$class] = $group;
+                $item[3] = isset($item[3]) ? $item[3] : '';
+                $item[4] = trim((isset($item[4]) ? $item[4] . ' ' : '') . 'smbb-menu-group-start ' . $class);
+                $submenu[$parent][$key] = $item;
+                $current = $group;
+            }
+        }
+    }
+
+    /**
+     * Titres de groupe du menu, en CSS, sur toutes les pages d'admin (le menu y est partout).
+     */
+    public function printMenuGroupStyles()
+    {
+        if (!$this->menu_group_labels) {
+            return;
+        }
+
+        $css = '#adminmenu .wp-submenu li.smbb-menu-group-start::before{display:block;padding:10px 12px 3px;font-size:10.5px;font-weight:600;line-height:1.3;letter-spacing:.08em;text-transform:uppercase;color:#8c8f94;pointer-events:none}'
+            . '#adminmenu .wp-submenu li.wp-first-item.smbb-menu-group-start::before{padding-top:4px}';
+
+        foreach ($this->menu_group_labels as $class => $label) {
+            $label = str_replace(array('\\', '"', '<', '>'), array('\\\\', '\\"', '\\3C ', '\\3E '), wp_strip_all_tags($label));
+            $css .= '#adminmenu li.' . $class . '::before{content:"' . $label . '"}';
+        }
+
+        echo '<style id="smbb-menu-groups">' . $css . '</style>'; // phpcs:ignore -- libellés nettoyés ci-dessus.
+    }
+
+    /**
+     * Ressource visée par admin.menu.highlight de la page ouverte, ou null.
+     *
+     * @return ResourceDefinition|null
+     */
+    private function highlightTarget()
+    {
+        $page = isset($_GET['page']) ? sanitize_key(wp_unslash($_GET['page'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+
+        if ($page === '') {
+            return null;
+        }
+
+        $target = '';
+
+        foreach ((array) $this->resources as $resource) {
+            if ($resource->adminSlug() === $page) {
+                $target = $resource->menuHighlight();
+                break;
+            }
+        }
+
+        if ($target === '') {
+            return null;
+        }
+
+        foreach ((array) $this->resources as $resource) {
+            if ($resource->name() === $target) {
+                return $resource;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Ouvre le bon menu parent pour une page qui en surligne une autre.
+     */
+    public function highlightParentFile($parent_file)
+    {
+        $target = $this->highlightTarget();
+
+        if (!$target) {
+            return $parent_file;
+        }
+
+        return $target->menuPlacement() === 'submenu' ? $target->menuParentSlug() : $target->adminSlug();
+    }
+
+    /**
+     * Surligne l'entrée de sous-menu visée par admin.menu.highlight.
+     */
+    public function highlightSubmenuFile($submenu_file)
+    {
+        $target = $this->highlightTarget();
+
+        return $target ? $target->adminSlug() : $submenu_file;
     }
 
     /**
@@ -570,7 +750,7 @@ final class AdminManager
             }
         }
 
-        return __('CodeTool resources', 'smbb-wpcodetool');
+        return __('Ressources CodeTool', 'smbb-wpcodetool');
     }
 
     /**
@@ -685,6 +865,14 @@ final class AdminManager
     }
 
     /**
+     * Encryption key and stored secrets page.
+     */
+    public function renderEncryptionPage()
+    {
+        (new EncryptionPage($this))->render();
+    }
+
+    /**
      * Public route registry page.
      */
     public function renderRoutesPage()
@@ -752,7 +940,7 @@ final class AdminManager
                 $created = $this->api_clients->create($label, $contact_email, $token_ttl_seconds, $expires_at, $scopes);
 
                 if (!$created) {
-                    $this->addRuntimeNotice('error', __('Unable to create the API client.', 'smbb-wpcodetool'));
+                    $this->addRuntimeNotice('error', __('Impossible de créer le client API.', 'smbb-wpcodetool'));
                     return;
                 }
 
@@ -778,7 +966,7 @@ final class AdminManager
                     $updated = $this->api_clients->update($token_id, $label, $contact_email, $token_ttl_seconds, $expires_at, $scopes);
 
                     if (!$updated) {
-                        $this->addRuntimeNotice('error', __('Unable to update the API client.', 'smbb-wpcodetool'));
+                        $this->addRuntimeNotice('error', __('Impossible de mettre à jour le client API.', 'smbb-wpcodetool'));
                         return;
                     }
                 }
@@ -1000,7 +1188,7 @@ final class AdminManager
         if (!$resource) {
             return array(
                 'type' => 'error',
-                'message' => __('Unknown CodeTool resource.', 'smbb-wpcodetool'),
+                'message' => __('Ressource CodeTool inconnue.', 'smbb-wpcodetool'),
                 'changes' => array(),
             );
         }
@@ -1008,7 +1196,7 @@ final class AdminManager
         if (!current_user_can($resource->capability())) {
             return array(
                 'type' => 'error',
-                'message' => __('You are not allowed to synchronize this resource.', 'smbb-wpcodetool'),
+                'message' => __('Vous n\'avez pas le droit de synchroniser cette ressource.', 'smbb-wpcodetool'),
                 'changes' => array(),
             );
         }
@@ -1038,7 +1226,7 @@ final class AdminManager
 
         if (!wp_verify_nonce($nonce, 'smbb_codetool_schema_preview_' . $resource_name)) {
             return array(
-                'error' => __('Invalid schema preview nonce.', 'smbb-wpcodetool'),
+                'error' => __('Jeton de sécurité de l\'aperçu du schéma invalide.', 'smbb-wpcodetool'),
             );
         }
 
@@ -1046,13 +1234,13 @@ final class AdminManager
 
         if (!$resource) {
             return array(
-                'error' => __('Unknown CodeTool resource.', 'smbb-wpcodetool'),
+                'error' => __('Ressource CodeTool inconnue.', 'smbb-wpcodetool'),
             );
         }
 
         if (!current_user_can($resource->capability())) {
             return array(
-                'error' => __('You are not allowed to preview this resource schema.', 'smbb-wpcodetool'),
+                'error' => __('Vous n\'avez pas le droit de voir l\'aperçu du schéma de cette ressource.', 'smbb-wpcodetool'),
             );
         }
 
@@ -1127,7 +1315,7 @@ final class AdminManager
         $status = $preview['status'];
         ?>
         <div class="smbb-codetool-panel">
-            <h2><?php echo esc_html(sprintf(__('Schema preview: %s', 'smbb-wpcodetool'), $resource->label())); ?></h2>
+            <h2><?php echo esc_html(sprintf(__('Aperçu du schéma : %s', 'smbb-wpcodetool'), $resource->label())); ?></h2>
             <p>
                 <span class="<?php echo esc_attr($this->schemaStatusClass($status)); ?>">
                     <?php echo esc_html($status['label']); ?>
@@ -1160,7 +1348,7 @@ final class AdminManager
         }
 
         echo '<div class="smbb-codetool-actions">';
-        echo '<a class="button button-small" href="' . esc_url($this->schemaPreviewUrl($resource)) . '">' . esc_html__('Preview SQL', 'smbb-wpcodetool') . '</a>';
+        echo '<a class="button button-small" href="' . esc_url($this->schemaPreviewUrl($resource)) . '">' . esc_html__('Aperçu SQL', 'smbb-wpcodetool') . '</a>';
 
         if ($status['state'] !== 'invalid' && $status['state'] !== 'ok') {
             ?>
@@ -1168,7 +1356,7 @@ final class AdminManager
                 <input type="hidden" name="codetool_schema_action" value="apply">
                 <input type="hidden" name="resource" value="<?php echo esc_attr($resource->name()); ?>">
                 <?php wp_nonce_field('smbb_codetool_schema_apply_' . $resource->name()); ?>
-                <?php submit_button(__('Apply', 'smbb-wpcodetool'), 'secondary small', 'submit', false); ?>
+                <?php submit_button(__('Appliquer', 'smbb-wpcodetool'), 'secondary small', 'submit', false); ?>
             </form>
             <?php
         }
@@ -1242,17 +1430,39 @@ final class AdminManager
     {
         check_ajax_referer('smbb_codetool_lookup', 'nonce');
 
-        $this->ensureResources();
-
         $resource_name = $this->request->queryKey('resource');
+
+        // Comptes WordPress : search(array('resource' => 'wp_user')).
+        if ($resource_name === \Smbb\WpCodeTool\Support\UserLookup::RESOURCE) {
+            if (!\Smbb\WpCodeTool\Support\UserLookup::allowed()) {
+                wp_send_json_error(array('message' => __('Vous n\'avez pas le droit de chercher des comptes.', 'smbb-wpcodetool')), 403);
+            }
+
+            $limit = $this->request->queryHas('limit') ? max(1, min(50, $this->request->queryInt('limit'))) : 12;
+            wp_send_json_success(array('items' => \Smbb\WpCodeTool\Support\UserLookup::items($this->request->queryText('search'), $limit, $this->request->queryText('exclude_id'))));
+        }
+
+        // Produits WooCommerce : search(array('resource' => 'wc_product')).
+        if ($resource_name === \Smbb\WpCodeTool\Support\ProductLookup::RESOURCE) {
+            if (!\Smbb\WpCodeTool\Support\ProductLookup::available() || !\Smbb\WpCodeTool\Support\ProductLookup::allowed()) {
+                wp_send_json_error(array('message' => __('Vous n\'avez pas le droit de chercher des produits.', 'smbb-wpcodetool')), 403);
+            }
+
+            $types = json_decode((string) $this->request->queryText('product_types', '[]'), true);
+            $types = is_array($types) ? array_values(array_filter(array_map('sanitize_key', $types))) : array();
+            $limit = $this->request->queryHas('limit') ? max(1, min(50, $this->request->queryInt('limit'))) : 12;
+            wp_send_json_success(array('items' => \Smbb\WpCodeTool\Support\ProductLookup::items($this->request->queryText('search'), $limit, $this->request->queryText('exclude_id'), $types)));
+        }
+
+        $this->ensureResources();
         $resource = $this->resourceByName($resource_name);
 
         if (!$resource || $resource->storageType() !== 'custom_table') {
-            wp_send_json_error(array('message' => __('Unknown lookup resource.', 'smbb-wpcodetool')), 404);
+            wp_send_json_error(array('message' => __('Ressource de recherche inconnue.', 'smbb-wpcodetool')), 404);
         }
 
         if (!current_user_can($resource->capability())) {
-            wp_send_json_error(array('message' => __('You are not allowed to query this resource.', 'smbb-wpcodetool')), 403);
+            wp_send_json_error(array('message' => __('Vous n\'avez pas le droit d\'interroger cette ressource.', 'smbb-wpcodetool')), 403);
         }
 
         $search = $this->request->queryText('search');
@@ -1598,7 +1808,7 @@ final class AdminManager
         $slug = wp_basename(wp_normalize_path((string) $plugin_dir));
 
         if ($slug === '') {
-            return __('Unknown plugin', 'smbb-wpcodetool');
+            return __('Plugin inconnu', 'smbb-wpcodetool');
         }
 
         return ucwords(str_replace(array('-', '_'), ' ', $slug));
@@ -1678,11 +1888,11 @@ final class AdminManager
             if (isset($result['reason']) && $result['reason'] === 'validation') {
                 $errors = $this->normalizeValidationErrors(isset($result['errors']) && is_array($result['errors']) ? $result['errors'] : array());
                 $this->state->setFormErrors($errors);
-                $this->addRuntimeNotice('error', __('The form contains errors.', 'smbb-wpcodetool'), ValidationErrors::noticeDetails($errors));
+                $this->addRuntimeNotice('error', __('Le formulaire contient des erreurs.', 'smbb-wpcodetool'), ValidationErrors::noticeDetails($errors));
                 return;
             }
 
-            $this->addRuntimeNotice('error', !empty($result['message']) ? $result['message'] : __('The settings could not be saved.', 'smbb-wpcodetool'));
+            $this->addRuntimeNotice('error', !empty($result['message']) ? $result['message'] : __('Les réglages n\'ont pas pu être enregistrés.', 'smbb-wpcodetool'));
             return;
         }
 
@@ -1708,8 +1918,8 @@ final class AdminManager
         $result = $this->mutations->saveTable($resource, $this->postedResourceData($resource), array(
             'id' => $requested_id,
             'action' => $is_update ? 'update' : 'create',
-            'not_found_message' => __('The item to update was not found.', 'smbb-wpcodetool'),
-            'save_failed_message' => __('The item could not be saved.', 'smbb-wpcodetool'),
+            'not_found_message' => __('L\'élément à modifier est introuvable.', 'smbb-wpcodetool'),
+            'save_failed_message' => __('L\'élément n\'a pas pu être enregistré.', 'smbb-wpcodetool'),
             'validation_callback' => function (array $data) {
                 return $this->requiredFieldErrors($data);
             },
@@ -1722,11 +1932,11 @@ final class AdminManager
             if (isset($result['reason']) && $result['reason'] === 'validation') {
                 $errors = $this->normalizeValidationErrors(isset($result['errors']) && is_array($result['errors']) ? $result['errors'] : array());
                 $this->state->setFormErrors($errors);
-                $this->addRuntimeNotice('error', __('The form contains errors.', 'smbb-wpcodetool'), ValidationErrors::noticeDetails($errors));
+                $this->addRuntimeNotice('error', __('Le formulaire contient des erreurs.', 'smbb-wpcodetool'), ValidationErrors::noticeDetails($errors));
                 return;
             }
 
-            $this->addRuntimeNotice('error', !empty($result['message']) ? $result['message'] : __('The item could not be saved.', 'smbb-wpcodetool'));
+            $this->addRuntimeNotice('error', !empty($result['message']) ? $result['message'] : __('L\'élément n\'a pas pu être enregistré.', 'smbb-wpcodetool'));
             return;
         }
 
@@ -1753,7 +1963,7 @@ final class AdminManager
         $requested_id = $this->requestedResourceId($primary_key);
 
         if ($requested_id === null) {
-            $this->addRuntimeNotice('error', __('Missing item identifier.', 'smbb-wpcodetool'));
+            $this->addRuntimeNotice('error', __('Identifiant de l\'élément manquant.', 'smbb-wpcodetool'));
             return;
         }
 
@@ -1762,7 +1972,7 @@ final class AdminManager
         $result = $this->deleteTableItem($resource, new TableStore($resource), $requested_id);
 
         if (empty($result['success'])) {
-            $this->addRuntimeNotice('error', !empty($result['message']) ? $result['message'] : __('The item could not be deleted.', 'smbb-wpcodetool'));
+            $this->addRuntimeNotice('error', !empty($result['message']) ? $result['message'] : __('L\'élément n\'a pas pu être supprimé.', 'smbb-wpcodetool'));
             return;
         }
 
@@ -1787,7 +1997,7 @@ final class AdminManager
         $requested_id = $this->requestedResourceId($primary_key);
 
         if ($requested_id === null) {
-            $this->addRuntimeNotice('error', __('Missing item identifier.', 'smbb-wpcodetool'));
+            $this->addRuntimeNotice('error', __('Identifiant de l\'élément manquant.', 'smbb-wpcodetool'));
             return;
         }
 
@@ -1797,7 +2007,7 @@ final class AdminManager
         if (empty($result['success'])) {
             $this->addRuntimeNotice(
                 'error',
-                !empty($result['message']) ? $result['message'] : __('The item could not be duplicated.', 'smbb-wpcodetool'),
+                !empty($result['message']) ? $result['message'] : __('L\'élément n\'a pas pu être dupliqué.', 'smbb-wpcodetool'),
                 !empty($result['details']) && is_array($result['details']) ? $result['details'] : array()
             );
             return;
@@ -1829,9 +2039,9 @@ final class AdminManager
     /**
      * Traite les actions groupées de la liste admin.
      *
-     * V1 utile :
      * - delete    : suppression de plusieurs lignes ;
-     * - duplicate : clonage de plusieurs lignes.
+     * - duplicate : clonage de plusieurs lignes ;
+     * - actions déclarées par la classe de hooks (batchActions / handleBatch).
      */
     private function handleTableBatch(ResourceDefinition $resource)
     {
@@ -1839,14 +2049,20 @@ final class AdminManager
 
         $action = $this->tableBatchAction();
         $ids = $this->selectedTableIds($resource);
+        $actions = $this->runtime->batchActions($resource);
 
-        if (!in_array($action, array('delete', 'duplicate'), true)) {
-            $this->addRuntimeNotice('error', __('Choose a batch action first.', 'smbb-wpcodetool'));
+        if ($action === '' || !isset($actions[$action])) {
+            $this->addRuntimeNotice('error', __('Choisissez d\'abord une action groupée.', 'smbb-wpcodetool'));
             return;
         }
 
         if (!$ids) {
-            $this->addRuntimeNotice('error', __('Select at least one item first.', 'smbb-wpcodetool'));
+            $this->addRuntimeNotice('error', __('Sélectionnez d\'abord au moins un élément.', 'smbb-wpcodetool'));
+            return;
+        }
+
+        if (empty($actions[$action]['builtin'])) {
+            $this->handleCustomTableBatch($resource, $action, $ids);
             return;
         }
 
@@ -1875,7 +2091,7 @@ final class AdminManager
             } else {
                 $failures[$label] = !empty($result['message'])
                     ? $result['message']
-                    : __('The selected item could not be processed.', 'smbb-wpcodetool');
+                    : __('L\'élément sélectionné n\'a pas pu être traité.', 'smbb-wpcodetool');
             }
         }
 
@@ -1898,12 +2114,12 @@ final class AdminManager
         if ($success > 0) {
             if ($action === 'delete') {
                 $message = sprintf(
-                    _n('%d item deleted.', '%d items deleted.', $success, 'smbb-wpcodetool'),
+                    _n('%d élément supprimé.', '%d éléments supprimés.', $success, 'smbb-wpcodetool'),
                     $success
                 );
             } else {
                 $message = sprintf(
-                    _n('%d item duplicated.', '%d items duplicated.', $success, 'smbb-wpcodetool'),
+                    _n('%d élément dupliqué.', '%d éléments dupliqués.', $success, 'smbb-wpcodetool'),
                     $success
                 );
             }
@@ -1912,8 +2128,40 @@ final class AdminManager
         }
 
         if ($failures) {
-            $this->addRuntimeNotice('error', __('Some selected items could not be processed.', 'smbb-wpcodetool'), $failures);
+            $this->addRuntimeNotice('error', __('Certains éléments sélectionnés n\'ont pas pu être traités.', 'smbb-wpcodetool'), $failures);
         }
+    }
+
+    /**
+     * Action groupée propre à la ressource : déléguée à handleBatch() de sa classe de hooks.
+     */
+    private function handleCustomTableBatch(ResourceDefinition $resource, $action, array $ids)
+    {
+        $result = $this->runtime->callBatchHook($resource, $action, $ids, array(
+            'action' => 'batch_' . $action,
+            'user_id' => get_current_user_id(),
+        ));
+        $message = $result['message'] !== ''
+            ? $result['message']
+            : ($result['success']
+                ? sprintf(_n('%d élément traité.', '%d éléments traités.', $result['count'], 'smbb-wpcodetool'), $result['count'])
+                : __('Certains éléments sélectionnés n\'ont pas pu être traités.', 'smbb-wpcodetool'));
+
+        if ($result['success'] && !$result['details']) {
+            // Message gardé le temps de la redirection (une lecture).
+            set_transient('smbb_codetool_batch_notice_' . get_current_user_id(), $message, 120);
+
+            wp_safe_redirect(add_query_arg(
+                array_merge(
+                    $this->tableListRedirectArgs(),
+                    array('codetool_notice' => 'batch_custom')
+                ),
+                admin_url('admin.php?page=' . $resource->adminSlug())
+            ));
+            exit;
+        }
+
+        $this->addRuntimeNotice($result['success'] ? 'success' : 'error', $message, $result['details']);
     }
 
     /**
@@ -1999,9 +2247,9 @@ final class AdminManager
         return $this->mutations->deleteTable($resource, $requested_id, array(
             'store' => $store,
             'action' => 'delete',
-            'not_found_message' => __('The item to delete was not found.', 'smbb-wpcodetool'),
-            'blocked_message' => __('Deletion was blocked by the resource hooks.', 'smbb-wpcodetool'),
-            'delete_failed_message' => __('The item could not be deleted.', 'smbb-wpcodetool'),
+            'not_found_message' => __('L\'élément à supprimer est introuvable.', 'smbb-wpcodetool'),
+            'blocked_message' => __('La suppression a été bloquée par les hooks de la ressource.', 'smbb-wpcodetool'),
+            'delete_failed_message' => __('L\'élément n\'a pas pu être supprimé.', 'smbb-wpcodetool'),
         ));
     }
 
@@ -2013,9 +2261,9 @@ final class AdminManager
         $result = $this->mutations->duplicateTable($resource, $requested_id, array(
             'store' => $store,
             'action' => 'duplicate',
-            'not_found_message' => __('The item to duplicate was not found.', 'smbb-wpcodetool'),
-            'validation_message' => __('The cloned item contains errors.', 'smbb-wpcodetool'),
-            'save_failed_message' => __('The item could not be duplicated.', 'smbb-wpcodetool'),
+            'not_found_message' => __('L\'élément à dupliquer est introuvable.', 'smbb-wpcodetool'),
+            'validation_message' => __('L\'élément dupliqué contient des erreurs.', 'smbb-wpcodetool'),
+            'save_failed_message' => __('L\'élément n\'a pas pu être dupliqué.', 'smbb-wpcodetool'),
         ));
 
         if (!empty($result['success']) || empty($result['errors']) || !is_array($result['errors'])) {
@@ -2070,7 +2318,7 @@ final class AdminManager
 
                 if (!$item) {
                     $item = array();
-                    $this->renderPrototypeNotice(__('Requested item was not found.', 'smbb-wpcodetool'));
+                    $this->renderPrototypeNotice(__('L\'élément demandé est introuvable.', 'smbb-wpcodetool'));
                 }
             }
         }
@@ -2119,9 +2367,13 @@ final class AdminManager
             'search_term' => $search_term,
             'search_placeholder' => $resource->storageType() === 'custom_table' ? $resource->listSearchPlaceholder() : '',
             'filter_enabled' => $resource->storageType() === 'custom_table' && $resource->listFiltersEnabled() && !empty($filter_fields),
+            'filter_form' => $resource->listFilterFormVisible(),
             'filter_fields' => $filter_fields,
             'current_filter' => $this->tableFilterArgs($resource),
+            'presets' => $view === 'list' && $store && $resource->storageType() === 'custom_table' ? $this->tablePresets($resource, $store) : array(),
+            'remember' => $resource->listRemember(),
             'batch_enabled' => $resource->storageType() === 'custom_table',
+            'batch_actions' => $resource->storageType() === 'custom_table' ? $this->runtime->batchActions($resource) : array(),
             'pagination' => $pagination,
         ));
 
@@ -2292,6 +2544,37 @@ final class AdminManager
      *
      * V1 : une seule ligne de filtre, au format field/operator/value.
      */
+    /**
+     * Onglets de préfiltres prêts à afficher : libellé, filtre, nombre de lignes si demandé.
+     *
+     * @return array{all:string,items:array<int,array<string,mixed>>}
+     */
+    private function tablePresets(ResourceDefinition $resource, $store)
+    {
+        $presets = $resource->listPresets();
+
+        if (!$presets['items'] || !$resource->listFiltersEnabled()) {
+            return array();
+        }
+
+        $allowed = $resource->listFilterColumns();
+        $items = array();
+
+        foreach ($presets['items'] as $item) {
+            if (!in_array($item['filter']['field'], $allowed, true)) {
+                continue;
+            }
+
+            if ($item['count']) {
+                $item['total'] = (int) $store->count(array('filter' => $item['filter']));
+            }
+
+            $items[] = $item;
+        }
+
+        return $items ? array('all' => $presets['all'], 'items' => $items) : array();
+    }
+
     private function tableFilterArgs(ResourceDefinition $resource = null)
     {
         if ($resource && !$resource->listFiltersEnabled()) {
@@ -2371,10 +2654,10 @@ final class AdminManager
     private function formButtonLabel(ResourceDefinition $resource, $requested_id)
     {
         if ($resource->adminType() === 'settings_page') {
-            return __('Save settings', 'smbb-wpcodetool');
+            return __('Enregistrer les réglages', 'smbb-wpcodetool');
         }
 
-        return $requested_id !== null ? __('Update', 'smbb-wpcodetool') : __('Create', 'smbb-wpcodetool');
+        return $requested_id !== null ? __('Mettre à jour', 'smbb-wpcodetool') : __('Créer', 'smbb-wpcodetool');
     }
 
     /**
@@ -2462,7 +2745,7 @@ final class AdminManager
                 continue;
             }
 
-            $errors[$field_name] = __('This field is required.', 'smbb-wpcodetool');
+            $errors[$field_name] = __('Ce champ est obligatoire.', 'smbb-wpcodetool');
         }
 
         return $errors;
@@ -2547,34 +2830,46 @@ final class AdminManager
         $notice = $this->request->queryKey('codetool_notice');
         $count = $this->request->queryHas('codetool_count') ? max(0, $this->request->queryInt('codetool_count')) : 0;
         $messages = array(
-            'created' => __('Item created.', 'smbb-wpcodetool'),
-            'duplicated' => __('Item duplicated.', 'smbb-wpcodetool'),
-            'updated' => __('Item updated.', 'smbb-wpcodetool'),
-            'deleted' => __('Item deleted.', 'smbb-wpcodetool'),
-            'settings_saved' => __('Settings saved.', 'smbb-wpcodetool'),
-            'api_visibility_saved' => __('API visibility saved.', 'smbb-wpcodetool'),
-            'api_token_created' => __('API token created.', 'smbb-wpcodetool'),
-            'api_token_enabled' => __('API token enabled.', 'smbb-wpcodetool'),
-            'api_token_disabled' => __('API token disabled.', 'smbb-wpcodetool'),
-            'api_token_deleted' => __('API token deleted.', 'smbb-wpcodetool'),
-            'api_client_created' => __('API client created.', 'smbb-wpcodetool'),
-            'api_client_updated' => __('API client updated.', 'smbb-wpcodetool'),
-            'api_client_enabled' => __('API client enabled.', 'smbb-wpcodetool'),
-            'api_client_disabled' => __('API client disabled.', 'smbb-wpcodetool'),
-            'api_client_deleted' => __('API client deleted.', 'smbb-wpcodetool'),
+            'created' => __('Élément créé.', 'smbb-wpcodetool'),
+            'duplicated' => __('Élément dupliqué.', 'smbb-wpcodetool'),
+            'updated' => __('Élément mis à jour.', 'smbb-wpcodetool'),
+            'deleted' => __('Élément supprimé.', 'smbb-wpcodetool'),
+            'settings_saved' => __('Réglages enregistrés.', 'smbb-wpcodetool'),
+            'api_visibility_saved' => __('Visibilité de l\'API enregistrée.', 'smbb-wpcodetool'),
+            'api_token_created' => __('Jeton API créé.', 'smbb-wpcodetool'),
+            'api_token_enabled' => __('Jeton API activé.', 'smbb-wpcodetool'),
+            'api_token_disabled' => __('Jeton API désactivé.', 'smbb-wpcodetool'),
+            'api_token_deleted' => __('Jeton API supprimé.', 'smbb-wpcodetool'),
+            'api_client_created' => __('Client API créé.', 'smbb-wpcodetool'),
+            'api_client_updated' => __('Client API mis à jour.', 'smbb-wpcodetool'),
+            'api_client_enabled' => __('Client API activé.', 'smbb-wpcodetool'),
+            'api_client_disabled' => __('Client API désactivé.', 'smbb-wpcodetool'),
+            'api_client_deleted' => __('Client API supprimé.', 'smbb-wpcodetool'),
         );
 
         if ($notice === 'batch_deleted' && $count > 0) {
             $this->addRuntimeNotice('success', sprintf(
-                _n('%d item deleted.', '%d items deleted.', $count, 'smbb-wpcodetool'),
+                _n('%d élément supprimé.', '%d éléments supprimés.', $count, 'smbb-wpcodetool'),
                 $count
             ));
             return;
         }
 
+        if ($notice === 'batch_custom') {
+            $key = 'smbb_codetool_batch_notice_' . get_current_user_id();
+            $message = get_transient($key);
+            delete_transient($key);
+
+            if (is_string($message) && $message !== '') {
+                $this->addRuntimeNotice('success', $message);
+            }
+
+            return;
+        }
+
         if ($notice === 'batch_duplicated' && $count > 0) {
             $this->addRuntimeNotice('success', sprintf(
-                _n('%d item duplicated.', '%d items duplicated.', $count, 'smbb-wpcodetool'),
+                _n('%d élément dupliqué.', '%d éléments dupliqués.', $count, 'smbb-wpcodetool'),
                 $count
             ));
             return;
@@ -2662,7 +2957,7 @@ final class AdminManager
                 <p>
                     <?php
                     printf(
-                        esc_html__('CodeTool view "%1$s" is missing or unreadable: %2$s', 'smbb-wpcodetool'),
+                        esc_html__('La vue CodeTool « %1$s » est absente ou illisible : %2$s', 'smbb-wpcodetool'),
                         esc_html($view),
                         esc_html($view_path)
                     );

@@ -1,0 +1,189 @@
+{
+  "name": "scp_team",
+  "label": "Équipe",
+  "pluralLabel": "Équipes",
+  "description": "Équipes (sites, services) d'une organisation.",
+  "storage": {
+    "table": "scp_team",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "organization_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "name": {
+      "type": "varchar",
+      "length": 190,
+      "nullable": false,
+      "default": ""
+    },
+    "code": {
+      "type": "varchar",
+      "length": 50,
+      "nullable": true
+    },
+    "status": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "active"
+    },
+    "city": {
+      "type": "varchar",
+      "length": 120,
+      "nullable": true
+    },
+    "stamp_attachment_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "templates_only": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "fixed_monthly_fee": {
+      "type": "decimal",
+      "precision": 10,
+      "scale": 2,
+      "unsigned": true,
+      "nullable": false,
+      "default": "0.00"
+    },
+    "discount_subscription_pct": {
+      "type": "decimal",
+      "precision": 5,
+      "scale": 2,
+      "unsigned": true,
+      "nullable": false,
+      "default": "0.00"
+    },
+    "discount_overage_pct": {
+      "type": "decimal",
+      "precision": 5,
+      "scale": 2,
+      "unsigned": true,
+      "nullable": false,
+      "default": "0.00"
+    },
+    "creation_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "create_datetime"
+    },
+    "creation_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "create_user"
+    },
+    "lastupdate_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "update_datetime"
+    },
+    "lastupdate_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "update_user"
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_organization_id",
+      "type": "index",
+      "columns": [
+        "organization_id"
+      ]
+    },
+    {
+      "name": "idx_name",
+      "type": "index",
+      "columns": [
+        "name"
+      ]
+    },
+    {
+      "name": "idx_status",
+      "type": "index",
+      "columns": [
+        "status"
+      ]
+    }
+  ],
+  "hooks": {
+    "file": "hooks/TeamHooks.php",
+    "class": "Smbb\\SignConnectProxima\\CodeTool\\TeamHooks"
+  },
+  "admin": {
+    "enabled": true,
+    "capability": "manage_options",
+    "menu": {
+      "placement": "submenu",
+      "parent": "smbb-codetool-scp",
+      "title": "Équipes",
+      "icon": "dashicons-groups",
+      "position": 20
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "list": {
+      "perPage": 25,
+      "search": {
+        "enabled": true,
+        "provider": "default",
+        "fields": [
+          "name",
+          "code"
+        ],
+        "mode": "or",
+        "placeholder": "Rechercher"
+      },
+      "filters": {
+        "enabled": true,
+        "fields": [
+          {
+            "field": "organization_id",
+            "label": "Organisation",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "status",
+            "label": "Statut",
+            "operators": [
+              "eq"
+            ]
+          }
+        ]
+      },
+      "defaultOrder": {
+        "by": "name",
+        "direction": "asc"
+      }
+    },
+    "views": {
+      "list": "views/scp-team/list.php",
+      "form": "views/scp-team/form.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

@@ -22,14 +22,14 @@ final class ApiResourceController
     private const ERROR_DELETE_BLOCKED = 'delete_blocked';
     private const ERROR_FORBIDDEN = 'rest_forbidden';
     private const ERROR_FORBIDDEN_SCOPE = 'rest_forbidden_scope';
-    private const MSG_INVALID_ID = 'Missing resource identifier.';
-    private const MSG_NOT_FOUND = 'Resource not found.';
-    private const MSG_CREATE_FAILED = 'The item could not be created.';
-    private const MSG_UPDATE_FAILED = 'The item could not be updated.';
-    private const MSG_DELETE_FAILED = 'The item could not be deleted.';
-    private const MSG_DELETE_BLOCKED = 'Deletion was blocked by the resource hooks.';
-    private const MSG_OPTION_SAVE_FAILED = 'The settings could not be saved.';
-    private const MSG_TOKEN_REQUIRED = 'A valid Bearer token is required.';
+    private const MSG_INVALID_ID = 'Identifiant de ressource manquant.';
+    private const MSG_NOT_FOUND = 'Ressource introuvable.';
+    private const MSG_CREATE_FAILED = 'L\'élément n\'a pas pu être créé.';
+    private const MSG_UPDATE_FAILED = 'L\'élément n\'a pas pu être modifié.';
+    private const MSG_DELETE_FAILED = 'L\'élément n\'a pas pu être supprimé.';
+    private const MSG_DELETE_BLOCKED = 'La suppression a été bloquée par les hooks de la ressource.';
+    private const MSG_OPTION_SAVE_FAILED = 'Les réglages n\'ont pas pu être enregistrés.';
+    private const MSG_TOKEN_REQUIRED = 'Un jeton Bearer valide est requis.';
 
     private $api;
     private $runtime;
@@ -85,8 +85,8 @@ final class ApiResourceController
                 return $this->api->error(
                     self::ERROR_FORBIDDEN_SCOPE,
                     sprintf(
-                        __('This Bearer token does not grant %1$s access to resource "%2$s".', 'smbb-wpcodetool'),
-                        $normalized_action !== '' ? $normalized_action : __('requested', 'smbb-wpcodetool'),
+                        __('Ce jeton Bearer ne donne pas l\'accès %1$s à la ressource « %2$s ».', 'smbb-wpcodetool'),
+                        $normalized_action !== '' ? $normalized_action : __('demandé', 'smbb-wpcodetool'),
                         $resource->name()
                     ),
                     403
@@ -130,7 +130,7 @@ final class ApiResourceController
         $total = $store->count($args);
         $total_pages = $args['per_page'] > 0 ? (int) ceil($total / $args['per_page']) : 0;
         $response = rest_ensure_response(array(
-            'items' => $items,
+            'items' => array_map(array($resource, 'withoutSecrets'), is_array($items) ? $items : array()),
             'meta' => array(
                 'page' => $args['page'],
                 'per_page' => $args['per_page'],
@@ -158,7 +158,7 @@ final class ApiResourceController
 
         $row = $store->find($id);
 
-        return $row ? $row : $this->api->notFound(__(self::MSG_NOT_FOUND, 'smbb-wpcodetool'));
+        return $row ? $resource->withoutSecrets($row) : $this->api->notFound(__(self::MSG_NOT_FOUND, 'smbb-wpcodetool'));
     }
 
     public function createTableItem(ResourceDefinition $resource, $request)
@@ -186,7 +186,7 @@ final class ApiResourceController
             );
         }
 
-        return new \WP_REST_Response($result['payload'], 201);
+        return new \WP_REST_Response($resource->withoutSecrets($result['payload']), 201);
     }
 
     public function updateTableItem(ResourceDefinition $resource, $request, $mode)
@@ -238,7 +238,7 @@ final class ApiResourceController
             );
         }
 
-        return $result['payload'];
+        return $resource->withoutSecrets($result['payload']);
     }
 
     public function deleteTableItem(ResourceDefinition $resource, $request)
@@ -358,7 +358,7 @@ final class ApiResourceController
             }
 
             if (!array_key_exists($column, $data) || $this->isBlankValue($data[$column])) {
-                $errors[$column] = __('This field is required.', 'smbb-wpcodetool');
+                $errors[$column] = __('Ce champ est obligatoire.', 'smbb-wpcodetool');
             }
         }
 

@@ -1,0 +1,35 @@
+{
+  "name": "tomo_calendrier",
+  "label": "Calendrier",
+  "pluralLabel": "Calendrier",
+  "description": "Remplissage des créneaux par mois ou par semaine.",
+  "storage": {
+    "type": "none"
+  },
+  "admin": {
+    "enabled": true,
+    "capability": "manage_tomo",
+    "menu": {
+      "placement": "submenu",
+      "title": "Calendrier",
+      "icon": "dashicons-calendar-alt",
+      "position": 10,
+      "parent": "smbb-codetool-tomo",
+      "group": "Au quotidien"
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "type": "page",
+    "page": {
+      "defaultView": "calendar"
+    },
+    "views": {
+      "calendar": "views/tomo-calendrier/calendar.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

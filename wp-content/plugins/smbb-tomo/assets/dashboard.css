@@ -1,0 +1,82 @@
+/* Tomo – tableau de bord : aujourd'hui, à traiter, chiffres, 14 jours, fil. Chargé par views/tomo/dashboard.php. */
+.tomo-admin .tomo-dash { --tomo-ok: #1a7f4b; --tomo-ok-soft: #e3f3ea; --tomo-warn: #b26200; --tomo-warn-soft: #fbefdc; --tomo-bad: #b3261e; --tomo-bad-soft: #fbe5e3; --tomo-info: #2271b1; --tomo-info-soft: #e5eff8; display: grid; gap: 24px; margin-top: 12px; }
+.tomo-admin .tomo-dash h1 { font-size: 26px; line-height: 1.2; margin: 0; padding: 0; }
+.tomo-admin .tomo-dash h2 { font-size: 15px; margin: 0; display: flex; align-items: center; gap: 8px; }
+.tomo-admin .tomo-dash-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px; }
+.tomo-admin .tomo-dash-head p { margin: 4px 0 0; font-size: 14px; }
+.tomo-admin .tomo-dash-head .button .dashicons { font-size: 16px; width: 16px; height: 16px; vertical-align: -3px; }
+.tomo-admin .tomo-dash-title { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+.tomo-admin .tomo-dash-title a { font-size: 13px; text-decoration: none; }
+.tomo-admin .tomo-dash-count { font-size: 11px; font-weight: 600; line-height: 1; color: #fff; background: var(--tomo-bad); border-radius: 999px; padding: 3px 7px; }
+.tomo-admin .tomo-dash-empty { margin: 0; padding: 14px 16px; background: #fff; border: 1px solid var(--tomo-line); border-radius: 12px; }
+
+.tomo-admin .tomo-dash-today { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.tomo-admin .tomo-dash-slot { display: grid; gap: 10px; background: #fff; border: 1px solid var(--tomo-line); border-radius: 12px; padding: 14px 16px; }
+.tomo-admin .tomo-dash-slot.is-now { border-color: var(--tomo-brand); box-shadow: inset 0 0 0 1px var(--tomo-brand); }
+.tomo-admin .tomo-dash-slot-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.tomo-admin .tomo-dash-time { font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.tomo-admin .tomo-dash-chip { font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+.tomo-admin .tomo-dash-chip.is-ok { background: var(--tomo-ok-soft); color: var(--tomo-ok); }
+.tomo-admin .tomo-dash-chip.is-warn { background: var(--tomo-warn-soft); color: var(--tomo-warn); }
+.tomo-admin .tomo-dash-chip.is-info { background: var(--tomo-info-soft); color: var(--tomo-info); }
+.tomo-admin .tomo-dash-chip.is-mute { background: #f0f0f1; color: var(--tomo-muted); }
+.tomo-admin .tomo-dash-fill { display: grid; gap: 4px; font-size: 12px; color: var(--tomo-muted); }
+.tomo-admin .tomo-dash-bar { display: block; height: 7px; border-radius: 4px; background: #e2e4e7; overflow: hidden; }
+.tomo-admin .tomo-dash-bar i { display: block; height: 100%; border-radius: 4px; }
+.tomo-admin .tomo-dash i.is-good { background: var(--tomo-ok); }
+.tomo-admin .tomo-dash i.is-mid { background: var(--tomo-warn); }
+.tomo-admin .tomo-dash i.is-low { background: var(--tomo-bad); }
+
+.tomo-admin .tomo-dash-split { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.tomo-admin .tomo-dash-split--even { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+@media (max-width: 1100px) { .tomo-admin .tomo-dash-split { grid-template-columns: 1fr; } }
+
+.tomo-admin .tomo-dash-todo { background: #fff; border: 1px solid var(--tomo-line); border-radius: 12px; overflow: hidden; }
+.tomo-admin .tomo-dash-todo-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 14px 11px 16px; border-top: 1px solid var(--tomo-line); border-left: 5px solid var(--tomo-info); }
+.tomo-admin .tomo-dash-todo-row:first-child { border-top: 0; }
+.tomo-admin .tomo-dash-todo-row.is-bad { border-left-color: var(--tomo-bad); }
+.tomo-admin .tomo-dash-todo-row.is-warn { border-left-color: var(--tomo-warn); }
+.tomo-admin .tomo-dash-todo-row.is-ok { border-left-color: var(--tomo-ok); color: var(--tomo-ok); }
+.tomo-admin .tomo-dash-todo-row small { display: block; color: var(--tomo-muted); font-size: 12px; margin-top: 2px; }
+.tomo-admin .tomo-dash-todo-row .button { flex: 0 0 auto; }
+
+.tomo-admin .tomo-dash-kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 600px) { .tomo-admin .tomo-dash-kpis { grid-template-columns: 1fr; } }
+.tomo-admin .tomo-dash-kpi { display: flex; flex-direction: column; gap: 3px; background: #fff; border: 1px solid var(--tomo-line); border-radius: 12px; padding: 12px 14px; text-decoration: none; color: var(--tomo-ink); min-width: 0; }
+.tomo-admin a.tomo-dash-kpi:hover { border-color: var(--tomo-brand); color: var(--tomo-ink); }
+.tomo-admin .tomo-dash-kpi span { font-size: 12px; color: var(--tomo-muted); }
+.tomo-admin .tomo-dash-kpi strong { font-size: 24px; line-height: 1.15; font-weight: 600; font-variant-numeric: tabular-nums; }
+.tomo-admin .tomo-dash-kpi em { font-style: normal; font-size: 12px; color: var(--tomo-muted); }
+.tomo-admin .tomo-dash-kpi em.is-up { color: var(--tomo-ok); }
+.tomo-admin .tomo-dash-kpi em.is-down { color: var(--tomo-bad); }
+.tomo-admin .tomo-dash-spark { display: block; width: 100%; height: 26px; margin-top: 4px; }
+.tomo-admin .tomo-dash-spark .area { fill: var(--tomo-ok-soft); }
+.tomo-admin .tomo-dash-spark .line { fill: none; stroke: var(--tomo-ok); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.tomo-admin .tomo-dash-spark circle { fill: var(--tomo-ok); }
+
+.tomo-admin .tomo-dash-strip { background: #fff; border: 1px solid var(--tomo-line); border-radius: 12px; padding: 12px; overflow-x: auto; }
+.tomo-admin .tomo-dash-days { display: grid; grid-template-columns: repeat(14, minmax(70px, 1fr)); gap: 6px; min-width: 980px; }
+.tomo-admin .tomo-dash-day { display: flex; flex-direction: column; gap: 5px; }
+.tomo-admin .tomo-dash-day-head { text-align: center; font-size: 11px; color: var(--tomo-muted); padding-bottom: 4px; border-bottom: 1px solid var(--tomo-line); text-transform: lowercase; }
+.tomo-admin .tomo-dash-day-head b { display: block; font-size: 15px; color: var(--tomo-ink); font-variant-numeric: tabular-nums; }
+.tomo-admin .tomo-dash-day.is-weekend .tomo-dash-day-head b { color: var(--tomo-muted); }
+.tomo-admin .tomo-dash-day.is-today .tomo-dash-day-head { border-bottom: 2px solid var(--tomo-brand); }
+.tomo-admin .tomo-dash-ev { display: block; padding: 5px 6px; border-radius: 6px; font-size: 11px; line-height: 1.3; text-decoration: none; color: var(--tomo-ink); background: var(--tomo-ok-soft); border-left: 3px solid var(--tomo-ok); }
+.tomo-admin .tomo-dash-ev:hover { filter: brightness(.96); color: var(--tomo-ink); }
+.tomo-admin .tomo-dash-ev b { display: block; font-variant-numeric: tabular-nums; }
+.tomo-admin .tomo-dash-ev span { display: block; color: var(--tomo-muted); }
+.tomo-admin .tomo-dash-ev.is-mid { background: var(--tomo-warn-soft); border-left-color: var(--tomo-warn); }
+.tomo-admin .tomo-dash-ev.is-low { background: var(--tomo-bad-soft); border-left-color: var(--tomo-bad); }
+.tomo-admin .tomo-dash-ev.is-draft { background: transparent; border: 1px dashed #8c8f94; border-left-width: 3px; }
+.tomo-admin .tomo-dash-legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--tomo-muted); margin-top: 8px; }
+.tomo-admin .tomo-dash-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+.tomo-admin .tomo-dash-legend i.is-draft { border: 1px dashed #8c8f94; }
+
+.tomo-admin .tomo-dash-feed { background: #fff; border: 1px solid var(--tomo-line); border-radius: 12px; padding: 2px 14px; }
+.tomo-admin .tomo-dash-feed > div { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 10px; padding: 8px 0; border-top: 1px solid var(--tomo-line); font-size: 13px; }
+.tomo-admin .tomo-dash-feed > div:first-child { border-top: 0; }
+.tomo-admin .tomo-dash-feed time { color: var(--tomo-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.tomo-admin .tomo-dash-feed .is-failed strong { color: var(--tomo-bad); }
+.tomo-admin .tomo-dash-feed p { margin: 10px 0; }
+@media (max-width: 600px) { .tomo-admin .tomo-dash-feed > div { grid-template-columns: 1fr; gap: 0; } }
+

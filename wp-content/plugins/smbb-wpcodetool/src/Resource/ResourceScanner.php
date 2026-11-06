@@ -256,7 +256,7 @@ final class ResourceScanner
         if (empty($data['name'])) {
             $this->errors[] = array(
                 'file' => $model_file,
-                'message' => 'La ressource doit declarer un champ "name".',
+                'message' => 'La ressource doit déclarer un champ "name".',
             );
 
             return null;

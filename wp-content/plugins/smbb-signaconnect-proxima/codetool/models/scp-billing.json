@@ -1,0 +1,34 @@
+{
+  "name": "scp_billing",
+  "label": "Facturation",
+  "pluralLabel": "Facturation",
+  "description": "Facture proforma par organisation et par mois, export CSV et clôture.",
+  "storage": {
+    "type": "none"
+  },
+  "admin": {
+    "enabled": true,
+    "type": "page",
+    "capability": "manage_options",
+    "menu": {
+      "placement": "submenu",
+      "parent": "smbb-codetool-scp",
+      "title": "Facturation",
+      "icon": "dashicons-money-alt",
+      "position": 70
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "page": {
+      "defaultView": "dashboard"
+    },
+    "views": {
+      "dashboard": "views/scp-billing/dashboard.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

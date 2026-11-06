@@ -72,60 +72,60 @@ final class OverviewPage extends AbstractAdminPage
         $hero_tiles = array(
             array(
                 'icon' => 'dashicons-database',
-                'label' => __('Custom tables', 'smbb-wpcodetool'),
-                'meta' => sprintf(_n('%d resource', '%d resources', $table_resource_count, 'smbb-wpcodetool'), $table_resource_count),
+                'label' => __('Tables personnalisées', 'smbb-wpcodetool'),
+                'meta' => sprintf(_n('%d ressource', '%d ressources', $table_resource_count, 'smbb-wpcodetool'), $table_resource_count),
             ),
             array(
                 'icon' => 'dashicons-admin-settings',
-                'label' => __('Settings pages', 'smbb-wpcodetool'),
-                'meta' => sprintf(_n('%d singleton', '%d singletons', $option_resource_count, 'smbb-wpcodetool'), $option_resource_count),
+                'label' => __('Pages de réglages', 'smbb-wpcodetool'),
+                'meta' => sprintf(_n('%d page de réglages', '%d pages de réglages', $option_resource_count, 'smbb-wpcodetool'), $option_resource_count),
             ),
             array(
                 'icon' => 'dashicons-layout',
-                'label' => __('UI dashboards', 'smbb-wpcodetool'),
+                'label' => __('Tableaux de bord', 'smbb-wpcodetool'),
                 'meta' => sprintf(_n('%d page', '%d pages', $ui_page_count, 'smbb-wpcodetool'), $ui_page_count),
             ),
             array(
                 'icon' => 'dashicons-rest-api',
-                'label' => __('REST exposure', 'smbb-wpcodetool'),
-                'meta' => sprintf(_n('%d API resource', '%d API resources', $api_resource_count, 'smbb-wpcodetool'), $api_resource_count),
+                'label' => __('Exposition REST', 'smbb-wpcodetool'),
+                'meta' => sprintf(_n('%d ressource API', '%d ressources API', $api_resource_count, 'smbb-wpcodetool'), $api_resource_count),
             ),
             array(
                 'icon' => 'dashicons-randomize',
-                'label' => __('Public routes', 'smbb-wpcodetool'),
-                'meta' => sprintf(_n('%d route detected', '%d routes detected', $route_count, 'smbb-wpcodetool'), $route_count),
+                'label' => __('Routes publiques', 'smbb-wpcodetool'),
+                'meta' => sprintf(_n('%d route détectée', '%d routes détectées', $route_count, 'smbb-wpcodetool'), $route_count),
             ),
             array(
                 'icon' => 'dashicons-editor-code',
-                'label' => __('Resource registry', 'smbb-wpcodetool'),
-                'meta' => sprintf(_n('%d model detected', '%d models detected', $resource_count, 'smbb-wpcodetool'), $resource_count),
+                'label' => __('Registre des ressources', 'smbb-wpcodetool'),
+                'meta' => sprintf(_n('%d modèle détecté', '%d modèles détectés', $resource_count, 'smbb-wpcodetool'), $resource_count),
             ),
             array(
                 'icon' => 'dashicons-admin-network',
-                'label' => __('Managed clients', 'smbb-wpcodetool'),
-                'meta' => sprintf(_n('%d API client', '%d API clients', $client_count, 'smbb-wpcodetool'), $client_count),
+                'label' => __('Clients gérés', 'smbb-wpcodetool'),
+                'meta' => sprintf(_n('%d client API', '%d clients API', $client_count, 'smbb-wpcodetool'), $client_count),
             ),
         );
 
         $quick_access = array(
             array(
-                'title' => __('Browse resources', 'smbb-wpcodetool'),
-                'description' => __('Inspect detected models, menu placement, schema state, and generated admin pages.', 'smbb-wpcodetool'),
+                'title' => __('Voir les ressources', 'smbb-wpcodetool'),
+                'description' => __('Consultez les modèles détectés, leur place dans le menu, l\'état du schéma et les pages d\'admin générées.', 'smbb-wpcodetool'),
                 'url' => $resources_url,
             ),
             array(
-                'title' => __('Browse routes', 'smbb-wpcodetool'),
-                'description' => __('Inspect public URL patterns declared in codetool/routes/public.php files.', 'smbb-wpcodetool'),
+                'title' => __('Voir les routes', 'smbb-wpcodetool'),
+                'description' => __('Consultez les URL publiques déclarées dans les fichiers codetool/routes/public.php.', 'smbb-wpcodetool'),
                 'url' => $routes_url,
             ),
             array(
-                'title' => __('Manage OpenAPI visibility', 'smbb-wpcodetool'),
-                'description' => __('Control which namespaces are public, capability-protected, or hidden.', 'smbb-wpcodetool'),
+                'title' => __('Gérer la visibilité OpenAPI', 'smbb-wpcodetool'),
+                'description' => __('Choisissez quels espaces de noms sont publics, protégés par une capacité ou masqués.', 'smbb-wpcodetool'),
                 'url' => admin_url('admin.php?page=smbb-wpcodetool-api'),
             ),
             array(
-                'title' => __('Manage API clients', 'smbb-wpcodetool'),
-                'description' => __('Issue credentials and inspect the clients allowed to request access tokens.', 'smbb-wpcodetool'),
+                'title' => __('Gérer les clients API', 'smbb-wpcodetool'),
+                'description' => __('Délivrez des identifiants et consultez les clients autorisés à demander des jetons d\'accès.', 'smbb-wpcodetool'),
                 'url' => admin_url('admin.php?page=smbb-wpcodetool-api-tokens'),
             ),
         );
@@ -134,11 +134,11 @@ final class OverviewPage extends AbstractAdminPage
             array_unshift(
                 $quick_access,
                 array(
-                    'title' => __('Resolve SQL schema updates', 'smbb-wpcodetool'),
+                    'title' => __('Appliquer les mises à jour du schéma SQL', 'smbb-wpcodetool'),
                     'description' => sprintf(
                         _n(
-                            '%d custom-table resource needs SQL attention before its data layer is fully in sync.',
-                            '%d custom-table resources need SQL attention before their data layer is fully in sync.',
+                            '%d ressource en table personnalisée demande une mise à jour SQL avant que ses données soient synchronisées.',
+                            '%d ressources en table personnalisée demandent une mise à jour SQL avant que leurs données soient synchronisées.',
                             $schema_pending_count,
                             'smbb-wpcodetool'
                         ),
@@ -153,11 +153,11 @@ final class OverviewPage extends AbstractAdminPage
             array_unshift(
                 $quick_access,
                 array(
-                    'title' => __('Review model issues', 'smbb-wpcodetool'),
+                    'title' => __('Voir les problèmes de modèles', 'smbb-wpcodetool'),
                     'description' => sprintf(
                         _n(
-                            '%d model file currently has a scan or validation issue.',
-                            '%d model files currently have scan or validation issues.',
+                            '%d fichier de modèle présente une erreur de lecture ou de validation.',
+                            '%d fichiers de modèle présentent des erreurs de lecture ou de validation.',
                             $scan_error_count,
                             'smbb-wpcodetool'
                         ),
@@ -173,21 +173,21 @@ final class OverviewPage extends AbstractAdminPage
 
         if ($schema_missing_count > 0) {
             $schema_summary[] = sprintf(
-                _n('%d table missing', '%d tables missing', $schema_missing_count, 'smbb-wpcodetool'),
+                _n('%d table manquante', '%d tables manquantes', $schema_missing_count, 'smbb-wpcodetool'),
                 $schema_missing_count
             );
         }
 
         if ($schema_update_count > 0) {
             $schema_summary[] = sprintf(
-                _n('%d update required', '%d updates required', $schema_update_count, 'smbb-wpcodetool'),
+                _n('%d mise à jour requise', '%d mises à jour requises', $schema_update_count, 'smbb-wpcodetool'),
                 $schema_update_count
             );
         }
 
         if ($schema_invalid_count > 0) {
             $schema_summary[] = sprintf(
-                _n('%d invalid schema', '%d invalid schemas', $schema_invalid_count, 'smbb-wpcodetool'),
+                _n('%d schéma invalide', '%d schémas invalides', $schema_invalid_count, 'smbb-wpcodetool'),
                 $schema_invalid_count
             );
         }
@@ -195,8 +195,8 @@ final class OverviewPage extends AbstractAdminPage
         <div class="wrap smbb-codetool">
             <?php
             echo $manager->pageIntroHtml(
-                __('CodeTool overview', 'smbb-wpcodetool'),
-                __('Quick access to resources, API exposure, and managed API clients.', 'smbb-wpcodetool'),
+                __('Vue d\'ensemble CodeTool', 'smbb-wpcodetool'),
+                __('Accès rapide aux ressources, à l\'exposition API et aux clients API.', 'smbb-wpcodetool'),
                 'dashicons-editor-code',
                 $manager->runtimeNoticesHtml()
             );
@@ -205,22 +205,22 @@ final class OverviewPage extends AbstractAdminPage
             <section class="smbb-codetool-hero">
                 <div class="smbb-codetool-hero-inner">
                     <div class="smbb-codetool-hero-main">
-                        <p class="smbb-codetool-hero-eyebrow"><?php esc_html_e('CodeTool Admin', 'smbb-wpcodetool'); ?></p>
+                        <p class="smbb-codetool-hero-eyebrow"><?php esc_html_e('Admin CodeTool', 'smbb-wpcodetool'); ?></p>
                         <h2 class="smbb-codetool-hero-title">
-                            <?php esc_html_e('Build custom WordPress admin experiences faster', 'smbb-wpcodetool'); ?>
-                            <span class="smbb-codetool-hero-chip"><?php esc_html_e('UI-first', 'smbb-wpcodetool'); ?></span>
+                            <?php esc_html_e('Construisez plus vite des écrans d\'admin WordPress sur mesure', 'smbb-wpcodetool'); ?>
+                            <span class="smbb-codetool-hero-chip"><?php esc_html_e('Interface d\'abord', 'smbb-wpcodetool'); ?></span>
                         </h2>
                         <p class="smbb-codetool-hero-desc">
-                            <?php esc_html_e('Scan resource models, expose REST namespaces, and ship dashboards, CRUD screens, or settings pages from a single toolkit.', 'smbb-wpcodetool'); ?>
+                            <?php esc_html_e('Lisez les modèles de ressources, exposez des espaces de noms REST et livrez tableaux de bord, écrans de gestion ou pages de réglages avec un seul outil.', 'smbb-wpcodetool'); ?>
                         </p>
 
                         <div class="smbb-codetool-hero-actions">
                             <a class="smbb-codetool-hero-button is-secondary" href="<?php echo esc_url($resources_url); ?>">
-                                <?php esc_html_e('Browse resources', 'smbb-wpcodetool'); ?>
+                                <?php esc_html_e('Voir les ressources', 'smbb-wpcodetool'); ?>
                                 <span class="dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span>
                             </a>
                             <a class="smbb-codetool-hero-button is-primary" href="<?php echo esc_url(admin_url('admin.php?page=smbb-wpcodetool-api')); ?>">
-                                <?php esc_html_e('Open API settings', 'smbb-wpcodetool'); ?>
+                                <?php esc_html_e('Ouvrir les réglages de l\'API', 'smbb-wpcodetool'); ?>
                                 <span class="dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span>
                             </a>
                         </div>
@@ -243,10 +243,10 @@ final class OverviewPage extends AbstractAdminPage
 
                 <div class="smbb-codetool-hero-footer">
                     <div class="smbb-codetool-hero-footer-copy">
-                        <?php esc_html_e('Designed for WordPress builders who want declarative models and bespoke admin UX in the same toolkit.', 'smbb-wpcodetool'); ?>
+                        <?php esc_html_e('Pensé pour les développeurs WordPress qui veulent des modèles déclaratifs et des écrans d\'admin sur mesure dans le même outil.', 'smbb-wpcodetool'); ?>
                     </div>
                     <a class="smbb-codetool-hero-footer-link" href="<?php echo esc_url($resources_url); ?>">
-                        <?php esc_html_e('Open resource registry', 'smbb-wpcodetool'); ?>
+                        <?php esc_html_e('Ouvrir le registre des ressources', 'smbb-wpcodetool'); ?>
                         <span class="dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span>
                     </a>
                 </div>
@@ -254,73 +254,73 @@ final class OverviewPage extends AbstractAdminPage
 
             <div class="smbb-codetool-dashboard-grid">
                 <section class="smbb-codetool-metric <?php echo $schema_pending_count > 0 ? esc_attr($schema_attention_variant) : ''; ?>">
-                    <p class="smbb-codetool-metric-label"><?php esc_html_e('Schemas pending', 'smbb-wpcodetool'); ?></p>
+                    <p class="smbb-codetool-metric-label"><?php esc_html_e('Schémas en attente', 'smbb-wpcodetool'); ?></p>
                     <p class="smbb-codetool-metric-value"><?php echo esc_html((string) $schema_pending_count); ?></p>
                     <p class="smbb-codetool-metric-copy">
                         <?php
                         echo esc_html(
                             $schema_pending_count > 0
-                                ? __('Custom-table resources currently waiting for a schema apply or fix.', 'smbb-wpcodetool')
-                                : __('All detected custom-table schemas are currently synchronized.', 'smbb-wpcodetool')
+                                ? __('Ressources en table personnalisée en attente d\'une mise à jour ou d\'une correction du schéma.', 'smbb-wpcodetool')
+                                : __('Tous les schémas de tables personnalisées détectés sont synchronisés.', 'smbb-wpcodetool')
                         );
                         ?>
                     </p>
                 </section>
 
                 <section class="smbb-codetool-metric">
-                    <p class="smbb-codetool-metric-label"><?php esc_html_e('Detected resources', 'smbb-wpcodetool'); ?></p>
+                    <p class="smbb-codetool-metric-label"><?php esc_html_e('Ressources détectées', 'smbb-wpcodetool'); ?></p>
                     <p class="smbb-codetool-metric-value"><?php echo esc_html((string) $resource_count); ?></p>
-                    <p class="smbb-codetool-metric-copy"><?php esc_html_e('All active CodeTool models available in this WordPress instance.', 'smbb-wpcodetool'); ?></p>
+                    <p class="smbb-codetool-metric-copy"><?php esc_html_e('Tous les modèles CodeTool actifs de ce WordPress.', 'smbb-wpcodetool'); ?></p>
                 </section>
 
                 <section class="smbb-codetool-metric">
-                    <p class="smbb-codetool-metric-label"><?php esc_html_e('API namespaces', 'smbb-wpcodetool'); ?></p>
+                    <p class="smbb-codetool-metric-label"><?php esc_html_e('Espaces de noms API', 'smbb-wpcodetool'); ?></p>
                     <p class="smbb-codetool-metric-value"><?php echo esc_html((string) $namespace_count); ?></p>
-                    <p class="smbb-codetool-metric-copy"><?php esc_html_e('REST namespaces currently exposed by detected resources.', 'smbb-wpcodetool'); ?></p>
+                    <p class="smbb-codetool-metric-copy"><?php esc_html_e('Espaces de noms REST exposés par les ressources détectées.', 'smbb-wpcodetool'); ?></p>
                 </section>
 
                 <section class="smbb-codetool-metric">
-                    <p class="smbb-codetool-metric-label"><?php esc_html_e('API clients', 'smbb-wpcodetool'); ?></p>
+                    <p class="smbb-codetool-metric-label"><?php esc_html_e('Clients API', 'smbb-wpcodetool'); ?></p>
                     <p class="smbb-codetool-metric-value"><?php echo esc_html((string) $client_count); ?></p>
-                    <p class="smbb-codetool-metric-copy"><?php esc_html_e('Managed client credentials allowed to request access tokens.', 'smbb-wpcodetool'); ?></p>
+                    <p class="smbb-codetool-metric-copy"><?php esc_html_e('Identifiants clients autorisés à demander des jetons d\'accès.', 'smbb-wpcodetool'); ?></p>
                 </section>
 
                 <section class="smbb-codetool-metric">
-                    <p class="smbb-codetool-metric-label"><?php esc_html_e('Public routes', 'smbb-wpcodetool'); ?></p>
+                    <p class="smbb-codetool-metric-label"><?php esc_html_e('Routes publiques', 'smbb-wpcodetool'); ?></p>
                     <p class="smbb-codetool-metric-value"><?php echo esc_html((string) $route_count); ?></p>
-                    <p class="smbb-codetool-metric-copy"><?php esc_html_e('Non-REST endpoints declared by active plugins.', 'smbb-wpcodetool'); ?></p>
+                    <p class="smbb-codetool-metric-copy"><?php esc_html_e('Points d\'accès hors REST déclarés par les plugins actifs.', 'smbb-wpcodetool'); ?></p>
                 </section>
 
                 <section class="smbb-codetool-metric <?php echo $scan_error_count > 0 ? 'is-warning' : ''; ?>">
-                    <p class="smbb-codetool-metric-label"><?php esc_html_e('Model issues', 'smbb-wpcodetool'); ?></p>
+                    <p class="smbb-codetool-metric-label"><?php esc_html_e('Problèmes de modèles', 'smbb-wpcodetool'); ?></p>
                     <p class="smbb-codetool-metric-value"><?php echo esc_html((string) $scan_error_count); ?></p>
                     <p class="smbb-codetool-metric-copy">
                         <?php
                         echo esc_html(
                             $scan_error_count > 0
-                                ? __('Some JSON models could not be loaded cleanly and need attention.', 'smbb-wpcodetool')
-                                : __('No scan or validation issue is currently reported on detected model files.', 'smbb-wpcodetool')
+                                ? __('Certains modèles JSON n\'ont pas pu être chargés correctement et demandent votre attention.', 'smbb-wpcodetool')
+                                : __('Aucune erreur de lecture ou de validation sur les fichiers de modèle détectés.', 'smbb-wpcodetool')
                         );
                         ?>
                     </p>
                 </section>
 
                 <section class="smbb-codetool-metric">
-                    <p class="smbb-codetool-metric-label"><?php esc_html_e('Pure UI pages', 'smbb-wpcodetool'); ?></p>
+                    <p class="smbb-codetool-metric-label"><?php esc_html_e('Pages d\'interface seule', 'smbb-wpcodetool'); ?></p>
                     <p class="smbb-codetool-metric-value"><?php echo esc_html((string) $ui_page_count); ?></p>
-                    <p class="smbb-codetool-metric-copy"><?php esc_html_e('Admin pages rendered without managed storage.', 'smbb-wpcodetool'); ?></p>
+                    <p class="smbb-codetool-metric-copy"><?php esc_html_e('Pages d\'admin sans stockage géré.', 'smbb-wpcodetool'); ?></p>
                 </section>
             </div>
 
             <?php if ($scan_error_count > 0) : ?>
                 <section class="smbb-codetool-panel smbb-codetool-panel-attention is-warning">
                     <div class="smbb-codetool-panel-header">
-                        <h2><?php esc_html_e('Model validation issues', 'smbb-wpcodetool'); ?></h2>
+                        <h2><?php esc_html_e('Erreurs de validation des modèles', 'smbb-wpcodetool'); ?></h2>
                         <span class="smbb-codetool-badge is-warning">
                             <?php
                             echo esc_html(
                                 sprintf(
-                                    _n('%d issue', '%d issues', $scan_error_count, 'smbb-wpcodetool'),
+                                    _n('%d problème', '%d problèmes', $scan_error_count, 'smbb-wpcodetool'),
                                     $scan_error_count
                                 )
                             );
@@ -328,11 +328,11 @@ final class OverviewPage extends AbstractAdminPage
                         </span>
                     </div>
 
-                    <p><?php esc_html_e('At least one JSON model could not be parsed or validated cleanly. Open the resource registry to inspect file-level errors.', 'smbb-wpcodetool'); ?></p>
+                    <p><?php esc_html_e('Au moins un modèle JSON n\'a pas pu être lu ou validé correctement. Ouvrez le registre des ressources pour voir les erreurs par fichier.', 'smbb-wpcodetool'); ?></p>
 
                     <p>
                         <a class="button button-secondary" href="<?php echo esc_url($resources_url); ?>">
-                            <?php esc_html_e('Open resource registry', 'smbb-wpcodetool'); ?>
+                            <?php esc_html_e('Ouvrir le registre des ressources', 'smbb-wpcodetool'); ?>
                         </a>
                     </p>
                 </section>
@@ -341,12 +341,12 @@ final class OverviewPage extends AbstractAdminPage
             <?php if ($schema_pending_count > 0) : ?>
                 <section class="smbb-codetool-panel smbb-codetool-panel-attention <?php echo esc_attr($schema_attention_variant); ?>">
                     <div class="smbb-codetool-panel-header">
-                        <h2><?php esc_html_e('Schema attention needed', 'smbb-wpcodetool'); ?></h2>
+                        <h2><?php esc_html_e('Schéma à mettre à jour', 'smbb-wpcodetool'); ?></h2>
                         <span class="smbb-codetool-badge <?php echo esc_attr($schema_attention_variant); ?>">
                             <?php
                             echo esc_html(
                                 sprintf(
-                                    _n('%d pending', '%d pending', $schema_pending_count, 'smbb-wpcodetool'),
+                                    _n('%d en attente', '%d en attente', $schema_pending_count, 'smbb-wpcodetool'),
                                     $schema_pending_count
                                 )
                             );
@@ -359,10 +359,10 @@ final class OverviewPage extends AbstractAdminPage
                         echo esc_html(
                             !empty($schema_summary)
                                 ? sprintf(
-                                    __('Some custom-table resources need SQL synchronization: %s.', 'smbb-wpcodetool'),
+                                    __('Certaines ressources en table personnalisée doivent être synchronisées en SQL : %s.', 'smbb-wpcodetool'),
                                     implode(', ', $schema_summary)
                                 )
-                                : __('Some custom-table resources need SQL synchronization.', 'smbb-wpcodetool')
+                                : __('Certaines ressources en table personnalisée doivent être synchronisées en SQL.', 'smbb-wpcodetool')
                         );
                         ?>
                     </p>
@@ -370,8 +370,8 @@ final class OverviewPage extends AbstractAdminPage
                     <table class="widefat striped smbb-codetool-table">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e('Resource', 'smbb-wpcodetool'); ?></th>
-                                <th><?php esc_html_e('Status', 'smbb-wpcodetool'); ?></th>
+                                <th><?php esc_html_e('Ressource', 'smbb-wpcodetool'); ?></th>
+                                <th><?php esc_html_e('Statut', 'smbb-wpcodetool'); ?></th>
                                 <th><?php esc_html_e('Table', 'smbb-wpcodetool'); ?></th>
                                 <th><?php esc_html_e('Actions', 'smbb-wpcodetool'); ?></th>
                             </tr>
@@ -402,7 +402,7 @@ final class OverviewPage extends AbstractAdminPage
                                     <td>
                                         <div class="smbb-codetool-status-actions">
                                             <a class="button button-small" href="<?php echo esc_url($manager->schemaPreviewUrl($schema_resource)); ?>">
-                                                <?php esc_html_e('Preview SQL', 'smbb-wpcodetool'); ?>
+                                                <?php esc_html_e('Aperçu SQL', 'smbb-wpcodetool'); ?>
                                             </a>
 
                                             <?php if ($schema_status['state'] !== 'invalid') : ?>
@@ -410,7 +410,7 @@ final class OverviewPage extends AbstractAdminPage
                                                     <input type="hidden" name="codetool_schema_action" value="apply">
                                                     <input type="hidden" name="resource" value="<?php echo esc_attr($schema_resource->name()); ?>">
                                                     <?php wp_nonce_field('smbb_codetool_schema_apply_' . $schema_resource->name()); ?>
-                                                    <?php submit_button(__('Apply', 'smbb-wpcodetool'), 'secondary small', 'submit', false); ?>
+                                                    <?php submit_button(__('Appliquer', 'smbb-wpcodetool'), 'secondary small', 'submit', false); ?>
                                                 </form>
                                             <?php endif; ?>
                                         </div>
@@ -424,8 +424,8 @@ final class OverviewPage extends AbstractAdminPage
 
             <div class="smbb-codetool-split">
                 <section class="smbb-codetool-panel">
-                    <h2><?php esc_html_e('Quick access', 'smbb-wpcodetool'); ?></h2>
-                    <p><?php esc_html_e('Jump straight to the main operating areas of the toolkit.', 'smbb-wpcodetool'); ?></p>
+                    <h2><?php esc_html_e('Accès rapide', 'smbb-wpcodetool'); ?></h2>
+                    <p><?php esc_html_e('Accédez directement aux principales zones de l\'outil.', 'smbb-wpcodetool'); ?></p>
 
                     <ul class="smbb-codetool-link-list">
                         <?php foreach ($quick_access as $item) : ?>
@@ -438,44 +438,44 @@ final class OverviewPage extends AbstractAdminPage
                 </section>
 
                 <aside class="smbb-codetool-panel">
-                    <h2><?php esc_html_e('System snapshot', 'smbb-wpcodetool'); ?></h2>
+                    <h2><?php esc_html_e('État du système', 'smbb-wpcodetool'); ?></h2>
                     <table class="widefat striped smbb-codetool-table">
                         <tbody>
                             <tr>
-                                <th><?php esc_html_e('Table resources', 'smbb-wpcodetool'); ?></th>
+                                <th><?php esc_html_e('Ressources en table', 'smbb-wpcodetool'); ?></th>
                                 <td><?php echo esc_html((string) $table_resource_count); ?></td>
                             </tr>
                             <tr>
-                                <th><?php esc_html_e('Option resources', 'smbb-wpcodetool'); ?></th>
+                                <th><?php esc_html_e('Ressources en options', 'smbb-wpcodetool'); ?></th>
                                 <td><?php echo esc_html((string) $option_resource_count); ?></td>
                             </tr>
                             <tr>
-                                <th><?php esc_html_e('UI-only pages', 'smbb-wpcodetool'); ?></th>
+                                <th><?php esc_html_e('Pages d\'interface seule', 'smbb-wpcodetool'); ?></th>
                                 <td><?php echo esc_html((string) $ui_page_count); ?></td>
                             </tr>
                             <tr>
-                                <th><?php esc_html_e('API-enabled resources', 'smbb-wpcodetool'); ?></th>
+                                <th><?php esc_html_e('Ressources exposées en API', 'smbb-wpcodetool'); ?></th>
                                 <td><?php echo esc_html((string) $api_resource_count); ?></td>
                             </tr>
                             <tr>
-                                <th><?php esc_html_e('Public routes', 'smbb-wpcodetool'); ?></th>
+                                <th><?php esc_html_e('Routes publiques', 'smbb-wpcodetool'); ?></th>
                                 <td><?php echo esc_html((string) $route_count); ?></td>
                             </tr>
                             <tr>
-                                <th><?php esc_html_e('Schemas pending', 'smbb-wpcodetool'); ?></th>
+                                <th><?php esc_html_e('Schémas en attente', 'smbb-wpcodetool'); ?></th>
                                 <td><?php echo esc_html((string) $schema_pending_count); ?></td>
                             </tr>
                         </tbody>
                     </table>
 
                     <ul class="smbb-codetool-bullets">
-                        <li><?php esc_html_e('The overview is now meant to be a landing page, not just a debug table.', 'smbb-wpcodetool'); ?></li>
+                        <li><?php esc_html_e('La vue d\'ensemble sert de page d\'accueil, pas seulement de tableau de débogage.', 'smbb-wpcodetool'); ?></li>
                         <?php if ($schema_pending_count > 0) : ?>
-                            <li><?php esc_html_e('This overview now surfaces SQL schema work before you open the full resource registry.', 'smbb-wpcodetool'); ?></li>
+                            <li><?php esc_html_e('Cette vue d\'ensemble signale les mises à jour SQL à faire avant même d\'ouvrir le registre des ressources.', 'smbb-wpcodetool'); ?></li>
                         <?php else : ?>
-                            <li><?php esc_html_e('All currently detected custom-table schemas are synchronized.', 'smbb-wpcodetool'); ?></li>
+                            <li><?php esc_html_e('Tous les schémas de tables personnalisées détectés sont synchronisés.', 'smbb-wpcodetool'); ?></li>
                         <?php endif; ?>
-                        <li><?php esc_html_e('Resource pages remain fully free to implement bespoke UX on top of the model.', 'smbb-wpcodetool'); ?></li>
+                        <li><?php esc_html_e('Les pages de ressources restent libres d\'offrir une interface sur mesure au-dessus du modèle.', 'smbb-wpcodetool'); ?></li>
                     </ul>
                 </aside>
             </div>

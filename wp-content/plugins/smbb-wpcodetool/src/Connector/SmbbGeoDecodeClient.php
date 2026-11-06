@@ -24,7 +24,7 @@ final class SmbbGeoDecodeClient
         $longitude = (string) $longitude;
 
         if (!is_numeric($latitude) || !is_numeric($longitude)) {
-            throw new RuntimeException('Invalid GPS coordinates.');
+            throw new RuntimeException('Coordonnées GPS invalides.');
         }
 
         if ($app === '' && !empty($_SERVER['HTTP_HOST'])) {
@@ -45,13 +45,13 @@ final class SmbbGeoDecodeClient
         $body = (string) wp_remote_retrieve_body($response);
 
         if ($status_code < 200 || $status_code >= 300) {
-            throw new RuntimeException('Geo decode error ' . $status_code . ' - ' . $body);
+            throw new RuntimeException('Erreur du géocodage ' . $status_code . ' - ' . $body);
         }
 
         $data = json_decode($body, true);
 
         if (!is_array($data) || empty($data['success'])) {
-            throw new RuntimeException('Geo decode returned no location.');
+            throw new RuntimeException('Le géocodage n\'a renvoyé aucun lieu.');
         }
 
         return array(

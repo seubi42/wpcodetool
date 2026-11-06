@@ -21,8 +21,8 @@ final class ApiPage extends AbstractAdminPage
         <div class="wrap smbb-codetool">
             <?php
             echo $manager->pageIntroHtml(
-                __('CodeTool API', 'smbb-wpcodetool'),
-                __('Manage OpenAPI and Swagger visibility per namespace.', 'smbb-wpcodetool'),
+                __('API CodeTool', 'smbb-wpcodetool'),
+                __('Gérez la visibilité OpenAPI et Swagger par espace de noms.', 'smbb-wpcodetool'),
                 'dashicons-rest-api',
                 $manager->runtimeNoticesHtml()
             );
@@ -30,26 +30,26 @@ final class ApiPage extends AbstractAdminPage
 
             <div class="smbb-codetool-panel">
                 <p>
-                    <strong><?php esc_html_e('Aggregate OpenAPI', 'smbb-wpcodetool'); ?>:</strong>
+                    <strong><?php esc_html_e('OpenAPI global', 'smbb-wpcodetool'); ?>:</strong>
                     <code><?php echo esc_html($aggregate_url); ?></code>
                 </p>
                 <?php if ($aggregate_session_url !== $aggregate_url) : ?>
                     <p>
                         <a class="button button-secondary" href="<?php echo esc_url($aggregate_session_url); ?>" target="_blank" rel="noopener noreferrer">
-                            <?php esc_html_e('Open with current session', 'smbb-wpcodetool'); ?>
+                            <?php esc_html_e('Ouvrir avec la session actuelle', 'smbb-wpcodetool'); ?>
                         </a>
                     </p>
                 <?php endif; ?>
                 <p>
-                    <strong><?php esc_html_e('Token endpoint', 'smbb-wpcodetool'); ?>:</strong>
+                    <strong><?php esc_html_e('Point d\'accès des jetons', 'smbb-wpcodetool'); ?>:</strong>
                     <code><?php echo esc_html(rest_url('smbb-wpcodetool/v1/token')); ?></code>
                 </p>
-                <p><?php esc_html_e('The aggregate endpoint and the Swagger shortcode only expose namespaces visible to the current visitor. Capability-protected REST docs need a WordPress REST nonce, so a raw /wp-json URL opened manually may look anonymous even when you are logged in.', 'smbb-wpcodetool'); ?></p>
+                <p><?php esc_html_e('Le point d\'accès global et le shortcode Swagger n\'exposent que les espaces de noms visibles par le visiteur. Les documentations protégées par une capacité demandent un nonce REST WordPress : une URL /wp-json ouverte à la main peut donc paraître anonyme même si vous êtes connecté.', 'smbb-wpcodetool'); ?></p>
             </div>
 
             <?php if (!$namespaces) : ?>
                 <div class="smbb-codetool-panel">
-                    <p><?php esc_html_e('No API-enabled namespace has been detected yet.', 'smbb-wpcodetool'); ?></p>
+                    <p><?php esc_html_e('Aucun espace de noms exposé en API n\'a encore été détecté.', 'smbb-wpcodetool'); ?></p>
                 </div>
             <?php else : ?>
                 <form method="post" action="<?php echo esc_url(admin_url('admin.php?page=smbb-wpcodetool-api')); ?>">
@@ -59,10 +59,10 @@ final class ApiPage extends AbstractAdminPage
                     <table class="widefat striped smbb-codetool-table">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e('Namespace', 'smbb-wpcodetool'); ?></th>
-                                <th><?php esc_html_e('Resources', 'smbb-wpcodetool'); ?></th>
-                                <th><?php esc_html_e('Visibility', 'smbb-wpcodetool'); ?></th>
-                                <th><?php esc_html_e('Capability', 'smbb-wpcodetool'); ?></th>
+                                <th><?php esc_html_e('Espace de noms', 'smbb-wpcodetool'); ?></th>
+                                <th><?php esc_html_e('Ressources', 'smbb-wpcodetool'); ?></th>
+                                <th><?php esc_html_e('Visibilité', 'smbb-wpcodetool'); ?></th>
+                                <th><?php esc_html_e('Capacité', 'smbb-wpcodetool'); ?></th>
                                 <th><?php esc_html_e('OpenAPI', 'smbb-wpcodetool'); ?></th>
                                 <th><?php esc_html_e('Shortcode', 'smbb-wpcodetool'); ?></th>
                             </tr>
@@ -86,8 +86,8 @@ final class ApiPage extends AbstractAdminPage
                                     <td>
                                         <select name="api_visibility[<?php echo esc_attr($namespace); ?>][visibility]">
                                             <option value="public" <?php selected($settings['visibility'], 'public'); ?>><?php esc_html_e('Public', 'smbb-wpcodetool'); ?></option>
-                                            <option value="capability" <?php selected($settings['visibility'], 'capability'); ?>><?php esc_html_e('WP capability', 'smbb-wpcodetool'); ?></option>
-                                            <option value="hidden" <?php selected($settings['visibility'], 'hidden'); ?>><?php esc_html_e('Hidden', 'smbb-wpcodetool'); ?></option>
+                                            <option value="capability" <?php selected($settings['visibility'], 'capability'); ?>><?php esc_html_e('Capacité WP', 'smbb-wpcodetool'); ?></option>
+                                            <option value="hidden" <?php selected($settings['visibility'], 'hidden'); ?>><?php esc_html_e('Masqué', 'smbb-wpcodetool'); ?></option>
                                         </select>
                                     </td>
                                     <td>
@@ -100,7 +100,7 @@ final class ApiPage extends AbstractAdminPage
                                         <?php if ($openapi_session_url !== $openapi_url) : ?>
                                             <br>
                                             <a class="button button-small" href="<?php echo esc_url($openapi_session_url); ?>" target="_blank" rel="noopener noreferrer">
-                                                <?php esc_html_e('Open', 'smbb-wpcodetool'); ?>
+                                                <?php esc_html_e('Ouvrir', 'smbb-wpcodetool'); ?>
                                             </a>
                                         <?php endif; ?>
                                     </td>
@@ -111,7 +111,7 @@ final class ApiPage extends AbstractAdminPage
                     </table>
 
                     <p>
-                        <button type="submit" class="button button-primary"><?php esc_html_e('Save API visibility', 'smbb-wpcodetool'); ?></button>
+                        <button type="submit" class="button button-primary"><?php esc_html_e('Enregistrer la visibilité de l\'API', 'smbb-wpcodetool'); ?></button>
                     </p>
                 </form>
             <?php endif; ?>

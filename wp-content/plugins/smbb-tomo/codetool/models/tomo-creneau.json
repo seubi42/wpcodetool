@@ -1,0 +1,218 @@
+{
+  "name": "tomo_creneau",
+  "label": "Créneau",
+  "pluralLabel": "Créneaux",
+  "description": "Les dates de chaque atelier, leurs places en vente et leurs intervenants.",
+  "storage": {
+    "table": "tomo_creneau",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "atelier_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "start_date": {
+      "type": "date",
+      "nullable": true
+    },
+    "start_time": {
+      "type": "time",
+      "nullable": true
+    },
+    "end_time": {
+      "type": "time",
+      "nullable": true
+    },
+    "capacity": {
+      "type": "int",
+      "nullable": false,
+      "default": 0
+    },
+    "price": {
+      "type": "decimal",
+      "precision": 10,
+      "scale": 2,
+      "nullable": true
+    },
+    "intervenant_ids": {
+      "type": "longtext",
+      "nullable": true,
+      "format": "json"
+    },
+    "status": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "draft"
+    },
+    "internal_note": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "cancel_reason": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "reminders_sent": {
+      "type": "longtext",
+      "nullable": true,
+      "format": "json"
+    },
+    "kind": {
+      "type": "varchar",
+      "length": 10,
+      "nullable": false,
+      "default": "day"
+    },
+    "pass_creneau_ids": {
+      "type": "longtext",
+      "nullable": true,
+      "format": "json"
+    },
+    "all_day": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "creation_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "create_datetime"
+    },
+    "creation_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "create_user"
+    },
+    "lastupdate_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "update_datetime"
+    },
+    "lastupdate_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "update_user"
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_atelier_id",
+      "type": "index",
+      "columns": [
+        "atelier_id"
+      ]
+    },
+    {
+      "name": "idx_start_date",
+      "type": "index",
+      "columns": [
+        "start_date"
+      ]
+    },
+    {
+      "name": "idx_status",
+      "type": "index",
+      "columns": [
+        "status"
+      ]
+    }
+  ],
+  "admin": {
+    "enabled": true,
+    "capability": "manage_tomo",
+    "menu": {
+      "placement": "submenu",
+      "title": "Créneaux",
+      "icon": "dashicons-clock",
+      "position": 20,
+      "parent": "smbb-codetool-tomo",
+      "group": "Au quotidien"
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "list": {
+      "perPage": 30,
+      "search": {
+        "enabled": false
+      },
+      "filters": {
+        "enabled": true,
+        "fields": [
+          {
+            "field": "atelier_id",
+            "label": "Atelier",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "status",
+            "label": "Statut",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "start_date",
+            "label": "Date",
+            "operators": [
+              "eq",
+              "gte",
+              "lte"
+            ]
+          }
+        ]
+      },
+      "defaultOrder": {
+        "by": "start_date",
+        "direction": "asc"
+      },
+      "batchActions": {
+        "tomo_open": {
+          "label": "Mettre en vente",
+          "method": "openCreneaux",
+          "capability": "manage_tomo"
+        },
+        "tomo_draft": {
+          "label": "Repasser en brouillon",
+          "method": "draftCreneaux",
+          "capability": "manage_tomo",
+          "confirm": "Retirer ces créneaux de la vente ? Ils ne seront plus proposés en ligne."
+        },
+        "tomo_assign": {
+          "label": "Affecter intervenant(s)…",
+          "method": "assignIntervenants",
+          "capability": "manage_tomo"
+        }
+      }
+    },
+    "views": {
+      "list": "views/tomo-creneau/list.php",
+      "form": "views/tomo-creneau/form.php",
+      "details": "views/tomo-creneau/details.php"
+    }
+  },
+  "hooks": {
+    "file": "hooks/CreneauHooks.php",
+    "class": "Smbb\\Tomo\\CodeTool\\CreneauHooks"
+  },
+  "api": {
+    "enabled": false
+  }
+}

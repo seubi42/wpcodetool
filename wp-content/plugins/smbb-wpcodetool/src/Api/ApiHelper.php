@@ -114,7 +114,7 @@ final class ApiHelper
     /**
      * Raccourci pour le cas très courant d'une ressource introuvable.
      */
-    public function notFound($message = 'Resource not found.')
+    public function notFound($message = 'Ressource introuvable.')
     {
         return $this->error('not_found', $message, 404);
     }

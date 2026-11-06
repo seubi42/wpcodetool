@@ -1,0 +1,142 @@
+{
+  "name": "tomo_historique",
+  "label": "Mouvement",
+  "pluralLabel": "Journal",
+  "description": "Mouvements des réservations et messages envoyés aux participants et aux intervenants.",
+  "storage": {
+    "table": "tomo_historique",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "inscription_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "creneau_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "from_creneau_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "action": {
+      "type": "varchar",
+      "length": 30,
+      "nullable": false,
+      "default": ""
+    },
+    "message": {
+      "type": "text",
+      "nullable": true
+    },
+    "user_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "created_at": {
+      "type": "datetime",
+      "nullable": true
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_inscription_id",
+      "type": "index",
+      "columns": [
+        "inscription_id"
+      ]
+    },
+    {
+      "name": "idx_creneau_id",
+      "type": "index",
+      "columns": [
+        "creneau_id"
+      ]
+    },
+    {
+      "name": "idx_created_at",
+      "type": "index",
+      "columns": [
+        "created_at"
+      ]
+    }
+  ],
+  "admin": {
+    "enabled": true,
+    "capability": "manage_tomo",
+    "menu": {
+      "placement": "submenu",
+      "title": "Journal",
+      "icon": "dashicons-backup",
+      "position": 56,
+      "parent": "smbb-codetool-tomo",
+      "group": "Suivi"
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "list": {
+      "perPage": 50,
+      "search": {
+        "enabled": true,
+        "provider": "default",
+        "fields": [
+          "message"
+        ],
+        "mode": "or",
+        "placeholder": "Rechercher"
+      },
+      "filters": {
+        "enabled": true,
+        "fields": [
+          {
+            "field": "action",
+            "label": "Action",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "inscription_id",
+            "label": "Inscription",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "creneau_id",
+            "label": "Créneau",
+            "operators": [
+              "eq"
+            ]
+          }
+        ]
+      },
+      "defaultOrder": {
+        "by": "id",
+        "direction": "desc"
+      }
+    },
+    "views": {
+      "list": "views/tomo-historique/list.php",
+      "form": "views/tomo-historique/form.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

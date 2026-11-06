@@ -1,0 +1,35 @@
+{
+  "name": "tomo",
+  "label": "Tomo",
+  "pluralLabel": "Tomo",
+  "description": "Prochains créneaux, remplissage et points d'attention.",
+  "storage": {
+    "type": "none"
+  },
+  "admin": {
+    "enabled": true,
+    "capability": "manage_tomo",
+    "menu": {
+      "placement": "main",
+      "title": "Tomo",
+      "icon": "dashicons-carrot",
+      "position": 26,
+      "group": "Au quotidien",
+      "submenuTitle": "Tableau de bord"
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "type": "page",
+    "page": {
+      "defaultView": "dashboard"
+    },
+    "views": {
+      "dashboard": "views/tomo/dashboard.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

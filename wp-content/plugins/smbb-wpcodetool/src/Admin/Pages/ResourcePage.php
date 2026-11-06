@@ -18,7 +18,7 @@ final class ResourcePage extends AbstractAdminPage
         $state = $manager->state();
 
         if (!current_user_can($resource->capability())) {
-            wp_die(esc_html__('You are not allowed to access this CodeTool page.', 'smbb-wpcodetool'));
+            wp_die(esc_html__('Vous n\'avez pas accès à cette page CodeTool.', 'smbb-wpcodetool'));
         }
 
         $manager->addNoticeFromQuery();
@@ -30,7 +30,7 @@ final class ResourcePage extends AbstractAdminPage
             $action = $request->queryKey('action');
 
             if (!in_array($action, array('delete', 'duplicate'), true)) {
-                $manager->addRuntimeNotice('info', __('This admin action is not implemented yet.', 'smbb-wpcodetool'));
+                $manager->addRuntimeNotice('info', __('Cette action d\'admin n\'est pas encore disponible.', 'smbb-wpcodetool'));
             }
         }
 

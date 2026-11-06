@@ -1,0 +1,419 @@
+{
+  "name": "scp_document",
+  "label": "Document",
+  "pluralLabel": "Documents",
+  "description": "Documents envoyés à la signature.",
+  "storage": {
+    "table": "scp_document",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "organization_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "team_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "sender_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "membership_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "filename": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": false,
+      "default": ""
+    },
+    "source_filename": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": true
+    },
+    "file_size": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "page_count": {
+      "type": "int",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "source_sha256": {
+      "type": "varchar",
+      "length": 64,
+      "nullable": true
+    },
+    "signed_sha256": {
+      "type": "varchar",
+      "length": 64,
+      "nullable": true
+    },
+    "template_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "detection_source": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "manual"
+    },
+    "signature_level": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "internal"
+    },
+    "recipient_name": {
+      "type": "varchar",
+      "length": 190,
+      "nullable": true
+    },
+    "recipient_first_name": {
+      "type": "varchar",
+      "length": 100,
+      "nullable": true
+    },
+    "recipient_last_name": {
+      "type": "varchar",
+      "length": 100,
+      "nullable": true
+    },
+    "recipient_email": {
+      "type": "varchar",
+      "length": 190,
+      "nullable": true
+    },
+    "recipient_phone": {
+      "type": "varchar",
+      "length": 40,
+      "nullable": true
+    },
+    "send_message": {
+      "type": "text",
+      "nullable": true
+    },
+    "custom_values": {
+      "type": "json",
+      "nullable": true
+    },
+    "status": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "draft"
+    },
+    "expires_at": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "sent_at": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "opened_at": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "signed_at": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "closed_at": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "reminder_count": {
+      "type": "int",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "last_reminder_at": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "storage_location": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "none"
+    },
+    "source_storage_path": {
+      "type": "varchar",
+      "length": 1024,
+      "nullable": true
+    },
+    "signed_storage_path": {
+      "type": "varchar",
+      "length": 1024,
+      "nullable": true
+    },
+    "evidence_storage_path": {
+      "type": "varchar",
+      "length": 1024,
+      "nullable": true
+    },
+    "universign_transaction_id": {
+      "type": "varchar",
+      "length": 100,
+      "nullable": true
+    },
+    "universign_document_id": {
+      "type": "varchar",
+      "length": 100,
+      "nullable": true
+    },
+    "universign_last_event": {
+      "type": "varchar",
+      "length": 100,
+      "nullable": true
+    },
+    "universign_last_event_at": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "public_token_hash": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": true
+    },
+    "public_token_secret": {
+      "type": "varchar",
+      "length": 64,
+      "nullable": true
+    },
+    "delivery_channels": {
+      "type": "json",
+      "nullable": true
+    },
+    "signer_name": {
+      "type": "varchar",
+      "length": 190,
+      "nullable": true
+    },
+    "signer_ip": {
+      "type": "varchar",
+      "length": 64,
+      "nullable": true
+    },
+    "signer_user_agent": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": true
+    },
+    "refusal_message": {
+      "type": "text",
+      "nullable": true
+    },
+    "billing_month": {
+      "type": "char",
+      "length": 7,
+      "nullable": true
+    },
+    "billable": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "anonymized_at": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "creation_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "create_datetime"
+    },
+    "creation_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "create_user"
+    },
+    "lastupdate_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "update_datetime"
+    },
+    "lastupdate_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "update_user"
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_organization_id",
+      "type": "index",
+      "columns": [
+        "organization_id"
+      ]
+    },
+    {
+      "name": "idx_team_id",
+      "type": "index",
+      "columns": [
+        "team_id"
+      ]
+    },
+    {
+      "name": "idx_sender_id",
+      "type": "index",
+      "columns": [
+        "sender_id"
+      ]
+    },
+    {
+      "name": "idx_status",
+      "type": "index",
+      "columns": [
+        "status"
+      ]
+    },
+    {
+      "name": "idx_signature_level",
+      "type": "index",
+      "columns": [
+        "signature_level"
+      ]
+    },
+    {
+      "name": "idx_billing_month",
+      "type": "index",
+      "columns": [
+        "billing_month"
+      ]
+    },
+    {
+      "name": "idx_universign_transaction_id",
+      "type": "index",
+      "columns": [
+        "universign_transaction_id"
+      ]
+    },
+    {
+      "name": "idx_recipient_email",
+      "type": "index",
+      "columns": [
+        "recipient_email"
+      ]
+    }
+  ],
+  "hooks": {
+    "file": "hooks/DocumentHooks.php",
+    "class": "Smbb\\SignConnectProxima\\CodeTool\\DocumentHooks"
+  },
+  "admin": {
+    "enabled": true,
+    "capability": "manage_options",
+    "menu": {
+      "placement": "submenu",
+      "parent": "smbb-codetool-scp",
+      "title": "Documents",
+      "icon": "dashicons-media-document",
+      "position": 60
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "list": {
+      "perPage": 25,
+      "search": {
+        "enabled": true,
+        "provider": "default",
+        "fields": [
+          "filename",
+          "recipient_email",
+          "recipient_name",
+          "universign_transaction_id"
+        ],
+        "mode": "or",
+        "placeholder": "Rechercher"
+      },
+      "filters": {
+        "enabled": true,
+        "fields": [
+          {
+            "field": "organization_id",
+            "label": "Organisation",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "team_id",
+            "label": "Équipe",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "sender_id",
+            "label": "Expéditeur",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "status",
+            "label": "Statut",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "signature_level",
+            "label": "Niveau",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "billing_month",
+            "label": "Mois",
+            "operators": [
+              "eq"
+            ]
+          }
+        ]
+      },
+      "defaultOrder": {
+        "by": "id",
+        "direction": "desc"
+      }
+    },
+    "views": {
+      "list": "views/scp-document/list.php",
+      "details": "views/scp-document/details.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

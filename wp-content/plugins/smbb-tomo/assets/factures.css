@@ -1,0 +1,49 @@
+/* Tomo : factures (Mon compte et administration). */
+.tomo-inv { --inv-brand: var(--tomo-brand, #8c3c34); max-width: 920px; }
+.tomo-inv-step { display: flex; align-items: center; gap: 8px; margin: 22px 0 6px; font-size: 1.05em; }
+.tomo-inv-step span { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--inv-brand); color: #fff; font-size: 13px; }
+.tomo-inv-help, .tomo-inv-muted { color: #6b625c; font-size: .92em; }
+.tomo-inv-lines { width: 100%; border-collapse: collapse; margin: 8px 0; }
+.tomo-inv-lines th, .tomo-inv-lines td { padding: 8px 6px; border-bottom: 1px solid #eee5df; text-align: left; vertical-align: middle; }
+.tomo-inv-lines tr.tomo-inv-item th { background: #f7f4f1; font-weight: normal; }
+.tomo-inv-lines td:last-child { text-align: right; width: 180px; }
+.tomo-inv-lines select { min-width: 150px; max-width: 100%; }
+.tomo-inv-price { color: #6b625c; white-space: nowrap; }
+.tomo-inv-link { background: none; border: 0; padding: 0; color: var(--inv-brand); text-decoration: underline; cursor: pointer; font: inherit; }
+.tomo-inv-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+.tomo-inv-group { border: 1px solid #e3d9d2; border-radius: 10px; padding: 12px 14px; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; background: #fff; }
+.tomo-inv-group.is-empty { opacity: .6; }
+.tomo-inv-group legend { font-weight: 600; padding: 0 6px; }
+.tomo-inv-total { font-weight: normal; color: var(--inv-brand); margin-left: 6px; }
+.tomo-inv-field { display: flex; flex-direction: column; gap: 3px; font-size: .9em; }
+.tomo-inv-field input, .tomo-inv-field select, .tomo-inv-field textarea { width: 100%; box-sizing: border-box; }
+.tomo-inv-f-name, .tomo-inv-f-contact, .tomo-inv-wide, .tomo-inv-check { grid-column: 1 / -1; }
+.tomo-inv-check { font-size: .9em; }
+.tomo-inv-msg { margin-top: 8px; }
+.tomo-inv-msg.is-ok { color: #1f7a3a; }
+.tomo-inv-msg.is-error { color: #b32d2e; }
+.tomo-inv-docs { width: 100%; margin: 10px 0 16px; }
+.tomo-inv-docs .num, .tomo-inv-list .num { text-align: right; white-space: nowrap; }
+.tomo-inv-filters { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 10px; }
+.tomo-inv-dialog { position: fixed; inset: 0; background: rgba(30, 20, 15, .45); display: grid; place-items: center; z-index: 100000; padding: 16px; }
+.tomo-inv-dialog-card { background: #fff; border-radius: 12px; padding: 18px 20px; max-width: 420px; width: 100%; box-shadow: 0 10px 40px rgba(0, 0, 0, .25); }
+.tomo-inv-dialog-q { font-size: 1.15em; font-weight: 600; margin: 0 0 6px; }
+.tomo-inv-dialog-h { color: #6b625c; margin: 0 0 14px; }
+.tomo-inv-dialog-b { text-align: right; margin: 0; }
+@media (max-width: 600px) {
+    .tomo-inv-group { grid-template-columns: 1fr; }
+    .tomo-inv-lines td:last-child { width: auto; }
+    .tomo-inv-lines select { min-width: 0; }
+}
+/* Version cases à cocher. */
+.tomo-inv [hidden] { display: none !important; }
+.tomo-inv-lines td.tomo-inv-cb { width: 34px; text-align: center; }
+.tomo-inv-lines td.num, .tomo-inv-lines th.num { text-align: right; width: auto; white-space: nowrap; }
+.tomo-inv-lines td:last-child { width: auto; }
+.tomo-inv-lines input[type=checkbox] { width: 20px; height: 20px; }
+.tomo-inv-lines label { cursor: pointer; }
+.tomo-inv-lines tfoot th { padding-top: 10px; font-size: 1.05em; }
+.tomo-inv-lines tr.is-closed td { color: #8a817b; }
+.tomo-inv-qty { margin-left: 8px; min-width: 0 !important; }
+.tomo-inv-billing .tomo-inv-group { max-width: 560px; }
+.tomo-inv.is-billing .tomo-inv-lines { opacity: .7; }

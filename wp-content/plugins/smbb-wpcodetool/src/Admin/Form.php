@@ -58,6 +58,15 @@ final class Form
         return new FormElement('password', $label, $attributes, $this->context);
     }
 
+    /**
+     * Valeur sensible (clé API, jeton) : champ masqué avec un bouton pour l'afficher.
+     * À associer à une colonne "secret": true pour qu'elle soit chiffrée en base.
+     */
+    public function secret($label, array $attributes = array())
+    {
+        return new FormElement('secret', $label, $attributes, $this->context);
+    }
+
     public function number($label, array $attributes = array())
     {
         return new FormElement('number', $label, $attributes, $this->context);

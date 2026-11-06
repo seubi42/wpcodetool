@@ -37,7 +37,7 @@ final class ApiCoreController
         if ($client_id === '' || $client_secret === '') {
             return $this->api->error(
                 'invalid_request',
-                __('client_id and client_secret are required.', 'smbb-wpcodetool'),
+                __('client_id et client_secret sont obligatoires.', 'smbb-wpcodetool'),
                 400
             );
         }
@@ -47,7 +47,7 @@ final class ApiCoreController
         if (!$client) {
             return $this->api->error(
                 'invalid_client',
-                __('Invalid client_id or client_secret.', 'smbb-wpcodetool'),
+                __('client_id ou client_secret invalide.', 'smbb-wpcodetool'),
                 401
             );
         }
@@ -61,7 +61,7 @@ final class ApiCoreController
         if (!$issued) {
             return $this->api->error(
                 'token_issue_failed',
-                __('Unable to issue an access token right now.', 'smbb-wpcodetool'),
+                __('Impossible de délivrer un jeton d\'accès pour le moment.', 'smbb-wpcodetool'),
                 500
             );
         }
@@ -93,7 +93,7 @@ final class ApiCoreController
         if (!$visible) {
             return $this->api->error(
                 'openapi_forbidden',
-                __('You are not allowed to view the OpenAPI documentation.', 'smbb-wpcodetool'),
+                __('Vous n\'avez pas le droit de voir la documentation OpenAPI.', 'smbb-wpcodetool'),
                 403
             );
         }
@@ -109,7 +109,7 @@ final class ApiCoreController
 
         return $this->api->error(
             'openapi_forbidden',
-            __('You are not allowed to view this OpenAPI documentation.', 'smbb-wpcodetool'),
+            __('Vous n\'avez pas le droit de voir cette documentation OpenAPI.', 'smbb-wpcodetool'),
             403
         );
     }
@@ -125,7 +125,7 @@ final class ApiCoreController
 
         return $this->api->error(
             'openapi_forbidden',
-            __('You are not allowed to view the OpenAPI documentation.', 'smbb-wpcodetool'),
+            __('Vous n\'avez pas le droit de voir la documentation OpenAPI.', 'smbb-wpcodetool'),
             403
         );
     }

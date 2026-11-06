@@ -29,7 +29,7 @@ final class ApiWriteSemantics
 
             foreach ($writable_columns as $column) {
                 if (!array_key_exists($column, $incoming)) {
-                    $errors[$column] = __('This field must be sent for a full update.', 'smbb-wpcodetool');
+                    $errors[$column] = __('Ce champ doit être envoyé pour une mise à jour complète.', 'smbb-wpcodetool');
                 }
             }
 
@@ -91,7 +91,7 @@ final class ApiWriteSemantics
             }
 
             if ($config['nullFields'] === 'reject') {
-                $errors[$column] = __('Null is not allowed for this update mode.', 'smbb-wpcodetool');
+                $errors[$column] = __('La valeur null n\'est pas autorisée pour ce mode de mise à jour.', 'smbb-wpcodetool');
                 unset($incoming[$column]);
             }
         }

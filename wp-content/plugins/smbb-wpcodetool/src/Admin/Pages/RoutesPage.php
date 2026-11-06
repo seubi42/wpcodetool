@@ -20,17 +20,17 @@ final class RoutesPage extends AbstractAdminPage
         <div class="wrap smbb-codetool">
             <?php
             echo $manager->pageIntroHtml(
-                __('CodeTool routes', 'smbb-wpcodetool'),
-                __('Inspect public non-REST routes declared by active plugins.', 'smbb-wpcodetool'),
+                __('Routes CodeTool', 'smbb-wpcodetool'),
+                __('Consultez les routes publiques hors REST déclarées par les plugins actifs.', 'smbb-wpcodetool'),
                 'dashicons-randomize',
                 $manager->runtimeNoticesHtml()
             );
             ?>
 
-            <h2><?php esc_html_e('Detected routes', 'smbb-wpcodetool'); ?></h2>
+            <h2><?php esc_html_e('Routes détectées', 'smbb-wpcodetool'); ?></h2>
 
             <?php if (!$route_groups) : ?>
-                <p><?php esc_html_e('No active plugin exposes a codetool/routes/public.php file yet.', 'smbb-wpcodetool'); ?></p>
+                <p><?php esc_html_e('Aucun plugin actif ne fournit encore de fichier codetool/routes/public.php.', 'smbb-wpcodetool'); ?></p>
             <?php else : ?>
                 <div class="smbb-codetool-resource-groups">
                     <?php foreach ($route_groups as $group) : ?>
@@ -57,10 +57,10 @@ final class RoutesPage extends AbstractAdminPage
                             <table class="widefat striped smbb-codetool-table">
                                 <thead>
                                     <tr>
-                                        <th><?php esc_html_e('Method', 'smbb-wpcodetool'); ?></th>
-                                        <th><?php esc_html_e('Pattern', 'smbb-wpcodetool'); ?></th>
+                                        <th><?php esc_html_e('Méthode', 'smbb-wpcodetool'); ?></th>
+                                        <th><?php esc_html_e('Motif', 'smbb-wpcodetool'); ?></th>
                                         <th><?php esc_html_e('URL', 'smbb-wpcodetool'); ?></th>
-                                        <th><?php esc_html_e('Route file', 'smbb-wpcodetool'); ?></th>
+                                        <th><?php esc_html_e('Fichier de routes', 'smbb-wpcodetool'); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -89,12 +89,12 @@ final class RoutesPage extends AbstractAdminPage
             <?php endif; ?>
 
             <?php if ($errors) : ?>
-                <h2><?php esc_html_e('Route scan errors', 'smbb-wpcodetool'); ?></h2>
+                <h2><?php esc_html_e('Erreurs de lecture des routes', 'smbb-wpcodetool'); ?></h2>
                 <table class="widefat striped smbb-codetool-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('File', 'smbb-wpcodetool'); ?></th>
-                            <th><?php esc_html_e('Error', 'smbb-wpcodetool'); ?></th>
+                            <th><?php esc_html_e('Fichier', 'smbb-wpcodetool'); ?></th>
+                            <th><?php esc_html_e('Erreur', 'smbb-wpcodetool'); ?></th>
                         </tr>
                     </thead>
                     <tbody>

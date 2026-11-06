@@ -1,0 +1,33 @@
+{
+  "name": "scp",
+  "label": "SignaConnect",
+  "pluralLabel": "SignaConnect",
+  "description": "Tableau de bord SignaConnect.",
+  "storage": {
+    "type": "none"
+  },
+  "admin": {
+    "enabled": true,
+    "type": "page",
+    "capability": "manage_options",
+    "menu": {
+      "placement": "main",
+      "title": "SignaConnect",
+      "icon": "dashicons-media-document",
+      "position": 31
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "page": {
+      "defaultView": "dashboard"
+    },
+    "views": {
+      "dashboard": "views/scp/dashboard.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

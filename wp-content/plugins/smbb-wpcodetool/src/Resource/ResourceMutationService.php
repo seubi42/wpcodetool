@@ -69,7 +69,7 @@ final class ResourceMutationService
             return array(
                 'success' => false,
                 'reason' => 'storage',
-                'message' => $this->storeMessage($options, 'save_failed_message', __('The settings could not be saved.', 'smbb-wpcodetool')),
+                'message' => $this->storeMessage($options, 'save_failed_message', __('Les réglages n\'ont pas pu être enregistrés.', 'smbb-wpcodetool')),
                 'data' => $data,
                 'errors' => array(),
                 'context' => $context,
@@ -115,7 +115,7 @@ final class ResourceMutationService
                 return array(
                     'success' => false,
                     'reason' => 'not_found',
-                    'message' => $this->storeMessage($options, 'not_found_message', __('The item to update was not found.', 'smbb-wpcodetool')),
+                    'message' => $this->storeMessage($options, 'not_found_message', __('L\'élément à modifier est introuvable.', 'smbb-wpcodetool')),
                     'data' => $data,
                     'errors' => array(),
                     'store' => $store,
@@ -165,7 +165,7 @@ final class ResourceMutationService
             return array(
                 'success' => false,
                 'reason' => 'storage',
-                'message' => $store->lastError() ?: $this->storeMessage($options, 'save_failed_message', __('The item could not be saved.', 'smbb-wpcodetool')),
+                'message' => $store->lastError() ?: $this->storeMessage($options, 'save_failed_message', __('L\'élément n\'a pas pu être enregistré.', 'smbb-wpcodetool')),
                 'data' => $data,
                 'errors' => array(),
                 'context' => $context,
@@ -209,7 +209,7 @@ final class ResourceMutationService
             return array(
                 'success' => false,
                 'reason' => 'not_found',
-                'message' => $this->storeMessage($options, 'not_found_message', __('The item to delete was not found.', 'smbb-wpcodetool')),
+                'message' => $this->storeMessage($options, 'not_found_message', __('L\'élément à supprimer est introuvable.', 'smbb-wpcodetool')),
                 'errors' => array(),
                 'store' => $store,
                 'hooks' => $hooks,
@@ -229,7 +229,7 @@ final class ResourceMutationService
             return array(
                 'success' => false,
                 'reason' => 'blocked',
-                'message' => is_string($allowed) ? $allowed : $this->storeMessage($options, 'blocked_message', __('Deletion was blocked by the resource hooks.', 'smbb-wpcodetool')),
+                'message' => is_string($allowed) ? $allowed : $this->storeMessage($options, 'blocked_message', __('La suppression a été bloquée par les hooks de la ressource.', 'smbb-wpcodetool')),
                 'errors' => array(),
                 'context' => $context,
                 'store' => $store,
@@ -241,7 +241,7 @@ final class ResourceMutationService
             return array(
                 'success' => false,
                 'reason' => 'storage',
-                'message' => $store->lastError() ?: $this->storeMessage($options, 'delete_failed_message', __('The item could not be deleted.', 'smbb-wpcodetool')),
+                'message' => $store->lastError() ?: $this->storeMessage($options, 'delete_failed_message', __('L\'élément n\'a pas pu être supprimé.', 'smbb-wpcodetool')),
                 'errors' => array(),
                 'context' => $context,
                 'store' => $store,
@@ -277,7 +277,7 @@ final class ResourceMutationService
             return array(
                 'success' => false,
                 'reason' => 'not_found',
-                'message' => $this->storeMessage($options, 'not_found_message', __('The item to duplicate was not found.', 'smbb-wpcodetool')),
+                'message' => $this->storeMessage($options, 'not_found_message', __('L\'élément à dupliquer est introuvable.', 'smbb-wpcodetool')),
                 'errors' => array(),
                 'store' => $store,
                 'hooks' => $hooks,
@@ -300,7 +300,7 @@ final class ResourceMutationService
             return array(
                 'success' => false,
                 'reason' => 'validation',
-                'message' => $this->storeMessage($options, 'validation_message', __('The cloned item contains errors.', 'smbb-wpcodetool')),
+                'message' => $this->storeMessage($options, 'validation_message', __('L\'élément dupliqué contient des erreurs.', 'smbb-wpcodetool')),
                 'data' => $data,
                 'errors' => $errors,
                 'context' => $context,
@@ -317,7 +317,7 @@ final class ResourceMutationService
             return array(
                 'success' => false,
                 'reason' => 'storage',
-                'message' => $store->lastError() ?: $this->storeMessage($options, 'save_failed_message', __('The item could not be duplicated.', 'smbb-wpcodetool')),
+                'message' => $store->lastError() ?: $this->storeMessage($options, 'save_failed_message', __('L\'élément n\'a pas pu être dupliqué.', 'smbb-wpcodetool')),
                 'data' => $data,
                 'errors' => array(),
                 'context' => $context,

@@ -26,7 +26,7 @@ final class SmbbTwilioSmsClient
         $this->auth_token = trim((string) $auth_token);
 
         if ($this->service_sid === '' || $this->account_sid === '' || $this->auth_token === '') {
-            throw new RuntimeException('Twilio settings are incomplete.');
+            throw new RuntimeException('Les réglages Twilio sont incomplets.');
         }
     }
 
@@ -45,11 +45,11 @@ final class SmbbTwilioSmsClient
         $body = trim((string) $body);
 
         if ($to === '') {
-            throw new RuntimeException('Twilio recipient phone is required.');
+            throw new RuntimeException('Le numéro du destinataire Twilio est obligatoire.');
         }
 
         if ($body === '') {
-            throw new RuntimeException('Twilio message body is required.');
+            throw new RuntimeException('Le texte du message Twilio est obligatoire.');
         }
 
         $response = wp_remote_post($this->endpoint(), array(

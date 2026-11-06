@@ -86,7 +86,7 @@ final class ApiClientStore
         $this->schema->ensureInstalled();
 
         $label = trim((string) $label);
-        $label = $label !== '' ? $label : __('API client', 'smbb-wpcodetool');
+        $label = $label !== '' ? $label : __('Client API', 'smbb-wpcodetool');
         $contact_email = sanitize_email((string) $contact_email);
         $scopes = $this->scope_authorizer->normalizeScopeList($scopes);
         $token_ttl_seconds = $this->normalizeDefaultTtl($token_ttl_seconds);
@@ -186,7 +186,7 @@ final class ApiClientStore
         }
 
         $label = trim((string) $label);
-        $label = $label !== '' ? $label : __('API client', 'smbb-wpcodetool');
+        $label = $label !== '' ? $label : __('Client API', 'smbb-wpcodetool');
         $contact_email = sanitize_email((string) $contact_email);
         $scopes = $this->scope_authorizer->normalizeScopeList($scopes);
         $token_ttl_seconds = $this->normalizeDefaultTtl($token_ttl_seconds);

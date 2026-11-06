@@ -1,0 +1,108 @@
+{
+  "name": "scp_billing_month",
+  "label": "Mois de facturation",
+  "pluralLabel": "Mois de facturation",
+  "description": "Mois clôturés : la proforma est figée (prix, quantités, lignes).",
+  "storage": {
+    "table": "scp_billing_month",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "organization_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "month": {
+      "type": "char",
+      "length": 7,
+      "nullable": false,
+      "default": ""
+    },
+    "status": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "open"
+    },
+    "total_ht": {
+      "type": "decimal",
+      "precision": 12,
+      "scale": 2,
+      "nullable": false,
+      "default": "0.00"
+    },
+    "document_count": {
+      "type": "int",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "snapshot": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "closed_at": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "closed_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "creation_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "create_datetime"
+    },
+    "creation_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "create_user"
+    },
+    "lastupdate_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "update_datetime"
+    },
+    "lastupdate_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "update_user"
+    }
+  },
+  "indexes": [
+    {
+      "name": "uniq_org_month",
+      "type": "unique",
+      "columns": [
+        "organization_id",
+        "month"
+      ]
+    },
+    {
+      "name": "idx_status",
+      "type": "index",
+      "columns": [
+        "status"
+      ]
+    }
+  ],
+  "admin": {
+    "enabled": false
+  },
+  "api": {
+    "enabled": false
+  }
+}

@@ -13,6 +13,7 @@ $tests = array(
     new \Smbb\WpCodeTool\Tests\Unit\PublicRouteRegistryTest(),
     new \Smbb\WpCodeTool\Tests\Unit\RequestInputTest(),
     new \Smbb\WpCodeTool\Tests\Unit\SchemaSynchronizerTest(),
+    new \Smbb\WpCodeTool\Tests\Unit\BatchActionsTest(),
 );
 
 $failures = array();

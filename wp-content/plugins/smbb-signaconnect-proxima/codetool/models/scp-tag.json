@@ -1,0 +1,63 @@
+{
+  "name": "scp_tag",
+  "label": "Libellé",
+  "pluralLabel": "Libellés",
+  "description": "Libellés personnels des utilisateurs pour ranger leurs transactions (façon Gmail).",
+  "storage": {
+    "table": "scp_tag",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "user_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "name": {
+      "type": "varchar",
+      "length": 60,
+      "nullable": false,
+      "default": ""
+    },
+    "color": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": ""
+    },
+    "sort_order": {
+      "type": "int",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "creation_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "create_datetime"
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_user_id",
+      "type": "index",
+      "columns": [
+        "user_id"
+      ]
+    }
+  ],
+  "admin": {
+    "enabled": false
+  },
+  "api": {
+    "enabled": false
+  }
+}

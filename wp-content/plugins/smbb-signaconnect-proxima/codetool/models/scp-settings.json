@@ -1,0 +1,43 @@
+{
+  "name": "scp_settings",
+  "label": "Réglages SignaConnect",
+  "pluralLabel": "Réglages SignaConnect",
+  "description": "Réglages de la plateforme (aucune clé API : elles sont portées par chaque organisation).",
+  "storage": {
+    "type": "option",
+    "optionName": "smbb_scp_settings",
+    "autoload": false,
+    "default": {
+      "app_page_id": 0,
+      "signing_page_id": 0,
+      "billing_currency": "EUR",
+      "billing_auto_close_day": 0,
+      "style_login": 1,
+      "favicon": 0,
+      "universign_qualified_level": "level4",
+      "universign_handwritten": 0
+    }
+  },
+  "admin": {
+    "enabled": true,
+    "type": "settings_page",
+    "capability": "manage_options",
+    "menu": {
+      "placement": "submenu",
+      "parent": "smbb-codetool-scp",
+      "title": "Réglages",
+      "icon": "dashicons-admin-settings",
+      "position": 999
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "views": {
+      "form": "views/scp-settings/form.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

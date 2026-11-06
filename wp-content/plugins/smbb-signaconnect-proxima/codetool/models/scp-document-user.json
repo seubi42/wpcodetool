@@ -1,0 +1,64 @@
+{
+  "name": "scp_document_user",
+  "label": "Suivi de document",
+  "pluralLabel": "Suivis de document",
+  "description": "État personnel d'un document pour un utilisateur : archivé, suivi (étoile).",
+  "storage": {
+    "table": "scp_document_user",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "user_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "document_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "archived_at": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "starred": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    }
+  },
+  "indexes": [
+    {
+      "name": "uniq_user_document",
+      "type": "unique",
+      "columns": [
+        "user_id",
+        "document_id"
+      ]
+    },
+    {
+      "name": "idx_document_id",
+      "type": "index",
+      "columns": [
+        "document_id"
+      ]
+    }
+  ],
+  "admin": {
+    "enabled": false
+  },
+  "api": {
+    "enabled": false
+  }
+}

@@ -198,6 +198,8 @@ final class FormElement
                 return $this->renderRepeater();
             case 'save':
                 return $this->renderSave();
+            case 'secret':
+                return $this->renderSecret();
             case 'date':
             case 'time':
             case 'datetime':
@@ -289,7 +291,7 @@ final class FormElement
         }
 
         $base_id = $this->tabBaseId();
-        $nav = '<div class="smbb-codetool-tabs-nav" role="tablist" aria-label="' . esc_attr__('Form sections', 'smbb-wpcodetool') . '">';
+        $nav = '<div class="smbb-codetool-tabs-nav" role="tablist" aria-label="' . esc_attr__('Sections du formulaire', 'smbb-wpcodetool') . '">';
         $panels = '<div class="smbb-codetool-tabs-panels">';
 
         foreach ($this->fields as $index => $field) {
@@ -302,7 +304,7 @@ final class FormElement
             $active = $index === 0;
 
             $nav .= '<button type="button" class="smbb-codetool-tab-button' . ($active ? ' is-active' : '') . '" role="tab" id="' . esc_attr($tab_id) . '" aria-controls="' . esc_attr($panel_id) . '" aria-selected="' . ($active ? 'true' : 'false') . '" data-smbb-tab-button="' . esc_attr($panel_id) . '">'
-                . esc_html($field->label ?: sprintf(__('Tab %d', 'smbb-wpcodetool'), $index + 1))
+                . esc_html($field->label ?: sprintf(__('Onglet %d', 'smbb-wpcodetool'), $index + 1))
                 . '</button>';
 
             $panels .= '<section class="smbb-codetool-tab-panel' . ($active ? ' is-active' : '') . '" role="tabpanel" id="' . esc_attr($panel_id) . '" aria-labelledby="' . esc_attr($tab_id) . '"' . ($active ? '' : ' hidden') . '>'
@@ -353,6 +355,23 @@ final class FormElement
 
         return $this->wrapField(
             '<input type="' . esc_attr($input_type) . '" id="' . esc_attr($this->id()) . '" name="' . esc_attr($this->fieldName()) . '" value="' . esc_attr((string) $value) . '"' . $this->controlAttributes() . '>'
+        );
+    }
+
+    /**
+     * Champ secret : input password prérempli (valeur déchiffrée par le store) et bouton œil.
+     */
+    private function renderSecret()
+    {
+        $value = $this->value();
+        $input = '<input type="password" id="' . esc_attr($this->id()) . '" name="' . esc_attr($this->fieldName()) . '" value="' . esc_attr(is_scalar($value) ? (string) $value : '') . '"'
+            . $this->controlAttributes(array('autocomplete' => 'new-password', 'spellcheck' => 'false', 'data-smbb-secret-input' => true), array('autocomplete', 'spellcheck')) . '>';
+
+        return $this->wrapField(
+            '<span class="smbb-codetool-secret">' . $input
+            . '<button type="button" class="smbb-codetool-secret-toggle" data-smbb-secret-toggle aria-controls="' . esc_attr($this->id()) . '" aria-pressed="false"'
+            . ' aria-label="' . esc_attr__('Afficher la valeur', 'smbb-wpcodetool') . '" data-label-show="' . esc_attr__('Afficher la valeur', 'smbb-wpcodetool') . '" data-label-hide="' . esc_attr__('Masquer la valeur', 'smbb-wpcodetool') . '">'
+            . '<span class="dashicons dashicons-visibility" aria-hidden="true"></span></button></span>'
         );
     }
 
@@ -427,8 +446,8 @@ final class FormElement
         $attachment_id = absint($this->value());
         $is_image = $this->type === 'image';
         $library = $is_image ? 'image' : (isset($this->attributes['library']) ? sanitize_key($this->attributes['library']) : '');
-        $select_label = $is_image ? __('Choose image', 'smbb-wpcodetool') : __('Choose media', 'smbb-wpcodetool');
-        $title = $is_image ? __('Select image', 'smbb-wpcodetool') : __('Select media', 'smbb-wpcodetool');
+        $select_label = $is_image ? __('Choisir une image', 'smbb-wpcodetool') : __('Choisir un média', 'smbb-wpcodetool');
+        $title = $is_image ? __('Sélectionner une image', 'smbb-wpcodetool') : __('Sélectionner un média', 'smbb-wpcodetool');
 
         /*
          * On stocke uniquement l'ID de l'attachment. C'est le mapping le plus WordPress :
@@ -441,7 +460,7 @@ final class FormElement
         $html .= '</div>';
         $html .= '<div class="smbb-codetool-media-actions">';
         $html .= '<button type="button" class="button" data-smbb-media-action="select"><span class="dashicons dashicons-format-image" aria-hidden="true"></span> ' . esc_html($select_label) . '</button> ';
-        $html .= '<button type="button" class="button button-link-delete" data-smbb-media-action="remove"' . ($attachment_id ? '' : ' hidden') . '>' . esc_html__('Remove', 'smbb-wpcodetool') . '</button>';
+        $html .= '<button type="button" class="button button-link-delete" data-smbb-media-action="remove"' . ($attachment_id ? '' : ' hidden') . '>' . esc_html__('Retirer', 'smbb-wpcodetool') . '</button>';
         $html .= '</div></div>';
 
         return $this->wrapField($html);
@@ -458,8 +477,8 @@ final class FormElement
         $attachment_ids = $this->normaliseAttachmentIds($this->value());
         $serialized_ids = wp_json_encode($attachment_ids);
         $library = isset($this->attributes['library']) ? sanitize_key($this->attributes['library']) : 'image';
-        $select_label = $library === 'image' ? __('Choose images', 'smbb-wpcodetool') : __('Choose files', 'smbb-wpcodetool');
-        $title = $library === 'image' ? __('Select gallery', 'smbb-wpcodetool') : __('Select files', 'smbb-wpcodetool');
+        $select_label = $library === 'image' ? __('Choisir des images', 'smbb-wpcodetool') : __('Choisir des fichiers', 'smbb-wpcodetool');
+        $title = $library === 'image' ? __('Sélectionner la galerie', 'smbb-wpcodetool') : __('Sélectionner des fichiers', 'smbb-wpcodetool');
 
         $html = '<div class="smbb-codetool-gallery-field" data-smbb-gallery-field data-name="' . esc_attr($this->fieldName()) . '" data-library="' . esc_attr($library) . '" data-select-title="' . esc_attr($title) . '" data-select-button="' . esc_attr($select_label) . '">';
         $html .= '<input type="hidden" name="' . esc_attr($this->fieldName()) . '" value="' . esc_attr($serialized_ids) . '" data-smbb-gallery-input>';
@@ -468,7 +487,7 @@ final class FormElement
         $html .= '</div>';
         $html .= '<div class="smbb-codetool-media-actions">';
         $html .= '<button type="button" class="button" data-smbb-gallery-action="select"><span class="dashicons dashicons-format-gallery" aria-hidden="true"></span> ' . esc_html($select_label) . '</button> ';
-        $html .= '<button type="button" class="button button-link-delete" data-smbb-gallery-action="clear"' . ($attachment_ids ? '' : ' hidden') . '>' . esc_html__('Clear gallery', 'smbb-wpcodetool') . '</button>';
+        $html .= '<button type="button" class="button button-link-delete" data-smbb-gallery-action="clear"' . ($attachment_ids ? '' : ' hidden') . '>' . esc_html__('Vider la galerie', 'smbb-wpcodetool') . '</button>';
         $html .= '</div></div>';
 
         return $this->wrapField($html);
@@ -485,10 +504,15 @@ final class FormElement
         $resource_name = isset($this->attributes['resource']) ? sanitize_key((string) $this->attributes['resource']) : '';
         $label_field = isset($this->attributes['labelField']) ? (string) $this->attributes['labelField'] : 'name';
         $value_field = isset($this->attributes['valueField']) ? sanitize_key((string) $this->attributes['valueField']) : '';
-        $placeholder = isset($this->attributes['placeholder']) ? (string) $this->attributes['placeholder'] : __('Search...', 'smbb-wpcodetool');
+        $placeholder = isset($this->attributes['placeholder']) ? (string) $this->attributes['placeholder'] : __('Rechercher…', 'smbb-wpcodetool');
         $limit = isset($this->attributes['limit']) ? max(1, min(50, (int) $this->attributes['limit'])) : 12;
         $search_fields = isset($this->attributes['searchFields']) && is_array($this->attributes['searchFields']) ? array_values(array_filter(array_map('sanitize_key', $this->attributes['searchFields']))) : array();
         $current_value = $this->value();
+
+        if (!empty($this->attributes['multiple'])) {
+            return $this->renderSearchMultiple($resource_name, $label_field, $value_field, $placeholder, $limit, $search_fields, $current_value);
+        }
+
         $selection = $this->searchSelectionState($resource_name, $label_field, $value_field, $current_value);
         $exclude_current = !empty($this->attributes['excludeCurrent']);
         $current_resource = isset($this->context['resource']) && is_object($this->context['resource']) ? $this->context['resource'] : null;
@@ -498,19 +522,19 @@ final class FormElement
             $exclude_id = (string) $this->context['requested_id'];
         }
 
-        $html = '<div class="smbb-codetool-search-field" data-smbb-search-field data-resource="' . esc_attr($resource_name) . '" data-label-field="' . esc_attr($label_field) . '" data-value-field="' . esc_attr($selection['value_field']) . '" data-search-fields="' . esc_attr(wp_json_encode($search_fields)) . '" data-limit="' . esc_attr((string) $limit) . '" data-exclude-id="' . esc_attr($exclude_id) . '">';
+        $html = '<div class="smbb-codetool-search-field" data-smbb-search-field data-resource="' . esc_attr($resource_name) . '" data-label-field="' . esc_attr($label_field) . '" data-value-field="' . esc_attr($selection['value_field']) . '" data-search-fields="' . esc_attr(wp_json_encode($search_fields)) . '" data-limit="' . esc_attr((string) $limit) . '" data-exclude-id="' . esc_attr($exclude_id) . '" data-product-types="' . esc_attr(wp_json_encode($this->productTypes())) . '">';
         $html .= '<input type="hidden" id="' . esc_attr($this->id() . '--value') . '" name="' . esc_attr($this->fieldName()) . '" value="' . esc_attr((string) $selection['value']) . '" data-smbb-search-value>';
         $html .= '<div class="smbb-codetool-search-control">';
         $html .= '<input type="search" id="' . esc_attr($this->id()) . '" value="' . esc_attr($selection['label']) . '" class="regular-text" placeholder="' . esc_attr($placeholder) . '" autocomplete="off" data-smbb-search-text' . $this->invalidAttribute() . $this->describedByAttribute() . '>';
-        $html .= '<button type="button" class="button button-link-delete" data-smbb-search-clear' . ($selection['value'] !== '' ? '' : ' hidden') . '>' . esc_html__('Clear', 'smbb-wpcodetool') . '</button>';
+        $html .= '<button type="button" class="button button-link-delete" data-smbb-search-clear' . ($selection['value'] !== '' ? '' : ' hidden') . '>' . esc_html__('Effacer', 'smbb-wpcodetool') . '</button>';
         $html .= '</div>';
         $html .= '<div class="smbb-codetool-search-selection' . ($selection['value'] !== '' ? ' has-selection' : '') . '" data-smbb-search-selection>';
 
         if ($selection['value'] !== '') {
             $html .= '<span class="smbb-codetool-search-selection-label">' . esc_html($selection['label']) . '</span>';
-            $html .= '<small class="smbb-codetool-search-selection-meta">#' . esc_html((string) $selection['value']) . '</small>';
+            $html .= '<small class="smbb-codetool-search-selection-meta">' . esc_html(!empty($selection['meta']) ? (string) $selection['meta'] : '#' . (string) $selection['value']) . '</small>';
         } else {
-            $html .= '<span class="smbb-codetool-search-selection-empty">' . esc_html__('No selection yet.', 'smbb-wpcodetool') . '</span>';
+            $html .= '<span class="smbb-codetool-search-selection-empty">' . esc_html__('Aucune sélection pour l\'instant.', 'smbb-wpcodetool') . '</span>';
         }
 
         $html .= '</div>';
@@ -518,6 +542,104 @@ final class FormElement
         $html .= '</div>';
 
         return $this->wrapField($html);
+    }
+
+    /**
+     * Champ relationnel à plusieurs valeurs : recherche Ajax, liste ordonnée (↑ ↓ ✕), une entrée
+     * cachée name[] par élément. Valeur enregistrée : tableau d'IDs (colonne JSON conseillée).
+     *
+     *     $form->search('Produits', array('resource' => 'wc_product', 'multiple' => true))->setName('product_ids')
+     *
+     * Options : sortable (true par défaut), productTypes (wc_product), max, emptyText.
+     */
+    private function renderSearchMultiple($resource_name, $label_field, $value_field, $placeholder, $limit, array $search_fields, $current_value)
+    {
+        $sortable = !isset($this->attributes['sortable']) || !empty($this->attributes['sortable']);
+        $max = isset($this->attributes['max']) ? max(0, (int) $this->attributes['max']) : 0;
+        $empty = isset($this->attributes['emptyText']) ? (string) $this->attributes['emptyText'] : __('Aucun élément pour l\'instant.', 'smbb-wpcodetool');
+        $name = $this->fieldName();
+        $list = '';
+        $state_field = $value_field;
+
+        foreach ($this->normaliseValueList($current_value) as $value) {
+            $state = $this->searchSelectionState($resource_name, $label_field, $value_field, $value);
+            $state_field = $state['value_field'];
+
+            if ($state['value'] === '' || $state['label'] === '') {
+                $state = array('value' => (string) $value, 'label' => '#' . $value, 'meta' => __('Introuvable', 'smbb-wpcodetool'), 'image' => '');
+            }
+
+            $list .= self::searchItemHtml($name, $state, $sortable);
+        }
+
+        $html = '<div class="smbb-codetool-search-field is-multiple" data-smbb-search-field data-multiple data-name="' . esc_attr($name . '[]') . '"' . ($sortable ? ' data-sortable' : '') . ($max ? ' data-max="' . $max . '"' : '')
+            . ' data-resource="' . esc_attr($resource_name) . '" data-label-field="' . esc_attr($label_field) . '" data-value-field="' . esc_attr($state_field !== '' ? $state_field : 'id') . '" data-search-fields="' . esc_attr(wp_json_encode($search_fields)) . '" data-limit="' . esc_attr((string) $limit) . '" data-exclude-id="" data-product-types="' . esc_attr(wp_json_encode($this->productTypes())) . '">';
+        // Liste vide : on envoie quand même le champ, pour pouvoir tout retirer.
+        $html .= '<input type="hidden" name="' . esc_attr($name) . '" value="">';
+        $html .= '<ol class="smbb-codetool-search-list" data-smbb-search-list>' . $list . '</ol>';
+        $html .= '<p class="smbb-codetool-search-list-empty" data-smbb-search-list-empty' . ($list !== '' ? ' hidden' : '') . '>' . esc_html($empty) . '</p>';
+        $html .= '<div class="smbb-codetool-search-control">';
+        $html .= '<input type="search" id="' . esc_attr($this->id()) . '" class="regular-text" placeholder="' . esc_attr($placeholder) . '" autocomplete="off" data-smbb-search-text' . $this->invalidAttribute() . $this->describedByAttribute() . '>';
+        $html .= '</div>';
+        $html .= '<div class="smbb-codetool-search-results" data-smbb-search-results hidden></div>';
+        $html .= '</div>';
+
+        return $this->wrapField($html);
+    }
+
+    /**
+     * Ligne d'un champ relationnel multiple (même balisage que celui construit en JavaScript).
+     *
+     * @param array<string,mixed> $state value, label, meta, image
+     */
+    public static function searchItemHtml($name, array $state, $sortable = true)
+    {
+        $image = !empty($state['image']) ? '<img class="smbb-codetool-search-item-image" src="' . esc_url((string) $state['image']) . '" alt="" loading="lazy">' : '<span class="smbb-codetool-search-item-image is-empty dashicons dashicons-format-image" aria-hidden="true"></span>';
+        $label = (string) $state['label'];
+
+        return '<li class="smbb-codetool-search-item" data-value="' . esc_attr((string) $state['value']) . '">'
+            . '<input type="hidden" name="' . esc_attr($name . '[]') . '" value="' . esc_attr((string) $state['value']) . '">'
+            . $image
+            . '<span class="smbb-codetool-search-item-text"><strong>' . esc_html($label) . '</strong>'
+            . '<small>' . esc_html(!empty($state['meta']) ? (string) $state['meta'] : '#' . (string) $state['value']) . '</small></span>'
+            . '<span class="smbb-codetool-search-item-actions">'
+            . ($sortable ? '<button type="button" class="button button-small" data-smbb-search-item="up" aria-label="' . esc_attr(sprintf(__('Monter %s', 'smbb-wpcodetool'), $label)) . '">↑</button>'
+                . '<button type="button" class="button button-small" data-smbb-search-item="down" aria-label="' . esc_attr(sprintf(__('Descendre %s', 'smbb-wpcodetool'), $label)) . '">↓</button>' : '')
+            . '<button type="button" class="button button-small" data-smbb-search-item="remove" aria-label="' . esc_attr(sprintf(__('Retirer %s', 'smbb-wpcodetool'), $label)) . '">✕</button>'
+            . '</span></li>';
+    }
+
+    /**
+     * Valeur d'un champ multiple : tableau, JSON ou liste séparée par des virgules → valeurs uniques, dans l'ordre.
+     *
+     * @return string[]
+     */
+    private function normaliseValueList($value)
+    {
+        if (is_string($value) && $value !== '') {
+            $decoded = json_decode($value, true);
+            $value = json_last_error() === JSON_ERROR_NONE ? $decoded : explode(',', $value);
+        }
+
+        $out = array();
+
+        foreach ((array) $value as $item) {
+            $item = is_scalar($item) ? trim((string) $item) : '';
+
+            if ($item !== '' && !in_array($item, $out, true)) {
+                $out[] = $item;
+            }
+        }
+
+        return $out;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function productTypes()
+    {
+        return isset($this->attributes['productTypes']) && is_array($this->attributes['productTypes']) ? array_values(array_filter(array_map('sanitize_key', $this->attributes['productTypes']))) : array();
     }
 
     private function renderSelect()
@@ -554,8 +676,15 @@ final class FormElement
 
     private function renderToggle()
     {
-        $checked = (bool) $this->value();
-        $state_label = $checked ? __('Enabled', 'smbb-wpcodetool') : __('Disabled', 'smbb-wpcodetool');
+        $value = $this->value();
+
+        // Valeur absente (nouvel élément, ligne de répéteur ajoutée) : on prend l'attribut "default" s'il existe.
+        if ($value === '' && array_key_exists('default', $this->attributes)) {
+            $value = $this->attributes['default'];
+        }
+
+        $checked = (bool) $value;
+        $state_label = $checked ? __('Activé', 'smbb-wpcodetool') : __('Désactivé', 'smbb-wpcodetool');
         $required = $this->isRequired() ? ' required' : '';
 
         /*
@@ -568,7 +697,7 @@ final class FormElement
         $html .= '<label class="smbb-codetool-toggle" for="' . esc_attr($this->id()) . '">';
         $html .= '<input class="smbb-codetool-toggle-input" type="checkbox" id="' . esc_attr($this->id()) . '" name="' . esc_attr($this->fieldName()) . '" value="1"' . checked($checked, true, false) . $required . $this->invalidAttribute() . $this->describedByAttribute() . '>';
         $html .= '<span class="smbb-codetool-toggle-track" aria-hidden="true"><span class="smbb-codetool-toggle-thumb"></span></span>';
-        $html .= '<span class="smbb-codetool-toggle-state" data-on="' . esc_attr__('Enabled', 'smbb-wpcodetool') . '" data-off="' . esc_attr__('Disabled', 'smbb-wpcodetool') . '">' . esc_html($state_label) . '</span>';
+        $html .= '<span class="smbb-codetool-toggle-state" data-on="' . esc_attr__('Activé', 'smbb-wpcodetool') . '" data-off="' . esc_attr__('Désactivé', 'smbb-wpcodetool') . '">' . esc_html($state_label) . '</span>';
         $html .= '</label>';
 
         return $this->wrapField($html);
@@ -596,7 +725,7 @@ final class FormElement
         }
 
         $html .= '</ol>';
-        $html .= '<p class="smbb-codetool-repeater-empty"' . ($is_empty ? '' : ' hidden') . '>' . esc_html__('No items yet. Add the first one.', 'smbb-wpcodetool') . '</p>';
+        $html .= '<p class="smbb-codetool-repeater-empty"' . ($is_empty ? '' : ' hidden') . '>' . esc_html__('Aucun élément pour l\'instant. Ajoutez le premier.', 'smbb-wpcodetool') . '</p>';
         $html .= $this->renderRepeaterToolbar('bottom', true);
         $html .= '</div>';
 
@@ -618,11 +747,11 @@ final class FormElement
             'data-smbb-repeater-add-position' => $add_position,
         );
         $hidden = $visible ? '' : ' hidden';
-        $html = '<div class="' . esc_attr($class) . '" role="toolbar" aria-label="' . esc_attr__('Repeater controls', 'smbb-wpcodetool') . '"' . $hidden . '>';
-        $html .= $this->renderRepeaterActionButton('add', 'dashicons-plus-alt2', __('Add item', 'smbb-wpcodetool'), $attributes, 'is-primary');
-        $html .= $this->renderRepeaterActionButton('collapse-all', 'dashicons-arrow-up-alt2', __('Collapse all', 'smbb-wpcodetool'));
-        $html .= $this->renderRepeaterActionButton('expand-all', 'dashicons-arrow-down-alt2', __('Expand all', 'smbb-wpcodetool'));
-        $html .= $this->renderRepeaterActionButton('clear', 'dashicons-trash', __('Clear', 'smbb-wpcodetool'), array(), 'is-danger');
+        $html = '<div class="' . esc_attr($class) . '" role="toolbar" aria-label="' . esc_attr__('Commandes de la liste répétable', 'smbb-wpcodetool') . '"' . $hidden . '>';
+        $html .= $this->renderRepeaterActionButton('add', 'dashicons-plus-alt2', __('Ajouter un élément', 'smbb-wpcodetool'), $attributes, 'is-primary');
+        $html .= $this->renderRepeaterActionButton('collapse-all', 'dashicons-arrow-up-alt2', __('Tout replier', 'smbb-wpcodetool'));
+        $html .= $this->renderRepeaterActionButton('expand-all', 'dashicons-arrow-down-alt2', __('Tout déplier', 'smbb-wpcodetool'));
+        $html .= $this->renderRepeaterActionButton('clear', 'dashicons-trash', __('Effacer', 'smbb-wpcodetool'), array(), 'is-danger');
         $html .= '</div>';
 
         return $html;
@@ -651,7 +780,7 @@ final class FormElement
     {
         $label_class = 'smbb-codetool-field-label' . ($this->isRequired() ? ' is-required' : '');
         $required_mark = $this->isRequired()
-            ? ' <span class="smbb-codetool-required-mark" aria-hidden="true">*</span><span class="screen-reader-text"> ' . esc_html__('required', 'smbb-wpcodetool') . '</span>'
+            ? ' <span class="smbb-codetool-required-mark" aria-hidden="true">*</span><span class="screen-reader-text"> ' . esc_html__('obligatoire', 'smbb-wpcodetool') . '</span>'
             : '';
         $error = $this->fieldErrorMessage();
         $field_class = 'smbb-codetool-field' . ($error !== '' ? ' has-error' : '');
@@ -779,7 +908,7 @@ final class FormElement
     private function mediaPreviewHtml($attachment_id, $prefer_image)
     {
         if (!$attachment_id) {
-            return '<div class="smbb-codetool-media-empty">' . esc_html__('No media selected.', 'smbb-wpcodetool') . '</div>';
+            return '<div class="smbb-codetool-media-empty">' . esc_html__('Aucun média sélectionné.', 'smbb-wpcodetool') . '</div>';
         }
 
         $image = wp_get_attachment_image($attachment_id, 'thumbnail', false, array(
@@ -794,7 +923,7 @@ final class FormElement
         $url = wp_get_attachment_url($attachment_id);
 
         if ($title === '') {
-            $title = $url ? basename((string) $url) : sprintf(__('Attachment #%d', 'smbb-wpcodetool'), $attachment_id);
+            $title = $url ? basename((string) $url) : sprintf(__('Pièce jointe n° %d', 'smbb-wpcodetool'), $attachment_id);
         }
 
         $icon = $prefer_image ? 'dashicons-format-image' : 'dashicons-media-default';
@@ -812,7 +941,7 @@ final class FormElement
     private function galleryPreviewHtml(array $attachment_ids)
     {
         if (!$attachment_ids) {
-            return '<div class="smbb-codetool-media-empty">' . esc_html__('No media selected.', 'smbb-wpcodetool') . '</div>';
+            return '<div class="smbb-codetool-media-empty">' . esc_html__('Aucun média sélectionné.', 'smbb-wpcodetool') . '</div>';
         }
 
         $html = '<div class="smbb-codetool-gallery-grid">';
@@ -824,7 +953,7 @@ final class FormElement
             $title = get_the_title($attachment_id);
 
             if ($title === '') {
-                $title = sprintf(__('Attachment #%d', 'smbb-wpcodetool'), $attachment_id);
+                $title = sprintf(__('Pièce jointe n° %d', 'smbb-wpcodetool'), $attachment_id);
             }
 
             if ($thumbnail) {
@@ -879,6 +1008,29 @@ final class FormElement
      */
     private function searchSelectionState($resource_name, $label_field, $value_field, $current_value)
     {
+        if ($resource_name === \Smbb\WpCodeTool\Support\UserLookup::RESOURCE) {
+            $item = is_scalar($current_value) && (string) $current_value !== '' ? \Smbb\WpCodeTool\Support\UserLookup::item((int) $current_value) : null;
+
+            return array(
+                'label' => $item ? $item['label'] : '',
+                'meta' => $item ? $item['meta'] : '',
+                'value' => $item ? $item['value'] : '',
+                'value_field' => 'ID',
+            );
+        }
+
+        if ($resource_name === \Smbb\WpCodeTool\Support\ProductLookup::RESOURCE) {
+            $item = is_scalar($current_value) && (string) $current_value !== '' ? \Smbb\WpCodeTool\Support\ProductLookup::item((int) $current_value) : null;
+
+            return array(
+                'label' => $item ? $item['label'] : '',
+                'meta' => $item ? $item['meta'] : '',
+                'image' => $item ? $item['image'] : '',
+                'value' => $item ? $item['value'] : '',
+                'value_field' => 'ID',
+            );
+        }
+
         $resource = $this->searchTargetResource($resource_name);
         $value_field = $value_field !== '' ? $value_field : ($resource ? $resource->primaryKey() : 'id');
         $selected_value = is_scalar($current_value) ? (string) $current_value : '';
@@ -1215,13 +1367,13 @@ final class FormElement
 
         $html .= '<div class="smbb-codetool-repeater-item-header">';
         $html .= '<span class="smbb-codetool-repeater-handle dashicons dashicons-menu" aria-hidden="true"></span>';
-        $html .= '<strong class="smbb-codetool-repeater-title">' . esc_html__('Item', 'smbb-wpcodetool') . ' <span data-smbb-repeater-number>' . esc_html(is_numeric($index) ? ((int) $index + 1) : '') . '</span></strong>';
+        $html .= '<strong class="smbb-codetool-repeater-title">' . esc_html__('Élément', 'smbb-wpcodetool') . ' <span data-smbb-repeater-number>' . esc_html(is_numeric($index) ? ((int) $index + 1) : '') . '</span></strong>';
         $html .= '<div class="smbb-codetool-repeater-actions">';
-        $html .= $this->renderRepeaterActionButton('toggle', 'dashicons-arrow-up-alt2', __('Collapse', 'smbb-wpcodetool'), array('aria-expanded' => 'true'));
-        $html .= $this->renderRepeaterActionButton('move-up', 'dashicons-arrow-up', __('Move up', 'smbb-wpcodetool'));
-        $html .= $this->renderRepeaterActionButton('move-down', 'dashicons-arrow-down', __('Move down', 'smbb-wpcodetool'));
-        $html .= $this->renderRepeaterActionButton('duplicate', 'dashicons-admin-page', __('Duplicate', 'smbb-wpcodetool'));
-        $html .= $this->renderRepeaterActionButton('remove', 'dashicons-trash', __('Remove', 'smbb-wpcodetool'), array(), 'is-danger');
+        $html .= $this->renderRepeaterActionButton('toggle', 'dashicons-arrow-up-alt2', __('Replier', 'smbb-wpcodetool'), array('aria-expanded' => 'true'));
+        $html .= $this->renderRepeaterActionButton('move-up', 'dashicons-arrow-up', __('Monter', 'smbb-wpcodetool'));
+        $html .= $this->renderRepeaterActionButton('move-down', 'dashicons-arrow-down', __('Descendre', 'smbb-wpcodetool'));
+        $html .= $this->renderRepeaterActionButton('duplicate', 'dashicons-admin-page', __('Dupliquer', 'smbb-wpcodetool'));
+        $html .= $this->renderRepeaterActionButton('remove', 'dashicons-trash', __('Retirer', 'smbb-wpcodetool'), array(), 'is-danger');
         $html .= '</div></div>';
 
         $html .= '<div class="smbb-codetool-repeater-item-body">';

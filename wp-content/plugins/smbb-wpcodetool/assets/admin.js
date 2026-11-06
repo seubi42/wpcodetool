@@ -33,9 +33,29 @@
             return;
         }
 
-        if (!window.confirm(link.getAttribute('data-smbb-confirm'))) {
-            event.preventDefault();
+        if (link.hasAttribute('data-smbb-confirmed')) {
+            link.removeAttribute('data-smbb-confirmed');
+            return;
         }
+
+        // Fenetre de confirmation maison (plus de confirm() du navigateur).
+        event.preventDefault();
+        ask(link.getAttribute('data-smbb-confirm'), {
+            danger: link.classList.contains('submitdelete'),
+            subject: rowSubject(link)
+        }).then(function (ok) {
+            if (!ok) {
+                return;
+            }
+
+            if (link.tagName === 'A' && link.href) {
+                window.location.href = link.href;
+                return;
+            }
+
+            link.setAttribute('data-smbb-confirmed', '1');
+            link.click();
+        });
     });
 
     document.addEventListener('click', function (event) {
@@ -81,7 +101,7 @@
         }
     });
 
-    // Confirmation specifique pour les suppressions batch.
+    // Confirmation des actions groupées qui la demandent (data-confirm sur l'option, suppression par défaut).
     document.addEventListener('submit', function (event) {
         var form = event.target.closest(SELECTOR_BATCH_FORM);
 
@@ -89,13 +109,38 @@
             return;
         }
 
-        if (selectedBatchAction(form) !== 'delete') {
+        var option = selectedBatchOption(form);
+        var action = option ? option.value : '';
+        var question = option ? option.getAttribute('data-confirm') : '';
+
+        if (!question && action === 'delete') {
+            question = form.getAttribute('data-confirm-delete') || 'Supprimer les éléments sélectionnés ?';
+        }
+
+        if (!question) {
             return;
         }
 
-        if (!window.confirm(form.getAttribute('data-confirm-delete') || 'Delete selected items?')) {
-            event.preventDefault();
+        if (form.hasAttribute('data-smbb-confirmed')) {
+            form.removeAttribute('data-smbb-confirmed');
+            return;
         }
+
+        event.preventDefault();
+        var submitter = event.submitter || null;
+        ask(question, { danger: action === 'delete' || (option && option.hasAttribute('data-danger')) }).then(function (ok) {
+            if (!ok) {
+                return;
+            }
+
+            form.setAttribute('data-smbb-confirmed', '1');
+
+            if (form.requestSubmit) {
+                form.requestSubmit(submitter);
+            } else {
+                form.submit();
+            }
+        });
     });
 
     // Selection media via la Media Library native de WordPress.
@@ -140,10 +185,28 @@
 
         if (result) {
             event.preventDefault();
-            applySearchSelection(result.closest(SELECTOR_SEARCH_FIELD), {
+            var resultField = result.closest(SELECTOR_SEARCH_FIELD);
+            var picked = {
                 value: result.getAttribute('data-value') || '',
-                label: result.getAttribute('data-label') || ''
-            });
+                label: result.getAttribute('data-label') || '',
+                meta: result.getAttribute('data-meta') || '',
+                image: result.getAttribute('data-image') || ''
+            };
+
+            if (resultField && resultField.hasAttribute('data-multiple')) {
+                addSearchItem(resultField, picked);
+            } else {
+                applySearchSelection(resultField, picked);
+            }
+            return;
+        }
+
+        // Champ relationnel multiple : monter, descendre, retirer.
+        var itemButton = event.target.closest('[data-smbb-search-item]');
+
+        if (itemButton) {
+            event.preventDefault();
+            moveSearchItem(itemButton);
             return;
         }
 
@@ -202,8 +265,8 @@
         }
 
         state.textContent = input.checked
-            ? (state.getAttribute('data-on') || 'Enabled')
-            : (state.getAttribute('data-off') || 'Disabled');
+            ? (state.getAttribute('data-on') || 'Activé')
+            : (state.getAttribute('data-off') || 'Désactivé');
     }
 
     function initializeDynamicControls(root) {
@@ -250,25 +313,29 @@
 
     function selectedCountLabel(count) {
         if (count <= 0) {
-            return message('selectedNone', 'No row selected');
+            return message('selectedNone', 'Aucune ligne sélectionnée');
         }
 
         if (count === 1) {
-            return message('selectedSingle', '1 row selected');
+            return message('selectedSingle', '1 ligne sélectionnée');
         }
 
-        return message('selectedPlural', '%d rows selected').replace('%d', String(count));
+        return message('selectedPlural', '%d lignes sélectionnées').replace('%d', String(count));
     }
 
-    function selectedBatchAction(form) {
-        var top = form.querySelector('[name="smbb_codetool_batch_action"]');
-        var bottom = form.querySelector('[name="smbb_codetool_batch_action_bottom"]');
+    function selectedBatchOption(form) {
+        var selects = [
+            form.querySelector('[name="smbb_codetool_batch_action"]'),
+            form.querySelector('[name="smbb_codetool_batch_action_bottom"]')
+        ];
 
-        if (top && top.value) {
-            return top.value;
+        for (var i = 0; i < selects.length; i++) {
+            if (selects[i] && selects[i].value) {
+                return selects[i].options[selects[i].selectedIndex];
+            }
         }
 
-        return bottom ? bottom.value : '';
+        return null;
     }
 
     function initializeColorPickers(root) {
@@ -281,7 +348,7 @@
 
     function initializeTabs(root) {
         root.querySelectorAll('.smbb-codetool-tabs').forEach(function (tabs) {
-            var activeButton = tabs.querySelector('[data-smbb-tab-button].is-active');
+            var activeButton = rememberedTabButton(tabs) || tabs.querySelector('[data-smbb-tab-button].is-active');
 
             if (!activeButton) {
                 activeButton = tabs.querySelector('[data-smbb-tab-button]');
@@ -319,7 +386,52 @@
 
         if (!silent) {
             updateConditionalVisibility(tabs);
+            rememberTab(tabs, button);
         }
+    }
+
+    /*
+     * Onglet courant memorise par page (sessionStorage) : apres un enregistrement,
+     * une action admin-post ou un rechargement, on revient sur le meme onglet.
+     * La cle depend de la page, de la vue et de l'element edite, pas du formulaire.
+     */
+    function tabStorageKey(tabs) {
+        var params = new URLSearchParams(window.location.search);
+        var all = Array.prototype.slice.call(document.querySelectorAll('.smbb-codetool-tabs'));
+
+        return 'smbb-codetool-tab:' + [params.get('page') || '', params.get('view') || '', params.get('id') || 'new', all.indexOf(tabs)].join(':');
+    }
+
+    function rememberTab(tabs, button) {
+        var buttons = Array.prototype.slice.call(tabs.querySelectorAll('[data-smbb-tab-button]'));
+
+        try {
+            window.sessionStorage.setItem(tabStorageKey(tabs), String(buttons.indexOf(button)));
+        } catch (error) {
+            // Stockage indisponible (navigation privee stricte) : on garde le comportement par defaut.
+        }
+    }
+
+    function rememberedTabButton(tabs) {
+        var buttons = tabs.querySelectorAll('[data-smbb-tab-button]');
+        var index = null;
+
+        // Un onglet qui contient une erreur de formulaire passe avant le souvenir.
+        for (var i = 0; i < buttons.length; i += 1) {
+            var panel = document.getElementById(buttons[i].getAttribute('data-smbb-tab-button'));
+
+            if (panel && panel.querySelector('[aria-invalid="true"], .is-invalid')) {
+                return buttons[i];
+            }
+        }
+
+        try {
+            index = window.sessionStorage.getItem(tabStorageKey(tabs));
+        } catch (error) {
+            return null;
+        }
+
+        return index !== null && buttons[parseInt(index, 10)] ? buttons[parseInt(index, 10)] : null;
     }
 
     function updateConditionalVisibility(root) {
@@ -438,9 +550,9 @@
 
         var library = field.getAttribute('data-library') || '';
         var frameOptions = {
-            title: field.getAttribute('data-select-title') || message('selectMedia', 'Select media'),
+            title: field.getAttribute('data-select-title') || message('selectMedia', 'Sélectionner un média'),
             button: {
-                text: field.getAttribute('data-select-button') || message('chooseMedia', 'Choose media')
+                text: field.getAttribute('data-select-button') || message('chooseMedia', 'Choisir un média')
             },
             multiple: false
         };
@@ -475,7 +587,7 @@
 
         if (!attachment) {
             input.value = '';
-            preview.innerHTML = '<div class="smbb-codetool-media-empty">' + escapeHtml(message('noMedia', 'No media selected.')) + '</div>';
+            preview.innerHTML = '<div class="smbb-codetool-media-empty">' + escapeHtml(message('noMedia', 'Aucun média sélectionné.')) + '</div>';
 
             if (removeButton) {
                 removeButton.hidden = true;
@@ -523,9 +635,9 @@
 
         var library = field.getAttribute('data-library') || '';
         var frameOptions = {
-            title: field.getAttribute('data-select-title') || message('selectMedia', 'Select media'),
+            title: field.getAttribute('data-select-title') || message('selectMedia', 'Sélectionner un média'),
             button: {
-                text: field.getAttribute('data-select-button') || message('chooseMedia', 'Choose media')
+                text: field.getAttribute('data-select-button') || message('chooseMedia', 'Choisir un média')
             },
             multiple: true
         };
@@ -571,7 +683,7 @@
 
     function galleryPreviewHtml(attachments) {
         if (!attachments.length) {
-            return '<div class="smbb-codetool-media-empty">' + escapeHtml(message('noMedia', 'No media selected.')) + '</div>';
+            return '<div class="smbb-codetool-media-empty">' + escapeHtml(message('noMedia', 'Aucun média sélectionné.')) + '</div>';
         }
 
         var items = attachments.map(function (attachment) {
@@ -652,6 +764,7 @@
         params.set('limit', field.getAttribute('data-limit') || '12');
         params.set('exclude_id', field.getAttribute('data-exclude-id') || '');
         params.set('search_fields', JSON.stringify(Array.isArray(searchFields) ? searchFields : []));
+        params.set('product_types', field.getAttribute('data-product-types') || '[]');
 
         window.fetch(ajaxUrl + '?' + params.toString(), {
             credentials: 'same-origin'
@@ -677,23 +790,33 @@
 
         if (loading) {
             container.hidden = false;
-            container.innerHTML = '<div class="smbb-codetool-search-empty">' + escapeHtml(message('searching', 'Searching...')) + '</div>';
+            container.innerHTML = '<div class="smbb-codetool-search-empty">' + escapeHtml(message('searching', 'Recherche…')) + '</div>';
             return;
         }
 
         items = Array.isArray(items) ? items : [];
 
+        // Champ multiple : on ne repropose pas ce qui est déjà dans la liste.
+        if (field.hasAttribute('data-multiple')) {
+            var taken = searchItemValues(field);
+
+            items = items.filter(function (item) {
+                return taken.indexOf(String(item.value || '')) === -1;
+            });
+        }
+
         if (!items.length) {
             container.hidden = false;
-            container.innerHTML = '<div class="smbb-codetool-search-empty">' + escapeHtml(message('noResults', 'No result found.')) + '</div>';
+            container.innerHTML = '<div class="smbb-codetool-search-empty">' + escapeHtml(message('noResults', 'Aucun résultat.')) + '</div>';
             return;
         }
 
         container.hidden = false;
         container.innerHTML = items.map(function (item) {
-            return '<button type="button" class="smbb-codetool-search-result" data-smbb-search-result data-value="' + escapeHtml(item.value || '') + '" data-label="' + escapeHtml(item.label || '') + '">'
+            return '<button type="button" class="smbb-codetool-search-result' + (item.image !== undefined ? ' has-image' : '') + '" data-smbb-search-result data-value="' + escapeHtml(item.value || '') + '" data-label="' + escapeHtml(item.label || '') + '" data-meta="' + escapeHtml(item.meta || '') + '" data-image="' + escapeHtml(item.image || '') + '">'
+                + (item.image !== undefined ? (item.image ? '<img class="smbb-codetool-search-result-image" src="' + escapeHtml(item.image) + '" alt="">' : '<span class="smbb-codetool-search-result-image is-empty"></span>') : '')
                 + '<span>' + escapeHtml(item.label || '') + '</span>'
-                + '<small>#' + escapeHtml(item.value || '') + '</small>'
+                + '<small>' + escapeHtml(item.meta ? item.meta : '#' + (item.value || '')) + '</small>'
                 + '</button>';
         }).join('');
     }
@@ -767,13 +890,104 @@
 
         if (!item || !item.value) {
             summary.classList.remove('has-selection');
-            summary.innerHTML = '<span class="smbb-codetool-search-selection-empty">' + escapeHtml(message('selectionEmpty', 'No selection yet.')) + '</span>';
+            summary.innerHTML = '<span class="smbb-codetool-search-selection-empty">' + escapeHtml(message('selectionEmpty', 'Aucune sélection pour l\'instant.')) + '</span>';
             return;
         }
 
         summary.classList.add('has-selection');
         summary.innerHTML = '<span class="smbb-codetool-search-selection-label">' + escapeHtml(item.label || '') + '</span>'
-            + '<small class="smbb-codetool-search-selection-meta">#' + escapeHtml(item.value || '') + '</small>';
+            + '<small class="smbb-codetool-search-selection-meta">' + escapeHtml(item.meta ? item.meta : '#' + (item.value || '')) + '</small>';
+    }
+
+    function searchItemValues(field) {
+        return Array.prototype.map.call(field.querySelectorAll('[data-smbb-search-list] > [data-value]'), function (li) {
+            return String(li.getAttribute('data-value') || '');
+        });
+    }
+
+    function addSearchItem(field, item) {
+        var list = field.querySelector('[data-smbb-search-list]');
+        var textInput = field.querySelector('[data-smbb-search-text]');
+        var max = parseInt(field.getAttribute('data-max') || '0', 10);
+
+        if (!list || !item.value || searchItemValues(field).indexOf(String(item.value)) !== -1) {
+            hideSearchResults(field);
+            return;
+        }
+
+        if (max > 0 && list.children.length >= max) {
+            hideSearchResults(field);
+            return;
+        }
+
+        var name = field.getAttribute('data-name') || '';
+        var sortable = field.hasAttribute('data-sortable');
+        var label = item.label || ('#' + item.value);
+        var li = document.createElement('li');
+
+        li.className = 'smbb-codetool-search-item';
+        li.setAttribute('data-value', item.value);
+        li.innerHTML = '<input type="hidden" name="' + escapeHtml(name) + '" value="' + escapeHtml(item.value) + '">'
+            + (item.image ? '<img class="smbb-codetool-search-item-image" src="' + escapeHtml(item.image) + '" alt="" loading="lazy">' : '<span class="smbb-codetool-search-item-image is-empty dashicons dashicons-format-image" aria-hidden="true"></span>')
+            + '<span class="smbb-codetool-search-item-text"><strong>' + escapeHtml(label) + '</strong><small>' + escapeHtml(item.meta ? item.meta : '#' + item.value) + '</small></span>'
+            + '<span class="smbb-codetool-search-item-actions">'
+            + (sortable ? '<button type="button" class="button button-small" data-smbb-search-item="up" aria-label="' + escapeHtml(message('moveUp', 'Monter') + ' ' + label) + '">↑</button>'
+                + '<button type="button" class="button button-small" data-smbb-search-item="down" aria-label="' + escapeHtml(message('moveDown', 'Descendre') + ' ' + label) + '">↓</button>' : '')
+            + '<button type="button" class="button button-small" data-smbb-search-item="remove" aria-label="' + escapeHtml(message('dialogRemove', 'Retirer') + ' ' + label) + '">✕</button>'
+            + '</span>';
+        list.appendChild(li);
+        li.classList.add('is-new');
+        window.setTimeout(function () { li.classList.remove('is-new'); }, 900);
+        refreshSearchList(field);
+
+        if (textInput) {
+            textInput.value = '';
+            textInput.focus();
+        }
+
+        hideSearchResults(field);
+    }
+
+    function moveSearchItem(button) {
+        var li = button.closest('[data-value]');
+        var field = button.closest(SELECTOR_SEARCH_FIELD);
+        var action = button.getAttribute('data-smbb-search-item');
+
+        if (!li || !field) {
+            return;
+        }
+
+        if (action === 'up' && li.previousElementSibling) {
+            li.parentNode.insertBefore(li, li.previousElementSibling);
+            button.focus();
+        } else if (action === 'down' && li.nextElementSibling) {
+            li.parentNode.insertBefore(li.nextElementSibling, li);
+            button.focus();
+        } else if (action === 'remove') {
+            var next = li.nextElementSibling || li.previousElementSibling;
+            li.remove();
+
+            var focus = next ? next.querySelector('[data-smbb-search-item="remove"]') : field.querySelector('[data-smbb-search-text]');
+
+            if (focus) {
+                focus.focus();
+            }
+        }
+
+        refreshSearchList(field);
+    }
+
+    function refreshSearchList(field) {
+        var list = field.querySelector('[data-smbb-search-list]');
+        var empty = field.querySelector('[data-smbb-search-list-empty]');
+
+        if (empty && list) {
+            empty.hidden = list.children.length > 0;
+        }
+
+        if (typeof markDirty === 'function') {
+            markDirty(field.closest('form'));
+        }
     }
 
     function currentSelectionLabel(field) {
@@ -792,9 +1006,14 @@
                 break;
 
             case 'remove':
-                if (item && window.confirm(message('confirmRemove', 'Remove this item?'))) {
-                    item.remove();
-                    reindexRepeater(repeater);
+                if (item) {
+                    ask(message('confirmRemove', 'Retirer cet élément ?'), { danger: true, confirmLabel: message('dialogRemove', 'Retirer') }).then(function (ok) {
+                        if (ok) {
+                            item.remove();
+                            reindexRepeater(repeater);
+                            markDirty(repeater.closest('form'));
+                        }
+                    });
                 }
                 break;
 
@@ -835,10 +1054,13 @@
                 break;
 
             case 'clear':
-                if (window.confirm(message('confirmClear', 'Remove all items?'))) {
-                    itemsContainer(repeater).innerHTML = '';
-                    reindexRepeater(repeater);
-                }
+                ask(message('confirmClear', 'Retirer tous les éléments ?'), { danger: true, confirmLabel: message('dialogRemove', 'Retirer') }).then(function (ok) {
+                    if (ok) {
+                        itemsContainer(repeater).innerHTML = '';
+                        reindexRepeater(repeater);
+                        markDirty(repeater.closest('form'));
+                    }
+                });
                 break;
         }
     }
@@ -1030,7 +1252,7 @@
         item.classList.toggle('is-collapsed', collapsed);
 
         if (toggle) {
-            var label = collapsed ? message('expand', 'Expand') : message('collapse', 'Collapse');
+            var label = collapsed ? message('expand', 'Déplier') : message('collapse', 'Replier');
             var icon = toggle.querySelector('.dashicons');
             var text = toggle.querySelector('.screen-reader-text');
 
@@ -1121,4 +1343,514 @@
     function message(key, fallback) {
         return translations[key] || fallback;
     }
+
+    /* ======================================================================
+     * Confort d'usage (2026-11) : confirmation, modifications non enregistrées,
+     * notifications, erreurs, lignes cliquables, liste mémorisée, raccourcis.
+     * ====================================================================== */
+
+    var dialog = null;
+
+    /**
+     * Confirmation dans une vraie fenêtre. Renvoie une promesse (true = confirmé).
+     * Repli sur window.confirm si <dialog> n'est pas pris en charge.
+     */
+    function ask(text, options) {
+        options = options || {};
+
+        if (typeof HTMLDialogElement !== 'function') {
+            return Promise.resolve(window.confirm(text));
+        }
+
+        if (!dialog) {
+            dialog = document.createElement('dialog');
+            dialog.className = 'smbb-ui-dialog';
+            dialog.innerHTML = '<form method="dialog" class="smbb-ui-dialog-card">'
+                + '<div class="smbb-ui-dialog-icon" aria-hidden="true">!</div>'
+                + '<p class="smbb-ui-dialog-title"></p><p class="smbb-ui-dialog-text"></p>'
+                + '<div class="smbb-ui-dialog-actions"><button value="cancel" class="is-cancel"></button><button value="ok" class="is-confirm"></button></div></form>';
+            document.body.appendChild(dialog);
+        }
+
+        dialog.querySelector('.smbb-ui-dialog-title').textContent = text;
+        dialog.querySelector('.smbb-ui-dialog-text').textContent = options.subject ? '« ' + options.subject + ' »' : '';
+        dialog.querySelector('.smbb-ui-dialog-text').hidden = !options.subject;
+        dialog.querySelector('.smbb-ui-dialog-icon').hidden = !options.danger;
+        dialog.querySelector('.is-cancel').textContent = message('dialogCancel', 'Annuler');
+        dialog.querySelector('.is-confirm').textContent = options.confirmLabel || (options.danger ? message('dialogDelete', 'Supprimer') : message('dialogConfirm', 'Confirmer'));
+        dialog.querySelector('.is-confirm').style.background = options.danger ? '' : '#0a66d8';
+
+        return new Promise(function (resolve) {
+            dialog.returnValue = '';
+            dialog.addEventListener('close', function onClose() {
+                dialog.removeEventListener('close', onClose);
+                resolve(dialog.returnValue === 'ok');
+            });
+            dialog.showModal();
+            dialog.querySelector(options.danger ? '.is-cancel' : '.is-confirm').focus();
+        });
+    }
+
+    /** Nom de l'élément concerné (cellule principale de la ligne), pour la confirmation. */
+    function rowSubject(element) {
+        var row = element.closest('tr');
+        var primary = row ? row.querySelector('.smbb-codetool-primary-cell-link') : null;
+
+        return primary ? primary.textContent.trim() : '';
+    }
+
+    window.SmbbCodeToolUi = { confirm: ask, toast: toast };
+
+    /* ---------- Formulaires : modifications non enregistrées ---------- */
+
+    function editForms() {
+        return Array.prototype.filter.call(document.querySelectorAll('.wrap.smbb-codetool form[method="post"], .wrap.smbb-codetool form[method="POST"]'), function (form) {
+            return !form.matches(SELECTOR_BATCH_FORM) && !!form.querySelector('p.submit');
+        });
+    }
+
+    function markDirty(form) {
+        if (form && form.hasAttribute('data-smbb-tracked') && !form.classList.contains('is-dirty')) {
+            form.classList.add('is-dirty');
+        }
+    }
+
+    function initEditForm(form) {
+        form.setAttribute('data-smbb-tracked', '1');
+        var bar = form.querySelector('p.submit:last-of-type') || form.querySelector('p.submit');
+
+        if (bar && !bar.querySelector('.smbb-ui-dirty')) {
+            var dirty = document.createElement('span');
+            dirty.className = 'smbb-ui-dirty';
+            dirty.textContent = message('unsaved', 'Modifications non enregistrées');
+            bar.insertBefore(dirty, bar.firstChild);
+            var hint = document.createElement('kbd');
+            hint.textContent = /Mac|iPhone|iPad/.test(navigator.platform) ? '⌘S' : 'Ctrl+S';
+            bar.appendChild(hint);
+        }
+
+        ['input', 'change'].forEach(function (name) {
+            form.addEventListener(name, function (event) {
+                if (event.target && event.target.closest && event.target.closest('[data-smbb-search-field] input[type="search"]')) {
+                    return;
+                }
+
+                markDirty(form);
+                clearFieldError(event.target);
+            });
+        });
+
+        form.addEventListener('submit', function (event) {
+            if (event.defaultPrevented) {
+                return;
+            }
+
+            form.classList.remove('is-dirty');
+            busy(event.submitter || form.querySelector('[type="submit"]'), form);
+        });
+    }
+
+    window.addEventListener('beforeunload', function (event) {
+        var dirty = editForms().some(function (form) {
+            return form.classList.contains('is-dirty');
+        });
+
+        if (dirty) {
+            event.preventDefault();
+            event.returnValue = '';
+        }
+    });
+
+    /** Bouton en chargement ; un second envoi du même formulaire est ignoré. */
+    function busy(button, form) {
+        if (form) {
+            if (form.getAttribute('data-smbb-submitting') === '1') {
+                return false;
+            }
+
+            form.setAttribute('data-smbb-submitting', '1');
+            window.setTimeout(function () {
+                form.removeAttribute('data-smbb-submitting');
+            }, 8000);
+        }
+
+        if (button && button.classList) {
+            button.classList.add('is-busy');
+            window.setTimeout(function () {
+                button.classList.remove('is-busy');
+            }, 8000);
+        }
+
+        return true;
+    }
+
+    document.addEventListener('submit', function (event) {
+        var form = event.target;
+
+        if (!form.closest || !form.closest('.wrap.smbb-codetool') || form.hasAttribute('data-smbb-tracked')) {
+            return;
+        }
+
+        // Autres formulaires (recherche, filtres, actions groupées) : pas de double envoi.
+        if (!event.defaultPrevented && form.getAttribute('data-smbb-submitting') === '1') {
+            event.preventDefault();
+            return;
+        }
+
+        window.setTimeout(function () {
+            if (!event.defaultPrevented) {
+                busy(event.submitter, form);
+            }
+        }, 0);
+    });
+
+    /* ---------- Erreurs de saisie ---------- */
+
+    function clearFieldError(control) {
+        var field = control && control.closest ? control.closest('.smbb-codetool-field.has-error') : null;
+
+        if (!field) {
+            return;
+        }
+
+        field.classList.remove('has-error');
+        field.querySelectorAll('[aria-invalid]').forEach(function (input) {
+            input.removeAttribute('aria-invalid');
+        });
+        var error = field.querySelector('.smbb-codetool-field-error');
+
+        if (error) {
+            error.remove();
+        }
+    }
+
+    function revealFirstError() {
+        var field = document.querySelector('.wrap.smbb-codetool .smbb-codetool-field.has-error');
+
+        if (!field) {
+            return;
+        }
+
+        // Le champ peut être dans un onglet masqué : on ouvre cet onglet d'abord.
+        var panel = field.closest('.smbb-codetool-tab-panel');
+
+        if (panel && panel.id) {
+            var button = document.querySelector('[aria-controls="' + panel.id + '"]');
+
+            if (button && !button.classList.contains('is-active')) {
+                button.click();
+            }
+        }
+
+        window.setTimeout(function () {
+            field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            var control = field.querySelector('input:not([type="hidden"]), select, textarea');
+
+            if (control) {
+                control.focus({ preventScroll: true });
+            }
+        }, 60);
+    }
+
+    /* ---------- Notifications ---------- */
+
+    function toastHost() {
+        var host = document.querySelector('.smbb-ui-toasts');
+
+        if (!host) {
+            host = document.createElement('div');
+            host.className = 'smbb-ui-toasts' + (document.querySelector('.wrap.smbb-codetool .form_container p.submit') ? ' has-savebar' : '');
+            host.setAttribute('role', 'status');
+            host.setAttribute('aria-live', 'polite');
+            document.body.appendChild(host);
+        }
+
+        return host;
+    }
+
+    function toast(text, tone) {
+        var item = document.createElement('div');
+        item.className = 'smbb-ui-toast' + (tone === 'info' ? ' is-info' : '');
+        item.textContent = text;
+        toastHost().appendChild(item);
+        window.setTimeout(function () {
+            item.classList.add('is-leaving');
+            window.setTimeout(function () {
+                item.remove();
+            }, 300);
+        }, 3800);
+    }
+
+    /** Les confirmations simples (succès, info sans détail) deviennent des notifications. */
+    function noticesToToasts() {
+        document.querySelectorAll('.wrap.smbb-codetool .smbb-codetool-notice.is-success, .wrap.smbb-codetool .smbb-codetool-notice.is-info').forEach(function (notice) {
+            if (notice.querySelector('.smbb-codetool-notice-list, a, form, pre, code')) {
+                return;
+            }
+
+            var text = notice.textContent.trim();
+
+            if (!text) {
+                return;
+            }
+
+            toast(text, notice.classList.contains('is-info') ? 'info' : 'success');
+            var wrapper = notice.parentNode;
+            notice.remove();
+
+            if (wrapper && wrapper.classList.contains('smbb-codetool-notices') && !wrapper.children.length) {
+                wrapper.remove();
+            }
+        });
+    }
+
+    /* ---------- Listes : lignes cliquables, état mémorisé ---------- */
+
+    var LIST_KEYS = ['s', 'filter', 'orderby', 'order', 'paged', 'per_page'];
+
+    function listKey() {
+        var page = new URLSearchParams(window.location.search).get('page');
+
+        return page ? 'smbb-codetool-list:' + page : '';
+    }
+
+    function listState(search) {
+        var params = new URLSearchParams(search);
+        var kept = new URLSearchParams();
+
+        params.forEach(function (value, key) {
+            var base = key.replace(/\[.*$/, '');
+
+            if (LIST_KEYS.indexOf(base) > -1 && value !== '') {
+                kept.append(key, value);
+            }
+        });
+
+        return kept.toString();
+    }
+
+    function storage() {
+        try {
+            return window.localStorage;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    /**
+     * Retour sur une liste sans paramètres : on restaure la recherche, le filtre,
+     * le tri et la page précédents. « Effacer le filtre » oublie cet état.
+     */
+    /**
+     * Mode « back » : on ne restaure la liste qu'au retour d'une fiche (vue détail ou formulaire)
+     * de la même ressource. Un clic sur le menu depuis ailleurs repart de la liste complète.
+     */
+    function comingBackFromItem() {
+        var referrer;
+
+        try {
+            referrer = new URL(document.referrer);
+        } catch (e) {
+            return false;
+        }
+
+        if (referrer.origin !== window.location.origin) {
+            return false;
+        }
+
+        var from = referrer.searchParams;
+        var view = from.get('view');
+
+        return from.get('page') === new URLSearchParams(window.location.search).get('page') && !!view && view !== 'list';
+    }
+
+    function rememberList() {
+        var key = listKey();
+        var store = storage();
+        var params = new URLSearchParams(window.location.search);
+
+        if (!key || !store || !document.querySelector('.wrap.smbb-codetool .smbb-codetool-table') || (params.get('view') && params.get('view') !== 'list')) {
+            return false;
+        }
+
+        var current = listState(window.location.search);
+        var wrap = document.querySelector('.wrap.smbb-codetool[data-smbb-list-remember]');
+        var mode = wrap ? wrap.getAttribute('data-smbb-list-remember') : 'always';
+
+        if (mode === 'never') {
+            try {
+                store.removeItem(key);
+            } catch (e) {
+                // ignoré
+            }
+
+            return false;
+        }
+
+        if (current === '' && params.get('smbb_list') !== 'reset' && (mode !== 'back' || comingBackFromItem())) {
+            var saved = '';
+
+            try {
+                saved = store.getItem(key) || '';
+            } catch (e) {
+                saved = '';
+            }
+
+            if (saved !== '') {
+                window.location.replace(window.location.pathname + window.location.search + '&' + saved);
+                return true;
+            }
+        }
+
+        try {
+            if (current === '') {
+                store.removeItem(key);
+            } else {
+                store.setItem(key, current);
+            }
+        } catch (e) {
+            // Stockage indisponible (navigation privée) : rien à mémoriser.
+        }
+
+        return false;
+    }
+
+    document.addEventListener('click', function (event) {
+        var reset = event.target.closest('[data-smbb-list-reset]');
+
+        if (reset) {
+            var store = storage();
+
+            try {
+                if (store && listKey()) {
+                    store.removeItem(listKey());
+                }
+            } catch (e) {
+                // ignoré
+            }
+
+            return;
+        }
+
+        var row = event.target.closest('.wrap.smbb-codetool .smbb-codetool-table tbody tr.is-clickable');
+
+        if (!row || event.target.closest('a, button, input, select, textarea, label, .row-actions')) {
+            return;
+        }
+
+        if (window.getSelection && String(window.getSelection()).length > 0) {
+            return;
+        }
+
+        var link = row.querySelector('.smbb-codetool-primary-cell-link');
+
+        if (event.metaKey || event.ctrlKey) {
+            window.open(link.href, '_blank');
+        } else {
+            window.location.href = link.href;
+        }
+    });
+
+    function clickableRows() {
+        document.querySelectorAll('.wrap.smbb-codetool .smbb-codetool-table tbody tr').forEach(function (row) {
+            if (row.querySelector('.smbb-codetool-primary-cell-link')) {
+                row.classList.add('is-clickable');
+            }
+        });
+    }
+
+    /* ---------- Raccourcis clavier ---------- */
+
+    document.addEventListener('keydown', function (event) {
+        var typing = event.target.closest && event.target.closest('input, textarea, select, [contenteditable="true"]');
+
+        if ((event.metaKey || event.ctrlKey) && !event.altKey && event.key.toLowerCase() === 's') {
+            var form = editForms()[0];
+
+            if (!form) {
+                return;
+            }
+
+            event.preventDefault();
+            var button = form.querySelector('p.submit [type="submit"]') || form.querySelector('[type="submit"]');
+
+            if (form.requestSubmit) {
+                form.requestSubmit(button || undefined);
+            } else if (button) {
+                button.click();
+            }
+
+            return;
+        }
+
+        if (event.key === '/' && !typing && !event.metaKey && !event.ctrlKey && !event.altKey) {
+            var search = document.querySelector('.wrap.smbb-codetool #smbb-codetool-search-input, .wrap.smbb-codetool .smbb-codetool-search-form input[type="search"]');
+
+            if (search) {
+                event.preventDefault();
+                search.focus();
+                search.select();
+            }
+        }
+    });
+
+    /* ---------- Champs secrets et copie ---------- */
+
+    document.addEventListener('click', function (event) {
+        var toggle = event.target.closest('[data-smbb-secret-toggle]');
+
+        if (toggle) {
+            var input = document.getElementById(toggle.getAttribute('aria-controls'));
+
+            if (input) {
+                var show = input.type === 'password';
+                input.type = show ? 'text' : 'password';
+                toggle.setAttribute('aria-pressed', show ? 'true' : 'false');
+                toggle.setAttribute('aria-label', toggle.getAttribute(show ? 'data-label-hide' : 'data-label-show'));
+                toggle.querySelector('.dashicons').className = 'dashicons ' + (show ? 'dashicons-hidden' : 'dashicons-visibility');
+            }
+
+            return;
+        }
+
+        var confirmSubmit = event.target.closest('[data-smbb-confirm-submit]');
+
+        if (confirmSubmit && !confirmSubmit.hasAttribute('data-smbb-confirmed')) {
+            event.preventDefault();
+            ask(confirmSubmit.getAttribute('data-smbb-confirm-submit'), { confirmLabel: confirmSubmit.textContent.trim() }).then(function (ok) {
+                if (ok) {
+                    confirmSubmit.setAttribute('data-smbb-confirmed', '1');
+                    confirmSubmit.click();
+                }
+            });
+
+            return;
+        }
+
+        var copy = event.target.closest('[data-smbb-copy]');
+
+        if (copy) {
+            var source = document.getElementById(copy.getAttribute('data-smbb-copy'));
+            var text = source ? (source.value !== undefined ? source.value : source.textContent) : '';
+
+            if (text && navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(function () {
+                    toast(copy.getAttribute('data-copied') || 'Copié', 'success');
+                });
+            } else if (source && source.select) {
+                source.select();
+            }
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        if (rememberList()) {
+            return;
+        }
+
+        editForms().forEach(initEditForm);
+        clickableRows();
+        noticesToToasts();
+        revealFirstError();
+    });
 }());

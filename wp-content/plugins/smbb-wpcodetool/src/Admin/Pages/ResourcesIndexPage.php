@@ -22,8 +22,8 @@ final class ResourcesIndexPage extends AbstractAdminPage
         <div class="wrap smbb-codetool">
             <?php
             echo $manager->pageIntroHtml(
-                __('CodeTool resources', 'smbb-wpcodetool'),
-                __('Inspect detected resources, database status, and schema preview actions.', 'smbb-wpcodetool'),
+                __('Ressources CodeTool', 'smbb-wpcodetool'),
+                __('Consultez les ressources détectées, l\'état de la base et l\'aperçu du schéma.', 'smbb-wpcodetool'),
                 'dashicons-editor-code',
                 array(
                     $manager->runtimeNoticesHtml(),
@@ -34,10 +34,10 @@ final class ResourcesIndexPage extends AbstractAdminPage
 
             <?php $manager->renderSchemaPreview($schema_preview); ?>
 
-            <h2><?php esc_html_e('Detected resources', 'smbb-wpcodetool'); ?></h2>
+            <h2><?php esc_html_e('Ressources détectées', 'smbb-wpcodetool'); ?></h2>
 
             <?php if (!$resource_groups) : ?>
-                <p><?php esc_html_e('No active plugin exposes a codetool/models directory yet.', 'smbb-wpcodetool'); ?></p>
+                <p><?php esc_html_e('Aucun plugin actif ne fournit encore de dossier codetool/models.', 'smbb-wpcodetool'); ?></p>
             <?php else : ?>
                 <div class="smbb-codetool-resource-groups">
                     <?php foreach ($resource_groups as $group) : ?>
@@ -53,7 +53,7 @@ final class ResourcesIndexPage extends AbstractAdminPage
                                     <?php
                                     echo esc_html(
                                         sprintf(
-                                            _n('%d resource', '%d resources', count($group['resources']), 'smbb-wpcodetool'),
+                                            _n('%d ressource', '%d ressources', count($group['resources']), 'smbb-wpcodetool'),
                                             count($group['resources'])
                                         )
                                     );
@@ -64,12 +64,12 @@ final class ResourcesIndexPage extends AbstractAdminPage
                             <table class="widefat striped smbb-codetool-table">
                                 <thead>
                                     <tr>
-                                        <th><?php esc_html_e('Resource', 'smbb-wpcodetool'); ?></th>
-                                        <th><?php esc_html_e('Storage', 'smbb-wpcodetool'); ?></th>
-                                        <th><?php esc_html_e('Database', 'smbb-wpcodetool'); ?></th>
+                                        <th><?php esc_html_e('Ressource', 'smbb-wpcodetool'); ?></th>
+                                        <th><?php esc_html_e('Stockage', 'smbb-wpcodetool'); ?></th>
+                                        <th><?php esc_html_e('Base de données', 'smbb-wpcodetool'); ?></th>
                                         <th><?php esc_html_e('Admin', 'smbb-wpcodetool'); ?></th>
                                         <th><?php esc_html_e('Menu', 'smbb-wpcodetool'); ?></th>
-                                        <th><?php esc_html_e('Model file', 'smbb-wpcodetool'); ?></th>
+                                        <th><?php esc_html_e('Fichier de modèle', 'smbb-wpcodetool'); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -103,12 +103,12 @@ final class ResourcesIndexPage extends AbstractAdminPage
             <?php endif; ?>
 
             <?php if ($errors) : ?>
-                <h2><?php esc_html_e('Scan and validation errors', 'smbb-wpcodetool'); ?></h2>
+                <h2><?php esc_html_e('Erreurs de lecture et de validation', 'smbb-wpcodetool'); ?></h2>
                 <table class="widefat striped smbb-codetool-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('File', 'smbb-wpcodetool'); ?></th>
-                            <th><?php esc_html_e('Error', 'smbb-wpcodetool'); ?></th>
+                            <th><?php esc_html_e('Fichier', 'smbb-wpcodetool'); ?></th>
+                            <th><?php esc_html_e('Erreur', 'smbb-wpcodetool'); ?></th>
                         </tr>
                     </thead>
                     <tbody>

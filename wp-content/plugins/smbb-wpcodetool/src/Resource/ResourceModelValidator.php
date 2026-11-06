@@ -67,6 +67,18 @@ final class ResourceModelValidator
 
         if (isset($data['admin']) && !is_array($data['admin'])) {
             $errors[] = $this->error($file, 'Le bloc "admin" doit etre un objet JSON.');
+        } else {
+            if (isset($data['admin']['list']['batchActions'])) {
+                $errors = array_merge($errors, $this->validateBatchActions($data['admin']['list']['batchActions'], $file));
+            }
+
+            if (isset($data['admin']['list']['presets'])) {
+                $errors = array_merge($errors, $this->validatePresets($data['admin']['list']['presets'], $file));
+            }
+
+            if (isset($data['admin']['list']['remember']) && !in_array($data['admin']['list']['remember'], array('back', 'always', 'never', true, false), true)) {
+                $errors[] = $this->error($file, 'Le champ "admin.list.remember" doit valoir "back", "always" ou "never".');
+            }
         }
 
         if (isset($data['hooks']) && !is_array($data['hooks'])) {
@@ -279,6 +291,116 @@ final class ResourceModelValidator
     /**
      * @return array<string,string>
      */
+    /**
+     * admin.list.batchActions : { cle: "Libelle" | false | { label, method?, confirm?, capability?, danger? } }.
+     *
+     * @return array<int,array<string,string>>
+     */
+    /**
+     * admin.list.presets : {"all": "Tous" | false, "items": [{label, filter: {field, operator, value}, count}]} ou directement la liste.
+     */
+    private function validatePresets($presets, $file)
+    {
+        if (!is_array($presets)) {
+            return array($this->error($file, 'Le champ "admin.list.presets" doit etre un objet ou une liste.'));
+        }
+
+        $items = $presets && array_keys($presets) === range(0, count($presets) - 1) ? $presets : (isset($presets['items']) ? $presets['items'] : array());
+        $errors = array();
+
+        if (isset($presets['all']) && $presets['all'] !== false && !is_string($presets['all'])) {
+            $errors[] = $this->error($file, '"admin.list.presets.all" doit etre un libelle ou false.');
+        }
+
+        if (!is_array($items)) {
+            return array_merge($errors, array($this->error($file, '"admin.list.presets.items" doit etre une liste.')));
+        }
+
+        foreach ($items as $index => $item) {
+            $label = 'admin.list.presets.items[' . $index . ']';
+
+            if (!is_array($item) || empty($item['label']) || !is_string($item['label'])) {
+                $errors[] = $this->error($file, '"' . $label . '.label" est obligatoire.');
+                continue;
+            }
+
+            if (empty($item['filter']) || !is_array($item['filter']) || empty($item['filter']['field'])) {
+                $errors[] = $this->error($file, '"' . $label . '.filter.field" est obligatoire (champ declare dans admin.list.filters).');
+            }
+        }
+
+        return $errors;
+    }
+
+    private function validateBatchActions($actions, $file)
+    {
+        if (!is_array($actions) || ($actions && array_keys($actions) === range(0, count($actions) - 1))) {
+            return array($this->error($file, 'Le champ "admin.list.batchActions" doit etre un objet JSON (cle => action).'));
+        }
+
+        $errors = array();
+
+        foreach ($actions as $key => $action) {
+            $label = 'admin.list.batchActions.' . $key;
+
+            if (sanitize_key((string) $key) !== (string) $key || (string) $key === '') {
+                $errors[] = $this->error($file, 'La cle "' . $label . '" doit etre en minuscules, chiffres, - ou _.');
+                continue;
+            }
+
+            if ($action === false) {
+                if (!in_array($key, array('delete', 'duplicate'), true)) {
+                    $errors[] = $this->error($file, '"' . $label . '" : false ne sert qu\'a retirer "delete" ou "duplicate".');
+                }
+
+                continue;
+            }
+
+            if (is_string($action)) {
+                if (trim($action) === '') {
+                    $errors[] = $this->error($file, '"' . $label . '" : le libelle est vide.');
+                }
+
+                continue;
+            }
+
+            if (!is_array($action)) {
+                $errors[] = $this->error($file, '"' . $label . '" doit etre un libelle, false ou un objet.');
+                continue;
+            }
+
+            if (empty($action['label']) || !is_string($action['label'])) {
+                $errors[] = $this->error($file, '"' . $label . '.label" est obligatoire.');
+            }
+
+            if (in_array($key, array('delete', 'duplicate'), true)) {
+                $errors[] = $this->error($file, '"' . $label . '" : les actions integrees ne se redefinissent pas (seulement false pour les retirer).');
+            }
+
+            if (isset($action['method']) && (!is_string($action['method']) || !preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $action['method']))) {
+                $errors[] = $this->error($file, '"' . $label . '.method" doit etre un nom de methode PHP.');
+            }
+
+            foreach (array('confirm', 'capability') as $field) {
+                if (isset($action[$field]) && !is_string($action[$field])) {
+                    $errors[] = $this->error($file, '"' . $label . '.' . $field . '" doit etre une chaine.');
+                }
+            }
+
+            if (isset($action['danger']) && !is_bool($action['danger'])) {
+                $errors[] = $this->error($file, '"' . $label . '.danger" doit etre true ou false.');
+            }
+
+            foreach (array_keys($action) as $field) {
+                if (!in_array($field, array('label', 'method', 'confirm', 'capability', 'danger'), true)) {
+                    $errors[] = $this->error($file, '"' . $label . '" : propriete inconnue "' . $field . '".');
+                }
+            }
+        }
+
+        return $errors;
+    }
+
     private function error($file, $message)
     {
         return array(

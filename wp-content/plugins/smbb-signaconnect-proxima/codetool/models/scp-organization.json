@@ -1,0 +1,376 @@
+{
+  "name": "scp_organization",
+  "label": "Organisation",
+  "pluralLabel": "Organisations",
+  "description": "Clients SignaConnect : réglages stratégiques, connexions et facturation.",
+  "storage": {
+    "table": "scp_organization",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "name": {
+      "type": "varchar",
+      "length": 190,
+      "nullable": false,
+      "default": ""
+    },
+    "status": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "active"
+    },
+    "city": {
+      "type": "varchar",
+      "length": 120,
+      "nullable": true
+    },
+    "logo_attachment_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "stamp_attachment_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "brand_color": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "#db1f26"
+    },
+    "allowed_levels": {
+      "type": "json",
+      "nullable": true
+    },
+    "level_usage_internal": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": true
+    },
+    "level_usage_simple": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": true
+    },
+    "level_usage_qualified": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": true
+    },
+    "default_level": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "internal"
+    },
+    "simple_auth_means": {
+      "type": "varchar",
+      "length": 10,
+      "nullable": false,
+      "default": "sms"
+    },
+    "send_validity_days": {
+      "type": "int",
+      "unsigned": true,
+      "nullable": false,
+      "default": 14
+    },
+    "reminder_days": {
+      "type": "varchar",
+      "length": 100,
+      "nullable": false,
+      "default": "2,5,10"
+    },
+    "default_send_message": {
+      "type": "text",
+      "nullable": true
+    },
+    "internal_channels": {
+      "type": "json",
+      "nullable": true
+    },
+    "ai_detection_enabled": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "universign_mode": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "smbb_workspace"
+    },
+    "universign_api_key": {
+      "type": "varchar",
+      "length": 1000,
+      "nullable": true,
+      "secret": true
+    },
+    "universign_workspace_id": {
+      "type": "varchar",
+      "length": 100,
+      "nullable": true
+    },
+    "universign_environment": {
+      "type": "varchar",
+      "length": 10,
+      "nullable": false,
+      "default": "preprod"
+    },
+    "webhook_key": {
+      "type": "varchar",
+      "length": 64,
+      "nullable": true
+    },
+    "webhook_last_received_at": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "openai_api_key": {
+      "type": "varchar",
+      "length": 1000,
+      "nullable": true,
+      "secret": true
+    },
+    "openai_model": {
+      "type": "varchar",
+      "length": 100,
+      "nullable": true
+    },
+    "twilio_sid": {
+      "type": "varchar",
+      "length": 100,
+      "nullable": true
+    },
+    "twilio_token": {
+      "type": "varchar",
+      "length": 1000,
+      "nullable": true,
+      "secret": true
+    },
+    "twilio_from": {
+      "type": "varchar",
+      "length": 40,
+      "nullable": true
+    },
+    "s3_endpoint": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": true
+    },
+    "s3_region": {
+      "type": "varchar",
+      "length": 100,
+      "nullable": true
+    },
+    "s3_bucket": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": true
+    },
+    "s3_access_key": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": true
+    },
+    "s3_secret_key": {
+      "type": "varchar",
+      "length": 1000,
+      "nullable": true,
+      "secret": true
+    },
+    "s3_prefix": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": true
+    },
+    "s3_path_style": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 1
+    },
+    "copy_universign_to_s3": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "retention_months": {
+      "type": "int",
+      "unsigned": true,
+      "nullable": false,
+      "default": 36
+    },
+    "billing_company_name": {
+      "type": "varchar",
+      "length": 190,
+      "nullable": true
+    },
+    "billing_address": {
+      "type": "text",
+      "nullable": true
+    },
+    "billing_siret": {
+      "type": "varchar",
+      "length": 30,
+      "nullable": true
+    },
+    "billing_vat_number": {
+      "type": "varchar",
+      "length": 30,
+      "nullable": true
+    },
+    "billing_email": {
+      "type": "varchar",
+      "length": 190,
+      "nullable": true
+    },
+    "customer_reference": {
+      "type": "varchar",
+      "length": 100,
+      "nullable": true
+    },
+    "fixed_monthly_fee": {
+      "type": "decimal",
+      "precision": 10,
+      "scale": 2,
+      "unsigned": true,
+      "nullable": false,
+      "default": "0.00"
+    },
+    "default_plan_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "discount_subscription_pct": {
+      "type": "decimal",
+      "precision": 5,
+      "scale": 2,
+      "unsigned": true,
+      "nullable": false,
+      "default": "0.00"
+    },
+    "discount_overage_pct": {
+      "type": "decimal",
+      "precision": 5,
+      "scale": 2,
+      "unsigned": true,
+      "nullable": false,
+      "default": "0.00"
+    },
+    "creation_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "create_datetime"
+    },
+    "creation_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "create_user"
+    },
+    "lastupdate_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "update_datetime"
+    },
+    "lastupdate_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "update_user"
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_name",
+      "type": "index",
+      "columns": [
+        "name"
+      ]
+    },
+    {
+      "name": "idx_status",
+      "type": "index",
+      "columns": [
+        "status"
+      ]
+    },
+    {
+      "name": "idx_webhook_key",
+      "type": "index",
+      "columns": [
+        "webhook_key"
+      ]
+    }
+  ],
+  "hooks": {
+    "file": "hooks/OrganizationHooks.php",
+    "class": "Smbb\\SignConnectProxima\\CodeTool\\OrganizationHooks"
+  },
+  "admin": {
+    "enabled": true,
+    "capability": "manage_options",
+    "menu": {
+      "placement": "submenu",
+      "parent": "smbb-codetool-scp",
+      "title": "Organisations",
+      "icon": "dashicons-building",
+      "position": 10
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "list": {
+      "perPage": 25,
+      "search": {
+        "enabled": true,
+        "provider": "default",
+        "fields": [
+          "name",
+          "billing_company_name",
+          "customer_reference"
+        ],
+        "mode": "or",
+        "placeholder": "Rechercher"
+      },
+      "filters": {
+        "enabled": true,
+        "fields": [
+          {
+            "field": "status",
+            "label": "Statut",
+            "operators": [
+              "eq"
+            ]
+          }
+        ]
+      },
+      "defaultOrder": {
+        "by": "name",
+        "direction": "asc"
+      }
+    },
+    "views": {
+      "list": "views/scp-organization/list.php",
+      "form": "views/scp-organization/form.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

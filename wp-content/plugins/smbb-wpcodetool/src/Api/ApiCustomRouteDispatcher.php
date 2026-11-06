@@ -31,7 +31,7 @@ final class ApiCustomRouteDispatcher
         $routes = $resource->apiCustomRoutes();
 
         if (!isset($routes[$name])) {
-            return $this->api->error('missing_route', __('Unknown custom route.', 'smbb-wpcodetool'), 500);
+            return $this->api->error('missing_route', __('Route personnalisée inconnue.', 'smbb-wpcodetool'), 500);
         }
 
         $route = $routes[$name];
@@ -42,13 +42,13 @@ final class ApiCustomRouteDispatcher
         }
 
         if (!class_exists($route['class'])) {
-            return $this->api->error('missing_class', __('The custom API class could not be loaded.', 'smbb-wpcodetool'), 500);
+            return $this->api->error('missing_class', __('La classe d\'API personnalisée n\'a pas pu être chargée.', 'smbb-wpcodetool'), 500);
         }
 
         $instance = $this->instanceFor($resource, $name, $route['class']);
 
         if (!$instance || !is_callable(array($instance, $route['callback']))) {
-            return $this->api->error('missing_callback', __('The custom API callback is not callable.', 'smbb-wpcodetool'), 500);
+            return $this->api->error('missing_callback', __('Le callback d\'API personnalisé n\'est pas appelable.', 'smbb-wpcodetool'), 500);
         }
 
         return call_user_func(array($instance, $route['callback']), $request, array(

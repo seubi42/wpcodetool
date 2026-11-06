@@ -1,0 +1,535 @@
+/* Tomo – fiche produit d'un atelier et onglet « Mes ateliers ». Styles volontairement sobres pour suivre le thème. */
+
+.tomo-dates {
+    border: 0;
+    margin: 0 0 1.25em;
+    padding: 0;
+    width: 100%;
+}
+
+.tomo-dates legend,
+.tomo-seats-label,
+.tomo-participants-title {
+    font-weight: 600;
+    margin: 0 0 .5em;
+    padding: 0;
+}
+
+.tomo-date {
+    align-items: center;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .25em .75em;
+    margin: 0 0 .5em;
+    padding: .65em .85em;
+}
+
+.tomo-date:hover {
+    border-color: rgba(0, 0, 0, .35);
+}
+
+.tomo-date input {
+    margin: 0;
+}
+
+.tomo-date:has(input:checked) {
+    border-color: currentColor;
+    box-shadow: 0 0 0 1px currentColor;
+}
+
+.tomo-date-when {
+    flex: 1 1 auto;
+    font-weight: 600;
+}
+
+.tomo-date-meta {
+    font-size: .9em;
+    opacity: .8;
+}
+
+.tomo-date.is-full {
+    cursor: not-allowed;
+    opacity: .55;
+}
+
+.tomo-participants {
+    clear: both;
+    margin: 1em 0;
+    width: 100%;
+}
+
+.tomo-participant {
+    border-top: 1px solid rgba(0, 0, 0, .1);
+    padding: .75em 0 .25em;
+}
+
+.tomo-participant-title {
+    font-size: .9em;
+    font-weight: 600;
+    margin: 0 0 .4em;
+}
+
+.tomo-participant-help {
+    font-size: .85em;
+    margin: -.25em 0 .5em;
+    opacity: .75;
+}
+
+.tomo-row {
+    display: grid;
+    gap: .5em 1em;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    margin-bottom: .5em;
+}
+
+.tomo-participant label,
+.tomo-waitlist label {
+    display: block;
+    font-size: .9em;
+}
+
+.tomo-participant input,
+.tomo-participant select,
+.tomo-waitlist input,
+.tomo-waitlist select {
+    box-sizing: border-box;
+    display: block;
+    margin-top: .2em;
+    width: 100%;
+}
+
+.tomo-full {
+    margin-bottom: .5em;
+}
+
+.tomo-closed {
+    font-weight: 600;
+}
+
+.tomo-waitlist {
+    border: 1px dashed rgba(0, 0, 0, .25);
+    border-radius: 6px;
+    clear: both;
+    margin: 1em 0;
+    padding: .65em .85em;
+}
+
+.tomo-waitlist summary {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.tomo-waitlist-form {
+    margin-top: .75em;
+}
+
+/* Mon compte */
+.tomo-status {
+    border-radius: 999px;
+    display: inline-block;
+    font-size: .85em;
+    padding: .1em .65em;
+    white-space: nowrap;
+}
+
+.tomo-status--pending { background: #fff4d6; color: #7a5500; }
+.tomo-status--confirmed { background: #e3f4e8; color: #1e6b37; }
+.tomo-status--present { background: #e3eefb; color: #1d4f91; }
+.tomo-status--absent { background: #f6e7d8; color: #8a4b12; }
+.tomo-status--cancelled { background: #f1f1f1; color: #666; }
+
+.tomo-account-help {
+    font-size: .9em;
+    opacity: .8;
+}
+
+.tomo-account-past summary {
+    cursor: pointer;
+    font-weight: 600;
+    margin: 1em 0 .5em;
+}
+
+/* ---------- Shortcodes ---------- */
+
+.tomo-empty {
+    opacity: .75;
+}
+
+.tomo-facts {
+    font-size: .9em;
+    margin: 0 0 .75em;
+    opacity: .8;
+}
+
+.tomo-button {
+    white-space: nowrap;
+}
+
+/* Catalogue */
+.tomo-grid {
+    display: grid;
+    gap: 1.5em;
+    grid-template-columns: repeat(var(--tomo-columns, 3), minmax(0, 1fr));
+    margin: 0 0 1.5em;
+}
+
+@media (max-width: 900px) {
+    .tomo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 600px) {
+    .tomo-grid { grid-template-columns: 1fr; }
+}
+
+.tomo-card {
+    border: 1px solid rgba(0, 0, 0, .1);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.tomo-card-media img,
+.tomo-atelier-media img {
+    aspect-ratio: 4 / 3;
+    display: block;
+    height: auto;
+    object-fit: cover;
+    width: 100%;
+}
+
+.tomo-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 1em 1.1em 1.2em;
+}
+
+.tomo-card-title {
+    font-size: 1.15em;
+    margin: 0 0 .35em;
+}
+
+.tomo-card-title a {
+    text-decoration: none;
+}
+
+.tomo-card-excerpt {
+    margin: 0 0 .75em;
+}
+
+.tomo-card-next {
+    font-size: .9em;
+    font-weight: 600;
+    margin: auto 0 .75em;
+}
+
+.tomo-card-actions {
+    margin: 0;
+}
+
+/* Fiche atelier */
+.tomo-atelier {
+    display: grid;
+    gap: 2em;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    margin: 0 0 2em;
+}
+
+.tomo-atelier > .tomo-atelier-body:only-child {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 760px) {
+    .tomo-atelier { grid-template-columns: 1fr; gap: 1em; }
+}
+
+.tomo-atelier-title {
+    margin: 0 0 .3em;
+}
+
+.tomo-address {
+    font-size: .9em;
+    opacity: .8;
+}
+
+.tomo-dates-title {
+    margin: 1.25em 0 .5em;
+}
+
+/* Liste des dates */
+.tomo-date-list {
+    list-style: none;
+    margin: 0 0 1.5em;
+    padding: 0;
+}
+
+.tomo-date-item {
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5em 1em;
+    justify-content: space-between;
+    padding: .75em 0;
+}
+
+.tomo-date-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.tomo-date-atelier {
+    font-size: .85em;
+    opacity: .75;
+}
+
+.tomo-date-item .tomo-date-when {
+    font-weight: 600;
+}
+
+.tomo-date-item .tomo-date-meta {
+    font-size: .9em;
+}
+
+.tomo-date-item.is-full .tomo-date-when {
+    opacity: .6;
+}
+
+.tomo-seats-left { color: #1e6b37; }
+.tomo-seats-left.is-low { color: #8a5a00; font-weight: 600; }
+.tomo-seats-full { color: #a32020; font-weight: 600; }
+
+.tomo-waitlist-link {
+    font-size: .9em;
+}
+
+/* Calendrier */
+.tomo-calendar {
+    margin: 0 0 1.5em;
+}
+
+.tomo-calendar-head {
+    align-items: center;
+    display: flex;
+    gap: 1em;
+    justify-content: center;
+    margin-bottom: .75em;
+}
+
+.tomo-calendar-month {
+    font-size: 1.15em;
+    min-width: 10em;
+    text-align: center;
+}
+
+.tomo-calendar-nav {
+    font-size: 1.4em;
+    line-height: 1;
+    padding: 0 .4em;
+    text-decoration: none;
+}
+
+.tomo-calendar-nav.is-off {
+    opacity: .25;
+}
+
+.tomo-calendar-filter {
+    margin: 0 0 .75em;
+    text-align: center;
+}
+
+.tomo-calendar-grid {
+    display: grid;
+    gap: 4px;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.tomo-calendar-dow {
+    font-size: .8em;
+    font-weight: 600;
+    opacity: .7;
+    text-align: center;
+}
+
+.tomo-calendar-day {
+    background: rgba(0, 0, 0, .03);
+    border-radius: 6px;
+    min-height: 5.5em;
+    padding: .35em;
+}
+
+.tomo-calendar-day.is-blank {
+    background: transparent;
+}
+
+.tomo-calendar-num {
+    display: block;
+    font-size: .8em;
+    opacity: .7;
+}
+
+.tomo-calendar-dow-inline {
+    display: none;
+}
+
+.tomo-event {
+    background: #fff;
+    border-left: 3px solid var(--tomo-color, #2e9d52);
+    border-radius: 4px;
+    display: block;
+    font-size: .78em;
+    line-height: 1.3;
+    margin-top: .3em;
+    padding: .25em .4em;
+    text-decoration: none;
+}
+
+.tomo-event-time {
+    font-weight: 600;
+}
+
+.tomo-event-seats {
+    display: block;
+}
+
+.tomo-event.is-full {
+    opacity: .6;
+}
+
+/* Sur mobile : une liste des seuls jours avec des dates. */
+@media (max-width: 640px) {
+    .tomo-calendar-grid { display: block; }
+    .tomo-calendar-dow,
+    .tomo-calendar-day.is-blank,
+    .tomo-calendar-day:not(.has-events) { display: none; }
+    .tomo-calendar-day { margin-bottom: .5em; min-height: 0; }
+    .tomo-calendar-num { font-size: .9em; font-weight: 600; opacity: 1; }
+    .tomo-calendar-dow-inline { display: inline; text-transform: capitalize; }
+}
+
+.tomo-full-label {
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #9b1c1c;
+  white-space: nowrap;
+}
+
+/* Page de commande : réservations */
+.tomo-order-reservations { margin: 2em 0; }
+.tomo-order-reservations ul { list-style: none; margin: 0; padding: 0; }
+.tomo-order-reservations li { border: 1px solid rgba(0, 0, 0, .1); border-radius: 10px; margin: 0 0 .75em; padding: .9em 1.1em; line-height: 1.6; }
+.tomo-order-when { opacity: .8; }
+.tomo-order-links a { white-space: nowrap; }
+
+/* Étiquette de proximité devant une date : Aujourd'hui, Demain, Après-demain, J+n. */
+.tomo-day-tag {
+    display: inline-block;
+    padding: .05em .55em;
+    margin-right: .15em;
+    border-radius: 999px;
+    font-size: .8em;
+    font-weight: 700;
+    line-height: 1.6;
+    vertical-align: .08em;
+    white-space: nowrap;
+    background: #eef0f3;
+    color: #3c434a;
+}
+
+.tomo-day-tag--today { background: #c2410c; color: #fff; }
+.tomo-day-tag--tomorrow { background: #fde7d9; color: #9a3412; }
+.tomo-day-tag--soon { background: #fdf1e6; color: #9a3412; }
+
+.tomo-order-waiting {
+    color: #8a5a00;
+    font-size: .9em;
+}
+
+/* Boutons Wallet : toujours visibles, le bon appareil est mis en avant. */
+.tomo-wallets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.tomo-wallet { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; background: #000; color: #fff !important; font-size: .85em; font-weight: 600; line-height: 1.2; text-decoration: none !important; white-space: nowrap; }
+.tomo-wallet svg { width: 18px; height: 18px; flex: none; }
+.tomo-wallet--google { background: #1f1f1f; }
+.tomo-wallet.is-unavailable { opacity: .45; }
+.tomo-wallet.is-suggested { box-shadow: 0 0 0 2px rgba(0, 0, 0, .15); }
+
+/* Badges officiels : affichés tels quels (ni fond, ni transparence). */
+.tomo-wallet--badge { padding: 0; background: none !important; box-shadow: none !important; }
+.tomo-wallet--badge.is-unavailable { opacity: 1; }
+.tomo-wallet--badge img { display: block; height: 48px; width: auto; }
+
+/* ---------- Qui participe ? : cartes participant (façon PCCF) ---------- */
+form.cart.tomo-cart .quantity { display: none !important; }
+.tomo-participant-list { display: grid; gap: .75em; }
+.tomo-participants .tomo-participant { border: 1px solid rgba(0, 0, 0, .14); border-radius: 10px; padding: .85em 1em .5em; background: rgba(255, 255, 255, .6); }
+.tomo-participant.is-self { border-color: currentColor; box-shadow: 0 0 0 1px currentColor; }
+.tomo-participant.is-self input[readonly] { opacity: .75; cursor: default; }
+.tomo-participant-h { display: flex; align-items: center; gap: .6em; margin-bottom: .6em; flex-wrap: wrap; }
+.tomo-participant-no { font-variant-numeric: tabular-nums; font-weight: 700; font-size: .8em; opacity: .55; }
+.tomo-participant-h .tomo-participant-title { margin: 0; flex: 1 1 auto; font-size: 1em; }
+.tomo-me, .tomo-remove, .tomo-add, .tomo-fav-open, .tomo-link {
+    appearance: none; background: none; border: 1px solid rgba(0, 0, 0, .2); border-radius: 999px; color: inherit; cursor: pointer;
+    font: inherit; font-size: .85em; line-height: 1.2; padding: .4em .85em; margin: 0;
+}
+.tomo-me:hover, .tomo-remove:hover, .tomo-add:hover, .tomo-fav-open:hover { border-color: currentColor; }
+.tomo-me.is-on { background: #1e1e1e; border-color: #1e1e1e; color: #fff; }
+.tomo-me.is-on::before { content: "✓ "; }
+.tomo-remove { border-color: transparent; opacity: .7; }
+.tomo-remove:hover { opacity: 1; border-color: rgba(0, 0, 0, .2); }
+.tomo-remember { display: flex !important; gap: .5em; align-items: flex-start; font-size: .85em; margin: .25em 0 .5em; cursor: pointer; }
+.tomo-remember input { width: auto !important; display: inline-block !important; margin: .15em 0 0 !important; }
+.tomo-remember small { opacity: .7; }
+.tomo-participant-add { display: flex; flex-wrap: wrap; gap: .5em; margin: .75em 0 0; }
+.tomo-add, .tomo-fav-open { padding: .6em 1.1em; font-size: .9em; border-style: dashed; }
+.tomo-fav-open { border-style: solid; }
+.tomo-add:disabled { opacity: .4; cursor: not-allowed; }
+.tomo-fav-count { display: inline-block; min-width: 1.4em; padding: 0 .35em; border-radius: 999px; background: rgba(0, 0, 0, .08); font-size: .85em; text-align: center; }
+.tomo-seats-warning { color: #b32d2e; font-size: .9em; margin: .5em 0 0; }
+.tomo-link { border-color: transparent; text-decoration: underline; }
+
+/* Fenêtre « Mes participants favoris » */
+body.tomo-modal-open { overflow: hidden; }
+.tomo-modal { position: fixed; inset: 0; z-index: 100000; background: rgba(0, 0, 0, .45); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.tomo-modal[hidden] { display: none; }
+.tomo-modal-box { background: #fff; color: #1e1e1e; border-radius: 12px; width: 100%; max-width: 460px; max-height: calc(100vh - 32px); display: flex; flex-direction: column; padding: 1.1em 1.2em; box-shadow: 0 20px 50px rgba(0, 0, 0, .25); }
+.tomo-modal-h { display: flex; align-items: center; justify-content: space-between; gap: 1em; }
+.tomo-modal-h h3 { margin: 0; font-size: 1.15em; }
+.tomo-modal-x { appearance: none; background: none; border: 0; font-size: 1.6em; line-height: 1; cursor: pointer; color: inherit; padding: 0 .2em; }
+.tomo-modal-lead { margin: .4em 0 .8em; font-size: .9em; opacity: .75; }
+.tomo-fav-search { width: 100%; box-sizing: border-box; margin-bottom: .6em; }
+.tomo-fav-pick { overflow: auto; flex: 1 1 auto; min-height: 80px; display: grid; gap: .35em; align-content: start; }
+.tomo-fav-row { display: flex; align-items: center; gap: .7em; padding: .55em .65em; border: 1px solid rgba(0, 0, 0, .12); border-radius: 8px; cursor: pointer; }
+.tomo-fav-row:hover, .tomo-fav-row:focus { border-color: rgba(0, 0, 0, .4); outline: none; }
+.tomo-fav-row.is-on { border-color: #1e1e1e; box-shadow: 0 0 0 1px #1e1e1e; }
+.tomo-fav-row.is-used { opacity: .55; cursor: default; }
+.tomo-fav-row.is-confirm { cursor: default; justify-content: space-between; flex-wrap: wrap; background: #fcf0f1; border-color: #f0c5c8; font-size: .9em; }
+.tomo-fav-check { width: 20px; height: 20px; border: 1.5px solid rgba(0, 0, 0, .35); border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; flex: none; }
+.tomo-fav-row.is-on .tomo-fav-check, .tomo-fav-row.is-used .tomo-fav-check { background: #1e1e1e; border-color: #1e1e1e; color: #fff; }
+.tomo-fav-avatar { width: 34px; height: 34px; border-radius: 50%; background: rgba(0, 0, 0, .07); display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: .8em; flex: none; }
+.tomo-fav-id { display: flex; flex-direction: column; min-width: 0; flex: 1 1 auto; }
+.tomo-fav-id small { opacity: .65; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tomo-fav-trash { appearance: none; background: none; border: 0; color: inherit; opacity: .45; cursor: pointer; font-size: 1.3em; line-height: 1; padding: 0 .2em; }
+.tomo-fav-trash:hover { opacity: 1; color: #b32d2e; }
+.tomo-fav-del-ok { appearance: none; border: 0; border-radius: 999px; background: #b32d2e; color: #fff; padding: .35em .85em; cursor: pointer; font: inherit; font-size: .9em; }
+.tomo-fav-empty { opacity: .65; margin: .5em 0; }
+.tomo-modal-actions { display: flex; justify-content: flex-end; align-items: center; gap: .6em; margin-top: .9em; }
+.tomo-modal-actions .button:disabled { opacity: .45; cursor: not-allowed; }
+
+/* Mon compte › Participants favoris */
+.tomo-fav-list { list-style: none; margin: 0 0 1.25em; padding: 0; display: grid; gap: .5em; }
+.tomo-fav-item { display: flex; align-items: center; gap: .8em; padding: .7em .85em; border: 1px solid rgba(0, 0, 0, .12); border-radius: 10px; flex-wrap: wrap; }
+.tomo-fav-actions { display: flex; gap: .4em; align-items: center; margin-left: auto; }
+.tomo-fav-actions form { margin: 0; }
+.tomo-fav-delete { opacity: .8; }
+.tomo-fav-form { border: 1px dashed rgba(0, 0, 0, .25); border-radius: 10px; padding: .7em 1em; }
+.tomo-fav-form summary { cursor: pointer; font-weight: 600; }
+.tomo-fav-form .tomo-participant { border: 0; padding: .75em 0 0; }
+@media (max-width: 600px) {
+    .tomo-fav-actions { margin-left: 0; width: 100%; }
+    .tomo-modal { align-items: flex-end; padding: 0; }
+    .tomo-modal-box { max-width: none; border-radius: 14px 14px 0 0; max-height: 85vh; }
+}

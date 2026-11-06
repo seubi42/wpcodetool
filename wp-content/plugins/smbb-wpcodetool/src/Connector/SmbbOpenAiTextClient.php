@@ -38,7 +38,7 @@ final class SmbbOpenAiTextClient
     public function ask($prompt, array $options = array())
     {
         if ($this->api_key === '') {
-            throw new RuntimeException('OpenAI API key is missing.');
+            throw new RuntimeException('La clé d\'API OpenAI est manquante.');
         }
 
         $payload = array(
@@ -57,17 +57,17 @@ final class SmbbOpenAiTextClient
     public function askWithPdfFile($prompt, $pdf_path, $filename, array $options = array())
     {
         if ($this->api_key === '') {
-            throw new RuntimeException('OpenAI API key is missing.');
+            throw new RuntimeException('La clé d\'API OpenAI est manquante.');
         }
 
         if (!is_readable($pdf_path)) {
-            throw new RuntimeException('PDF file is not readable.');
+            throw new RuntimeException('Le fichier PDF est illisible.');
         }
 
         $pdf_data = file_get_contents($pdf_path);
 
         if ($pdf_data === false || $pdf_data === '') {
-            throw new RuntimeException('PDF file is empty.');
+            throw new RuntimeException('Le fichier PDF est vide.');
         }
 
         $payload = array(
@@ -101,17 +101,17 @@ final class SmbbOpenAiTextClient
     public function askWithImageFile($prompt, $image_path, $mime_type = 'image/png', array $options = array())
     {
         if ($this->api_key === '') {
-            throw new RuntimeException('OpenAI API key is missing.');
+            throw new RuntimeException('La clé d\'API OpenAI est manquante.');
         }
 
         if (!is_readable($image_path)) {
-            throw new RuntimeException('Image file is not readable.');
+            throw new RuntimeException('Le fichier image est illisible.');
         }
 
         $image_data = file_get_contents($image_path);
 
         if ($image_data === false || $image_data === '') {
-            throw new RuntimeException('Image file is empty.');
+            throw new RuntimeException('Le fichier image est vide.');
         }
 
         $mime_type = trim((string) $mime_type) !== '' ? trim((string) $mime_type) : 'image/png';
@@ -146,13 +146,13 @@ final class SmbbOpenAiTextClient
     public function askWithImageUrl($prompt, $image_url, array $options = array())
     {
         if ($this->api_key === '') {
-            throw new RuntimeException('OpenAI API key is missing.');
+            throw new RuntimeException('La clé d\'API OpenAI est manquante.');
         }
 
         $image_url = trim((string) $image_url);
 
         if ($image_url === '') {
-            throw new RuntimeException('Image URL is missing.');
+            throw new RuntimeException('L\'URL de l\'image est manquante.');
         }
 
         $payload = array(
@@ -218,13 +218,13 @@ final class SmbbOpenAiTextClient
         $this->last_response_debug['body_preview'] = substr($body, 0, 8000);
 
         if ($status_code < 200 || $status_code >= 300) {
-            throw new RuntimeException('OpenAI API error ' . $status_code . ' - ' . $body);
+            throw new RuntimeException('Erreur de l\'API OpenAI ' . $status_code . ' - ' . $body);
         }
 
         $decoded = json_decode($body, true);
 
         if (!is_array($decoded)) {
-            throw new RuntimeException('OpenAI API returned invalid JSON.');
+            throw new RuntimeException('L\'API OpenAI a renvoyé un JSON invalide.');
         }
 
         $this->last_response_debug['response_id'] = isset($decoded['id']) ? (string) $decoded['id'] : '';
@@ -235,7 +235,7 @@ final class SmbbOpenAiTextClient
         $this->last_response_debug['extracted_text_length'] = strlen($text);
 
         if ($text === '') {
-            throw new RuntimeException('OpenAI API returned an empty response.');
+            throw new RuntimeException('L\'API OpenAI a renvoyé une réponse vide.');
         }
 
         return $text;

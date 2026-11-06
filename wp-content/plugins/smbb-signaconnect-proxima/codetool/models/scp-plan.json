@@ -1,0 +1,213 @@
+{
+  "name": "scp_plan",
+  "label": "Forfait",
+  "pluralLabel": "Forfaits",
+  "description": "Catalogue des forfaits utilisateurs (S, M, L…).",
+  "storage": {
+    "table": "scp_plan",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "name": {
+      "type": "varchar",
+      "length": 100,
+      "nullable": false,
+      "default": ""
+    },
+    "description": {
+      "type": "text",
+      "nullable": true
+    },
+    "monthly_fee": {
+      "type": "decimal",
+      "precision": 10,
+      "scale": 2,
+      "unsigned": true,
+      "nullable": false,
+      "default": "0.00"
+    },
+    "status": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "active"
+    },
+    "included_internal": {
+      "type": "int",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "unlimited_internal": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "overage_price_internal": {
+      "type": "decimal",
+      "precision": 10,
+      "scale": 2,
+      "unsigned": true,
+      "nullable": false,
+      "default": "0.00"
+    },
+    "recharge_size_internal": {
+      "type": "int",
+      "unsigned": true,
+      "nullable": false,
+      "default": 1
+    },
+    "included_simple": {
+      "type": "int",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "unlimited_simple": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "overage_price_simple": {
+      "type": "decimal",
+      "precision": 10,
+      "scale": 2,
+      "unsigned": true,
+      "nullable": false,
+      "default": "0.00"
+    },
+    "recharge_size_simple": {
+      "type": "int",
+      "unsigned": true,
+      "nullable": false,
+      "default": 1
+    },
+    "included_qualified": {
+      "type": "int",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "unlimited_qualified": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "overage_price_qualified": {
+      "type": "decimal",
+      "precision": 10,
+      "scale": 2,
+      "unsigned": true,
+      "nullable": false,
+      "default": "0.00"
+    },
+    "recharge_size_qualified": {
+      "type": "int",
+      "unsigned": true,
+      "nullable": false,
+      "default": 1
+    },
+    "creation_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "create_datetime"
+    },
+    "creation_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "create_user"
+    },
+    "lastupdate_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "update_datetime"
+    },
+    "lastupdate_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "update_user"
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_name",
+      "type": "index",
+      "columns": [
+        "name"
+      ]
+    },
+    {
+      "name": "idx_status",
+      "type": "index",
+      "columns": [
+        "status"
+      ]
+    }
+  ],
+  "hooks": {
+    "file": "hooks/PlanHooks.php",
+    "class": "Smbb\\SignConnectProxima\\CodeTool\\PlanHooks"
+  },
+  "admin": {
+    "enabled": true,
+    "capability": "manage_options",
+    "menu": {
+      "placement": "submenu",
+      "parent": "smbb-codetool-scp",
+      "title": "Forfaits",
+      "icon": "dashicons-tag",
+      "position": 30
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "list": {
+      "perPage": 25,
+      "search": {
+        "enabled": true,
+        "provider": "default",
+        "fields": [
+          "name"
+        ],
+        "mode": "or",
+        "placeholder": "Rechercher"
+      },
+      "filters": {
+        "enabled": true,
+        "fields": [
+          {
+            "field": "status",
+            "label": "Statut",
+            "operators": [
+              "eq"
+            ]
+          }
+        ]
+      },
+      "defaultOrder": {
+        "by": "name",
+        "direction": "asc"
+      }
+    },
+    "views": {
+      "list": "views/scp-plan/list.php",
+      "form": "views/scp-plan/form.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

@@ -31,7 +31,7 @@ final class CronManager
         if (!isset($schedules['smbb_every_15_minutes'])) {
             $schedules['smbb_every_15_minutes'] = array(
                 'interval' => 15 * MINUTE_IN_SECONDS,
-                'display' => __('Every 15 minutes (SMBB)', 'smbb-wpcodetool'),
+                'display' => __('Toutes les 15 minutes (SMBB)', 'smbb-wpcodetool'),
             );
         }
 
@@ -57,8 +57,8 @@ final class CronManager
     {
         add_submenu_page(
             'smbb-wpcodetool',
-            __('Cron tasks', 'smbb-wpcodetool'),
-            __('Cron tasks', 'smbb-wpcodetool'),
+            __('Tâches cron', 'smbb-wpcodetool'),
+            __('Tâches cron', 'smbb-wpcodetool'),
             'manage_options',
             'smbb-wpcodetool-cron-tasks',
             array($this, 'renderAdminPage')
@@ -68,7 +68,7 @@ final class CronManager
     public function handleRunNow()
     {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('You are not allowed to run cron tasks.', 'smbb-wpcodetool'));
+            wp_die(esc_html__('Vous n\'avez pas le droit de lancer les tâches cron.', 'smbb-wpcodetool'));
         }
 
         $hook = isset($_POST['hook']) ? sanitize_key((string) wp_unslash($_POST['hook'])) : '';
@@ -76,7 +76,7 @@ final class CronManager
 
         $task = $this->registry()->get($hook);
         $notice_type = 'error';
-        $notice_message = __('Cron task not found.', 'smbb-wpcodetool');
+        $notice_message = __('Tâche cron introuvable.', 'smbb-wpcodetool');
 
         if ($task) {
             try {
@@ -84,7 +84,7 @@ final class CronManager
                 $notice_type = 'success';
                 $notice_message = sprintf(
                     /* translators: %s: cron task label. */
-                    __('Cron task "%s" has been executed.', 'smbb-wpcodetool'),
+                    __('La tâche cron « %s » a été exécutée.', 'smbb-wpcodetool'),
                     $task->label()
                 );
 
@@ -108,7 +108,7 @@ final class CronManager
     public function renderAdminPage()
     {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('You are not allowed to view cron tasks.', 'smbb-wpcodetool'));
+            wp_die(esc_html__('Vous n\'avez pas le droit de voir les tâches cron.', 'smbb-wpcodetool'));
         }
 
         $tasks = $this->tasks();
@@ -124,8 +124,8 @@ final class CronManager
                             <span class="dashicons dashicons-clock"></span>
                         </span>
                         <div class="smbb-codetool-page-heading">
-                            <h1 class="smbb-codetool-page-title"><?php esc_html_e('Cron tasks', 'smbb-wpcodetool'); ?></h1>
-                            <p class="smbb-codetool-page-subtitle"><?php esc_html_e('Recap des taches declarees par les plugins SMBB.', 'smbb-wpcodetool'); ?></p>
+                            <h1 class="smbb-codetool-page-title"><?php esc_html_e('Tâches cron', 'smbb-wpcodetool'); ?></h1>
+                            <p class="smbb-codetool-page-subtitle"><?php esc_html_e('Récapitulatif des tâches déclarées par les plugins SMBB.', 'smbb-wpcodetool'); ?></p>
                         </div>
                     </div>
                 </div>
@@ -144,18 +144,18 @@ final class CronManager
             <table class="widefat striped smbb-codetool-table">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Tache', 'smbb-wpcodetool'); ?></th>
+                        <th><?php esc_html_e('Tâche', 'smbb-wpcodetool'); ?></th>
                         <th><?php esc_html_e('Cron', 'smbb-wpcodetool'); ?></th>
-                        <th><?php esc_html_e('Derniere execution', 'smbb-wpcodetool'); ?></th>
-                        <th><?php esc_html_e('Prochaine execution', 'smbb-wpcodetool'); ?></th>
-                        <th><?php esc_html_e('Etat', 'smbb-wpcodetool'); ?></th>
+                        <th><?php esc_html_e('Dernière exécution', 'smbb-wpcodetool'); ?></th>
+                        <th><?php esc_html_e('Prochaine exécution', 'smbb-wpcodetool'); ?></th>
+                        <th><?php esc_html_e('État', 'smbb-wpcodetool'); ?></th>
                         <th><?php esc_html_e('Lancer maintenant', 'smbb-wpcodetool'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (!$tasks) : ?>
                         <tr>
-                            <td colspan="6"><?php esc_html_e('Aucune tache cron SMBB declaree.', 'smbb-wpcodetool'); ?></td>
+                            <td colspan="6"><?php esc_html_e('Aucune tâche cron SMBB déclarée.', 'smbb-wpcodetool'); ?></td>
                         </tr>
                     <?php endif; ?>
 
@@ -187,9 +187,9 @@ final class CronManager
                                 <?php if (!$task->isRunnable()) : ?>
                                     <span class="smbb-codetool-status is-error"><?php esc_html_e('Callback absent', 'smbb-wpcodetool'); ?></span>
                                 <?php elseif (!$next) : ?>
-                                    <span class="smbb-codetool-status is-warning"><?php esc_html_e('Non planifie', 'smbb-wpcodetool'); ?></span>
+                                    <span class="smbb-codetool-status is-warning"><?php esc_html_e('Non planifiée', 'smbb-wpcodetool'); ?></span>
                                 <?php elseif ($last_status === 'error') : ?>
-                                    <span class="smbb-codetool-status is-error"><?php esc_html_e('Derniere execution en erreur', 'smbb-wpcodetool'); ?></span>
+                                    <span class="smbb-codetool-status is-error"><?php esc_html_e('Dernière exécution en erreur', 'smbb-wpcodetool'); ?></span>
                                 <?php else : ?>
                                     <span class="smbb-codetool-status is-success"><?php esc_html_e('Actif', 'smbb-wpcodetool'); ?></span>
                                 <?php endif; ?>
@@ -222,7 +222,7 @@ final class CronManager
 
         try {
             if (!$task->isRunnable()) {
-                throw new \RuntimeException(__('Cron callback is not callable.', 'smbb-wpcodetool'));
+                throw new \RuntimeException(__('Le callback de la tâche cron n\'est pas appelable.', 'smbb-wpcodetool'));
             }
 
             $result = call_user_func($task->callback());

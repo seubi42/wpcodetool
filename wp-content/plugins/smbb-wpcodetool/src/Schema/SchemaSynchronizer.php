@@ -38,7 +38,7 @@ final class SchemaSynchronizer
         if ($resource->storageType() !== 'custom_table') {
             return array(
                 'state' => 'not_applicable',
-                'label' => __('Not applicable', 'smbb-wpcodetool'),
+                'label' => __('Sans objet', 'smbb-wpcodetool'),
                 'table' => '',
                 'hash' => '',
                 'stored_hash' => '',
@@ -50,7 +50,7 @@ final class SchemaSynchronizer
         if ($sql === '') {
             return array(
                 'state' => 'invalid',
-                'label' => __('Invalid schema', 'smbb-wpcodetool'),
+                'label' => __('Schéma invalide', 'smbb-wpcodetool'),
                 'table' => $resource->tableName(),
                 'hash' => '',
                 'stored_hash' => '',
@@ -63,13 +63,13 @@ final class SchemaSynchronizer
 
         if (!$table_exists) {
             $state = 'missing';
-            $label = __('Table missing', 'smbb-wpcodetool');
+            $label = __('Table manquante', 'smbb-wpcodetool');
         } elseif ($stored_hash !== $hash) {
             $state = 'needs_update';
-            $label = __('Update required', 'smbb-wpcodetool');
+            $label = __('Mise à jour requise', 'smbb-wpcodetool');
         } else {
             $state = 'ok';
-            $label = __('Up to date', 'smbb-wpcodetool');
+            $label = __('À jour', 'smbb-wpcodetool');
         }
 
         return array(
@@ -107,7 +107,7 @@ final class SchemaSynchronizer
         if ($sql === '') {
             return array(
                 'success' => false,
-                'message' => __('No SQL could be generated for this resource.', 'smbb-wpcodetool'),
+                'message' => __('Aucun SQL n\'a pu être généré pour cette ressource.', 'smbb-wpcodetool'),
                 'changes' => array(),
             );
         }
@@ -131,7 +131,7 @@ final class SchemaSynchronizer
 
         return array(
             'success' => true,
-            'message' => __('Database schema synchronized.', 'smbb-wpcodetool'),
+            'message' => __('Schéma de base de données synchronisé.', 'smbb-wpcodetool'),
             'changes' => is_array($changes) ? $changes : array(),
         );
     }

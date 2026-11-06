@@ -1,0 +1,224 @@
+{
+  "name": "scp_template",
+  "label": "Modèle de détection",
+  "pluralLabel": "Modèles de détection",
+  "description": "Modèles de documents reconnus, propres à chaque organisation.",
+  "storage": {
+    "table": "scp_template",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "organization_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "name": {
+      "type": "varchar",
+      "length": 190,
+      "nullable": false,
+      "default": ""
+    },
+    "description": {
+      "type": "text",
+      "nullable": true
+    },
+    "sample_pdf_attachment_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "detection_zones": {
+      "type": "json",
+      "nullable": true
+    },
+    "field_zones": {
+      "type": "json",
+      "nullable": true
+    },
+    "suggested_level": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "internal"
+    },
+    "level_enforced": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "default_message": {
+      "type": "text",
+      "nullable": true
+    },
+    "skip_preview": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "signed_mail_enabled": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "signed_mail_subject": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": true
+    },
+    "signed_mail_body": {
+      "type": "text",
+      "nullable": true
+    },
+    "signed_mail_cc": {
+      "type": "varchar",
+      "length": 500,
+      "nullable": true
+    },
+    "custom_fields": {
+      "type": "json",
+      "nullable": true
+    },
+    "naming_pattern": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": true
+    },
+    "is_active": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 1
+    },
+    "match_count": {
+      "type": "int",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "creation_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "create_datetime"
+    },
+    "creation_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "create_user"
+    },
+    "lastupdate_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "update_datetime"
+    },
+    "lastupdate_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "update_user"
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_organization_id",
+      "type": "index",
+      "columns": [
+        "organization_id"
+      ]
+    },
+    {
+      "name": "idx_name",
+      "type": "index",
+      "columns": [
+        "name"
+      ]
+    },
+    {
+      "name": "idx_is_active",
+      "type": "index",
+      "columns": [
+        "is_active"
+      ]
+    }
+  ],
+  "hooks": {
+    "file": "hooks/TemplateHooks.php",
+    "class": "Smbb\\SignConnectProxima\\CodeTool\\TemplateHooks"
+  },
+  "admin": {
+    "enabled": true,
+    "capability": "manage_options",
+    "menu": {
+      "placement": "submenu",
+      "parent": "smbb-codetool-scp",
+      "title": "Modèles",
+      "icon": "dashicons-layout",
+      "position": 50
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "list": {
+      "perPage": 25,
+      "search": {
+        "enabled": true,
+        "provider": "default",
+        "fields": [
+          "name"
+        ],
+        "mode": "or",
+        "placeholder": "Rechercher"
+      },
+      "filters": {
+        "enabled": true,
+        "fields": [
+          {
+            "field": "organization_id",
+            "label": "Organisation",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "suggested_level",
+            "label": "Niveau",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "is_active",
+            "label": "Actif",
+            "operators": [
+              "eq"
+            ]
+          }
+        ]
+      },
+      "defaultOrder": {
+        "by": "name",
+        "direction": "asc"
+      }
+    },
+    "views": {
+      "list": "views/scp-template/list.php",
+      "form": "views/scp-template/form.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

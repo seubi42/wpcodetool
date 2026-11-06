@@ -26,7 +26,7 @@ final class Table
     // Definition des colonnes declarees par la view list.php.
     private $columns = array();
 
-    // URL du bouton "Add New", si la ressource autorise la creation.
+    // URL du bouton "Ajouter", si la ressource autorise la creation.
     private $create_url = '';
 
     // Colonne qui recevra les actions de ligne WordPress (edit/view/delete).
@@ -66,9 +66,17 @@ final class Table
     private $filter_enabled = false;
     private $filter_fields = array();
     private $current_filter = array();
+    private $filter_form = true;
+
+    // Onglets de préfiltres (admin.list.presets) et mémoire de la liste (admin.list.remember).
+    private $presets = array();
+    private $remember = 'back';
 
     // Actions batch sur la liste.
     private $batch_enabled = false;
+
+    // Actions groupées disponibles : clé => [label, confirm, danger].
+    private $batch_actions = array();
 
     // Pagination calculee par l'admin manager.
     private $pagination = array();
@@ -95,7 +103,17 @@ final class Table
         $this->filter_enabled = !empty($context['filter_enabled']);
         $this->filter_fields = isset($context['filter_fields']) && is_array($context['filter_fields']) ? $context['filter_fields'] : array();
         $this->current_filter = isset($context['current_filter']) && is_array($context['current_filter']) ? $context['current_filter'] : array();
+        $this->filter_form = !array_key_exists('filter_form', $context) || !empty($context['filter_form']);
+        $this->presets = isset($context['presets']) && is_array($context['presets']) ? $context['presets'] : array();
+        $this->remember = isset($context['remember']) ? (string) $context['remember'] : 'back';
         $this->batch_enabled = !empty($context['batch_enabled']);
+        $this->batch_actions = isset($context['batch_actions']) && is_array($context['batch_actions'])
+            ? $context['batch_actions']
+            : array(
+                'delete' => array('label' => __('Supprimer', 'smbb-wpcodetool'), 'confirm' => __('Supprimer les éléments sélectionnés ? Cette action est irréversible.', 'smbb-wpcodetool'), 'danger' => true),
+                'duplicate' => array('label' => __('Dupliquer', 'smbb-wpcodetool')),
+            );
+        $this->batch_enabled = $this->batch_enabled && !empty($this->batch_actions);
         $this->pagination = isset($context['pagination']) && is_array($context['pagination']) ? $context['pagination'] : array();
 
         // Si le moteur n'a pas fourni l'URL mais qu'on connait le nom de ressource,
@@ -149,7 +167,7 @@ final class Table
     public function render()
     {
         ?>
-        <div class="wrap smbb-codetool">
+        <div class="wrap smbb-codetool" data-smbb-list-remember="<?php echo esc_attr($this->remember); ?>">
             <div class="smbb-codetool-page-header">
                 <div class="smbb-codetool-page-header-main">
                     <?php if ($this->headerIconHtml() !== '') : ?>
@@ -169,10 +187,12 @@ final class Table
 
                 <?php if ($this->create_url) : ?>
                     <div class="smbb-codetool-page-header-actions">
-                        <a href="<?php echo esc_url($this->create_url); ?>" class="page-title-action"><?php esc_html_e('Add New'); ?></a>
+                        <a href="<?php echo esc_url($this->create_url); ?>" class="page-title-action"><?php esc_html_e('Ajouter', 'smbb-wpcodetool'); ?></a>
                     </div>
                 <?php endif; ?>
             </div>
+
+            <?php $this->renderPresets(); ?>
 
             <?php if ($this->notices_html !== '') : ?>
                 <?php echo $this->notices_html; ?>
@@ -181,7 +201,7 @@ final class Table
             <?php $this->renderListTools(); ?>
 
             <?php if ($this->batch_enabled) : ?>
-                <form method="post" action="<?php echo esc_url($this->admin_url); ?>" class="smbb-codetool-batch-form" data-smbb-batch-form data-confirm-delete="<?php echo esc_attr__('Delete selected items? This cannot be undone.', 'smbb-wpcodetool'); ?>">
+                <form method="post" action="<?php echo esc_url($this->admin_url); ?>" class="smbb-codetool-batch-form" data-smbb-batch-form data-confirm-delete="<?php echo esc_attr__('Supprimer les éléments sélectionnés ? Cette action est irréversible.', 'smbb-wpcodetool'); ?>">
                     <?php wp_nonce_field('smbb_codetool_batch_' . $this->resource_name); ?>
                     <input type="hidden" name="smbb_codetool_batch" value="1">
                     <?php $this->renderHiddenQueryInputs(); ?>
@@ -194,7 +214,7 @@ final class Table
                     <tr>
                         <?php if ($this->batch_enabled) : ?>
                             <td class="check-column">
-                                <input type="checkbox" data-smbb-select-all aria-label="<?php esc_attr_e('Select all rows', 'smbb-wpcodetool'); ?>">
+                                <input type="checkbox" data-smbb-select-all aria-label="<?php esc_attr_e('Sélectionner toutes les lignes', 'smbb-wpcodetool'); ?>">
                             </td>
                         <?php endif; ?>
 
@@ -206,8 +226,22 @@ final class Table
                 </thead>
                 <tbody>
                     <?php if (!$this->rows) : ?>
-                        <tr>
-                            <td colspan="<?php echo esc_attr(count($this->columns) + ($this->batch_enabled ? 1 : 0)); ?>"><?php esc_html_e('No items found.'); ?></td>
+                        <tr class="smbb-codetool-empty-row">
+                            <td class="smbb-codetool-empty" colspan="<?php echo esc_attr(count($this->columns) + ($this->batch_enabled ? 1 : 0)); ?>">
+                                <?php // Ecran vide : un message clair et l'action qui permet d'en sortir. ?>
+                                <span class="smbb-codetool-empty-icon" aria-hidden="true"><span class="dashicons <?php echo esc_attr(strpos($this->resource_icon, 'dashicons-') === 0 ? $this->resource_icon : 'dashicons-portfolio'); ?>"></span></span>
+                                <?php if ($this->hasActiveFilter() || $this->search_term !== '') : ?>
+                                    <p class="smbb-codetool-empty-title"><?php esc_html_e('Aucun résultat', 'smbb-wpcodetool'); ?></p>
+                                    <p class="smbb-codetool-empty-text"><?php esc_html_e('Rien ne correspond à cette recherche ou à ce filtre.', 'smbb-wpcodetool'); ?></p>
+                                    <a class="button" href="<?php echo esc_url($this->admin_url); ?>" data-smbb-list-reset><?php esc_html_e('Afficher tous les éléments', 'smbb-wpcodetool'); ?></a>
+                                <?php else : ?>
+                                    <p class="smbb-codetool-empty-title"><?php esc_html_e('Rien pour l\'instant', 'smbb-wpcodetool'); ?></p>
+                                    <p class="smbb-codetool-empty-text"><?php esc_html_e('Les éléments que vous créez apparaîtront dans cette liste.', 'smbb-wpcodetool'); ?></p>
+                                    <?php if ($this->create_url) : ?>
+                                        <a class="button button-primary" href="<?php echo esc_url($this->create_url); ?>"><?php esc_html_e('Ajouter', 'smbb-wpcodetool'); ?></a>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </td>
                         </tr>
                     <?php else : ?>
                         <?php foreach ($this->rows as $row) : ?>
@@ -279,11 +313,45 @@ final class Table
     }
 
     /**
+     * Onglets de préfiltres sous le titre : « Tous » puis un onglet par filtre déclaré.
+     * La recherche et le tri en cours sont conservés ; la page revient à 1.
+     */
+    private function renderPresets()
+    {
+        if (empty($this->presets['items'])) {
+            return;
+        }
+
+        $base = $this->currentListQueryArgs();
+        unset($base['filter'], $base['paged']);
+        $active_found = false;
+        $links = '';
+
+        foreach ($this->presets['items'] as $item) {
+            $active = $this->hasActiveFilter()
+                && (string) $this->current_filter['field'] === $item['filter']['field']
+                && (string) $this->current_filter['operator'] === $item['filter']['operator']
+                && trim((string) $this->current_filter['value']) === trim($item['filter']['value']);
+            $active_found = $active_found || $active;
+            $count = isset($item['total']) ? ' <span class="smbb-codetool-preset-count">' . (int) $item['total'] . '</span>' : '';
+            $links .= '<a class="smbb-codetool-preset' . ($active ? ' is-active' : '') . '"' . ($active ? ' aria-current="page"' : '') . ' href="' . esc_url(add_query_arg(array_merge($base, array('filter' => $item['filter'])), admin_url('admin.php'))) . '">'
+                . esc_html($item['label']) . $count . '</a>';
+        }
+
+        if ($this->presets['all'] !== '') {
+            $all_active = !$this->hasActiveFilter();
+            $links = '<a class="smbb-codetool-preset' . ($all_active ? ' is-active' : '') . '"' . ($all_active ? ' aria-current="page"' : '') . ' data-smbb-list-reset href="' . esc_url(add_query_arg($base, admin_url('admin.php'))) . '">' . esc_html($this->presets['all']) . '</a>' . $links;
+        }
+
+        echo '<nav class="smbb-codetool-presets" aria-label="' . esc_attr__('Préfiltres', 'smbb-wpcodetool') . '">' . $links . '</nav>'; // phpcs:ignore -- échappé ci-dessus.
+    }
+
+    /**
      * Rend les outils au-dessus de la liste : recherche + filtre simple.
      */
     private function renderListTools()
     {
-        if (!$this->search_enabled && !$this->filter_enabled) {
+        if (!$this->search_enabled && !($this->filter_enabled && $this->filter_form)) {
             return;
         }
 
@@ -306,9 +374,9 @@ final class Table
         <form class="smbb-codetool-search-form" method="get" action="<?php echo esc_url(admin_url('admin.php')); ?>">
             <?php $this->renderHiddenQueryInputs(array('s', 'paged')); ?>
             <p class="search-box">
-                <label class="screen-reader-text" for="smbb-codetool-search-input"><?php esc_html_e('Search items', 'smbb-wpcodetool'); ?></label>
+                <label class="screen-reader-text" for="smbb-codetool-search-input"><?php esc_html_e('Rechercher', 'smbb-wpcodetool'); ?></label>
                 <input type="search" id="smbb-codetool-search-input" name="s" value="<?php echo esc_attr($this->search_term); ?>" placeholder="<?php echo esc_attr($this->search_placeholder); ?>">
-                <?php submit_button(__('Search'), '', '', false); ?>
+                <?php submit_button(__('Rechercher', 'smbb-wpcodetool'), '', '', false); ?>
             </p>
         </form>
         <?php
@@ -319,7 +387,7 @@ final class Table
      */
     private function renderFilterForm()
     {
-        if (!$this->filter_enabled || !$this->admin_url || !$this->filter_fields) {
+        if (!$this->filter_enabled || !$this->filter_form || !$this->admin_url || !$this->filter_fields) {
             return;
         }
 
@@ -330,9 +398,9 @@ final class Table
         <form class="smbb-codetool-filter-form" method="get" action="<?php echo esc_url(admin_url('admin.php')); ?>">
             <?php $this->renderHiddenQueryInputs(array('filter', 'paged')); ?>
 
-            <label class="screen-reader-text" for="smbb-codetool-filter-field"><?php esc_html_e('Filter field', 'smbb-wpcodetool'); ?></label>
+            <label class="screen-reader-text" for="smbb-codetool-filter-field"><?php esc_html_e('Champ du filtre', 'smbb-wpcodetool'); ?></label>
             <select id="smbb-codetool-filter-field" name="filter[field]">
-                <option value=""><?php esc_html_e('Field', 'smbb-wpcodetool'); ?></option>
+                <option value=""><?php esc_html_e('Champ', 'smbb-wpcodetool'); ?></option>
                 <?php foreach ($this->filter_fields as $filter_key => $definition) : ?>
                     <option value="<?php echo esc_attr($filter_key); ?>"<?php selected($field, $filter_key); ?>>
                         <?php echo esc_html($this->filterFieldLabel($filter_key, $definition)); ?>
@@ -340,9 +408,9 @@ final class Table
                 <?php endforeach; ?>
             </select>
 
-            <label class="screen-reader-text" for="smbb-codetool-filter-operator"><?php esc_html_e('Filter operator', 'smbb-wpcodetool'); ?></label>
+            <label class="screen-reader-text" for="smbb-codetool-filter-operator"><?php esc_html_e('Opérateur du filtre', 'smbb-wpcodetool'); ?></label>
             <select id="smbb-codetool-filter-operator" name="filter[operator]">
-                <option value=""><?php esc_html_e('Operator', 'smbb-wpcodetool'); ?></option>
+                <option value=""><?php esc_html_e('Opérateur', 'smbb-wpcodetool'); ?></option>
                 <?php foreach ($this->allowedFilterOperators($field) as $operator_key => $operator_label) : ?>
                     <option value="<?php echo esc_attr($operator_key); ?>"<?php selected($operator, $operator_key); ?>>
                         <?php echo esc_html($operator_label); ?>
@@ -350,13 +418,13 @@ final class Table
                 <?php endforeach; ?>
             </select>
 
-            <label class="screen-reader-text" for="smbb-codetool-filter-value"><?php esc_html_e('Filter value', 'smbb-wpcodetool'); ?></label>
-            <input type="search" id="smbb-codetool-filter-value" name="filter[value]" value="<?php echo esc_attr($value); ?>" placeholder="<?php esc_attr_e('Value', 'smbb-wpcodetool'); ?>">
+            <label class="screen-reader-text" for="smbb-codetool-filter-value"><?php esc_html_e('Valeur du filtre', 'smbb-wpcodetool'); ?></label>
+            <input type="search" id="smbb-codetool-filter-value" name="filter[value]" value="<?php echo esc_attr($value); ?>" placeholder="<?php esc_attr_e('Valeur', 'smbb-wpcodetool'); ?>">
 
-            <?php submit_button(__('Filter', 'smbb-wpcodetool'), 'secondary', '', false); ?>
+            <?php submit_button(__('Filtrer', 'smbb-wpcodetool'), 'secondary', '', false); ?>
 
             <?php if ($this->hasActiveFilter()) : ?>
-                <a class="button button-link" href="<?php echo esc_url($this->clearFilterUrl()); ?>"><?php esc_html_e('Clear filter', 'smbb-wpcodetool'); ?></a>
+                <a class="button button-link" href="<?php echo esc_url($this->clearFilterUrl()); ?>" data-smbb-list-reset><?php esc_html_e('Effacer le filtre', 'smbb-wpcodetool'); ?></a>
             <?php endif; ?>
         </form>
         <?php
@@ -399,14 +467,15 @@ final class Table
         $field_name = $position === 'bottom' ? 'smbb_codetool_batch_action_bottom' : 'smbb_codetool_batch_action';
         ?>
         <div class="smbb-codetool-bulkactions">
-            <label class="screen-reader-text" for="<?php echo esc_attr($field_name); ?>"><?php esc_html_e('Select bulk action', 'smbb-wpcodetool'); ?></label>
+            <label class="screen-reader-text" for="<?php echo esc_attr($field_name); ?>"><?php esc_html_e('Choisir une action groupée', 'smbb-wpcodetool'); ?></label>
             <select name="<?php echo esc_attr($field_name); ?>" id="<?php echo esc_attr($field_name); ?>">
-                <option value=""><?php esc_html_e('Bulk actions', 'smbb-wpcodetool'); ?></option>
-                <option value="delete"><?php esc_html_e('Delete', 'smbb-wpcodetool'); ?></option>
-                <option value="duplicate"><?php esc_html_e('Duplicate', 'smbb-wpcodetool'); ?></option>
+                <option value=""><?php esc_html_e('Actions groupées', 'smbb-wpcodetool'); ?></option>
+                <?php foreach ($this->batch_actions as $key => $action) : ?>
+                    <option value="<?php echo esc_attr((string) $key); ?>"<?php echo !empty($action['confirm']) ? ' data-confirm="' . esc_attr((string) $action['confirm']) . '"' : ''; ?><?php echo !empty($action['danger']) ? ' data-danger="1"' : ''; ?>><?php echo esc_html((string) $action['label']); ?></option>
+                <?php endforeach; ?>
             </select>
-            <?php submit_button(__('Apply', 'smbb-wpcodetool'), 'action', '', false); ?>
-            <span class="smbb-codetool-batch-count" data-smbb-selected-count><?php esc_html_e('No row selected', 'smbb-wpcodetool'); ?></span>
+            <?php submit_button(__('Appliquer', 'smbb-wpcodetool'), 'action', '', false); ?>
+            <span class="smbb-codetool-batch-count" data-smbb-selected-count><?php esc_html_e('Aucune ligne sélectionnée', 'smbb-wpcodetool'); ?></span>
         </div>
         <?php
     }
@@ -423,7 +492,7 @@ final class Table
             <span class="displaying-num">
                 <?php
                 printf(
-                    _n('%s item', '%s items', $total_items, 'smbb-wpcodetool'),
+                    _n('%s élément', '%s éléments', $total_items, 'smbb-wpcodetool'),
                     esc_html(number_format_i18n($total_items))
                 );
                 ?>
@@ -519,6 +588,9 @@ final class Table
      *
      * Les actions peuvent etre declarees simplement : array('edit', 'view', 'duplicate', 'delete')
      * ou avec plus de details : array(array('key' => 'stats', 'view' => 'stats')).
+     * Options d'une action detaillee : label, icon (dashicon), view, action, url (modele avec {champ}
+     * ou fonction($row)), visible (fonction($row) => bool), primary (false : pas la cible du clic sur
+     * la colonne principale), class, confirm.
      */
     private function rowActions(array $actions, $row)
     {
@@ -539,10 +611,14 @@ final class Table
         $definition = is_array($action) ? $action : array('key' => $action);
         $key = isset($definition['key']) ? $definition['key'] : 'action';
         $label = isset($definition['label']) ? $definition['label'] : $this->actionLabel($key);
+        if (isset($definition['visible']) && is_callable($definition['visible']) && !call_user_func($definition['visible'], $row)) {
+            return '';
+        }
+
         $url = $this->actionUrl($definition, $row);
         $class = !empty($definition['class']) ? $definition['class'] : ($key === 'delete' ? 'submitdelete' : '');
         $confirm = $this->confirmMessage($definition, $key);
-        $icon = $this->actionIcon($key);
+        $icon = !empty($definition['icon']) ? $definition['icon'] : $this->actionIcon($key);
 
         if (!$url) {
             return '';
@@ -583,6 +659,12 @@ final class Table
     {
         foreach ($actions as $action) {
             $definition = is_array($action) ? $action : array('key' => $action);
+
+            // Action « à côté » (lien vers un autre écran) : jamais la cible du clic sur la colonne principale.
+            if ((isset($definition['primary']) && !$definition['primary']) || (isset($definition['visible']) && is_callable($definition['visible']) && !call_user_func($definition['visible'], $row))) {
+                continue;
+            }
+
             $url = $this->actionUrl($definition, $row);
 
             if ($url) {
@@ -615,6 +697,20 @@ final class Table
     {
         $key = isset($definition['key']) ? $definition['key'] : '';
         $args = array();
+
+        // URL libre : une fonction ($row) ou un modèle avec {champ} (ex. « admin.php?page=x&creneau={id} »).
+        if (!empty($definition['url'])) {
+            if (is_callable($definition['url'])) {
+                return (string) call_user_func($definition['url'], $row);
+            }
+
+            $self = $this;
+            $url = preg_replace_callback('/\{([a-z0-9_]+)\}/i', function ($match) use ($self, $row) {
+                return rawurlencode((string) $self->publicRowValue($row, $match[1]));
+            }, (string) $definition['url']);
+
+            return preg_match('#^(https?:)?//#i', $url) ? $url : admin_url($url);
+        }
 
         if (!empty($definition['view'])) {
             $args['view'] = $definition['view'];
@@ -651,15 +747,23 @@ final class Table
     }
 
     /**
+     * Valeur d'un champ de la ligne (pour les modèles d'URL des actions).
+     */
+    public function publicRowValue($row, $field)
+    {
+        return $this->rowValue($row, $field);
+    }
+
+    /**
      * Libelles par defaut des actions communes.
      */
     private function actionLabel($key)
     {
         $labels = array(
-            'delete' => __('Delete'),
-            'duplicate' => __('Duplicate', 'smbb-wpcodetool'),
-            'edit' => __('Edit'),
-            'view' => __('View'),
+            'delete' => __('Supprimer', 'smbb-wpcodetool'),
+            'duplicate' => __('Dupliquer', 'smbb-wpcodetool'),
+            'edit' => __('Modifier', 'smbb-wpcodetool'),
+            'view' => __('Voir', 'smbb-wpcodetool'),
         );
 
         return isset($labels[$key]) ? $labels[$key] : ucfirst($key);
@@ -675,11 +779,11 @@ final class Table
         }
 
         if (!empty($definition['confirm'])) {
-            return __('Are you sure?', 'smbb-wpcodetool');
+            return __('Êtes-vous sûr ?', 'smbb-wpcodetool');
         }
 
         if ($key === 'delete') {
-            return __('Delete this item? This cannot be undone.', 'smbb-wpcodetool');
+            return __('Supprimer cet élément ? Cette action est irréversible.', 'smbb-wpcodetool');
         }
 
         return '';
@@ -777,17 +881,17 @@ final class Table
     private function filterOperators()
     {
         return array(
-            'contains' => __('contains', 'smbb-wpcodetool'),
-            'eq' => __('equals', 'smbb-wpcodetool'),
-            'neq' => __('is not', 'smbb-wpcodetool'),
-            'gt' => __('greater than', 'smbb-wpcodetool'),
-            'gte' => __('greater or equal', 'smbb-wpcodetool'),
-            'lt' => __('less than', 'smbb-wpcodetool'),
-            'lte' => __('less or equal', 'smbb-wpcodetool'),
-            'starts_with' => __('starts with', 'smbb-wpcodetool'),
-            'ends_with' => __('ends with', 'smbb-wpcodetool'),
-            'empty' => __('is empty', 'smbb-wpcodetool'),
-            'not_empty' => __('is not empty', 'smbb-wpcodetool'),
+            'contains' => __('contient', 'smbb-wpcodetool'),
+            'eq' => __('est égal à', 'smbb-wpcodetool'),
+            'neq' => __('est différent de', 'smbb-wpcodetool'),
+            'gt' => __('supérieur à', 'smbb-wpcodetool'),
+            'gte' => __('supérieur ou égal à', 'smbb-wpcodetool'),
+            'lt' => __('inférieur à', 'smbb-wpcodetool'),
+            'lte' => __('inférieur ou égal à', 'smbb-wpcodetool'),
+            'starts_with' => __('commence par', 'smbb-wpcodetool'),
+            'ends_with' => __('se termine par', 'smbb-wpcodetool'),
+            'empty' => __('est vide', 'smbb-wpcodetool'),
+            'not_empty' => __('n\'est pas vide', 'smbb-wpcodetool'),
         );
     }
 

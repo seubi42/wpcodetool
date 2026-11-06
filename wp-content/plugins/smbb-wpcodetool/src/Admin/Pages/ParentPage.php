@@ -13,7 +13,7 @@ final class ParentPage extends AbstractAdminPage
     {
         $manager = $this->manager();
         $title = $manager->parentTitle($parent_slug);
-        $subtitle = __('Resources grouped under this menu.', 'smbb-wpcodetool');
+        $subtitle = __('Ressources regroupées sous ce menu.', 'smbb-wpcodetool');
         $icon = $manager->parentIcon($parent_slug);
         ?>
         <div class="wrap smbb-codetool">
@@ -22,8 +22,8 @@ final class ParentPage extends AbstractAdminPage
             <table class="widefat striped smbb-codetool-table">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Resource', 'smbb-wpcodetool'); ?></th>
-                        <th><?php esc_html_e('Storage', 'smbb-wpcodetool'); ?></th>
+                        <th><?php esc_html_e('Ressource', 'smbb-wpcodetool'); ?></th>
+                        <th><?php esc_html_e('Stockage', 'smbb-wpcodetool'); ?></th>
                         <th><?php esc_html_e('Action', 'smbb-wpcodetool'); ?></th>
                     </tr>
                 </thead>
@@ -37,7 +37,7 @@ final class ParentPage extends AbstractAdminPage
                             <td><?php echo esc_html($resource->storageType()); ?></td>
                             <td>
                                 <a class="button" href="<?php echo esc_url(admin_url('admin.php?page=' . $resource->adminSlug())); ?>">
-                                    <?php esc_html_e('Open', 'smbb-wpcodetool'); ?>
+                                    <?php esc_html_e('Ouvrir', 'smbb-wpcodetool'); ?>
                                 </a>
                             </td>
                         </tr>

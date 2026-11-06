@@ -22,7 +22,7 @@ final class SmbbS3Client
     public function __construct($endpoint, $access_key, $secret_key, $bucket, $use_path_style_endpoint, $region, $prefix = '')
     {
         if (!class_exists(S3Client::class)) {
-            throw new RuntimeException('AWS SDK for PHP is required to use SmbbS3Client.');
+            throw new RuntimeException('Le SDK AWS pour PHP est nécessaire pour utiliser SmbbS3Client.');
         }
 
         $this->s3 = new S3Client(array(

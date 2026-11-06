@@ -56,19 +56,19 @@ final class ApiDocsShortcode
         $render_all = !$explicit_namespace && !$has_custom_spec;
 
         if (!$render_all && !$has_custom_spec && $namespace === '') {
-            return '<p>' . esc_html__('No API namespace was provided and none could be inferred.', 'smbb-wpcodetool') . '</p>';
+            return '<p>' . esc_html__('Aucun espace de noms d\'API n\'a été fourni ni déduit.', 'smbb-wpcodetool') . '</p>';
         }
 
         if (!$render_all && !$has_custom_spec && !$this->namespaceExists($namespace)) {
-            return '<p>' . esc_html(sprintf(__('Unknown CodeTool API namespace: %s', 'smbb-wpcodetool'), $namespace)) . '</p>';
+            return '<p>' . esc_html(sprintf(__('Espace de noms d\'API CodeTool inconnu : %s', 'smbb-wpcodetool'), $namespace)) . '</p>';
         }
 
         if (!$render_all && !$has_custom_spec && !$this->visibility->currentUserCanView($namespace)) {
-            return '<p>' . esc_html__('You are not allowed to view this API documentation.', 'smbb-wpcodetool') . '</p>';
+            return '<p>' . esc_html__('Vous n\'avez pas le droit de voir cette documentation d\'API.', 'smbb-wpcodetool') . '</p>';
         }
 
         if ($render_all && !$this->visibleNamespaces()) {
-            return '<p>' . esc_html__('No API documentation is visible for the current visitor.', 'smbb-wpcodetool') . '</p>';
+            return '<p>' . esc_html__('Aucune documentation d\'API n\'est visible pour ce visiteur.', 'smbb-wpcodetool') . '</p>';
         }
 
         $spec_url = $atts['spec_url'] !== ''
@@ -78,7 +78,7 @@ final class ApiDocsShortcode
             ? (string) $atts['title']
             : ($render_all
                 ? $this->allNamespacesTitle()
-                : ($namespace !== '' ? $this->namespaceTitle($namespace) : __('API documentation', 'smbb-wpcodetool')));
+                : ($namespace !== '' ? $this->namespaceTitle($namespace) : __('Documentation de l\'API', 'smbb-wpcodetool')));
         $height = preg_match('/^\d+(px|vh|vw|%)$/', (string) $atts['height']) === 1 ? (string) $atts['height'] : '75vh';
         $container_id = 'smbb-codetool-swagger-' . wp_generate_password(8, false, false);
         $css_url = esc_url(apply_filters(
@@ -214,14 +214,14 @@ final class ApiDocsShortcode
         $resources = $this->namespaces();
 
         if (empty($resources[$namespace])) {
-            return sprintf(__('API documentation: %s', 'smbb-wpcodetool'), $namespace);
+            return sprintf(__('Documentation de l\'API : %s', 'smbb-wpcodetool'), $namespace);
         }
 
         $label = count($resources[$namespace]) === 1
             ? $resources[$namespace][0]->pluralLabel()
             : $namespace;
 
-        return sprintf(__('API documentation: %s', 'smbb-wpcodetool'), $label);
+        return sprintf(__('Documentation de l\'API : %s', 'smbb-wpcodetool'), $label);
     }
 
     /**
@@ -245,7 +245,7 @@ final class ApiDocsShortcode
      */
     private function allNamespacesTitle()
     {
-        return __('API documentation: all CodeTool namespaces', 'smbb-wpcodetool');
+        return __('Documentation de l\'API : tous les espaces de noms CodeTool', 'smbb-wpcodetool');
     }
 
     /**
@@ -256,11 +256,11 @@ final class ApiDocsShortcode
         $namespaces = array_keys($this->visibleNamespaces());
 
         if (!$namespaces) {
-            return __('No API documentation is visible for the current visitor.', 'smbb-wpcodetool');
+            return __('Aucune documentation d\'API n\'est visible pour ce visiteur.', 'smbb-wpcodetool');
         }
 
         return sprintf(
-            __('Included namespaces: %s', 'smbb-wpcodetool'),
+            __('Espaces de noms inclus : %s', 'smbb-wpcodetool'),
             implode(', ', $namespaces)
         );
     }

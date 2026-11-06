@@ -23,6 +23,31 @@ if (!function_exists('__')) {
     }
 }
 
+if (!function_exists('_n')) {
+    function _n($single, $plural, $number, $domain = null)
+    {
+        unset($domain);
+
+        return (int) $number === 1 ? $single : $plural;
+    }
+}
+
+if (!function_exists('apply_filters')) {
+    function apply_filters($hook, $value)
+    {
+        unset($hook);
+
+        return $value;
+    }
+}
+
+if (!function_exists('current_user_can')) {
+    function current_user_can($capability)
+    {
+        return $capability !== 'do_not_allow';
+    }
+}
+
 if (!function_exists('get_bloginfo')) {
     function get_bloginfo($show = '')
     {

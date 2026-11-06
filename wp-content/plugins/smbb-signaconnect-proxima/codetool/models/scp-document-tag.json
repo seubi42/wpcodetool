@@ -1,0 +1,68 @@
+{
+  "name": "scp_document_tag",
+  "label": "Libellé de document",
+  "pluralLabel": "Libellés de document",
+  "description": "Libellés posés par un utilisateur sur un document.",
+  "storage": {
+    "table": "scp_document_tag",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "user_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "document_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "tag_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    }
+  },
+  "indexes": [
+    {
+      "name": "uniq_user_document_tag",
+      "type": "unique",
+      "columns": [
+        "user_id",
+        "document_id",
+        "tag_id"
+      ]
+    },
+    {
+      "name": "idx_tag_id",
+      "type": "index",
+      "columns": [
+        "tag_id"
+      ]
+    },
+    {
+      "name": "idx_document_id",
+      "type": "index",
+      "columns": [
+        "document_id"
+      ]
+    }
+  ],
+  "admin": {
+    "enabled": false
+  },
+  "api": {
+    "enabled": false
+  }
+}

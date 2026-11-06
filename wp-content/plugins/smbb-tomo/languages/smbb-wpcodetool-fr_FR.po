@@ -1,0 +1,1180 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: smbb-wpcodetool\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "%d chars"
+msgstr "%d caractères"
+
+msgid "%d rows selected"
+msgstr "%d lignes sélectionnées"
+
+msgid "1 row selected"
+msgstr "1 ligne sélectionnée"
+
+msgid "API"
+msgstr "API"
+
+msgid "API Clients"
+msgstr "Clients API"
+
+msgid "API client"
+msgstr "Client API"
+
+msgid "API client created."
+msgstr "Client API créé."
+
+msgid "API client deleted."
+msgstr "Client API supprimé."
+
+msgid "API client disabled."
+msgstr "Client API désactivé."
+
+msgid "API client enabled."
+msgstr "Client API activé."
+
+msgid "API client updated."
+msgstr "Client API mis à jour."
+
+msgid "API clients"
+msgstr "Clients API"
+
+msgid "API documentation"
+msgstr "Documentation de l'API"
+
+msgid "API documentation: %s"
+msgstr "Documentation de l'API : %s"
+
+msgid "API documentation: all CodeTool namespaces"
+msgstr "Documentation de l'API : tous les espaces de noms CodeTool"
+
+msgid "API keys and tokens stored by CodeTool resources are encrypted in the database."
+msgstr "Les clés API et jetons stockés par les ressources CodeTool sont chiffrés en base de données."
+
+msgid "API namespaces"
+msgstr "Espaces de noms API"
+
+msgid "API token"
+msgstr "Jeton API"
+
+msgid "API token created."
+msgstr "Jeton API créé."
+
+msgid "API token deleted."
+msgstr "Jeton API supprimé."
+
+msgid "API token disabled."
+msgstr "Jeton API désactivé."
+
+msgid "API token enabled."
+msgstr "Jeton API activé."
+
+msgid "API visibility saved."
+msgstr "Visibilité de l'API enregistrée."
+
+msgid "API-enabled resources"
+msgstr "Ressources exposées en API"
+
+msgid "Actif"
+msgstr "Actif"
+
+msgid "Action"
+msgstr "Action"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Active"
+msgstr "Actif"
+
+msgid "Add item"
+msgstr "Ajouter un élément"
+
+msgid "Add this line to wp-config.php, just above the line \"That's all, stop editing!\", then keep a copy in your password manager."
+msgstr "Ajoutez cette ligne dans wp-config.php, juste au-dessus de la ligne « C'est tout, ne touchez pas à ce qui suit ! », puis gardez-en une copie dans votre gestionnaire de mots de passe."
+
+msgid "Admin"
+msgstr "Admin"
+
+msgid "Admin pages rendered without managed storage."
+msgstr "Pages d'admin affichées sans stockage géré."
+
+msgid "Aggregate OpenAPI"
+msgstr "OpenAPI agrégé"
+
+msgid "All active CodeTool models available in this WordPress instance."
+msgstr "Tous les modèles CodeTool actifs de ce WordPress."
+
+msgid "All currently detected custom-table schemas are synchronized."
+msgstr "Tous les schémas de tables détectés sont synchronisés."
+
+msgid "All detected custom-table schemas are currently synchronized."
+msgstr "Tous les schémas de tables détectés sont synchronisés."
+
+msgid "Allowed range: 1200 to 864000 seconds. 259200 seconds = 3 days. A client may request a shorter token, never a longer one."
+msgstr "Plage autorisée : 1200 à 864000 secondes. 259200 secondes = 3 jours. Un client peut demander un jeton plus court, jamais plus long."
+
+msgid "Apply"
+msgstr "Appliquer"
+
+msgid "Are you sure?"
+msgstr "Êtes-vous sûr ?"
+
+msgid "At least one JSON model could not be parsed or validated cleanly. Open the resource registry to inspect file-level errors."
+msgstr "Au moins un modèle JSON n'a pas pu être lu ou validé. Ouvrez le registre des ressources pour voir les erreurs par fichier."
+
+msgid "Attachment #%d"
+msgstr "Fichier n° %d"
+
+msgid "Aucune tache cron SMBB declaree."
+msgstr "Aucune tâche cron SMBB déclarée."
+
+msgid "Browse resources"
+msgstr "Parcourir les ressources"
+
+msgid "Browse routes"
+msgstr "Parcourir les routes"
+
+msgid "Build custom WordPress admin experiences faster"
+msgstr "Construisez plus vite des écrans d'admin WordPress sur mesure"
+
+msgid "Bulk actions"
+msgstr "Actions groupées"
+
+msgid "Callback absent"
+msgstr "Callback absent"
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Capability"
+msgstr "Capacité"
+
+msgid "Choose a batch action first."
+msgstr "Choisissez d'abord une action groupée."
+
+msgid "Choose files"
+msgstr "Choisir des fichiers"
+
+msgid "Choose image"
+msgstr "Choisir une image"
+
+msgid "Choose images"
+msgstr "Choisir des images"
+
+msgid "Choose media"
+msgstr "Choisir un média"
+
+msgid "Clear"
+msgstr "Effacer"
+
+msgid "Clear filter"
+msgstr "Effacer le filtre"
+
+msgid "Clear gallery"
+msgstr "Vider la galerie"
+
+msgid "Client ID"
+msgstr "Client ID"
+
+msgid "Client expiration date"
+msgstr "Date d'expiration du client"
+
+msgid "Client label"
+msgstr "Nom du client"
+
+msgid "CodeTool"
+msgstr "CodeTool"
+
+msgid "CodeTool API"
+msgstr "API CodeTool"
+
+msgid "CodeTool API clients"
+msgstr "Clients API CodeTool"
+
+msgid "CodeTool Admin"
+msgstr "Admin CodeTool"
+
+msgid "CodeTool overview"
+msgstr "Vue d'ensemble CodeTool"
+
+msgid "CodeTool resources"
+msgstr "Ressources CodeTool"
+
+msgid "CodeTool routes"
+msgstr "Routes CodeTool"
+
+msgid "CodeTool view \"%1$s\" is missing or unreadable: %2$s"
+msgstr "La vue CodeTool « %1$s » est absente ou illisible : %2$s"
+
+msgid "Collapse"
+msgstr "Replier"
+
+msgid "Collapse all"
+msgstr "Tout replier"
+
+msgid "Column"
+msgstr "Colonne"
+
+msgid "Column too short for encrypted values: synchronize the schema."
+msgstr "Colonne trop courte pour des valeurs chiffrées : synchronisez le schéma."
+
+msgid "Columns declared with \"secret\": true in the resource models."
+msgstr "Colonnes déclarées avec \"secret\": true dans les modèles."
+
+msgid "Confirm"
+msgstr "Confirmer"
+
+msgid "Contact"
+msgstr "Contact"
+
+msgid "Contact email"
+msgstr "E-mail de contact"
+
+msgid "Control which namespaces are public, capability-protected, or hidden."
+msgstr "Choisissez les espaces de noms publics, protégés par une capacité ou masqués."
+
+msgid "Copied"
+msgstr "Copié"
+
+msgid "Copy"
+msgstr "Copier"
+
+msgid "Copy these credentials now."
+msgstr "Copiez ces identifiants maintenant."
+
+msgid "Create"
+msgstr "Créer"
+
+msgid "Create API client"
+msgstr "Créer un client API"
+
+msgid "Create API clients, rotate their secret by recreation, and issue bearer access tokens via POST /token."
+msgstr "Créez des clients API, renouvelez leur secret en les recréant et délivrez des jetons d'accès via POST /token."
+
+msgid "Cron"
+msgstr "Cron"
+
+msgid "Cron callback is not callable."
+msgstr "Le callback de la tâche cron n'est pas appelable."
+
+msgid "Cron task \"%s\" has been executed."
+msgstr "La tâche cron « %s » a été exécutée."
+
+msgid "Cron task not found."
+msgstr "Tâche cron introuvable."
+
+msgid "Cron tasks"
+msgstr "Tâches cron"
+
+msgid "Current key fingerprint: %s"
+msgstr "Empreinte de la clé actuelle : %s"
+
+msgid "Custom tables"
+msgstr "Tables personnalisées"
+
+msgid "Custom-table resources currently waiting for a schema apply or fix."
+msgstr "Ressources en attente d'application ou de correction du schéma."
+
+msgid "Database"
+msgstr "Base de données"
+
+msgid "Database schema synchronized."
+msgstr "Schéma de base de données synchronisé."
+
+msgid "Decrypt all"
+msgstr "Tout déchiffrer"
+
+msgid "Default TTL"
+msgstr "Durée par défaut"
+
+msgid "Default token lifetime (seconds)"
+msgstr "Durée de vie par défaut des jetons (secondes)"
+
+msgid "Delete"
+msgstr "Supprimer"
+
+msgid "Delete selected items? This cannot be undone."
+msgstr "Supprimer les éléments sélectionnés ? Cette action est irréversible."
+
+msgid "Delete this item? This cannot be undone."
+msgstr "Supprimer cet élément ? Cette action est irréversible."
+
+msgid "Deletion was blocked by the resource hooks."
+msgstr "La suppression a été bloquée par les règles de la ressource."
+
+msgid "Derniere execution"
+msgstr "Dernière exécution"
+
+msgid "Derniere execution en erreur"
+msgstr "Dernière exécution en erreur"
+
+msgid "Designed for WordPress builders who want declarative models and bespoke admin UX in the same toolkit."
+msgstr "Pensé pour les développeurs WordPress qui veulent des modèles déclaratifs et une admin sur mesure dans le même outil."
+
+msgid "Detected resources"
+msgstr "Ressources détectées"
+
+msgid "Detected routes"
+msgstr "Routes détectées"
+
+msgid "Disable"
+msgstr "Désactiver"
+
+msgid "Disabled"
+msgstr "Désactivé"
+
+msgid "Duplicate"
+msgstr "Dupliquer"
+
+msgid "Enable"
+msgstr "Activer"
+
+msgid "Enabled"
+msgstr "Activé"
+
+msgid "Encrypt all"
+msgstr "Tout chiffrer"
+
+msgid "Encrypted"
+msgstr "Chiffré"
+
+msgid "Encryption"
+msgstr "Chiffrement"
+
+msgid "Encryption key"
+msgstr "Clé de chiffrement"
+
+msgid "Encryption unavailable: the PHP sodium extension is missing on this server."
+msgstr "Chiffrement indisponible : l'extension PHP sodium manque sur ce serveur."
+
+msgid "Encryption works with a key derived from the WordPress salts. If those salts are ever regenerated (some security plugins do it), encrypted values will have to be re-entered. Define SMBB_SECRET_KEY to avoid this."
+msgstr "Le chiffrement utilise une clé dérivée des salts WordPress. Si ces salts sont régénérés (certains plugins de sécurité le font), les valeurs chiffrées devront être ressaisies. Définissez SMBB_SECRET_KEY pour l'éviter."
+
+msgid "Error"
+msgstr "Erreur"
+
+msgid "Etat"
+msgstr "État"
+
+msgid "Every 15 minutes (SMBB)"
+msgstr "Toutes les 15 minutes (SMBB)"
+
+msgid "Example: Partner CRM"
+msgstr "Exemple : CRM partenaire"
+
+msgid "Existing values are re-encrypted with the new key automatically on the next admin page load. If you lose this key, the API keys will have to be entered again."
+msgstr "Les valeurs existantes sont rechiffrées avec la nouvelle clé au prochain chargement d'une page d'admin. Si vous perdez cette clé, les clés API devront être ressaisies."
+
+msgid "Expand"
+msgstr "Déplier"
+
+msgid "Expand all"
+msgstr "Tout déplier"
+
+msgid "Expired"
+msgstr "Expiré"
+
+msgid "Expires"
+msgstr "Expire"
+
+msgid "Field"
+msgstr "Champ"
+
+msgid "File"
+msgstr "Fichier"
+
+msgid "Filter"
+msgstr "Filtrer"
+
+msgid "Filter field"
+msgstr "Champ du filtre"
+
+msgid "Filter operator"
+msgstr "Opérateur du filtre"
+
+msgid "Filter value"
+msgstr "Valeur du filtre"
+
+msgid "Form sections"
+msgstr "Sections du formulaire"
+
+msgid "Generate a key"
+msgstr "Générer une clé"
+
+msgid "Generate a new key"
+msgstr "Générer une nouvelle clé"
+
+msgid "Hidden"
+msgstr "Masqué"
+
+msgid "Hide value"
+msgstr "Masquer la valeur"
+
+msgid "Included namespaces: %s"
+msgstr "Espaces de noms inclus : %s"
+
+msgid "Inspect detected models, menu placement, schema state, and generated admin pages."
+msgstr "Consultez les modèles détectés, leur place dans le menu, l'état du schéma et les pages générées."
+
+msgid "Inspect detected resources, database status, and schema preview actions."
+msgstr "Consultez les ressources détectées, l'état de la base et l'aperçu des schémas."
+
+msgid "Inspect public URL patterns declared in codetool/routes/public.php files."
+msgstr "Consultez les URL publiques déclarées dans les fichiers codetool/routes/public.php."
+
+msgid "Inspect public non-REST routes declared by active plugins."
+msgstr "Consultez les routes publiques hors REST déclarées par les plugins actifs."
+
+msgid "Invalid client_id or client_secret."
+msgstr "client_id ou client_secret invalide."
+
+msgid "Invalid schema"
+msgstr "Schéma invalide"
+
+msgid "Invalid schema preview nonce."
+msgstr "Jeton de sécurité de l'aperçu de schéma invalide."
+
+msgid "Issue credentials and inspect the clients allowed to request access tokens."
+msgstr "Délivrez des identifiants et consultez les clients autorisés à demander des jetons."
+
+msgid "Item"
+msgstr "Élément"
+
+msgid "Item created."
+msgstr "Élément créé."
+
+msgid "Item deleted."
+msgstr "Élément supprimé."
+
+msgid "Item duplicated."
+msgstr "Élément dupliqué."
+
+msgid "Item updated."
+msgstr "Élément mis à jour."
+
+msgid "Items you create will appear in this list."
+msgstr "Les éléments créés apparaîtront dans cette liste."
+
+msgid "Jump straight to the main operating areas of the toolkit."
+msgstr "Accédez directement aux principales zones de l'outil."
+
+msgid "Label"
+msgstr "Libellé"
+
+msgid "Lancer"
+msgstr "Lancer"
+
+msgid "Lancer maintenant"
+msgstr "Lancer maintenant"
+
+msgid "Last token"
+msgstr "Dernier jeton"
+
+msgid "Manage API clients"
+msgstr "Gérer les clients API"
+
+msgid "Manage OpenAPI and Swagger visibility per namespace."
+msgstr "Gérez la visibilité OpenAPI et Swagger par espace de noms."
+
+msgid "Manage OpenAPI visibility"
+msgstr "Gérer la visibilité OpenAPI"
+
+msgid "Managed client credentials allowed to request access tokens."
+msgstr "Identifiants clients autorisés à demander des jetons d'accès."
+
+msgid "Managed clients"
+msgstr "Clients gérés"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "Method"
+msgstr "Méthode"
+
+msgid "Missing item identifier."
+msgstr "Identifiant de l'élément manquant."
+
+msgid "Model file"
+msgstr "Fichier du modèle"
+
+msgid "Model issues"
+msgstr "Problèmes de modèles"
+
+msgid "Model validation issues"
+msgstr "Erreurs de validation des modèles"
+
+msgid "Move down"
+msgstr "Descendre"
+
+msgid "Move up"
+msgstr "Monter"
+
+msgid "Namespace"
+msgstr "Espace de noms"
+
+msgid "Never"
+msgstr "Jamais"
+
+msgid "New"
+msgstr "Nouveau"
+
+msgid "New %s"
+msgstr "Nouveau : %s"
+
+msgid "New key, shown only once."
+msgstr "Nouvelle clé, affichée une seule fois."
+
+msgid "No API client has been created yet."
+msgstr "Aucun client API pour le moment."
+
+msgid "No API documentation is visible for the current visitor."
+msgstr "Aucune documentation d'API n'est visible pour ce visiteur."
+
+msgid "No API namespace was provided and none could be inferred."
+msgstr "Aucun espace de noms API fourni ni déductible."
+
+msgid "No API-enabled namespace has been detected yet."
+msgstr "Aucun espace de noms API détecté pour le moment."
+
+msgid "No SQL could be generated for this resource."
+msgstr "Aucun SQL n'a pu être généré pour cette ressource."
+
+msgid "No active plugin exposes a codetool/models directory yet."
+msgstr "Aucun plugin actif n'a encore de dossier codetool/models."
+
+msgid "No active plugin exposes a codetool/routes/public.php file yet."
+msgstr "Aucun plugin actif n'a encore de fichier codetool/routes/public.php."
+
+msgid "No items found."
+msgstr "Aucun élément trouvé."
+
+msgid "No items yet. Add the first one."
+msgstr "Aucun élément pour le moment. Ajoutez le premier."
+
+msgid "No media selected."
+msgstr "Aucun média sélectionné."
+
+msgid "No resource declares a secret column yet."
+msgstr "Aucune ressource ne déclare de colonne secrète."
+
+msgid "No result found."
+msgstr "Aucun résultat."
+
+msgid "No results"
+msgstr "Aucun résultat"
+
+msgid "No row selected"
+msgstr "Aucune ligne sélectionnée"
+
+msgid "No scan or validation issue is currently reported on detected model files."
+msgstr "Aucune erreur de lecture ou de validation sur les modèles détectés."
+
+msgid "No selection yet."
+msgstr "Aucune sélection."
+
+msgid "No usable key: define SMBB_SECRET_KEY in wp-config.php."
+msgstr "Aucune clé utilisable : définissez SMBB_SECRET_KEY dans wp-config.php."
+
+msgid "No writable data was provided."
+msgstr "Aucune donnée enregistrable fournie."
+
+msgid "Non planifie"
+msgstr "Non planifié"
+
+msgid "Non-REST endpoints declared by active plugins."
+msgstr "Points d'accès hors REST déclarés par les plugins actifs."
+
+msgid "Not applicable"
+msgstr "Sans objet"
+
+msgid "Nothing here yet"
+msgstr "Rien pour le moment"
+
+msgid "Nothing matches this search or filter."
+msgstr "Rien ne correspond à cette recherche ou à ce filtre."
+
+msgid "Null is not allowed for this update mode."
+msgstr "La valeur nulle n'est pas autorisée dans ce mode de mise à jour."
+
+msgid "One scope per line. Leave \"*\" for full access. Examples: resource:orders:read, resource:invoices:write, namespace:partner/v1:read."
+msgstr "Un scope par ligne. Laissez « * » pour un accès complet. Exemples : resource:orders:read, resource:invoices:write, namespace:partner/v1:read."
+
+msgid "Open"
+msgstr "Ouvrir"
+
+msgid "Open %s"
+msgstr "Ouvrir %s"
+
+msgid "Open API settings"
+msgstr "Ouvrir les réglages API"
+
+msgid "Open resource registry"
+msgstr "Ouvrir le registre des ressources"
+
+msgid "Open with current session"
+msgstr "Ouvrir avec la session actuelle"
+
+msgid "OpenAPI"
+msgstr "OpenAPI"
+
+msgid "Operator"
+msgstr "Opérateur"
+
+msgid "Option resources"
+msgstr "Ressources de réglages"
+
+msgid "Optional. Once reached, the client is auto-disabled and its issued tokens stop working."
+msgstr "Facultatif. À cette date, le client est désactivé et ses jetons cessent de fonctionner."
+
+msgid "Overview"
+msgstr "Vue d'ensemble"
+
+msgid "Pattern"
+msgstr "Motif"
+
+msgid "Plain text"
+msgstr "En clair"
+
+msgid "Preview SQL"
+msgstr "Aperçu SQL"
+
+msgid "Previous key"
+msgstr "Clé précédente"
+
+msgid "Prochaine execution"
+msgstr "Prochaine exécution"
+
+msgid "Public"
+msgstr "Public"
+
+msgid "Public routes"
+msgstr "Routes publiques"
+
+msgid "Pure UI pages"
+msgstr "Pages d'interface"
+
+msgid "Quick access"
+msgstr "Accès rapide"
+
+msgid "Quick access to resources, API exposure, and managed API clients."
+msgstr "Accès rapide aux ressources, à l'exposition API et aux clients API."
+
+msgid "REST exposure"
+msgstr "Exposition REST"
+
+msgid "REST namespaces currently exposed by detected resources."
+msgstr "Espaces de noms REST exposés par les ressources détectées."
+
+msgid "Recap des taches declarees par les plugins SMBB."
+msgstr "Récapitulatif des tâches déclarées par les plugins SMBB."
+
+msgid "Remove"
+msgstr "Retirer"
+
+msgid "Remove all items?"
+msgstr "Retirer tous les éléments ?"
+
+msgid "Remove this item?"
+msgstr "Retirer cet élément ?"
+
+msgid "Repeater controls"
+msgstr "Commandes de la liste"
+
+msgid "Requested item was not found."
+msgstr "L'élément demandé est introuvable."
+
+msgid "Resolve SQL schema updates"
+msgstr "Appliquer les mises à jour du schéma SQL"
+
+msgid "Resource"
+msgstr "Ressource"
+
+msgid "Resource pages remain fully free to implement bespoke UX on top of the model."
+msgstr "Les pages de ressources restent libres d'offrir une interface sur mesure au-dessus du modèle."
+
+msgid "Resource registry"
+msgstr "Registre des ressources"
+
+msgid "Resources"
+msgstr "Ressources"
+
+msgid "Resources grouped under this menu."
+msgstr "Ressources regroupées sous ce menu."
+
+msgid "Review model issues"
+msgstr "Voir les problèmes de modèles"
+
+msgid "Route file"
+msgstr "Fichier de routes"
+
+msgid "Route scan errors"
+msgstr "Erreurs de lecture des routes"
+
+msgid "Routes"
+msgstr "Routes"
+
+msgid "Save"
+msgstr "Enregistrer"
+
+msgid "Save API visibility"
+msgstr "Enregistrer la visibilité API"
+
+msgid "Save settings"
+msgstr "Enregistrer les réglages"
+
+msgid "Scan and validation errors"
+msgstr "Erreurs de lecture et de validation"
+
+msgid "Scan resource models, expose REST namespaces, and ship dashboards, CRUD screens, or settings pages from a single toolkit."
+msgstr "Lisez les modèles, exposez des API REST et livrez tableaux de bord, écrans CRUD ou pages de réglages avec un seul outil."
+
+msgid "Schema attention needed"
+msgstr "Schéma à vérifier"
+
+msgid "Schema preview: %s"
+msgstr "Aperçu du schéma : %s"
+
+msgid "Schemas pending"
+msgstr "Schémas en attente"
+
+msgid "Scopes"
+msgstr "Scopes"
+
+msgid "Search"
+msgstr "Rechercher"
+
+msgid "Search items"
+msgstr "Rechercher"
+
+msgid "Search..."
+msgstr "Rechercher…"
+
+msgid "Searching..."
+msgstr "Recherche…"
+
+msgid "Secret hint"
+msgstr "Indice du secret"
+
+msgid "Select all rows"
+msgstr "Tout sélectionner"
+
+msgid "Select at least one item first."
+msgstr "Sélectionnez d'abord au moins un élément."
+
+msgid "Select bulk action"
+msgstr "Choisir une action groupée"
+
+msgid "Select files"
+msgstr "Sélectionner des fichiers"
+
+msgid "Select gallery"
+msgstr "Sélectionner la galerie"
+
+msgid "Select image"
+msgstr "Sélectionner l'image"
+
+msgid "Select media"
+msgstr "Sélectionner le média"
+
+msgid "Settings pages"
+msgstr "Pages de réglages"
+
+msgid "Settings saved."
+msgstr "Réglages enregistrés."
+
+msgid "Shortcode"
+msgstr "Shortcode"
+
+msgid "Show all items"
+msgstr "Afficher tout"
+
+msgid "Show value"
+msgstr "Afficher la valeur"
+
+msgid "Some JSON models could not be loaded cleanly and need attention."
+msgstr "Certains modèles JSON n'ont pas pu être chargés et demandent votre attention."
+
+msgid "Some custom-table resources need SQL synchronization."
+msgstr "Certaines ressources ont besoin d'une synchronisation SQL."
+
+msgid "Some custom-table resources need SQL synchronization: %s."
+msgstr "Certaines ressources ont besoin d'une synchronisation SQL : %s."
+
+msgid "Some selected items could not be processed."
+msgstr "Certains éléments sélectionnés n'ont pas pu être traités."
+
+msgid "Status"
+msgstr "Statut"
+
+msgid "Storage"
+msgstr "Stockage"
+
+msgid "Store all these keys in plain text? Do this only to change the encryption key, then encrypt again."
+msgstr "Stocker toutes ces clés en clair ? À faire uniquement pour changer la clé de chiffrement, puis rechiffrer."
+
+msgid "Stored secrets"
+msgstr "Secrets stockés"
+
+msgid "System snapshot"
+msgstr "État du système"
+
+msgid "Tab %d"
+msgstr "Onglet %d"
+
+msgid "Table"
+msgstr "Table"
+
+msgid "Table missing"
+msgstr "Table absente"
+
+msgid "Table resources"
+msgstr "Ressources en table"
+
+msgid "Tache"
+msgstr "Tâche"
+
+msgid "The SMBB_SECRET_KEY constant is defined in wp-config.php. This is the recommended setup."
+msgstr "La constante SMBB_SECRET_KEY est définie dans wp-config.php. C'est la configuration recommandée."
+
+msgid "The aggregate endpoint and the Swagger shortcode only expose namespaces visible to the current visitor. Capability-protected REST docs need a WordPress REST nonce, so a raw /wp-json URL opened manually may look anonymous even when you are logged in."
+msgstr "Le point d'accès agrégé et le shortcode Swagger n'exposent que les espaces de noms visibles pour le visiteur. Les docs protégées par une capacité demandent un nonce REST WordPress : une URL /wp-json ouverte à la main peut donc sembler anonyme même connecté."
+
+msgid "The client secret is shown only once."
+msgstr "Le secret client n'est affiché qu'une seule fois."
+
+msgid "The cloned item contains errors."
+msgstr "La copie contient des erreurs."
+
+msgid "The custom API callback is not callable."
+msgstr "Le callback API personnalisé n'est pas appelable."
+
+msgid "The custom API class could not be loaded."
+msgstr "La classe API personnalisée n'a pas pu être chargée."
+
+msgid "The database schema must be synchronized before records can be soft-deleted."
+msgstr "Le schéma doit être synchronisé avant de pouvoir supprimer des enregistrements."
+
+msgid "The form contains errors."
+msgstr "Le formulaire contient des erreurs."
+
+msgid "The item could not be deleted."
+msgstr "L'élément n'a pas pu être supprimé."
+
+msgid "The item could not be duplicated."
+msgstr "L'élément n'a pas pu être dupliqué."
+
+msgid "The item could not be saved."
+msgstr "L'élément n'a pas pu être enregistré."
+
+msgid "The item to delete was not found."
+msgstr "L'élément à supprimer est introuvable."
+
+msgid "The item to duplicate was not found."
+msgstr "L'élément à dupliquer est introuvable."
+
+msgid "The item to update was not found."
+msgstr "L'élément à modifier est introuvable."
+
+msgid "The key never goes into the database: a database dump alone cannot reveal your API keys."
+msgstr "La clé n'est jamais stockée en base : une copie de la base seule ne révèle pas vos clés API."
+
+msgid "The overview is now meant to be a landing page, not just a debug table."
+msgstr "La vue d'ensemble sert de page d'accueil, pas seulement de tableau de débogage."
+
+msgid "The selected item could not be processed."
+msgstr "L'élément sélectionné n'a pas pu être traité."
+
+msgid "The settings could not be saved."
+msgstr "Les réglages n'ont pas pu être enregistrés."
+
+msgid "This Bearer token does not grant %1$s access to resource \"%2$s\"."
+msgstr "Ce jeton ne donne pas l'accès %1$s à la ressource « %2$s »."
+
+msgid "This admin action is not implemented yet."
+msgstr "Cette action n'est pas encore disponible."
+
+msgid "This field is required."
+msgstr "Ce champ est obligatoire."
+
+msgid "This field must be sent for a full update."
+msgstr "Ce champ est requis pour une mise à jour complète."
+
+msgid "This overview now surfaces SQL schema work before you open the full resource registry."
+msgstr "Cette vue signale les mises à jour de schéma SQL avant d'ouvrir le registre complet."
+
+msgid "To change key: decrypt all values below, replace the constant in wp-config.php, then reload this page."
+msgstr "Pour changer de clé : déchiffrez toutes les valeurs ci-dessous, remplacez la constante dans wp-config.php, puis rechargez cette page."
+
+msgid "Token endpoint"
+msgstr "Point d'accès des jetons"
+
+msgid "UI dashboards"
+msgstr "Tableaux de bord"
+
+msgid "UI-first"
+msgstr "Interface d'abord"
+
+msgid "UI-only pages"
+msgstr "Pages d'interface seule"
+
+msgid "URL"
+msgstr "URL"
+
+msgid "Unable to create the API client."
+msgstr "Impossible de créer le client API."
+
+msgid "Unable to issue an access token right now."
+msgstr "Impossible de délivrer un jeton d'accès pour le moment."
+
+msgid "Unable to update the API client."
+msgstr "Impossible de mettre à jour le client API."
+
+msgid "Unknown CodeTool API namespace: %s"
+msgstr "Espace de noms API CodeTool inconnu : %s"
+
+msgid "Unknown CodeTool resource."
+msgstr "Ressource CodeTool inconnue."
+
+msgid "Unknown custom route."
+msgstr "Route personnalisée inconnue."
+
+msgid "Unknown lookup resource."
+msgstr "Ressource de recherche inconnue."
+
+msgid "Unknown plugin"
+msgstr "Plugin inconnu"
+
+msgid "Unreadable"
+msgstr "Illisible"
+
+msgid "Unsaved changes"
+msgstr "Modifications non enregistrées"
+
+msgid "Up to date"
+msgstr "À jour"
+
+msgid "Update"
+msgstr "Mettre à jour"
+
+msgid "Update required"
+msgstr "Mise à jour requise"
+
+msgid "Use this endpoint to exchange a client_id and client_secret for a bearer access token."
+msgstr "Utilisez ce point d'accès pour échanger un client_id et un client_secret contre un jeton d'accès."
+
+msgid "Value"
+msgstr "Valeur"
+
+msgid "Visibility"
+msgstr "Visibilité"
+
+msgid "WP capability"
+msgstr "Capacité WP"
+
+msgid "You are not allowed to access this CodeTool page."
+msgstr "Vous n'avez pas accès à cette page."
+
+msgid "You are not allowed to manage CodeTool API clients."
+msgstr "Vous n'êtes pas autorisé à gérer les clients API CodeTool."
+
+msgid "You are not allowed to manage CodeTool API settings."
+msgstr "Vous n'êtes pas autorisé à gérer les réglages API CodeTool."
+
+msgid "You are not allowed to manage encryption."
+msgstr "Vous n'êtes pas autorisé à gérer le chiffrement."
+
+msgid "You are not allowed to modify this CodeTool resource."
+msgstr "Vous n'êtes pas autorisé à modifier cette ressource."
+
+msgid "You are not allowed to preview this resource schema."
+msgstr "Vous n'êtes pas autorisé à voir le schéma de cette ressource."
+
+msgid "You are not allowed to query this resource."
+msgstr "Vous n'êtes pas autorisé à interroger cette ressource."
+
+msgid "You are not allowed to run cron tasks."
+msgstr "Vous n'êtes pas autorisé à lancer les tâches cron."
+
+msgid "You are not allowed to synchronize this resource."
+msgstr "Vous n'êtes pas autorisé à synchroniser cette ressource."
+
+msgid "You are not allowed to view cron tasks."
+msgstr "Vous n'êtes pas autorisé à voir les tâches cron."
+
+msgid "You are not allowed to view the OpenAPI documentation."
+msgstr "Vous n'êtes pas autorisé à voir la documentation OpenAPI."
+
+msgid "You are not allowed to view this API documentation."
+msgstr "Vous n'êtes pas autorisé à voir cette documentation d'API."
+
+msgid "You are not allowed to view this OpenAPI documentation."
+msgstr "Vous n'êtes pas autorisé à voir cette documentation OpenAPI."
+
+msgid "client_id"
+msgstr "client_id"
+
+msgid "client_id and client_secret are required."
+msgstr "client_id et client_secret sont obligatoires."
+
+msgid "client_secret"
+msgstr "client_secret"
+
+msgid "contains"
+msgstr "contient"
+
+msgid "ends with"
+msgstr "se termine par"
+
+msgid "equals"
+msgstr "est égal à"
+
+msgid "greater or equal"
+msgstr "supérieur ou égal à"
+
+msgid "greater than"
+msgstr "supérieur à"
+
+msgid "is empty"
+msgstr "est vide"
+
+msgid "is not"
+msgstr "est différent de"
+
+msgid "is not empty"
+msgstr "n'est pas vide"
+
+msgid "less or equal"
+msgstr "inférieur ou égal à"
+
+msgid "less than"
+msgstr "inférieur à"
+
+msgid "partner@example.com"
+msgstr "partenaire@exemple.fr"
+
+msgid "requested"
+msgstr "demandé"
+
+msgid "required"
+msgstr "obligatoire"
+
+msgid "starts with"
+msgstr "commence par"
+
+msgid "token endpoint"
+msgstr "point d'accès des jetons"
+
+msgid "%s item"
+msgid_plural "%s items"
+msgstr[0] "%s élément"
+msgstr[1] "%s éléments"
+
+msgid "%d item deleted."
+msgid_plural "%d items deleted."
+msgstr[0] "%d élément supprimé."
+msgstr[1] "%d éléments supprimés."
+
+msgid "%d item duplicated."
+msgid_plural "%d items duplicated."
+msgstr[0] "%d élément dupliqué."
+msgstr[1] "%d éléments dupliqués."
+
+msgid "%d value was encrypted with a key that is no longer available: it must be entered again in its form."
+msgid_plural "%d values were encrypted with a key that is no longer available: they must be entered again in their forms."
+msgstr[0] "%d valeur a été chiffrée avec une clé qui n'est plus disponible : elle doit être ressaisie dans son formulaire."
+msgstr[1] "%d valeurs ont été chiffrées avec une clé qui n'est plus disponible : elles doivent être ressaisies dans leurs formulaires."
+
+msgid "%d value decrypted."
+msgid_plural "%d values decrypted."
+msgstr[0] "%d valeur déchiffrée."
+msgstr[1] "%d valeurs déchiffrées."
+
+msgid "%d value encrypted."
+msgid_plural "%d values encrypted."
+msgstr[0] "%d valeur chiffrée."
+msgstr[1] "%d valeurs chiffrées."
+
+msgid "%d value skipped: its column is too short. Synchronize the schema, then try again."
+msgid_plural "%d values skipped: their columns are too short. Synchronize the schema, then try again."
+msgstr[0] "%d valeur ignorée : sa colonne est trop courte. Synchronisez le schéma puis réessayez."
+msgstr[1] "%d valeurs ignorées : leurs colonnes sont trop courtes. Synchronisez le schéma puis réessayez."
+
+msgid "%d resource"
+msgid_plural "%d resources"
+msgstr[0] "%d ressource"
+msgstr[1] "%d ressources"
+
+msgid "%d singleton"
+msgid_plural "%d singletons"
+msgstr[0] "%d page de réglages"
+msgstr[1] "%d pages de réglages"
+
+msgid "%d page"
+msgid_plural "%d pages"
+msgstr[0] "%d page"
+msgstr[1] "%d pages"
+
+msgid "%d API resource"
+msgid_plural "%d API resources"
+msgstr[0] "%d ressource API"
+msgstr[1] "%d ressources API"
+
+msgid "%d route detected"
+msgid_plural "%d routes detected"
+msgstr[0] "%d route détectée"
+msgstr[1] "%d routes détectées"
+
+msgid "%d model detected"
+msgid_plural "%d models detected"
+msgstr[0] "%d modèle détecté"
+msgstr[1] "%d modèles détectés"
+
+msgid "%d API client"
+msgid_plural "%d API clients"
+msgstr[0] "%d client API"
+msgstr[1] "%d clients API"
+
+msgid "%d custom-table resource needs SQL attention before its data layer is fully in sync."
+msgid_plural "%d custom-table resources need SQL attention before their data layer is fully in sync."
+msgstr[0] "%d ressource demande une mise à jour SQL avant d'être synchronisée."
+msgstr[1] "%d ressources demandent une mise à jour SQL avant d'être synchronisées."
+
+msgid "%d model file currently has a scan or validation issue."
+msgid_plural "%d model files currently have scan or validation issues."
+msgstr[0] "%d fichier de modèle a une erreur de lecture ou de validation."
+msgstr[1] "%d fichiers de modèles ont des erreurs de lecture ou de validation."
+
+msgid "%d table missing"
+msgid_plural "%d tables missing"
+msgstr[0] "%d table absente"
+msgstr[1] "%d tables absentes"
+
+msgid "%d update required"
+msgid_plural "%d updates required"
+msgstr[0] "%d mise à jour requise"
+msgstr[1] "%d mises à jour requises"
+
+msgid "%d invalid schema"
+msgid_plural "%d invalid schemas"
+msgstr[0] "%d schéma invalide"
+msgstr[1] "%d schémas invalides"
+
+msgid "%d issue"
+msgid_plural "%d issues"
+msgstr[0] "%d problème"
+msgstr[1] "%d problèmes"
+
+msgid "%d pending"
+msgid_plural "%d pending"
+msgstr[0] "%d en attente"
+msgstr[1] "%d en attente"
+
+msgid "%d route"
+msgid_plural "%d routes"
+msgstr[0] "%d route"
+msgstr[1] "%d routes"

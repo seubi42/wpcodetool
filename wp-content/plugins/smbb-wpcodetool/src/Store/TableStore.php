@@ -3,6 +3,7 @@
 namespace Smbb\WpCodeTool\Store;
 
 use Smbb\WpCodeTool\Resource\ResourceDefinition;
+use Smbb\WpCodeTool\Support\Secrets;
 
 // Le store SQL depend de wpdb et ne doit etre charge que dans WordPress.
 defined('ABSPATH') || exit;
@@ -184,7 +185,7 @@ final class TableStore implements TableStoreInterface
         $data = $this->prepareWriteData($data);
 
         if (!$data) {
-            $this->last_error = __('No writable data was provided.', 'smbb-wpcodetool');
+            $this->last_error = __('Aucune donnée modifiable n\'a été fournie.', 'smbb-wpcodetool');
             return false;
         }
 
@@ -214,7 +215,7 @@ final class TableStore implements TableStoreInterface
         $data = $this->prepareWriteData($data);
 
         if (!$data) {
-            $this->last_error = __('No writable data was provided.', 'smbb-wpcodetool');
+            $this->last_error = __('Aucune donnée modifiable n\'a été fournie.', 'smbb-wpcodetool');
             return false;
         }
 
@@ -247,7 +248,7 @@ final class TableStore implements TableStoreInterface
         }
 
         if (!$this->hasSoftDeleteFlagColumn()) {
-            $this->last_error = __('The database schema must be synchronized before records can be soft-deleted.', 'smbb-wpcodetool');
+            $this->last_error = __('Le schéma de la base doit être synchronisé avant de pouvoir mettre des éléments à la corbeille.', 'smbb-wpcodetool');
             return false;
         }
 
@@ -697,6 +698,15 @@ final class TableStore implements TableStoreInterface
             unset($row[$column]);
         }
 
+        // Colonnes secrètes : déchiffrées pour les vues et les hooks. Une valeur qu'aucune
+        // clé connue n'ouvre revient vide (elle est à ressaisir), sans planter la page.
+        foreach ($this->resource->secretColumns() as $column) {
+            if (isset($row[$column]) && is_string($row[$column]) && Secrets::isEncrypted($row[$column])) {
+                $plain = Secrets::decrypt($row[$column]);
+                $row[$column] = $plain === null ? '' : $plain;
+            }
+        }
+
         return $row;
     }
 
@@ -725,6 +735,12 @@ final class TableStore implements TableStoreInterface
             }
 
             $prepared[$column] = $this->normalizeValue($column, $data[$column]);
+        }
+
+        foreach ($this->resource->secretColumns() as $column) {
+            if (isset($prepared[$column]) && is_string($prepared[$column]) && $prepared[$column] !== '') {
+                $prepared[$column] = Secrets::encrypt($prepared[$column]);
+            }
         }
 
         return $prepared;

@@ -97,6 +97,154 @@ final class ResourceRuntime
     }
 
     /**
+     * Actions groupées proposées sur la liste d'une ressource table.
+     *
+     * Intégrées : delete et duplicate. Sources, dans l'ordre (la première déclaration d'une clé l'emporte) :
+     * 1. le JSON du modèle, admin.list.batchActions (voir ResourceDefinition::listBatchActions) ;
+     * 2. la classe de hooks, batchActions(array $context), pour les cas dynamiques ;
+     * 3. le filtre smbb_wpcodetool_batch_actions sur la liste finale.
+     * Format d'une entrée : libellé, ou ['label', 'method', 'confirm', 'capability', 'danger'] ;
+     * false retire une action intégrée.
+     *
+     * @return array<string,array{label:string,method:string,confirm:string,capability:string,danger:bool,builtin:bool}>
+     */
+    public function batchActions(ResourceDefinition $resource)
+    {
+        $builtin = array(
+            'duplicate' => array(
+                'label' => __('Dupliquer', 'smbb-wpcodetool'),
+                'confirm' => '',
+                'capability' => '',
+                'danger' => false,
+                'builtin' => true,
+            ),
+            'delete' => array(
+                'label' => __('Supprimer', 'smbb-wpcodetool'),
+                'confirm' => __('Supprimer les éléments sélectionnés ? Cette action est irréversible.', 'smbb-wpcodetool'),
+                'capability' => '',
+                'danger' => true,
+                'builtin' => true,
+            ),
+        );
+        $custom = array();
+        $hooks = $this->hooksFor($resource);
+        $sources = array($resource->listBatchActions());
+
+        if (is_object($hooks) && method_exists($hooks, 'batchActions')) {
+            $declared = call_user_func(array($hooks, 'batchActions'), array('resource' => $resource->name()));
+            $sources[] = is_array($declared) ? $declared : array();
+        }
+
+        foreach ($sources as $declared) {
+            foreach ($declared as $key => $definition) {
+                $key = sanitize_key((string) $key);
+
+                if ($key === '') {
+                    continue;
+                }
+
+                if ($definition === false) {
+                    unset($builtin[$key]);
+                    continue;
+                }
+
+                // delete et duplicate sont réservées : on peut les retirer, pas les redéfinir.
+                if (in_array($key, array('delete', 'duplicate'), true) || isset($custom[$key])) {
+                    continue;
+                }
+
+                $definition = is_array($definition) ? $definition : array('label' => (string) $definition);
+
+                if (empty($definition['label'])) {
+                    continue;
+                }
+
+                $custom[$key] = array(
+                    'label' => (string) $definition['label'],
+                    'method' => isset($definition['method']) ? (string) $definition['method'] : '',
+                    'confirm' => isset($definition['confirm']) ? (string) $definition['confirm'] : '',
+                    'capability' => isset($definition['capability']) ? (string) $definition['capability'] : '',
+                    'danger' => !empty($definition['danger']),
+                    'builtin' => false,
+                );
+            }
+        }
+
+        // Les actions de la ressource d'abord, les actions génériques (dont la suppression) en dernier.
+        $actions = apply_filters('smbb_wpcodetool_batch_actions', $custom + $builtin, $resource->name());
+        $allowed = array();
+
+        foreach (is_array($actions) ? $actions : array() as $key => $action) {
+            if (!is_array($action) || empty($action['label'])) {
+                continue;
+            }
+
+            if (!empty($action['capability']) && !current_user_can($action['capability'])) {
+                continue;
+            }
+
+            $allowed[$key] = $action;
+        }
+
+        return $allowed;
+    }
+
+    /**
+     * Exécute une action groupée déclarée par la classe de hooks.
+     *
+     * handleBatch() peut renvoyer :
+     * - ['success' => bool, 'message' => string, 'count' => int, 'details' => [libellé => message]] ;
+     * - un WP_Error ;
+     * - un entier (nombre d'éléments traités) ou true.
+     *
+     * @return array{success:bool,message:string,count:int,details:array}
+     */
+    public function callBatchHook(ResourceDefinition $resource, $action, array $ids, array $context = array())
+    {
+        $hooks = $this->hooksFor($resource);
+        $actions = $this->batchActions($resource);
+        $method = isset($actions[$action]['method']) && $actions[$action]['method'] !== '' ? $actions[$action]['method'] : 'handleBatch';
+
+        if (!isset($actions[$action]) || !empty($actions[$action]['builtin']) || !is_object($hooks) || !method_exists($hooks, $method)) {
+            return array(
+                'success' => false,
+                'message' => sprintf(
+                    /* translators: %s: méthode attendue dans la classe de hooks */
+                    __('Cette action groupée n\'est pas prise en charge (méthode %s introuvable dans les hooks).', 'smbb-wpcodetool'),
+                    $method
+                ),
+                'count' => 0,
+                'details' => array(),
+            );
+        }
+
+        $context['resource'] = $resource->name();
+        $context['batch_action'] = (string) $action;
+        $result = $method === 'handleBatch'
+            ? call_user_func(array($hooks, 'handleBatch'), (string) $action, $ids, $context)
+            : call_user_func(array($hooks, $method), $ids, $context);
+
+        if (is_wp_error($result)) {
+            return array('success' => false, 'message' => $result->get_error_message(), 'count' => 0, 'details' => array());
+        }
+
+        if (is_int($result) || $result === true) {
+            $count = $result === true ? count($ids) : max(0, $result);
+
+            return array('success' => true, 'message' => '', 'count' => $count, 'details' => array());
+        }
+
+        $result = is_array($result) ? $result : array();
+
+        return array(
+            'success' => !empty($result['success']),
+            'message' => isset($result['message']) ? (string) $result['message'] : '',
+            'count' => isset($result['count']) ? max(0, (int) $result['count']) : (!empty($result['success']) ? count($ids) : 0),
+            'details' => isset($result['details']) && is_array($result['details']) ? $result['details'] : array(),
+        );
+    }
+
+    /**
      * Calls a hook that transforms resource data.
      */
     public function callDataHook($hooks, $method, array $data, array $context)

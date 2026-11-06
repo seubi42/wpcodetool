@@ -293,7 +293,7 @@ final class Dashboard
                 <?php if (!$rows) : ?>
                     <tr>
                         <td colspan="<?php echo esc_attr((string) count($columns)); ?>">
-                            <?php echo esc_html($empty_message !== '' ? $empty_message : __('No items found.', 'smbb-wpcodetool')); ?>
+                            <?php echo esc_html($empty_message !== '' ? $empty_message : __('Aucun élément trouvé.', 'smbb-wpcodetool')); ?>
                         </td>
                     </tr>
                 <?php else : ?>

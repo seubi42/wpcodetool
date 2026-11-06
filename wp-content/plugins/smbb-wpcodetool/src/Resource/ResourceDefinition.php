@@ -267,6 +267,45 @@ final class ResourceDefinition
         return $this->translateText(isset($menu['title']) ? (string) $menu['title'] : $this->pluralLabel());
     }
 
+    /**
+     * Titre de la première entrée du sous-menu d'un menu principal.
+     *
+     * WordPress répète le titre du menu principal comme premier sous-menu
+     * ("Tomo" > "Tomo"). admin.menu.submenuTitle permet d'écrire autre chose,
+     * par exemple "Tableau de bord".
+     */
+    public function menuSubmenuTitle()
+    {
+        $menu = $this->menu();
+
+        return !empty($menu['submenuTitle']) ? $this->translateText((string) $menu['submenuTitle']) : '';
+    }
+
+    /**
+     * Groupe de la ressource dans son sous-menu (admin.menu.group).
+     *
+     * CodeTool insère un titre non cliquable avant le premier élément de chaque
+     * groupe, dans l'ordre des positions. Vide = pas de groupe.
+     */
+    public function menuGroup()
+    {
+        $menu = $this->menu();
+
+        return !empty($menu['group']) ? $this->translateText((string) $menu['group']) : '';
+    }
+
+    /**
+     * Entrée de menu à mettre en surbrillance quand cette page est ouverte
+     * (admin.menu.highlight = nom d'une autre ressource). Utile pour une page
+     * "hidden" rangée sous une autre, comme un onglet.
+     */
+    public function menuHighlight()
+    {
+        $menu = $this->menu();
+
+        return !empty($menu['highlight']) ? sanitize_key((string) $menu['highlight']) : '';
+    }
+
     private function textDomain()
     {
         $domain = basename($this->plugin_dir);
@@ -386,6 +425,28 @@ final class ResourceDefinition
     }
 
     /**
+     * Actions groupées déclarées dans le JSON (admin.list.batchActions), brutes.
+     *
+     * "batchActions": {
+     *   "publish": {"label": "Publier", "method": "publishItems", "confirm": "Publier ?", "capability": "edit_posts", "danger": false},
+     *   "archive": "Archiver",
+     *   "duplicate": false
+     * }
+     *
+     * "method" est une méthode de la classe de hooks appelée avec ($ids, $context) ;
+     * sans "method", c'est handleBatch($action, $ids, $context) qui reçoit l'action.
+     * false retire une action intégrée (delete, duplicate).
+     *
+     * @return array<string,mixed>
+     */
+    public function listBatchActions()
+    {
+        $list = $this->listConfig();
+
+        return isset($list['batchActions']) && is_array($list['batchActions']) ? $list['batchActions'] : array();
+    }
+
+    /**
      * Configuration normalisee de la recherche de liste.
      *
      * Formats supportes :
@@ -480,7 +541,7 @@ final class ResourceDefinition
     {
         $placeholder = $this->listSearchConfig()['placeholder'];
 
-        return $placeholder !== '' ? $placeholder : __('Search', 'smbb-wpcodetool');
+        return $placeholder !== '' ? $placeholder : __('Rechercher', 'smbb-wpcodetool');
     }
 
     /**
@@ -542,6 +603,84 @@ final class ResourceDefinition
     /**
      * Indique si les filtres de liste sont actives.
      */
+    /**
+     * Onglets de préfiltres affichés sous le titre de la liste (admin.list.presets).
+     *
+     * "presets": {
+     *   "all": "Toutes",
+     *   "items": [
+     *     {"key": "pending", "label": "À confirmer", "filter": {"field": "status", "operator": "eq", "value": "pending"}, "count": true}
+     *   ]
+     * }
+     *
+     * Forme courte acceptée : "presets": [ ...items ]. "all": false retire l'onglet sans filtre.
+     * Le champ du filtre doit faire partie de admin.list.filters.
+     *
+     * @return array{all:string,items:array<int,array{key:string,label:string,filter:array,count:bool}>}
+     */
+    public function listPresets()
+    {
+        $list = $this->listConfig();
+        $config = isset($list['presets']) && is_array($list['presets']) ? $list['presets'] : array();
+
+        if ($config && array_keys($config) === range(0, count($config) - 1)) {
+            $config = array('items' => $config);
+        }
+
+        $all = array_key_exists('all', $config) ? $config['all'] : __('Tous', 'smbb-wpcodetool');
+        $items = array();
+
+        foreach (isset($config['items']) && is_array($config['items']) ? $config['items'] : array() as $index => $item) {
+            if (!is_array($item) || empty($item['label']) || empty($item['filter']['field'])) {
+                continue;
+            }
+
+            $items[] = array(
+                'key' => !empty($item['key']) ? sanitize_key((string) $item['key']) : 'preset-' . $index,
+                'label' => (string) $item['label'],
+                'filter' => array(
+                    'field' => sanitize_key((string) $item['filter']['field']),
+                    'operator' => !empty($item['filter']['operator']) ? sanitize_key((string) $item['filter']['operator']) : 'eq',
+                    'value' => isset($item['filter']['value']) ? (string) $item['filter']['value'] : '',
+                ),
+                'count' => !empty($item['count']),
+            );
+        }
+
+        return array('all' => $all === false ? '' : (string) $all, 'items' => $items);
+    }
+
+    /**
+     * Mémoire de la liste (recherche, filtre, tri, page) dans le navigateur (admin.list.remember) :
+     * "back" (défaut) seulement au retour d'une fiche de la même ressource, "always" à chaque retour, "never" jamais.
+     */
+    public function listRemember()
+    {
+        $list = $this->listConfig();
+        $value = isset($list['remember']) ? $list['remember'] : 'back';
+
+        if ($value === true) {
+            return 'always';
+        }
+
+        if ($value === false) {
+            return 'never';
+        }
+
+        return in_array($value, array('back', 'always', 'never'), true) ? $value : 'back';
+    }
+
+    /**
+     * Le formulaire générique [champ] [opérateur] [valeur] est-il affiché ? (admin.list.filters.form, true par défaut)
+     * À false, les filtres passés dans l'URL (onglets, liens) restent actifs.
+     */
+    public function listFilterFormVisible()
+    {
+        $list = $this->listConfig();
+
+        return !(isset($list['filters']) && is_array($list['filters']) && array_key_exists('form', $list['filters']) && !$list['filters']['form']);
+    }
+
     public function listFiltersEnabled()
     {
         $filters = $this->listFiltersConfig();
@@ -757,6 +896,43 @@ final class ResourceDefinition
     public function columnStoresJson($column_name)
     {
         return in_array(sanitize_key((string) $column_name), $this->jsonColumns(), true);
+    }
+
+    /**
+     * Colonnes chiffrées en base ("secret": true dans la définition de colonne).
+     *
+     * Le store les chiffre à l'écriture et les déchiffre à la lecture ; l'API REST ne les
+     * renvoie jamais.
+     *
+     * @return string[]
+     */
+    public function secretColumns()
+    {
+        $secret = array();
+
+        foreach ($this->columns() as $name => $definition) {
+            if (is_array($definition) && !empty($definition['secret'])) {
+                $secret[] = (string) $name;
+            }
+        }
+
+        return $secret;
+    }
+
+    /**
+     * Retire les colonnes secrètes d'une ligne (sortie API, exports).
+     */
+    public function withoutSecrets($row)
+    {
+        if (!is_array($row)) {
+            return $row;
+        }
+
+        foreach ($this->secretColumns() as $column) {
+            unset($row[$column]);
+        }
+
+        return $row;
     }
 
     /**
