@@ -18,6 +18,9 @@ final class ConnectionTests
 {
     const ACTION = 'scp_test_connection';
 
+    /** Dernier résultat de chaque test, par organisation : array(org_id => array(type => {success, message, at})). */
+    const OPTION = 'scp_connection_tests';
+
     public static function hooks()
     {
         add_action('admin_post_' . self::ACTION, array(__CLASS__, 'handle'));
@@ -83,8 +86,15 @@ final class ConnectionTests
             // Le journal lui-même est indisponible (tables non synchronisées) : on affiche quand même le résultat.
         }
 
-        set_transient(self::resultKey($organization_id, $type), $result, 5 * MINUTE_IN_SECONDS);
-        wp_safe_redirect(wp_get_referer() ?: admin_url('admin.php?page=smbb-codetool-scp_organization&view=form&id=' . $organization_id));
+        // Gardé jusqu'au test suivant (pas un message à usage unique) : il reste lisible après un rechargement.
+        $all = get_option(self::OPTION, array());
+        $all = is_array($all) ? $all : array();
+        $all[$organization_id][$type] = $result + array('at' => time());
+        update_option(self::OPTION, $all, false);
+
+        $back = wp_get_referer() ?: admin_url('admin.php?page=smbb-codetool-scp_organization&view=form&id=' . $organization_id);
+        $back = add_query_arg('scp_tested', $type, remove_query_arg('scp_tested', strtok($back, '#')));
+        wp_safe_redirect($back . '#' . self::anchor($type));
         exit;
     }
 
@@ -134,23 +144,40 @@ final class ConnectionTests
             . '<p class="description">' . esc_html__('Sans numéro : vérifie seulement les identifiants. Teste les réglages enregistrés : enregistrez avant de tester.', 'smbb-signaconnect-proxima') . '</p>';
     }
 
+    /**
+     * Dernier résultat du test, affiché en permanence au-dessus du bouton (data-smbb-keep : ni bulle
+     * ni cloche). Juste après un test, la page revient sur cet onglet et le bloc clignote.
+     */
     private static function resultHtml($organization_id, $type)
     {
-        $key = self::resultKey($organization_id, $type);
-        $result = get_transient($key);
+        $all = get_option(self::OPTION, array());
+        $result = isset($all[absint($organization_id)][$type]) ? $all[absint($organization_id)][$type] : null;
 
-        if (!is_array($result)) {
+        if (!is_array($result) || !isset($result['message'])) {
             return '';
         }
 
-        delete_transient($key);
+        $just = isset($_GET['scp_tested']) && sanitize_key(wp_unslash($_GET['scp_tested'])) === $type; // phpcs:ignore WordPress.Security.NonceVerification
+        $at = !empty($result['at']) ? (int) $result['at'] : 0;
+        $when = $at ? sprintf(__('Dernier test il y a %s', 'smbb-signaconnect-proxima'), human_time_diff($at, time())) : __('Dernier test', 'smbb-signaconnect-proxima');
 
-        return '<div class="notice ' . ($result['success'] ? 'notice-success' : 'notice-error') . ' inline"><p>' . esc_html($result['message']) . '</p></div>';
+        $html = '<div id="' . esc_attr(self::anchor($type)) . '" data-smbb-keep class="notice smbb-keep-notice scp-test-result ' . (!empty($result['success']) ? 'notice-success' : 'notice-error') . ' inline' . ($just ? ' is-fresh' : '') . '"'
+            . ($at ? ' title="' . esc_attr(wp_date(get_option('date_format') . ' H:i', $at)) . '"' : '') . '>'
+            . '<p><strong>' . esc_html($when) . ' :</strong> ' . esc_html($result['message']) . '</p></div>';
+
+        static $css = false;
+
+        if ($just && !$css) {
+            $css = true;
+            $html .= '<style>@keyframes scp-test-flash{0%{box-shadow:0 0 0 4px rgba(34,113,177,.35)}100%{box-shadow:0 0 0 0 rgba(34,113,177,0)}}.scp-test-result.is-fresh{animation:scp-test-flash 1.8s ease}</style>';
+        }
+
+        return $html;
     }
 
-    private static function resultKey($organization_id, $type)
+    private static function anchor($type)
     {
-        return 'scp_test_' . get_current_user_id() . '_' . absint($organization_id) . '_' . $type;
+        return 'scp-test-' . sanitize_key($type);
     }
 
     private static function shortError(\Throwable $exception)

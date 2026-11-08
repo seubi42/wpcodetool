@@ -1,0 +1,44 @@
+{
+  "format": "smbb-passflow-config",
+  "version": 1,
+  "profile": {
+    "title": "Atelier créatif",
+    "description": "Céramique, peinture, couture, floral : des séances en petit groupe avec un animateur.",
+    "icon": "dashicons-art",
+    "order": 10
+  },
+  "settings": {
+    "vocabulary_event": "atelier",
+    "vocabulary_slot": "seance",
+    "vocabulary_staff": "animateur",
+    "vocabulary_participant": "participant",
+    "vocabulary_ticket": "billet",
+    "vocabulary_pass": "cycle",
+    "vocabulary_voucher": "carte",
+    "vocabulary_example_name": "Atelier céramique : tournage",
+    "vocabulary_example_location": "Atelier, 12 rue des Potiers",
+    "ask_allergies": 0,
+    "ask_level": 1,
+    "ask_age": 1,
+    "ask_contact": "optional",
+    "waitlist_enabled": 1,
+    "ticket_color_mode": "fixed",
+    "ticket_color": "#c0603a",
+    "email_color_mode": "ticket",
+    "email_background": "#f8f2ec",
+    "reminder_participant_hours": 24,
+    "reminder_host_days": 7
+  },
+  "documents": {
+    "documents": [
+      {
+        "title": "Droit à l'image",
+        "kind": "consent",
+        "active": 1,
+        "text": "J'accepte que des photos ou vidéos sur lesquelles j'apparais, prises pendant la séance, soient utilisées pour la communication de l'organisateur (site, réseaux sociaux). Je peux retirer mon accord à tout moment par simple e-mail.",
+        "required": 0,
+        "key": "droit-image"
+      }
+    ]
+  }
+}

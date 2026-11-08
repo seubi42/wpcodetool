@@ -12,28 +12,62 @@ if (!function_exists('wp_tempnam')) {
 }
 
 /**
- * Fichiers d'une organisation sur son S3 (connecteur S3 de CodeTool).
+ * Fichiers d'une organisation, rangés sur une unité de stockage de CodeTool (CodeTool › Réglages › Stockage) :
+ * l'organisation choisit son unité dans une liste (colonne storage_unit) et chaque document retient l'unité
+ * où ses PDF ont été rangés (scp_document.storage_unit), pour qu'un changement d'unité ne les perde pas.
+ *
+ * Repli : une organisation encore réglée à l'ancienne (colonnes s3_*) garde son S3 jusqu'à la reprise
+ * automatique (StorageMigration) qui crée l'unité correspondante dans CodeTool.
  */
 final class Storage
 {
+    /** @var \Smbb\WpCodeTool\Storage\DiskInterface|null */
+    private $disk;
+
+    /** @var SmbbS3Client|null ancien réglage s3_* (CodeTool sans unités de stockage) */
     private $client;
 
-    private function __construct(SmbbS3Client $client)
+    private function __construct($disk, $client = null)
     {
+        $this->disk = $disk;
         $this->client = $client;
+    }
+
+    /**
+     * Unités de CodeTool disponibles (CodeTool assez récent).
+     */
+    public static function unitsAvailable()
+    {
+        return class_exists('Smbb\\WpCodeTool\\Storage\\Storage');
+    }
+
+    /**
+     * Unité choisie par l'organisation ('' = aucune).
+     */
+    public static function unitOf(array $organization)
+    {
+        $unit = isset($organization['storage_unit']) ? (string) $organization['storage_unit'] : '';
+
+        return $unit !== '' && self::unitsAvailable() && \Smbb\WpCodeTool\Storage\Storage::exists($unit) ? $unit : '';
     }
 
     public static function forOrganization(array $organization)
     {
+        $unit = self::unitOf($organization);
+
+        if ($unit !== '') {
+            return new self(\Smbb\WpCodeTool\Storage\Storage::disk($unit));
+        }
+
+        if (!Organizations::hasLegacyS3($organization)) {
+            throw new \RuntimeException(__("Aucun stockage n'est choisi pour l'organisation (onglet Stockage).", 'smbb-signaconnect-proxima'));
+        }
+
         if (!class_exists(SmbbS3Client::class)) {
             throw new \RuntimeException(__('Le connecteur S3 de CodeTool est indisponible.', 'smbb-signaconnect-proxima'));
         }
 
-        if (!Organizations::hasS3($organization)) {
-            throw new \RuntimeException(__("Le stockage S3 de l'organisation n'est pas configuré.", 'smbb-signaconnect-proxima'));
-        }
-
-        return new self(new SmbbS3Client(
+        return new self(null, new SmbbS3Client(
             (string) $organization['s3_endpoint'],
             (string) $organization['s3_access_key'],
             (string) $organization['s3_secret_key'],
@@ -44,8 +78,28 @@ final class Storage
         ));
     }
 
+    /**
+     * Stockage des fichiers d'un document : l'unité où ils ont été rangés, sinon celle de l'organisation.
+     */
+    public static function forDocument(array $document, array $organization)
+    {
+        $unit = isset($document['storage_unit']) ? (string) $document['storage_unit'] : '';
+
+        if ($unit !== '' && self::unitsAvailable()) {
+            return new self(\Smbb\WpCodeTool\Storage\Storage::disk($unit));
+        }
+
+        return self::forOrganization($organization);
+    }
+
     public function putFile($key, $path, $content_type = 'application/pdf')
     {
+        if ($this->disk) {
+            $this->disk->putFile($key, $path, $content_type);
+
+            return;
+        }
+
         $body = fopen($path, 'rb');
 
         if (!$body) {
@@ -63,6 +117,12 @@ final class Storage
 
     public function putString($key, $content, $content_type = 'text/plain')
     {
+        if ($this->disk) {
+            $this->disk->putString($key, $content, $content_type);
+
+            return;
+        }
+
         $this->client->putObject($key, (string) $content, array('ContentType' => $content_type));
     }
 
@@ -71,6 +131,10 @@ final class Storage
      */
     public function download($key)
     {
+        if ($this->disk) {
+            return $this->disk->download($key);
+        }
+
         $object = $this->client->getObject($key);
         $body = isset($object['Body']) ? $object['Body'] : null;
         $path = wp_tempnam('scp-file');
@@ -96,6 +160,10 @@ final class Storage
 
     public function getString($key)
     {
+        if ($this->disk) {
+            return $this->disk->getString($key);
+        }
+
         $object = $this->client->getObject($key);
 
         return isset($object['Body']) ? (string) $object['Body'] : '';
@@ -103,9 +171,17 @@ final class Storage
 
     public function delete($key)
     {
-        if ((string) $key !== '') {
-            $this->client->deleteObject($key);
+        if ((string) $key === '') {
+            return;
         }
+
+        if ($this->disk) {
+            $this->disk->delete($key);
+
+            return;
+        }
+
+        $this->client->deleteObject($key);
     }
 
     /**
@@ -115,6 +191,12 @@ final class Storage
      */
     public function selfTest()
     {
+        if ($this->disk) {
+            $result = $this->disk->test();
+
+            return is_string($result) && $result !== '' ? $result : __('Stockage OK : écriture, lecture et suppression réussies.', 'smbb-signaconnect-proxima');
+        }
+
         $this->client->testConnection();
         $key = 'signaconnect-test/' . gmdate('Ymd-His') . '-' . wp_generate_password(8, false, false) . '.txt';
         $content = 'SignaConnect ' . gmdate('c');

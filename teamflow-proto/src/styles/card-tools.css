@@ -1,0 +1,45 @@
+/* Outils de carte (titre optionnel, replier, plein écran), cartes repliées, mise en évidence */
+.tf-card-tools {
+  position: absolute; top: -13px; right: 10px; z-index: 3;
+  display: flex; gap: 2px; padding: 2px;
+  background: var(--tf-panel); border: 1px solid var(--tf-panel-border); border-radius: 8px;
+  box-shadow: 0 4px 14px var(--tf-shadow);
+  opacity: 0; pointer-events: none; transition: opacity .12s;
+}
+.tf-card:hover > .tf-card-tools,
+.tf-card.tf-selected > .tf-card-tools,
+.tf-card.tf-editing > .tf-card-tools { opacity: 1; pointer-events: auto; }
+.tf-root.tf-moving .tf-card-tools, .tf-root.tf-panning .tf-card-tools,
+.tf-root.tf-block-dragging .tf-card-tools, .tf-root.tf-connecting .tf-card-tools { opacity: 0 !important; pointer-events: none !important; }
+.tf-ct {
+  width: 24px; height: 22px; padding: 0; border: 0; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; color: var(--tf-muted); cursor: pointer;
+}
+.tf-ct:hover { background: var(--tf-hover); color: var(--tf-text); }
+.tf-ct svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; transition: transform .15s; }
+.tf-card.tf-collapsed .tf-ct-collapse svg { transform: rotate(-90deg); }
+/* « ajouter un titre » : seulement en édition d'une carte sans titre */
+.tf-ct-title { display: none; }
+.tf-card.tf-editing.tf-no-title:not(.tf-title-edit) .tf-ct-title { display: flex; }
+.tf-card.tf-editing .tf-ct-collapse { display: none; }
+
+/* carte sans titre : pas d'en-tête (sauf whiteboard, repliée ou titre en cours d'ajout) */
+.tf-card.tf-no-title:not(.tf-is-board):not(.tf-collapsed):not(.tf-title-edit) .tf-card-head { display: none; }
+.tf-card.tf-no-title:not(.tf-is-board):not(.tf-collapsed):not(.tf-title-edit) .tf-card-body { margin-top: 0; }
+.tf-card.tf-title-edit .tf-card-title { display: block; }
+.tf-card.tf-title-edit .tf-card-title:empty::before { content: attr(data-placeholder); color: var(--tf-faint); pointer-events: none; }
+.tf-card-summary { display: none; flex: 1; min-width: 0; color: var(--tf-muted); font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tf-card.tf-collapsed.tf-no-title .tf-card-summary { display: block; }
+.tf-card.tf-no-title .tf-card-title:empty { display: none; }
+
+/* repliée */
+.tf-card.tf-collapsed .tf-card-body, .tf-card.tf-collapsed .tf-card-foot { display: none; }
+.tf-card.tf-collapsed { min-height: 0; }
+
+/* carte rejointe via un lien @ */
+@keyframes tf-flash {
+  0%, 100% { box-shadow: 0 0 0 2px var(--tf-accent), 0 8px 24px var(--tf-shadow); }
+  35% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--tf-accent) 45%, transparent), 0 8px 24px var(--tf-shadow); }
+}
+.tf-card.tf-flash { animation: tf-flash .9s ease 2; }

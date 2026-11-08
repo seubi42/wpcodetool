@@ -1,0 +1,35 @@
+{
+  "name": "passflow_stats",
+  "label": "Statistiques",
+  "pluralLabel": "Statistiques",
+  "description": "Remplissage, présence, inscriptions prises et stock vendu non réalisé, par période et par atelier.",
+  "storage": {
+    "type": "none"
+  },
+  "admin": {
+    "enabled": true,
+    "capability": "manage_passflow",
+    "menu": {
+      "placement": "submenu",
+      "title": "Statistiques",
+      "icon": "dashicons-chart-bar",
+      "position": 54,
+      "parent": "smbb-codetool-passflow",
+      "group": "Suivi"
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "type": "page",
+    "page": {
+      "defaultView": "stats"
+    },
+    "views": {
+      "stats": "views/passflow-stats/stats.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

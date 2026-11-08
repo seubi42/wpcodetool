@@ -1,0 +1,25 @@
+.mi-app-loading[data-v-078cb9c8] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 16px;
+}
+.mi-app-loading .mi-spin[data-v-078cb9c8] {
+  animation: mi-spin-078cb9c8 1s linear infinite;
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  color: #228bee;
+}
+.mi-app-loading .mi-loading-text[data-v-078cb9c8] {
+  margin: 0;
+  font-size: 15px;
+  color: #444;
+}
+@keyframes mi-spin-078cb9c8 {
+to {
+    transform: rotate(360deg);
+}
+}

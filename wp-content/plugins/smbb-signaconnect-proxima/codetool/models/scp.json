@@ -14,7 +14,10 @@
       "placement": "main",
       "title": "SignaConnect",
       "icon": "dashicons-media-document",
-      "position": 31
+      "position": 31,
+      "group": "Activité",
+      "groupIcon": "dashicons-chart-area",
+      "submenuTitle": "Tableau de bord"
     },
     "adminBar": {
       "newContent": false,

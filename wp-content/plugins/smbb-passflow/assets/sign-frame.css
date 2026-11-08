@@ -1,0 +1,43 @@
+/* Lightbox « Faire signer » (assets/sign-frame.js) : au-dessus de la fenêtre badge et du mode Jour J.
+   Couleurs explicites : les presets du skin (Cristal…) ne doivent pas la rendre transparente. */
+.passflow-sign-layer { position: fixed; inset: 0; z-index: 100200; display: flex; align-items: center; justify-content: center; padding: 24px; background: rgba(20, 16, 14, .62); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); animation: passflow-sign-fade .18s ease-out; }
+.passflow-sign-layer[hidden] { display: none !important; }
+.passflow-sign-box { position: relative; display: flex; flex-direction: column; width: 100%; max-width: 720px; height: min(92vh, 980px); background: #f6f3ee !important; color: #2b2420 !important; border-radius: 16px; overflow: hidden; box-shadow: 0 24px 60px rgba(0, 0, 0, .35); animation: passflow-sign-rise .22s cubic-bezier(.2, .8, .3, 1); }
+.passflow-sign-bar { flex: 0 0 auto; display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 6px 8px 6px 16px; background: #fff !important; color: #2b2420 !important; border-bottom: 1px solid #eadfd3; }
+.passflow-sign-title { flex: 1 1 auto; min-width: 0; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: inherit !important; }
+.passflow-sign-x { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 0; border-radius: 50%; background: #f1ece6 !important; color: #2b2420 !important; cursor: pointer; }
+.passflow-sign-x:hover, .passflow-sign-x:focus-visible { background: #e6ddd3 !important; }
+.passflow-sign-body { position: relative; flex: 1 1 auto; min-height: 0; }
+.passflow-sign-body iframe { display: block; width: 100%; height: 100%; border: 0; background: #f6f3ee; opacity: 0; transition: opacity .15s ease; }
+.passflow-sign-layer.is-loaded iframe { opacity: 1; }
+
+/* Chargement : trait qui file sous la barre. */
+.passflow-sign-wait { position: absolute; top: 0; left: 0; right: 0; height: 3px; overflow: hidden; pointer-events: none; }
+.passflow-sign-wait i { position: absolute; top: 0; bottom: 0; width: 35%; background: #1e6b37; animation: passflow-sign-wait 1s ease-in-out infinite; }
+.passflow-sign-layer.is-loaded .passflow-sign-wait { display: none; }
+
+/* Tout est signé : coche verte avant la fermeture automatique. */
+.passflow-sign-done { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px; text-align: center; background: rgba(246, 243, 238, .94); color: #1e6b37 !important; font-size: 19px; }
+.passflow-sign-layer.is-done .passflow-sign-done { display: flex; animation: passflow-sign-fade .2s ease-out; }
+.passflow-sign-done svg { width: 84px; height: 84px; }
+.passflow-sign-done circle { fill: #1e8a4c; }
+.passflow-sign-done path { fill: none; stroke: #fff; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 24; stroke-dashoffset: 24; animation: passflow-sign-tick .35s .1s ease-out forwards; }
+
+/* Téléphone (et tablette portrait étroite) : plein écran, zones sûres respectées. */
+@media (max-width: 782px) {
+    .passflow-sign-layer { padding: 0; background: #f6f3ee; -webkit-backdrop-filter: none; backdrop-filter: none; }
+    .passflow-sign-box { max-width: none; width: 100%; height: 100vh; height: 100dvh; border-radius: 0; box-shadow: none; }
+    .passflow-sign-bar { padding-top: max(6px, env(safe-area-inset-top)); padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(8px, env(safe-area-inset-right)); }
+}
+
+/* Page de dessous figée tant que la lightbox est ouverte (pas de défilement derrière sur iOS). */
+html.passflow-sign-on, html.passflow-sign-on body { overflow: hidden !important; }
+
+@keyframes passflow-sign-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes passflow-sign-rise { from { opacity: 0; transform: translateY(14px) scale(.985); } to { opacity: 1; transform: none; } }
+@keyframes passflow-sign-wait { from { left: -35%; } to { left: 100%; } }
+@keyframes passflow-sign-tick { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) {
+    .passflow-sign-layer, .passflow-sign-box, .passflow-sign-done, .passflow-sign-wait i { animation: none !important; }
+    .passflow-sign-done path { stroke-dashoffset: 0; animation: none; }
+}

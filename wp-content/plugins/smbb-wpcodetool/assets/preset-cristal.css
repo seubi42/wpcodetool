@@ -1,0 +1,394 @@
+/* ==========================================================================
+ * CodeTool – allure « Cristal » (CodeTool › Apparence › Style › Allure).
+ *
+ * Minimaliste et net, dans l'esprit des apps modernes (Linear, Vercel) :
+ * - fond neutre avec une grille fine qui s'efface vers le bas, une lueur de la palette en haut ;
+ * - surfaces blanches (ou noires) à liseré de 1 px, coins de 12 px, presque pas d'ombre ;
+ * - barres en verre dépoli avec un trait fin, rien ne flotte ;
+ * - typo Geist (option « Polices Geist »), intitulés de colonnes, compteurs, dates et ID en
+ *   Geist Mono capitales espacées, chiffres tabulaires ;
+ * - la palette ne sert qu'aux accents : bouton principal, liens, focus, entrée de menu courante.
+ * Chargé après les autres feuilles, seulement avec body.smbb-preset-cristal.
+ * ========================================================================== */
+
+body.smbb-preset-cristal {
+    --cr-a: var(--smbb-t-accent);
+    --cr-font: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --cr-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --cr-bg: #fdfdfd;
+    --cr-surface: #ffffff;
+    --cr-subtle: #f4f4f5;
+    --cr-hover: #f6f6f7;
+    --cr-border: rgba(0, 0, 0, .08);
+    --cr-border-strong: rgba(0, 0, 0, .14);
+    --cr-grid: rgba(0, 0, 0, .035);
+    --cr-text: #0a0a0a;
+    --cr-muted: #71717a;
+    --cr-bar: rgba(255, 255, 255, .62);
+    --cr-bar-rim: inset 0 1px 0 rgba(255, 255, 255, .9), inset 0 -1px 0 rgba(0, 0, 0, .06);
+    --cr-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+    --cr-pop: 0 0 0 1px rgba(0, 0, 0, .06), 0 12px 32px -8px rgba(0, 0, 0, .16);
+    --cr-radius: 12px;
+    --cr-ctl: 8px;
+    background: var(--cr-bg);
+    color: var(--cr-text);
+}
+
+html.smbb-dark body.smbb-preset-cristal {
+    --cr-bg: #09090b;
+    --cr-surface: #111113;
+    --cr-subtle: #18181b;
+    --cr-hover: #1a1a1d;
+    --cr-border: rgba(255, 255, 255, .08);
+    --cr-border-strong: rgba(255, 255, 255, .14);
+    --cr-grid: rgba(255, 255, 255, .045);
+    --cr-text: #fafafa;
+    --cr-muted: #a1a1aa;
+    --cr-bar: rgba(14, 14, 18, .6);
+    --cr-bar-rim: inset 0 1px 0 rgba(255, 255, 255, .08), inset 0 -1px 0 rgba(255, 255, 255, .06);
+    --cr-shadow: none;
+    --cr-pop: 0 0 0 1px rgba(255, 255, 255, .08), 0 16px 40px -8px rgba(0, 0, 0, .7);
+}
+
+/* Accents en couleur pleine : les dégradés de palette (boutons, menu, icônes) deviennent unis. */
+html body.smbb-preset-cristal.smbb-skin.smbb-skin,
+html body.smbb-preset-cristal.smbb-login.smbb-login {
+    --smbb-t-grad: linear-gradient(var(--smbb-t-accent), var(--smbb-t-accent));
+    --smbb-t-grad-hover: linear-gradient(var(--smbb-t-accent-hover, var(--smbb-t-accent)), var(--smbb-t-accent-hover, var(--smbb-t-accent)));
+}
+
+/* 1. Typo : Geist partout par héritage (les polices d'icônes gardent la leur). */
+body.smbb-preset-cristal,
+body.smbb-preset-cristal :is(input, select, textarea, button, h1, h2, h3, h4, h5, h6),
+body.smbb-preset-cristal #wpadminbar *:not(.ab-icon, [class*="dashicons"]),
+body.smbb-preset-cristal.smbb-login :is(input, button, label, a, p, h1) {
+    font-family: var(--cr-font);
+    font-feature-settings: "ss01", "cv11";
+}
+
+body.smbb-preset-cristal #wpbody-content .wrap > h1,
+body.smbb-preset-cristal #wpbody-content .wrap h1.wp-heading-inline,
+body.smbb-preset-cristal .wrap.smbb-codetool h1,
+body.smbb-preset-cristal .passflow-admin h1 {
+    font-weight: 600;
+    letter-spacing: -.025em;
+}
+
+body.smbb-preset-cristal #wpbody-content :is(h2, h3) {
+    font-weight: 600;
+    letter-spacing: -.012em;
+}
+
+/* Intitulés, compteurs, dates et identifiants en mono : l'effet « grille ». */
+body.smbb-preset-cristal #wpbody-content :is(.wp-list-table, .smbb-codetool-table) :is(thead, tfoot) :is(th, td),
+body.smbb-preset-cristal #wpbody-content :is(.wp-list-table, .smbb-codetool-table) :is(thead, tfoot) :is(th, td) a {
+    font-family: var(--cr-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--cr-muted);
+}
+
+body.smbb-preset-cristal #wpbody-content :is(.subsubsub .count, .displaying-num, .column-id, td.column-date, .smbb-codetool-metric-value, kbd, code),
+body.smbb-preset-cristal #wpadminbar kbd,
+body.smbb-preset-cristal :is(.smbb-cmdk kbd, .smbb-appbar kbd) {
+    font-family: var(--cr-mono);
+    font-variant-numeric: tabular-nums;
+}
+
+body.smbb-preset-cristal #wpbody-content :is(td.column-date, .column-id) {
+    font-size: 12px;
+    color: var(--cr-muted);
+}
+
+body.smbb-preset-cristal .passflow-admin :is(.passflow-dash-kpi, .passflow-dash-day, [class*="-kpi"], [class*="-num"], [class*="-count"]) {
+    font-variant-numeric: tabular-nums;
+}
+
+/* 2. Fond : grille fine qui s'efface vers le bas + lueur de la palette en haut. */
+body.smbb-preset-cristal::before {
+    content: "";
+    position: fixed;
+    z-index: -1;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(var(--cr-grid) 1px, transparent 1px) 0 0 / 32px 32px,
+        linear-gradient(90deg, var(--cr-grid) 1px, transparent 1px) 0 0 / 32px 32px;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, .55) 45%, transparent 90%);
+    mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, .55) 45%, transparent 90%);
+}
+
+/* Voile : un lavis très pâle et uni de la palette en haut de l'écran, qui glisse lentement
+ * de gauche à droite (pas de taches). */
+body.smbb-preset-cristal::after {
+    content: "";
+    position: fixed;
+    z-index: -2;
+    inset: 0 0 auto;
+    height: 420px;
+    pointer-events: none;
+    background: linear-gradient(90deg,
+        color-mix(in srgb, var(--cr-a) 9%, transparent),
+        color-mix(in srgb, var(--smbb-t-accent-2, var(--cr-a)) 7%, transparent),
+        color-mix(in srgb, var(--cr-a) 5%, transparent),
+        color-mix(in srgb, var(--smbb-t-accent-2, var(--cr-a)) 8%, transparent),
+        color-mix(in srgb, var(--cr-a) 9%, transparent)) 0 0 / 200% 100%;
+    -webkit-mask-image: linear-gradient(180deg, #000, transparent);
+    mask-image: linear-gradient(180deg, #000, transparent);
+    animation: cr-veil 40s linear infinite;
+}
+
+@keyframes cr-veil {
+    from { background-position: 0 0; }
+    to { background-position: 200% 0; }
+}
+
+body.smbb-preset-cristal :is(#wpwrap, #wpcontent, #wpbody, #wpbody-content, #wpfooter),
+body.smbb-preset-cristal .wrap.smbb-codetool,
+body.smbb-preset-cristal .passflow-admin {
+    /* !important : passe devant les fonds pleins du mode sombre (dark.css). */
+    background: transparent !important;
+}
+
+/* 3. Surfaces : blanc (ou noir) franc, liseré 1 px, coins 12 px, ombre à peine. */
+body.smbb-preset-cristal .wrap.smbb-codetool :is(.smbb-codetool-section, .smbb-codetool-fieldset.postbox, .smbb-codetool-panel, .smbb-codetool-details-panel, .smbb-codetool-table, .smbb-codetool-metric),
+body.smbb-preset-cristal #wpbody-content :is(.postbox, .card, .wp-list-table, .welcome-panel, .plugin-card, .theme-browser .theme, .health-check-body .health-check-accordion),
+body.smbb-preset-cristal .passflow-admin :is([class*="-card"], [class*="-tile"], [class*="-panel"], .passflow-dash-empty, .passflow-dash-todo, .passflow-dash-kpi, .passflow-dash-strip, .passflow-agenda-item, .passflow-today):not(button, a, [class*="-card"] [class*="-card"], [class*="-panel"] [class*="-card"]),
+body.smbb-preset-cristal .passflow-admin a.passflow-dash-kpi {
+    border: 1px solid var(--cr-border);
+    border-radius: var(--cr-radius);
+    background: var(--cr-surface) !important;
+    box-shadow: var(--cr-shadow);
+}
+
+body.smbb-preset-cristal .passflow-admin a.passflow-dash-kpi:hover {
+    border-color: var(--cr-border-strong);
+}
+
+body.smbb-preset-cristal .wrap.smbb-codetool .smbb-codetool-section-header,
+body.smbb-preset-cristal #wpbody-content .postbox .postbox-header {
+    border-bottom: 1px solid var(--cr-border);
+    background: transparent;
+}
+
+body.smbb-preset-cristal .wrap.smbb-codetool :is(.smbb-codetool-section-icon, .smbb-codetool-page-icon) {
+    border: 1px solid var(--cr-border);
+    background: var(--cr-surface);
+    box-shadow: var(--cr-shadow);
+}
+
+/* Tableaux : en-tête mono sur fond discret, traits fins, survol gris très clair. */
+body.smbb-preset-cristal #wpbody-content :is(.wp-list-table, .smbb-codetool-table) {
+    overflow: hidden;
+}
+
+body.smbb-preset-cristal #wpbody-content :is(.wp-list-table, .smbb-codetool-table) :is(tbody, tr, td, th) {
+    background: transparent;
+}
+
+body.smbb-preset-cristal #wpbody-content :is(.wp-list-table, .smbb-codetool-table) :is(thead, tfoot) :is(th, td) {
+    background: var(--cr-subtle);
+}
+
+body.smbb-preset-cristal #wpbody-content :is(.wp-list-table, .smbb-codetool-table) :is(thead th, thead td) {
+    border-bottom: 1px solid var(--cr-border);
+}
+
+body.smbb-preset-cristal #wpbody-content :is(.wp-list-table, .smbb-codetool-table) :is(tfoot th, tfoot td) {
+    border-top: 1px solid var(--cr-border);
+}
+
+body.smbb-preset-cristal #wpbody-content :is(.wp-list-table, .smbb-codetool-table) tbody tr + tr :is(th, td) {
+    border-top: 1px solid var(--cr-border);
+}
+
+body.smbb-preset-cristal #wpbody-content .wp-list-table.striped > tbody > :nth-child(odd) {
+    background: transparent;
+}
+
+body.smbb-preset-cristal #wpbody-content :is(.wp-list-table, .smbb-codetool-table) tbody tr:hover {
+    background: var(--cr-hover);
+}
+
+/* 4. Barres : verre dépoli et trait fin, à leur place habituelle. */
+body.smbb-preset-cristal #wpadminbar,
+body.smbb-preset-cristal .smbb-appbar,
+body.smbb-preset-cristal .smbb-codetool-savebar,
+body.smbb-preset-cristal form .smbb-ui-savebar {
+    border: 0;
+    border-bottom: 1px solid var(--cr-border);
+    background: var(--cr-bar);
+    box-shadow: var(--cr-bar-rim);
+    -webkit-backdrop-filter: blur(24px) saturate(200%);
+    backdrop-filter: blur(24px) saturate(200%);
+}
+
+body.smbb-preset-cristal :is(.smbb-codetool-savebar, form .smbb-ui-savebar) {
+    border-top: 1px solid var(--cr-border);
+    border-bottom: 0;
+}
+
+body.smbb-preset-cristal #wpadminbar .ab-sub-wrapper {
+    border: 0;
+    border-radius: 10px;
+    background: var(--cr-surface);
+    box-shadow: var(--cr-pop);
+}
+
+/* Menu : on garde le style choisi, sans halo ; l'entrée courante est une pastille unie. */
+body.smbb-preset-cristal #adminmenu :is(li.wp-has-current-submenu, li.current) > a.menu-top {
+    background-image: none;
+    box-shadow: none;
+}
+
+@media screen and (min-width: 783px) {
+    html body.smbb-preset-cristal.smbb-wp-chrome.smbb-menu-rail #adminmenu li.wp-has-current-submenu > .wp-submenu {
+        background: var(--cr-surface);
+        box-shadow: 1px 0 0 var(--cr-border);
+    }
+}
+
+body.smbb-preset-cristal #adminmenu .wp-not-current-submenu .wp-submenu {
+    border-radius: 10px;
+}
+
+/* Onglets segmentés : rail gris, onglet actif blanc à liseré. */
+body.smbb-preset-cristal :is(.smbb-appbar-tabs, .smbb-pf-tabs) {
+    border: 1px solid var(--cr-border);
+    border-radius: 10px;
+    background: var(--cr-subtle);
+    box-shadow: none;
+}
+
+body.smbb-preset-cristal :is(.smbb-appbar-tab, .smbb-appbar-pill) {
+    border-radius: 7px;
+}
+
+body.smbb-preset-cristal :is(.smbb-appbar-tab.is-active, .smbb-pf-tab.is-active) {
+    background: var(--cr-surface);
+    box-shadow: 0 0 0 1px var(--cr-border), 0 1px 2px rgba(0, 0, 0, .06);
+}
+
+body.smbb-preset-cristal .smbb-appbar-pill.is-active {
+    background: var(--cr-subtle);
+    box-shadow: inset 0 0 0 1px var(--cr-border);
+}
+
+/* 5. Boutons : 32 px, coins 8 px, graisse 500. Principal = accent uni. */
+body.smbb-preset-cristal #wpbody-content :is(.button, .page-title-action):not(.button-link),
+body.smbb-preset-cristal.smbb-login .button-primary,
+body.smbb-preset-cristal .smbb-ui-dialog .button {
+    min-height: 32px;
+    border-radius: var(--cr-ctl);
+    font-weight: 500;
+    letter-spacing: -.005em;
+    text-shadow: none;
+    transition: background-color .15s, border-color .15s, box-shadow .15s;
+}
+
+body.smbb-preset-cristal #wpbody-content :is(.button-primary, .page-title-action),
+body.smbb-preset-cristal.smbb-login .button-primary,
+body.smbb-preset-cristal .smbb-ui-dialog .button-primary {
+    border: 1px solid var(--cr-a);
+    background: var(--cr-a);
+    color: var(--smbb-t-accent-ink, #fff);
+    background-image: none;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 1px 2px rgba(0, 0, 0, .08);
+}
+
+body.smbb-preset-cristal #wpbody-content :is(.button-primary, .page-title-action):is(:hover, :focus),
+body.smbb-preset-cristal.smbb-login .button-primary:is(:hover, :focus),
+body.smbb-preset-cristal .smbb-ui-dialog .button-primary:is(:hover, :focus) {
+    border-color: var(--smbb-t-accent-hover, var(--cr-a));
+    background-color: var(--smbb-t-accent-hover, var(--cr-a));
+    color: var(--smbb-t-accent-ink, #fff);
+}
+
+body.smbb-preset-cristal #wpbody-content .button:not(.button-primary, .button-link, .page-title-action),
+body.smbb-preset-cristal .smbb-ui-dialog .button:not(.button-primary) {
+    border: 1px solid var(--cr-border-strong);
+    background: var(--cr-surface);
+    color: var(--cr-text);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
+}
+
+body.smbb-preset-cristal #wpbody-content .button:not(.button-primary, .button-link, .page-title-action):hover,
+body.smbb-preset-cristal .smbb-ui-dialog .button:not(.button-primary):hover {
+    background: var(--cr-hover);
+    color: var(--cr-text);
+}
+
+body.smbb-preset-cristal #wpbody-content :is(.button, .page-title-action):focus-visible {
+    box-shadow: 0 0 0 2px var(--cr-bg), 0 0 0 4px color-mix(in srgb, var(--cr-a) 55%, transparent);
+    outline: 0;
+}
+
+/* 6. Champs : 32 px, coins 8 px, anneau de focus de la palette. */
+body.smbb-preset-cristal #wpbody-content :is(input[type="text"], input[type="search"], input[type="email"], input[type="url"], input[type="password"], input[type="number"], input[type="tel"], input[type="date"], input[type="time"], input[type="datetime-local"], select, textarea),
+body.smbb-preset-cristal.smbb-login :is(input[type="text"], input[type="password"], input[type="email"]) {
+    border: 1px solid var(--cr-border-strong);
+    border-radius: var(--cr-ctl);
+    background-color: var(--cr-surface);
+    color: var(--cr-text);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .03);
+}
+
+body.smbb-preset-cristal #wpbody-content :is(input, select, textarea):focus {
+    border-color: var(--cr-a);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--cr-a) 18%, transparent);
+}
+
+/* 7. Fenêtres : Ctrl K, dialogues, toasts, cloche. */
+body.smbb-preset-cristal :is(.smbb-cmdk, .smbb-ui-dialog, .smbb-ui-toast, .smbb-bell-panel) {
+    border: 0;
+    border-radius: 14px;
+    background: var(--cr-surface);
+    box-shadow: var(--cr-pop);
+}
+
+body.smbb-preset-cristal .smbb-cmdk::backdrop {
+    background: rgba(0, 0, 0, .28);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+}
+
+/* 8. Connexion : grille en fond, formulaire en carte blanche. */
+body.smbb-preset-cristal.smbb-login #loginform,
+body.smbb-preset-cristal.smbb-login #lostpasswordform {
+    border: 1px solid var(--cr-border);
+    border-radius: 14px;
+    background: var(--cr-surface);
+    box-shadow: var(--cr-pop);
+}
+
+/* 9. Calme : pas d'ondulation si l'appareil le demande ; barres opaques sans flou. */
+@media (prefers-reduced-motion: reduce) {
+    body.smbb-preset-cristal::after {
+        animation: none;
+    }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    body.smbb-preset-cristal {
+        --cr-bar: rgba(255, 255, 255, .97);
+    }
+
+    html.smbb-dark body.smbb-preset-cristal {
+        --cr-bar: rgba(9, 9, 11, .97);
+    }
+}
+
+/* Heure de la page de connexion : chiffres en Geist Mono, date en petites capitales espacées. */
+body.smbb-preset-cristal .smbb-login-clock-time {
+    font-family: var(--cr-mono);
+    font-weight: 300;
+    letter-spacing: -.06em;
+}
+
+body.smbb-preset-cristal .smbb-login-clock-date {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+}

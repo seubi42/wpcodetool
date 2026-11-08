@@ -1,0 +1,35 @@
+{
+  "name": "passflow_compare",
+  "label": "Comparer",
+  "pluralLabel": "Comparer",
+  "description": "Plusieurs dates ou plusieurs ateliers côte à côte : remplissage, présence et chiffre d'affaires.",
+  "storage": {
+    "type": "none"
+  },
+  "admin": {
+    "enabled": true,
+    "capability": "manage_passflow",
+    "menu": {
+      "placement": "submenu",
+      "title": "Comparer",
+      "icon": "dashicons-columns",
+      "position": 55,
+      "parent": "smbb-codetool-passflow",
+      "group": "Suivi"
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "type": "page",
+    "page": {
+      "defaultView": "compare"
+    },
+    "views": {
+      "compare": "views/passflow-compare/compare.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

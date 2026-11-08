@@ -1,0 +1,91 @@
+{
+  "name": "passflow",
+  "title": "Bienvenue dans Passflow",
+  "description": "Sept étapes courtes pour être prêt à vendre, ou à faire une belle démo. Tout s'enregistre au fur et à mesure et reste modifiable ensuite dans Réglages.",
+  "capability": "manage_passflow",
+  "redirectOnActivation": true,
+  "menuParent": "smbb-codetool-passflow",
+  "hooks": {
+    "file": "hooks/WizardHooks.php",
+    "class": "Smbb\\Passflow\\CodeTool\\WizardHooks"
+  },
+  "steps": [
+    {
+      "key": "look",
+      "type": "appearance",
+      "title": "Moderniser l'interface",
+      "description": "Un coup de neuf sur toute l'administration : style, couleurs, écrans de WordPress et de WooCommerce. Le détail reste dans CodeTool › Apparence.",
+      "icon": "dashicons-admin-appearance",
+      "optional": true
+    },
+    {
+      "key": "shop",
+      "type": "plugins",
+      "title": "Boutique : WooCommerce",
+      "description": "Passflow vend les places, les pass, les bons cadeaux et la vente sur place avec WooCommerce. Son propre assistant est passé : Passflow pose les réglages utiles.",
+      "icon": "dashicons-cart",
+      "plugins": [
+        {
+          "slug": "woocommerce",
+          "name": "WooCommerce",
+          "description": "Panier, paiement, comptes clients et commandes.",
+          "skipOnboarding": true
+        }
+      ],
+      "view": "views/passflow-wizard/shop.php"
+    },
+    {
+      "key": "company",
+      "type": "form",
+      "resource": "passflow_settings",
+      "view": "views/passflow-wizard/company.php",
+      "title": "Entreprise et TVA",
+      "description": "Votre identité sur les factures et les messages, et la façon dont vous pensez vos prix. Passflow et WooCommerce sont réglés ensemble.",
+      "icon": "dashicons-building"
+    },
+    {
+      "key": "profile",
+      "type": "profiles",
+      "dir": "profiles",
+      "view": "views/passflow-wizard/profile.php",
+      "title": "Profil d'activité",
+      "description": "Choisissez ce qui ressemble le plus à votre activité : le vocabulaire, les informations demandées, les documents à signer et le style partent de là.",
+      "icon": "dashicons-category",
+      "button": "Appliquer et continuer"
+    },
+    {
+      "key": "offer",
+      "type": "form",
+      "resource": "passflow_settings",
+      "view": "views/passflow-wizard/offer.php",
+      "title": "Votre première offre",
+      "description": "La première fiche et son produit WooCommerce, puis votre façon de vendre.",
+      "icon": "dashicons-calendar-alt"
+    },
+    {
+      "key": "brand",
+      "type": "form",
+      "resource": "passflow_settings",
+      "view": "views/passflow-wizard/brand.php",
+      "title": "Image de marque",
+      "description": "Un logo et une couleur, repris sur les billets, les e-mails et la page de connexion.",
+      "icon": "dashicons-art"
+    },
+    {
+      "key": "demo",
+      "type": "view",
+      "view": "views/passflow-wizard/demo.php",
+      "title": "Données de démo",
+      "description": "Un petit jeu de données pour montrer tout le parcours en une minute. Il se supprime d'un clic.",
+      "icon": "dashicons-database",
+      "optional": true
+    },
+    {
+      "key": "end",
+      "type": "finish",
+      "view": "views/passflow-wizard/finish.php",
+      "title": "C'est prêt",
+      "icon": "dashicons-yes-alt"
+    }
+  ]
+}

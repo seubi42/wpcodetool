@@ -1,0 +1,82 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "monsterinsights/popular-posts-products",
+  "title": "Popular Products",
+  "category": "widgets",
+  "description": "Add popular products.",
+  "keywords": [
+    "popular",
+    "products",
+    "widget"
+  ],
+  "textdomain": "default",
+  "attributes": {
+    "preview": {
+      "type": "boolean",
+      "default": false
+    },
+    "theme": {
+      "type": "string"
+    },
+    "title_size": {
+      "type": "number"
+    },
+    "title_color": {
+      "type": "string"
+    },
+    "background_color": {
+      "type": "string"
+    },
+    "background_border": {
+      "type": "string"
+    },
+    "meta_rating": {
+      "type": "boolean"
+    },
+    "meta_price": {
+      "type": "boolean"
+    },
+    "meta_image": {
+      "type": "boolean"
+    },
+    "columns": {
+      "type": "number",
+      "default": 1
+    },
+    "widget_title": {
+      "type": "boolean"
+    },
+    "widget_title_text": {
+      "type": "string"
+    },
+    "post_count": {
+      "type": "number",
+      "default": 5
+    },
+    "categories": {
+      "type": "array",
+      "default": []
+    },
+    "products": {
+      "type": "array",
+      "default": []
+    },
+    "rating_color": {
+      "type": "string"
+    },
+    "price_color": {
+      "type": "string"
+    },
+    "price_size": {
+      "type": "number"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "followrules": {
+      "type": "boolean"
+    }
+  },
+  "editorStyle": "monsterinsights-gutenberg-editor-css"
+}

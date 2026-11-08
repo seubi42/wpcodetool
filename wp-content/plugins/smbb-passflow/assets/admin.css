@@ -1,0 +1,971 @@
+/* Passflow – compléments visuels aux écrans CodeTool. */
+.passflow-admin { --passflow-brand: #b5476b; --passflow-ink: #1d2327; --passflow-muted: #646970; --passflow-line: #e2e4e7; }
+
+.passflow-admin .passflow-muted { color: #8c8f94; }
+.passflow-admin .passflow-ok { color: #00a32a; }
+.passflow-admin .passflow-ok-line { color: #1e6b22; margin: 0; }
+.passflow-admin .passflow-lead { font-size: 15px; margin: 8px 0 16px; }
+.passflow-admin .passflow-list { margin: 0; }
+.passflow-admin .passflow-list li { margin: 4px 0; }
+.passflow-admin .passflow-allergy { color: #9b1c1c; font-weight: 500; }
+.passflow-admin .passflow-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.passflow-admin .passflow-actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.passflow-admin .button:has(> .dashicons) { display: inline-flex; align-items: center; gap: 6px; }
+.passflow-admin .passflow-actions .dashicons, .passflow-admin .button .dashicons { font-size: 16px; width: 16px; height: 16px; line-height: 1; vertical-align: middle; margin: 0; }
+.passflow-admin .passflow-switch { margin: 12px 0 0; display: flex; gap: 6px; }
+
+/* Pastilles de statut. */
+.passflow-admin .passflow-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: 999px; font-size: 12px; line-height: 18px; font-weight: 500; background: #f0f0f1; color: #3c434a; white-space: nowrap; vertical-align: middle; }
+.passflow-admin .passflow-badge .dashicons { font-size: 14px; width: 14px; height: 14px; line-height: 1; }
+.passflow-admin .passflow-badge--active, .passflow-admin .passflow-badge--open, .passflow-admin .passflow-badge--booked { background: #e5f4e4; color: #1e6b22; }
+.passflow-admin .passflow-badge--full, .passflow-admin .passflow-badge--notified { background: #e7f1fb; color: #1d4f91; }
+.passflow-admin .passflow-badge--soon { background: #fdf3e1; color: #8a5a00; }
+.passflow-admin .passflow-badge--waiting { background: #fcf3e3; color: #8a5300; }
+.passflow-admin .passflow-badge--archived, .passflow-admin .passflow-badge--draft, .passflow-admin .passflow-badge--done, .passflow-admin .passflow-badge--past, .passflow-admin .passflow-badge--expired { background: #f0efec; color: #50575e; }
+.passflow-admin .passflow-badge--cancelled { background: #fbebeb; color: #9b1c1c; }
+
+/* Statuts d'une réservation : orange à confirmer, vert confirmée, bleu présent, rouge absent, gris annulée. */
+.passflow-admin .passflow-badge--pending { background: #fcf0d9; color: #8a5300; }
+.passflow-admin .passflow-badge--confirmed { background: #e5f4e4; color: #1e6b22; }
+.passflow-admin .passflow-badge--present { background: #e1edfb; color: #1d4f91; }
+.passflow-admin .passflow-badge--absent { background: #fbe4dc; color: #a2310c; }
+.passflow-admin .passflow-badge--undated { background: #efe9f8; color: #5b3a8c; }
+.passflow-admin .passflow-row-off .passflow-badge--cancelled, .passflow-admin .passflow-fold .passflow-badge--cancelled, .passflow-admin .passflow-person .passflow-badge--cancelled { background: #f0f0f1; color: #646970; }
+
+/* Journal des envois. */
+.passflow-admin .passflow-badge--sent { background: #e5f4e4; color: #1e6b22; }
+.passflow-admin .passflow-badge--test { background: #e1edfb; color: #1d4f91; }
+.passflow-admin .passflow-badge--failed { background: #fbe4dc; color: #a2310c; }
+.passflow-admin .passflow-badge--skipped { background: #f0f0f1; color: #646970; }
+.passflow-admin .passflow-badge--email, .passflow-admin .passflow-badge--sms { background: #f6f7f7; color: #3c434a; }
+.passflow-admin .passflow-message-body { white-space: pre-wrap; background: #f6f7f7; border-radius: 8px; padding: 12px 14px; margin: 0; font: inherit; max-width: 720px; }
+.passflow-admin .passflow-error { color: #a2310c; }
+.passflow-admin .passflow-variables { columns: 2; column-gap: 24px; margin: 0; }
+.passflow-admin .passflow-variables li { break-inside: avoid; margin: 0 0 4px; }
+@media (max-width: 782px) { .passflow-admin .passflow-variables { columns: 1; } }
+
+/* Boutons d'action d'une réservation, aux couleurs de leur statut. */
+.passflow-admin .button.passflow-btn--confirm { background: #1e6b22; border-color: #1e6b22; color: #fff; }
+.passflow-admin .button.passflow-btn--confirm:hover { background: #17561b; border-color: #17561b; color: #fff; }
+.passflow-admin .button.passflow-btn--present.is-on { background: #1d4f91; border-color: #1d4f91; color: #fff; }
+.passflow-admin .button.passflow-btn--absent.is-on { background: #a2310c; border-color: #a2310c; color: #fff; }
+
+/* Jauge de remplissage. */
+.passflow-admin .passflow-fill { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.passflow-admin .passflow-fill-bar { display: inline-block; width: 72px; height: 8px; border-radius: 4px; background: #f0f0f1; overflow: hidden; }
+.passflow-admin .passflow-fill-bar span { display: block; height: 100%; border-radius: 4px; background: #7ab87f; }
+.passflow-admin .passflow-fill--mid .passflow-fill-bar span { background: #e0b03c; }
+.passflow-admin .passflow-fill--high .passflow-fill-bar span { background: #e07b3c; }
+.passflow-admin .passflow-fill--full .passflow-fill-bar span { background: #c9356e; }
+.passflow-admin .passflow-fill-text { font-variant-numeric: tabular-nums; font-weight: 500; }
+.passflow-admin .passflow-waiting { display: inline-block; padding: 0 6px; border-radius: 999px; background: #fcf3e3; color: #8a5300; font-size: 12px; }
+
+/* Cartes, grilles, chiffres clés. */
+.passflow-admin .passflow-card { background: #fff; border: 1px solid var(--passflow-line); border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; }
+.passflow-admin .passflow-card h2 { margin: 0 0 12px; font-size: 15px; }
+.passflow-admin .passflow-grid { display: grid; gap: 16px; }
+.passflow-admin .passflow-grid > .passflow-card { margin-bottom: 0; }
+.passflow-admin .passflow-grid { margin-bottom: 16px; }
+.passflow-admin .passflow-grid--2 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+.passflow-admin .passflow-grid--3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.passflow-admin .passflow-grid--main { grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr); }
+@media (max-width: 960px) { .passflow-admin .passflow-grid--main { grid-template-columns: 1fr; } }
+.passflow-admin .passflow-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 16px 0; }
+.passflow-admin .passflow-kpi { display: flex; flex-direction: column; gap: 2px; background: #fff; border: 1px solid var(--passflow-line); border-radius: 12px; padding: 14px 18px; text-decoration: none; color: var(--passflow-ink); }
+.passflow-admin a.passflow-kpi:hover { border-color: var(--passflow-brand); }
+.passflow-admin .passflow-kpi .dashicons { color: var(--passflow-brand); }
+.passflow-admin .passflow-kpi strong { font-size: 26px; line-height: 1.2; font-weight: 600; }
+.passflow-admin .passflow-kpi small { color: var(--passflow-muted); font-size: 13px; }
+.passflow-admin .passflow-alert { border-left: 3px solid #dba617; padding: 6px 10px; margin: 6px 0; background: #fcf9e8; border-radius: 4px; }
+.passflow-admin .passflow-dl { display: grid; grid-template-columns: minmax(140px, 200px) 1fr; gap: 8px 16px; margin: 0 0 12px; }
+.passflow-admin .passflow-dl dt { color: var(--passflow-muted); }
+.passflow-admin .passflow-dl dd { margin: 0; word-break: break-word; }
+.passflow-admin table.passflow-table td, .passflow-admin table.passflow-table th { vertical-align: top; }
+.passflow-admin .passflow-row-off td { opacity: .55; }
+.passflow-admin .passflow-inline-form p { margin: 0 0 10px; }
+.passflow-admin .passflow-wide-select { max-width: 100%; width: 100%; }
+.passflow-admin .passflow-dates input { margin: 0 4px 4px 0; }
+.passflow-admin .passflow-row-form { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.passflow-admin .passflow-row-form select { max-width: 320px; }
+.passflow-admin .passflow-filters { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 0 0 16px; }
+
+/* Onglets segmentés. */
+.passflow-admin .passflow-segments { display: inline-flex; gap: 4px; padding: 3px; background: #f0f0f1; border-radius: 10px; }
+.passflow-admin .passflow-segments a { padding: 5px 12px; border-radius: 8px; text-decoration: none; color: var(--passflow-ink); font-size: 13px; }
+.passflow-admin .passflow-segments a.is-active { background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .12); font-weight: 600; }
+.passflow-admin .passflow-segments--tabs { margin: 0 0 12px; }
+
+/* Calendrier. */
+.passflow-admin .passflow-cal-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.passflow-admin .passflow-cal-nav { display: flex; align-items: center; gap: 6px; }
+.passflow-admin .passflow-cal-nav h2 { margin: 0 0 0 8px; font-size: 18px; }
+.passflow-admin .passflow-cal-filters { margin: 0; }
+.passflow-admin .passflow-cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-top: 1px solid var(--passflow-line); border-left: 1px solid var(--passflow-line); }
+.passflow-admin .passflow-cal-head { padding: 6px 8px; font-weight: 600; color: var(--passflow-muted); border-right: 1px solid var(--passflow-line); border-bottom: 1px solid var(--passflow-line); background: #f6f7f7; font-size: 12px; text-transform: uppercase; }
+.passflow-admin .passflow-cal-day { position: relative; min-height: 104px; padding: 4px 6px 22px; border-right: 1px solid var(--passflow-line); border-bottom: 1px solid var(--passflow-line); display: flex; flex-direction: column; gap: 4px; }
+.passflow-admin .passflow-cal--week .passflow-cal-day { min-height: 260px; }
+.passflow-admin .passflow-cal-day.is-outside { background: #fafafa; }
+.passflow-admin .passflow-cal-day.is-outside .passflow-cal-date { color: #c3c4c7; }
+.passflow-admin .passflow-cal-day.is-past { background: #fbfbfb; }
+.passflow-admin .passflow-cal-day.is-today .passflow-cal-date { background: var(--passflow-brand); color: #fff; border-radius: 999px; padding: 0 7px; }
+.passflow-admin .passflow-cal-date { align-self: flex-start; font-size: 12px; font-weight: 600; color: var(--passflow-muted); }
+.passflow-admin .passflow-cal-add { position: absolute; right: 6px; bottom: 2px; text-decoration: none; color: #c3c4c7; font-size: 16px; line-height: 18px; opacity: 0; }
+.passflow-admin .passflow-cal-day:hover .passflow-cal-add { opacity: 1; }
+.passflow-admin .passflow-cal-add:hover { color: var(--passflow-brand); }
+
+/* Pastille de créneau (calendrier + légende). */
+.passflow-admin .passflow-chip { --passflow-color: #8c8f94; display: flex; flex-wrap: wrap; gap: 0 4px; align-items: baseline; padding: 3px 6px; border-radius: 6px; border-left: 3px solid var(--passflow-color); background: #e8f5e9; color: var(--passflow-ink); text-decoration: none; font-size: 12px; line-height: 16px; }
+.passflow-admin .passflow-chip:hover { filter: brightness(.96); color: var(--passflow-ink); }
+.passflow-admin .passflow-chip-time { font-weight: 600; }
+.passflow-admin .passflow-chip-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.passflow-admin .passflow-chip-fill { margin-left: auto; font-variant-numeric: tabular-nums; font-weight: 600; }
+.passflow-admin .passflow-chip-people { flex-basis: 100%; color: var(--passflow-muted); }
+.passflow-admin .passflow-chip--low { background: #e8f5e9; }
+.passflow-admin .passflow-chip--mid { background: #fdf3d7; }
+.passflow-admin .passflow-chip--high { background: #fde4d3; }
+.passflow-admin .passflow-chip--full { background: #f9d8e4; }
+.passflow-admin .passflow-chip--draft { background: #f0f0f1; border-left-style: dashed; color: var(--passflow-muted); }
+.passflow-admin .passflow-chip--cancelled { background: #f6f7f7; color: #8c8f94; text-decoration: line-through; }
+.passflow-admin .passflow-legend { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 12px 0 0; }
+.passflow-admin .passflow-legend .passflow-chip { display: inline-flex; }
+
+/* En-tête de fiche, onglets et blocs repliables. */
+.passflow-admin .passflow-head { margin-bottom: 20px; }
+.passflow-admin .passflow-head .passflow-dl { margin-bottom: 4px; }
+.passflow-admin .passflow-head .passflow-actions { margin: 12px 0 0; }
+.passflow-admin .passflow-person { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; font-size: 18px; }
+.passflow-admin .passflow-tabs .smbb-codetool-tab-panel { padding-top: 12px; }
+.passflow-admin .passflow-tabs .passflow-alert { margin: 0 0 12px; }
+.passflow-admin .passflow-fold { background: #fff; border: 1px solid var(--passflow-line); border-radius: 12px; margin: 0 0 10px; }
+.passflow-admin .passflow-fold > summary { display: flex; align-items: center; gap: 8px; padding: 12px 18px; cursor: pointer; font-weight: 600; list-style: none; }
+.passflow-admin .passflow-fold > summary::-webkit-details-marker { display: none; }
+.passflow-admin .passflow-fold > summary::after { content: "\f347"; font-family: dashicons; margin-left: auto; color: var(--passflow-muted); transition: transform .15s; }
+.passflow-admin .passflow-fold[open] > summary::after { transform: rotate(180deg); }
+.passflow-admin .passflow-fold > summary .dashicons { color: var(--passflow-brand); font-size: 18px; width: 18px; height: 18px; }
+.passflow-admin .passflow-fold > summary:hover { color: var(--passflow-brand); }
+.passflow-admin .passflow-fold-body { padding: 0 18px 14px; }
+.passflow-admin .passflow-tabs .passflow-fold { margin-top: 12px; }
+.passflow-admin td .passflow-actions { flex-wrap: nowrap; }
+
+/* Impression de la liste d'un créneau. */
+@media print {
+    #adminmenumain, #wpadminbar, #wpfooter, .no-print, .notice, .smbb-codetool-page-header { display: none !important; }
+    #wpcontent, #wpbody-content { margin: 0 !important; padding: 0 !important; }
+    .passflow-admin .passflow-card { border: 0; padding: 0; }
+    .passflow-admin .smbb-codetool-tab-panel.passflow-print { display: block !important; }
+}
+
+/* Rappel des places d'un créneau (liste des inscriptions) */
+.passflow-seats {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 3px;
+}
+
+.passflow-seats::before {
+    border-radius: 50%;
+    content: "";
+    display: inline-block;
+    height: 7px;
+    margin-right: 5px;
+    vertical-align: 1px;
+    width: 7px;
+}
+
+.passflow-seats--low { color: #1e6b37; }
+.passflow-seats--low::before { background: #2e9d52; }
+.passflow-seats--high { color: #8a5a00; }
+.passflow-seats--high::before { background: #e0a100; }
+.passflow-seats--full { color: #a32020; }
+.passflow-seats--full::before { background: #d63638; }
+.passflow-seats--off { color: #757575; }
+.passflow-seats--off::before { background: #b0b0b0; }
+
+/* Bons cadeaux */
+.passflow-admin .passflow-gift-fields { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+.passflow-admin .passflow-gift-fields label { display: flex; flex-direction: column; gap: 4px; font-weight: 600; font-size: 12px; }
+.passflow-admin .passflow-gift-fields input { min-width: 160px; }
+.passflow-admin .passflow-gift-fields input[name="amount"] { min-width: 0; width: 110px; }
+.passflow-admin .passflow-gift-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 600; letter-spacing: .04em; background: #f6f1e8; padding: 2px 8px; border-radius: 6px; }
+.passflow-admin .passflow-gift-created { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0; font-size: 14px; }
+.passflow-admin .passflow-gift-created-card { border-left: 4px solid #2e9d52; }
+.passflow-admin .passflow-gift-tools { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.passflow-admin .passflow-gift-search { display: flex; gap: 6px; }
+.passflow-admin .passflow-row-new td { background: #f0f8f1; }
+
+/* Espace intervenant : agenda et appel (pensé pour le téléphone) */
+.passflow-portal { max-width: 860px; }
+.passflow-agenda-tabs { display: flex; gap: 6px; margin: 0 0 8px; }
+.passflow-agenda-tabs a { padding: 6px 14px; border-radius: 999px; background: #fff; border: 1px solid var(--passflow-line); text-decoration: none; color: var(--passflow-ink); }
+.passflow-agenda-tabs a.is-on { background: var(--passflow-ink); border-color: var(--passflow-ink); color: #fff; }
+.passflow-agenda-month { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--passflow-muted); margin: 20px 0 8px; }
+.passflow-agenda { display: flex; flex-direction: column; gap: 8px; }
+.passflow-agenda-item { display: flex; align-items: center; gap: 14px; padding: 12px 14px; background: #fff; border: 1px solid var(--passflow-line); border-radius: 12px; text-decoration: none; color: var(--passflow-ink); }
+.passflow-agenda-item:hover, .passflow-agenda-item:focus { border-color: var(--passflow-brand); color: var(--passflow-ink); box-shadow: none; }
+.passflow-agenda-item.is-today { border-color: var(--passflow-brand); box-shadow: 0 0 0 1px var(--passflow-brand); }
+.passflow-agenda-item.is-cancelled { opacity: .6; }
+.passflow-agenda-date { flex: 0 0 52px; display: flex; flex-direction: column; align-items: center; line-height: 1.15; font-size: 11px; text-transform: uppercase; color: var(--passflow-muted); }
+.passflow-agenda-date strong { font-size: 22px; color: var(--passflow-ink); font-weight: 600; }
+.passflow-agenda-item.is-today .passflow-agenda-date strong { color: var(--passflow-brand); }
+.passflow-agenda-main { flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.passflow-agenda-main > strong { font-size: 14px; }
+.passflow-agenda-fill { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.passflow-agenda-go { color: var(--passflow-muted); }
+.passflow-rollcall-back { margin: 8px 0 12px; }
+.passflow-rollcall-back a { text-decoration: none; }
+.passflow-rollcall-head h2 { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.passflow-rollcall-hint { background: #f6f7f7; border-radius: 8px; padding: 10px 12px; }
+.passflow-rollcall-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 0 0 10px; }
+.passflow-rollcall-count { font-weight: 500; }
+.passflow-rollcall-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.passflow-rollcall-row { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; align-items: center; padding: 12px 14px; background: #fff; border: 1px solid var(--passflow-line); border-left: 4px solid var(--passflow-line); border-radius: 12px; }
+.passflow-rollcall-row[data-status="present"] { border-left-color: #2271b1; }
+.passflow-rollcall-row[data-status="absent"] { border-left-color: #d63638; }
+.passflow-rollcall-who strong { font-size: 15px; }
+.passflow-rollcall-infos, .passflow-rollcall-remark { margin-top: 4px; font-size: 13px; }
+.passflow-rollcall-remark { color: var(--passflow-muted); }
+.passflow-switch { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
+.passflow-switch input[type=checkbox] { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.passflow-switch-track { position: relative; width: 56px; height: 32px; border-radius: 999px; background: #c3c4c7; transition: background .15s; flex: 0 0 auto; }
+.passflow-switch-knob { position: absolute; top: 3px; left: 3px; width: 26px; height: 26px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.3); transition: transform .15s; }
+.passflow-switch input:checked + .passflow-switch-track { background: #2271b1; }
+.passflow-switch input:checked + .passflow-switch-track .passflow-switch-knob { transform: translateX(24px); }
+.passflow-switch[data-pointed="1"] input:not(:checked) + .passflow-switch-track { background: #d63638; }
+.passflow-switch input:focus-visible + .passflow-switch-track { outline: 2px solid var(--passflow-brand); outline-offset: 2px; }
+.passflow-switch-label { min-width: 72px; font-weight: 600; color: var(--passflow-muted); }
+.passflow-rollcall-row[data-status="present"] .passflow-switch-label { color: #2271b1; }
+.passflow-rollcall-row[data-status="absent"] .passflow-switch-label { color: #d63638; }
+.passflow-rollcall-note { grid-column: 1 / -1; }
+.passflow-rollcall-note summary { cursor: pointer; color: var(--passflow-muted); font-size: 13px; }
+.passflow-rollcall-note textarea { width: 100%; margin-top: 6px; }
+.passflow-rollcall-save { position: sticky; bottom: 0; padding: 12px 0; background: linear-gradient(rgba(240,240,241,0), #f0f0f1 30%); z-index: 2; }
+.passflow-rollcall-save .button-hero { width: 100%; text-align: center; }
+@media (max-width: 600px) {
+  .passflow-agenda-item { flex-wrap: wrap; gap: 10px; }
+  .passflow-agenda-main { flex-basis: calc(100% - 66px); }
+  .passflow-agenda-fill { flex-direction: row; align-items: center; margin-left: 66px; }
+  .passflow-agenda-go { display: none; }
+  .passflow-rollcall-row { grid-template-columns: 1fr auto; }
+  .passflow-switch-label { min-width: 0; font-size: 12px; }
+}
+.passflow-admin .passflow-host-note { color: #5b3a8c; }
+.passflow-admin .passflow-create-account { margin-top: 10px; border: 1px dashed var(--passflow-line); border-radius: 8px; padding: 8px 12px; background: #fcfcfc; }
+.passflow-admin .passflow-create-account summary { cursor: pointer; font-weight: 500; }
+.passflow-admin .passflow-create-account-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px 12px; margin-top: 10px; }
+.passflow-admin .passflow-create-account-grid label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--passflow-muted); }
+.passflow-admin .passflow-account-summary { color: var(--passflow-muted); }
+.passflow-admin .passflow-gift-redeem { border-color: var(--passflow-brand); }
+.passflow-admin .passflow-redeem-search { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.passflow-admin .passflow-redeem-search input[type=text] { flex: 1 1 260px; max-width: 360px; font-size: 16px; padding: 6px 10px; letter-spacing: .04em; }
+.passflow-admin .passflow-redeem-search .dashicons { vertical-align: text-bottom; }
+.passflow-admin .passflow-scan { margin-top: 12px; max-width: 360px; }
+.passflow-admin #passflow-scan-reader { border-radius: 8px; overflow: hidden; background: #000; }
+.passflow-admin .passflow-redeem-result { margin-top: 14px; padding: 12px 14px; border-radius: 10px; background: #f6f7f7; border-left: 4px solid #c3c4c7; }
+.passflow-admin .passflow-redeem-result.is-unused { background: #eef7ee; border-left-color: #1e6b22; }
+.passflow-admin .passflow-redeem-result.is-used, .passflow-admin .passflow-redeem-result.is-expired, .passflow-admin .passflow-redeem-result.is-error { background: #fbefef; border-left-color: #9b1c1c; }
+.passflow-admin .passflow-redeem-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0 0 6px; }
+.passflow-admin .passflow-redeem-amount { font-size: 20px; }
+.passflow-admin .passflow-redeem-confirm { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
+.passflow-admin .passflow-redeem-confirm input[type=text] { flex: 1 1 240px; max-width: 360px; }
+.passflow-admin .passflow-today { border-color: var(--passflow-brand); }
+.passflow-admin .passflow-today-item { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding: 10px 0; border-top: 1px solid var(--passflow-line); }
+.passflow-admin .passflow-today-item:first-of-type { border-top: 0; padding-top: 0; }
+.passflow-admin .passflow-today-item > div:first-child { flex: 1 1 260px; }
+.passflow-admin .passflow-rollcall-docs { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; }
+.passflow-admin .passflow-doc-signature { max-width: 260px; border: 1px solid var(--passflow-line); border-radius: 6px; background: #fff; display: block; margin-top: 4px; }
+.passflow-admin .passflow-doc-entry { margin-top: 8px; padding: 2px 12px; border: 1px solid var(--passflow-line); border-radius: 8px; background: var(--smbb-ui-card, #fff); max-width: 560px; }
+.passflow-admin .passflow-doc-entry .smbb-forms-answer { border-bottom: 1px solid var(--passflow-line); }
+.passflow-admin .passflow-doc-entry .smbb-forms-answer:last-child { border-bottom: 0; }
+.passflow-admin .passflow-doc-entry .smbb-forms-answer dt { font-size: 12px; font-weight: 600; opacity: .7; margin: 0 0 2px; }
+.passflow-admin .passflow-doc-entry .smbb-forms-answer dd { margin: 0; }
+.passflow-admin .passflow-doc-entry p { margin: 6px 0; }
+.passflow-admin .passflow-extra-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 4px 16px; max-height: 280px; overflow: auto; padding: 6px 0; }
+.passflow-admin .passflow-extra-products label[hidden] { display: none; }
+.passflow-admin .passflow-sale-card { margin-top: 16px; }
+.passflow-admin .passflow-sale-products { list-style: none; margin: 0; padding: 0; }
+.passflow-admin .passflow-sale-products li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--passflow-line); }
+.passflow-admin .passflow-qty { display: inline-flex; align-items: center; gap: 4px; }
+.passflow-admin .passflow-qty .button { min-width: 40px; min-height: 40px; font-size: 18px; line-height: 1; }
+.passflow-admin .passflow-qty input { width: 56px; text-align: center; min-height: 40px; font-size: 16px; }
+.passflow-admin .passflow-sale-total { font-size: 16px; text-align: right; }
+.passflow-admin .passflow-sale-customer { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px 12px; margin: 8px 0 14px; }
+.passflow-admin .passflow-sale-customer label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--passflow-muted); }
+.passflow-admin .passflow-sale-customer input, .passflow-admin .passflow-sale-customer select { min-height: 36px; font-size: 15px; }
+.passflow-admin .passflow-sale-pay { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: center; }
+.passflow-admin .passflow-sale-pay .button { min-height: 40px; }
+.passflow-admin .passflow-sale-orders { margin: 0; padding: 0; list-style: none; }
+.passflow-admin .passflow-sale-orders li { padding: 6px 0; border-bottom: 1px solid var(--passflow-line); }
+
+/* Statistiques */
+.passflow-admin .passflow-stats-filters { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin: 12px 0; }
+.passflow-admin .passflow-stats-filters .passflow-segments { flex-wrap: wrap; }
+.passflow-admin .passflow-stats-filters .passflow-filters { margin: 0; }
+.passflow-admin .passflow-kpi-hint { font-style: normal; font-size: 12px; color: var(--passflow-muted); }
+.passflow-admin .passflow-chart { display: block; width: 100%; height: auto; max-height: 280px; margin: 4px 0 8px; }
+.passflow-admin .passflow-chart-base { stroke: #c3c4c7; stroke-width: 1; }
+.passflow-admin .passflow-chart-cap { fill: #ecdde3; }
+.passflow-admin .passflow-chart-bar { fill: var(--passflow-brand); }
+.passflow-admin .passflow-chart-hit { fill: transparent; }
+.passflow-admin .passflow-chart-col:hover .passflow-chart-hit { fill: rgba(0, 0, 0, .035); }
+.passflow-admin .passflow-chart-col:hover .passflow-chart-bar { fill: #93355a; }
+.passflow-admin .passflow-chart-val { font-size: 11px; fill: var(--passflow-ink); text-anchor: middle; font-variant-numeric: tabular-nums; }
+.passflow-admin .passflow-chart-x { font-size: 11px; fill: var(--passflow-muted); text-anchor: middle; }
+.passflow-admin .passflow-chart-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin: 0; font-size: 12px; }
+.passflow-admin .passflow-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
+.passflow-admin .passflow-swatch--bar { background: var(--passflow-brand); }
+.passflow-admin .passflow-swatch--cap { background: #ecdde3; }
+.passflow-admin .passflow-chart-table summary { cursor: pointer; color: #2271b1; margin: 4px 0 8px; }
+.passflow-admin .passflow-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+.passflow-admin .passflow-stats-grid .passflow-card { margin-top: 0; }
+.passflow-admin .passflow-shares { list-style: none; margin: 0; padding: 0; }
+.passflow-admin .passflow-shares li { display: grid; grid-template-columns: minmax(120px, 1fr) 2fr 40px; gap: 10px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--passflow-line); }
+.passflow-admin .passflow-shares li:last-child { border-bottom: 0; }
+.passflow-admin .passflow-shares strong { text-align: right; font-variant-numeric: tabular-nums; }
+.passflow-admin .passflow-share { height: 8px; background: #f0f0f1; border-radius: 4px; overflow: hidden; }
+.passflow-admin .passflow-share span { display: block; height: 100%; background: var(--passflow-brand); border-radius: 4px; }
+.passflow-admin .passflow-table-scroll { overflow-x: auto; }
+
+/* Pass plusieurs jours */
+.passflow-admin .passflow-badge--pass { background: #efe6f7; color: #5b2d86; text-decoration: none; }
+.passflow-admin .passflow-pass-days { display: inline-flex; flex-wrap: wrap; gap: 4px 8px; margin-top: 4px; font-size: 12px; }
+
+/* Alerte « Aucun » (créneau sans intervenant, intervenant sans téléphone). */
+.passflow-warning-tag { display: inline-flex; align-items: center; gap: 3px; padding: 1px 8px 1px 5px; border-radius: 999px; background: #fcf0e3; color: #8a4b08; border: 1px solid #f0c48a; font-size: 12px; font-weight: 600; line-height: 20px; white-space: nowrap; }
+.passflow-warning-tag .dashicons { font-size: 15px; width: 15px; height: 15px; color: #d97706; }
+
+/* Fenêtre « Affecter intervenant(s) ». */
+.passflow-assign-dialog .smbb-ui-dialog-card { max-width: 440px; text-align: left; }
+.passflow-assign-choices { max-height: 260px; overflow: auto; display: grid; gap: 4px; margin: 10px 0; padding: 8px 10px; border: 1px solid #dcdcde; border-radius: 6px; background: #fff; }
+.passflow-assign-choices label, .passflow-assign-mode label { display: block; padding: 3px 0; }
+.passflow-assign-mode { margin: 8px 0; border: 0; padding: 0; }
+.passflow-assign-error { color: #b32d2e; font-weight: 600; }
+
+/* Fiche atelier : texte et photo tirés du produit, prochains créneaux. */
+.passflow-product-source { display: flex; gap: 14px; align-items: flex-start; }
+.passflow-product-source img { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; flex: none; }
+.passflow-product-source p { margin: 0; }
+.passflow-product-source .button { margin-top: 8px; }
+.passflow-admin .passflow-mini-table td, .passflow-admin .passflow-mini-table th { vertical-align: middle; }
+
+/* ---------- Écran d'appel (0.10.2) ---------- */
+
+/* Jauge : présents, absents, à pointer, places libres. */
+.passflow-gauge { margin-top: 10px; }
+.passflow-gauge-bar { display: flex; height: 14px; border-radius: 999px; overflow: hidden; background: #e8e9eb; }
+.passflow-gauge-bar span { display: block; height: 100%; transition: width .25s; }
+.passflow-gauge-present { background: #1e8a4c; }
+.passflow-gauge-absent { background: #d63638; }
+.passflow-gauge-none { background: #9ea3a8; }
+.passflow-gauge-legend { list-style: none; display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 8px 0 0; padding: 0; font-size: 13px; }
+.passflow-gauge-legend li { margin: 0; display: inline-flex; align-items: center; gap: 5px; }
+.passflow-gauge-legend li::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: #e8e9eb; border: 1px solid #c3c4c7; }
+.passflow-gauge-key--present::before { background: #1e8a4c !important; border-color: #1e8a4c !important; }
+.passflow-gauge-key--absent::before { background: #d63638 !important; border-color: #d63638 !important; }
+.passflow-gauge-key--none::before { background: #9ea3a8 !important; border-color: #9ea3a8 !important; }
+
+/* Outils collés en haut : recherche, scan, filtres. */
+.passflow-rollcall-tools { position: sticky; top: 32px; z-index: 5; background: #f0f0f1; padding: 8px 0 10px; margin-bottom: 4px; }
+@media (max-width: 782px) { .passflow-rollcall-tools { top: 46px; } }
+.passflow-rollcall-search { display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid var(--passflow-line); border-radius: 10px; padding: 4px 4px 4px 10px; }
+.passflow-rollcall-search .dashicons { color: var(--passflow-muted); }
+.passflow-rollcall-search input[type=search] { flex: 1; min-width: 0; border: 0; box-shadow: none; font-size: 16px; padding: 6px 0; background: transparent; }
+.passflow-rollcall-search input[type=search]:focus { outline: none; box-shadow: none; }
+.passflow-rollcall-search .button { display: inline-flex; align-items: center; gap: 4px; min-height: 38px; }
+.passflow-rollcall-filters { display: flex; gap: 6px; margin-top: 8px; overflow-x: auto; }
+.passflow-rollcall-filters button { flex: none; border: 1px solid var(--passflow-line); background: #fff; border-radius: 999px; padding: 5px 12px; font-size: 13px; cursor: pointer; }
+.passflow-rollcall-filters button.is-active { background: #1d2327; color: #fff; border-color: #1d2327; }
+.passflow-rollcall-filters button span { opacity: .7; }
+.passflow-rollcall-empty { text-align: center; color: var(--passflow-muted); padding: 16px; }
+
+/* Scan. */
+.passflow-scan { margin-top: 10px; background: #fff; border: 1px solid var(--passflow-line); border-radius: 10px; padding: 10px; text-align: center; }
+.passflow-scan #passflow-scan-reader { max-width: 360px; margin: 0 auto; }
+.passflow-scan-result { min-height: 1.5em; font-size: 15px; font-weight: 600; margin: 10px 0; padding: 8px; border-radius: 8px; }
+.passflow-scan-result.is-ok { background: #e6f4ea; color: #1e6b3a; }
+.passflow-scan-result.is-error { background: #fcebec; color: #a32224; }
+.passflow-scan-result.is-busy { background: #f6f7f7; color: var(--passflow-muted); }
+
+/* Pointage à trois états : Absent | À pointer | Présent. */
+.passflow-presence { display: inline-flex; border: 1px solid #c3c4c7; border-radius: 10px; overflow: hidden; margin: 0; padding: 0; background: #fff; }
+.passflow-presence label { position: relative; margin: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.passflow-presence label + label { border-left: 1px solid #c3c4c7; }
+.passflow-presence input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.passflow-presence span { display: block; min-width: 64px; padding: 9px 10px; text-align: center; font-weight: 600; font-size: 13px; color: var(--passflow-muted); user-select: none; }
+.passflow-presence .passflow-presence-none span { min-width: 54px; font-weight: 500; }
+.passflow-presence input:focus-visible + span { outline: 2px solid var(--passflow-brand); outline-offset: -3px; }
+.passflow-presence-present input:checked + span { background: #1e8a4c; color: #fff; }
+.passflow-presence-absent input:checked + span { background: #d63638; color: #fff; }
+.passflow-presence-none input:checked + span { background: #f0f0f1; color: #1d2327; }
+.passflow-rollcall-row[data-status="present"] { border-left-color: #1e8a4c; }
+.passflow-rollcall-row[data-status="absent"] { border-left-color: #d63638; }
+.passflow-rollcall-row[hidden] { display: none; }
+.passflow-rollcall-row.is-flash { animation: passflow-flash 1.6s ease-out; }
+@keyframes passflow-flash { 0% { background: #c7ecd4; } 100% { background: #fff; } }
+.passflow-saved { grid-column: 1 / -1; font-size: 12px; color: var(--passflow-muted); min-height: 0; }
+.passflow-saved:empty { display: none; }
+.passflow-saved.is-ok { color: #1e6b3a; }
+.passflow-saved.is-error { color: #a32224; font-weight: 600; }
+.passflow-rollcall.is-live [data-passflow-fallback] { display: none; }
+@media (max-width: 480px) {
+  .passflow-rollcall-row { grid-template-columns: 1fr; }
+  .passflow-presence { display: flex; width: 100%; }
+  .passflow-presence label { flex: 1; }
+  .passflow-presence span { min-width: 0; padding: 11px 4px; }
+}
+.passflow-admin .passflow-subtitle { margin: 1.4em 0 .5em; font-size: 13px; }
+.passflow-locked, .smbb-codetool input.passflow-locked { background: #f0f0f1 !important; color: #646970 !important; cursor: not-allowed; }
+
+/* Disponibilités des intervenants */
+.passflow-availability-list { list-style: none; margin: 0; padding: 0; }
+.passflow-availability-list li { margin: 0 0 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.passflow-availability-set { font-size: 12px; color: #646970; }
+.passflow-availability-badge { font-size: 11px; }
+.passflow-availability-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: middle; background: #c3c4c7; }
+.passflow-availability-dot--yes { background: #00a32a; }
+.passflow-availability-dot--no { background: #d63638; }
+.passflow-availability-dot--asked { background: #dba617; }
+.passflow-availability-item { align-items: center; }
+.passflow-availability-choice { display: inline-flex; gap: 6px; margin-left: auto; transition: opacity .15s; }
+.passflow-availability-choice.is-busy { opacity: .6; pointer-events: none; }
+.passflow-availability-choice.is-saved .is-on { box-shadow: 0 0 0 3px rgba(0, 163, 42, .25); }
+.passflow-availability-btn { border: 1px solid #c3c4c7; background: #fff; color: #50575e; border-radius: 999px; padding: 6px 14px; font-size: 13px; cursor: pointer; line-height: 1.3; }
+.passflow-availability-btn:hover { border-color: #8c8f94; }
+.passflow-availability-btn--yes.is-on { background: #00a32a; border-color: #00a32a; color: #fff; }
+.passflow-availability-btn--no.is-on { background: #d63638; border-color: #d63638; color: #fff; }
+.passflow-availability-choice.is-compact { margin-left: 0; gap: 4px; }
+.passflow-availability-choice.is-compact .passflow-availability-btn { padding: 2px 8px; font-size: 12px; }
+.passflow-availability-cal-nav { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 12px 0; font-size: 15px; }
+.passflow-availability-cal { background: #fff; border: 1px solid #dcdcde; border-radius: 8px; overflow: hidden; }
+.passflow-availability-cal-head, .passflow-availability-cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.passflow-availability-cal-head span { padding: 6px; text-align: center; font-size: 12px; font-weight: 600; color: #646970; background: #f6f7f7; border-bottom: 1px solid #dcdcde; }
+.passflow-availability-cal-cell { min-height: 84px; padding: 4px; border-right: 1px solid #f0f0f1; border-bottom: 1px solid #f0f0f1; min-width: 0; }
+.passflow-availability-cal-cell.is-empty { background: #fafafa; }
+.passflow-availability-cal-cell.has-dates { background: #fbfcfe; }
+.passflow-availability-cal-cell.is-today .passflow-availability-cal-day { background: #2271b1; color: #fff; border-radius: 50%; }
+.passflow-availability-cal-day { display: inline-block; min-width: 22px; height: 22px; line-height: 22px; text-align: center; font-size: 12px; color: #646970; }
+.passflow-availability-cal-item { margin-top: 4px; padding: 4px; border-radius: 6px; background: #f0f6fc; display: flex; flex-direction: column; gap: 4px; }
+.passflow-availability-cal-label { font-size: 11px; line-height: 1.3; overflow-wrap: anywhere; }
+@media (max-width: 782px) {
+  .passflow-availability-item { flex-wrap: wrap; }
+  .passflow-availability-choice { margin-left: 0; width: 100%; }
+  .passflow-availability-choice:not(.is-compact) .passflow-availability-btn { flex: 1; padding: 10px; }
+  .passflow-availability-cal-cell { min-height: 64px; padding: 2px; }
+  .passflow-availability-cal-label { display: none; }
+  .passflow-availability-choice.is-compact { flex-direction: column; }
+}
+
+/* Feuille d'appel : participant imprévu */
+.passflow-walkin { border-color: #2271b1; }
+.passflow-walkin h3 { margin: 0 0 4px; }
+.passflow-walkin-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin: 10px 0; }
+.passflow-walkin-fields label { display: flex; flex-direction: column; gap: 4px; font-weight: 600; font-size: 13px; }
+.passflow-walkin-fields input { width: 100%; font-size: 16px; min-height: 40px; }
+.passflow-walkin-actions { display: flex; justify-content: flex-end; gap: 8px; margin: 0; flex-wrap: wrap; }
+.passflow-admin .passflow-badge--walkin { background: #e5f0fa; color: #135e96; }
+.passflow-gauge-key--extra::before { background: #2271b1 !important; border-color: #2271b1 !important; }
+.passflow-gauge-key--free.is-over strong { color: #b32d2e; }
+.passflow-gauge-legend li[hidden], .passflow-walkin[hidden] { display: none; }
+
+/* Feuille d'appel hors du jour de l'atelier : verrou + interrupteur « Pointer quand même » */
+.passflow-rollcall-lock { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; background: #fcf9e8; border: 1px solid #f0d97a; border-radius: 10px; padding: 10px 14px; margin: 0 0 12px; }
+.passflow-rollcall-lock > .dashicons { color: #996800; font-size: 22px; width: 22px; height: 22px; }
+.passflow-rollcall-lock > div { flex: 1 1 220px; }
+.passflow-rollcall-lock p { margin: 2px 0 0; }
+.passflow-rollcall-lock.is-unlocked { background: #edfaef; border-color: #8fd19e; }
+.passflow-rollcall-lock.is-unlocked > .dashicons::before { content: "\f528"; }
+.passflow-rollcall-lock.is-unlocked > .dashicons { color: #1e8a4c; }
+.passflow-force-switch { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 600; user-select: none; }
+.passflow-force-switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.passflow-force-switch-ui { width: 40px; height: 22px; border-radius: 999px; background: #c3c4c7; position: relative; transition: background .15s; flex: none; }
+.passflow-force-switch-ui::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform .15s; box-shadow: 0 1px 2px rgba(0, 0, 0, .25); }
+.passflow-force-switch input:checked + .passflow-force-switch-ui { background: #1e8a4c; }
+.passflow-force-switch input:checked + .passflow-force-switch-ui::after { transform: translateX(18px); }
+.passflow-force-switch input:focus-visible + .passflow-force-switch-ui { outline: 2px solid #2271b1; outline-offset: 2px; }
+form.passflow-rollcall.is-locked .passflow-presence { opacity: .45; }
+form.passflow-rollcall.is-locked .passflow-presence label { cursor: not-allowed; }
+
+/* Imprévu : choix du paiement et imprévus en attente */
+.passflow-walkin-modal { position: fixed; inset: 0; z-index: 100000; background: rgba(0, 0, 0, .45); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.passflow-walkin-modal[hidden] { display: none; }
+.passflow-walkin-modal-box { background: #fff; border-radius: 12px; max-width: 440px; width: 100%; padding: 18px; box-shadow: 0 20px 50px rgba(0, 0, 0, .25); display: grid; gap: 10px; }
+.passflow-walkin-modal-box h3 { margin: 0 0 4px; }
+.passflow-walkin-choice { display: flex; gap: 12px; align-items: flex-start; text-align: left; width: 100%; background: #fff; border: 1px solid #c3c4c7; border-radius: 10px; padding: 12px 14px; cursor: pointer; font: inherit; color: inherit; }
+.passflow-walkin-choice:hover, .passflow-walkin-choice:focus { border-color: #2271b1; box-shadow: 0 0 0 1px #2271b1; outline: none; }
+.passflow-walkin-choice .dashicons { color: #2271b1; font-size: 24px; width: 24px; height: 24px; flex: none; }
+.passflow-walkin-choice span { display: flex; flex-direction: column; gap: 3px; }
+.passflow-walkin-choice small { color: #646970; font-size: 12.5px; line-height: 1.4; }
+.passflow-walkin-modal-foot { margin: 0; text-align: right; }
+.passflow-walkin-pending { background: #f0f6fc; border: 1px solid #c5d9ed; border-radius: 10px; padding: 8px 14px; margin: 0 0 12px; }
+.passflow-walkin-pending p { margin: 4px 0 6px; font-weight: 600; }
+.passflow-walkin-pending ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.passflow-walkin-pending li { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0; }
+
+/* Onglets de la feuille d'appel : Participants / Caisse */
+.passflow-rollcall-tabs { display: flex; gap: 4px; margin: 0 0 12px; border-bottom: 1px solid var(--passflow-line); }
+.passflow-rollcall-tabs a { display: inline-flex; align-items: center; gap: 6px; padding: 10px 14px; margin-bottom: -1px; border: 1px solid transparent; border-radius: 10px 10px 0 0; text-decoration: none; color: var(--passflow-muted); font-weight: 500; }
+.passflow-rollcall-tabs a.is-active { background: #fff; border-color: var(--passflow-line); border-bottom-color: #fff; color: var(--passflow-ink); }
+.passflow-rollcall-tabs a:focus-visible { outline: 2px solid var(--passflow-brand); outline-offset: -2px; }
+.passflow-rollcall-tab-n { font-size: 12px; background: #f0f0f1; border-radius: 999px; padding: 1px 8px; color: var(--passflow-ink); }
+.passflow-rollcall-sale { margin-top: 6px; }
+.passflow-rollcall-sale .dashicons, .passflow-sale-bar .dashicons, .passflow-cashdesk-card .dashicons { font-size: 16px; width: 16px; height: 16px; vertical-align: text-bottom; }
+.passflow-sale-bar p { margin: 0 0 8px; }
+.passflow-sale-bar p:last-child { margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Onglet Caisse */
+.passflow-cashdesk-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 12px; }
+.passflow-cashdesk-kpi { display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; border: 1px solid var(--passflow-line); border-radius: 10px; background: #f6f7f7; }
+.passflow-cashdesk-kpi span { color: var(--passflow-muted); font-size: 13px; }
+.passflow-cashdesk-kpi strong { font-size: 22px; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.passflow-cashdesk-kpi.is-main { background: #e5f4e4; border-color: #b8dfb6; }
+.passflow-cashdesk-kpi.is-main strong { color: #1e6b22; }
+.passflow-cashdesk-split { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px 24px; }
+.passflow-cashdesk-split h3 { margin: 0 0 8px; font-size: 14px; }
+.passflow-cashdesk-table { width: 100%; border-collapse: collapse; }
+.passflow-cashdesk-table td { padding: 6px 0; border-bottom: 1px solid var(--passflow-line); }
+.passflow-cashdesk-table .num { text-align: right; white-space: nowrap; padding-left: 12px; font-variant-numeric: tabular-nums; }
+.passflow-cashdesk-sales { list-style: none; margin: 0; padding: 0; }
+.passflow-cashdesk-sale { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px 16px; padding: 10px 0; border-bottom: 1px solid var(--passflow-line); margin: 0; }
+.passflow-cashdesk-sale:last-child { border-bottom: 0; }
+.passflow-cashdesk-sale.is-gone { opacity: .6; }
+.passflow-cashdesk-sale-side { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; white-space: nowrap; }
+@media (max-width: 600px) { .passflow-cashdesk-sale { flex-direction: column; } .passflow-cashdesk-sale-side { justify-content: flex-start; } }
+
+/* Caisse (fenêtre de vente) */
+html.passflow-pos-open { overflow: hidden; }
+.passflow-pos { position: fixed; inset: 0; z-index: 100000; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.passflow-pos[hidden] { display: none; }
+.passflow-pos-box { background: #fff; border-radius: 14px; width: min(1100px, 100%); height: min(760px, 100%); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+.passflow-pos-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-bottom: 1px solid var(--passflow-line); }
+.passflow-pos-head h2 { margin: 0; font-size: 18px; }
+.passflow-pos-x { border: 0; background: none; font-size: 28px; line-height: 1; cursor: pointer; color: var(--passflow-muted); padding: 4px 8px; border-radius: 8px; }
+.passflow-pos-x:hover, .passflow-pos-x:focus-visible { background: #f0f0f1; color: var(--passflow-ink); }
+.passflow-pos-body { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 340px; }
+.passflow-pos-shop { display: flex; flex-direction: column; min-height: 0; padding: 12px 16px; gap: 10px; }
+.passflow-pos-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
+.passflow-pos-tab { flex: none; border: 1px solid var(--passflow-line); background: #fff; border-radius: 999px; padding: 6px 14px; cursor: pointer; font-size: 13px; color: var(--passflow-ink); }
+.passflow-pos-tab.is-sub { font-size: 12px; color: var(--passflow-muted); }
+.passflow-pos-tab[aria-selected="true"] { background: var(--passflow-brand); border-color: var(--passflow-brand); color: #fff; }
+.passflow-pos-search { width: 100%; min-height: 40px; }
+.passflow-pos-grid { flex: 1; min-height: 0; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; align-content: start; }
+.passflow-pos-tile { position: relative; display: flex; flex-direction: column; align-items: stretch; gap: 3px; text-align: left; padding: 8px; border: 1px solid var(--passflow-line); border-radius: 12px; background: #fff; cursor: pointer; font: inherit; color: var(--passflow-ink); transition: border-color .15s, transform .05s; }
+.passflow-pos-tile:hover { border-color: var(--passflow-brand); }
+.passflow-pos-tile:active { transform: scale(.98); }
+.passflow-pos-tile:focus-visible { outline: 2px solid var(--passflow-brand); outline-offset: 1px; }
+.passflow-pos-tile.is-out { opacity: .5; cursor: not-allowed; }
+.passflow-pos-pic { display: flex; align-items: center; justify-content: center; aspect-ratio: 4 / 3; border-radius: 8px; background: #f6f7f7; overflow: hidden; font-size: 28px; font-weight: 600; color: var(--passflow-muted); margin-bottom: 4px; }
+.passflow-pos-pic img { width: 100%; height: 100%; object-fit: cover; }
+.passflow-pos-name { font-weight: 600; line-height: 1.25; }
+.passflow-pos-ref { font-size: 11px; color: var(--passflow-muted); }
+.passflow-pos-desc { font-size: 12px; color: var(--passflow-muted); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.passflow-pos-price { margin-top: auto; padding-top: 4px; font-weight: 600; color: var(--passflow-brand); }
+.passflow-pos-badge { position: absolute; top: 6px; right: 6px; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 999px; background: var(--passflow-brand); color: #fff; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+.passflow-pos-none { color: var(--passflow-muted); grid-column: 1 / -1; }
+/* Choix de la variante (taille, couleur…) d'un produit variable */
+.passflow-pos-grid.is-picking { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); }
+.passflow-pos-pick-head { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.passflow-pos-back { border: 1px solid var(--passflow-line); background: #fff; border-radius: 999px; padding: 6px 14px; cursor: pointer; font: inherit; font-size: 13px; color: var(--passflow-ink); }
+.passflow-pos-back:hover, .passflow-pos-back:focus-visible { border-color: var(--passflow-brand); }
+.passflow-pos-pick-title { font-size: 15px; }
+.passflow-pos-variant { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 76px; padding: 10px 8px; border: 1px solid var(--passflow-line); border-radius: 12px; background: #fff; cursor: pointer; font: inherit; color: var(--passflow-ink); text-align: center; transition: border-color .15s, transform .05s; }
+.passflow-pos-variant:hover { border-color: var(--passflow-brand); }
+.passflow-pos-variant:active { transform: scale(.97); }
+.passflow-pos-variant:focus-visible { outline: 2px solid var(--passflow-brand); outline-offset: 1px; }
+.passflow-pos-variant.is-out { opacity: .45; cursor: not-allowed; text-decoration: line-through; }
+.passflow-pos-variant-label { font-size: 18px; font-weight: 600; line-height: 1.2; }
+.passflow-pos-variant .passflow-pos-price { margin-top: 0; padding-top: 0; font-size: 12px; }
+.passflow-pos-variant .passflow-pos-badge { top: 4px; right: 4px; }
+.passflow-pos-cart { display: flex; flex-direction: column; gap: 10px; min-height: 0; overflow-y: auto; padding: 12px 16px; background: #f6f7f7; border-left: 1px solid var(--passflow-line); }
+.passflow-pos-cart h3 { margin: 0; font-size: 15px; }
+.passflow-pos-lines { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.passflow-pos-line { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 8px; align-items: center; margin: 0; padding: 8px 10px; background: #fff; border-radius: 10px; border: 1px solid var(--passflow-line); }
+.passflow-pos-line-name { grid-column: 1 / -1; font-weight: 500; }
+.passflow-pos-line-variant { display: inline-block; margin-left: 2px; padding: 1px 8px; border-radius: 999px; background: var(--passflow-brand); color: #fff; font-size: 12px; font-weight: 600; vertical-align: 1px; }
+.passflow-pos-line.is-new { animation: passflow-pos-new 1.2s ease-out; }
+@keyframes passflow-pos-new { from { background: color-mix(in srgb, var(--passflow-brand) 18%, #fff); } to { background: #fff; } }
+.passflow-pos-line-total { text-align: right; font-variant-numeric: tabular-nums; }
+.passflow-pos-qty { display: inline-flex; align-items: center; gap: 8px; }
+.passflow-pos-step { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--passflow-line); background: #fff; cursor: pointer; font-size: 18px; line-height: 1; }
+.passflow-pos-step:hover { border-color: var(--passflow-brand); }
+.passflow-pos-empty { color: var(--passflow-muted); margin: 0; }
+.passflow-pos-total { display: flex; justify-content: space-between; align-items: baseline; margin: 0; padding-top: 8px; border-top: 1px solid var(--passflow-line); font-size: 15px; }
+.passflow-pos-total strong { font-size: 24px; font-variant-numeric: tabular-nums; }
+.passflow-pos-customer { background: #fff; border: 1px solid var(--passflow-line); border-radius: 10px; padding: 8px 10px; }
+.passflow-pos-customer summary { cursor: pointer; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.passflow-pos-customer label { display: flex; flex-direction: column; gap: 2px; margin-top: 8px; font-size: 12px; color: var(--passflow-muted); }
+.passflow-pos-customer input { width: 100%; }
+.passflow-pos-pay { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
+.passflow-pos-paid { display: flex; gap: 6px; }
+.passflow-pos-paid select { flex: 1; min-width: 0; }
+.passflow-pos-paid .button { min-width: 140px; }
+.passflow-pos-pay .button { justify-content: center; text-align: center; }
+.passflow-pos-pay .dashicons { vertical-align: text-bottom; }
+.passflow-pos-layer { margin: 0; padding: 0; height: 0; }
+.passflow-pos-detail { display: flex; flex-direction: column; gap: 10px; }
+.passflow-pos-sheet { display: none; }
+/* Caisse sur mobile : plein écran, produits en liste compacte, panier replié en barre collée en bas avec le paiement. */
+@media (max-width: 782px) {
+	.passflow-pos { padding: 0; z-index: 100050; align-items: stretch; }
+	.passflow-pos-box { border-radius: 0; width: 100%; height: 100%; height: 100dvh; max-height: none; box-shadow: none; }
+	.passflow-pos-head { padding: 6px 8px 6px 14px; }
+	.passflow-pos-head h2 { font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+	.passflow-pos-x { padding: 6px 12px; }
+	.passflow-pos-body { display: flex; flex-direction: column; }
+	.passflow-pos-shop { flex: 1; min-height: 0; padding: 8px 10px 0; gap: 8px; }
+	.passflow-pos-tabs { flex: none; }
+	.passflow-pos-tab { padding: 6px 12px; }
+	.passflow-pos-search { flex: none; font-size: 16px; }
+	.passflow-pos-grid { grid-template-columns: 1fr; gap: 6px; padding-bottom: 10px; }
+	.passflow-pos-tile { justify-content: center; gap: 1px; min-height: 64px; padding: 6px 40px 6px 68px; border-radius: 10px; }
+	.passflow-pos-pic { position: absolute; left: 6px; top: 50%; transform: translateY(-50%); width: 52px; height: 52px; aspect-ratio: auto; margin: 0; font-size: 18px; }
+	.passflow-pos-name { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	.passflow-pos-desc { display: none; }
+	.passflow-pos-price { margin: 0; padding: 0; font-size: 13px; }
+	.passflow-pos-badge { top: 50%; right: 8px; transform: translateY(-50%); }
+	.passflow-pos-grid.is-picking { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); }
+	.passflow-pos-variant { min-height: 60px; padding: 8px 6px; }
+	.passflow-pos-cart { flex: none; gap: 8px; max-height: 82%; padding: 0 10px calc(10px + env(safe-area-inset-bottom)); border-left: 0; border-top: 1px solid var(--passflow-line); box-shadow: 0 -6px 18px rgba(0,0,0,.08); overflow: hidden; }
+	.passflow-pos-cart h3 { display: none; }
+	.passflow-pos-sheet { display: flex; align-items: center; gap: 10px; width: calc(100% + 20px); margin: 0 -10px; padding: 10px 14px; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; text-align: left; }
+	.passflow-pos-sheet-title { flex: 1; display: flex; align-items: center; gap: 6px; font-weight: 600; }
+	.passflow-pos-sheet-count { min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px; background: var(--passflow-brand); color: #fff; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; }
+	.passflow-pos-sheet-count[hidden] { display: none; }
+	.passflow-pos-sheet-total { font-size: 20px; font-variant-numeric: tabular-nums; }
+	.passflow-pos-sheet-chev { width: 8px; height: 8px; border-left: 2px solid currentColor; border-top: 2px solid currentColor; transform: rotate(45deg); margin: 4px 2px 0; opacity: .6; transition: transform .2s; }
+	.passflow-pos-cart.is-expanded .passflow-pos-sheet-chev { transform: rotate(225deg); margin-top: -4px; }
+	.passflow-pos-sheet.is-bump .passflow-pos-sheet-count { animation: passflow-pos-bump .35s ease-out; }
+	@keyframes passflow-pos-bump { 50% { transform: scale(1.35); } }
+	.passflow-pos-detail { display: none; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+	.passflow-pos-cart.is-expanded .passflow-pos-detail { display: flex; flex: 1; }
+	.passflow-pos-total { display: none; }
+	.passflow-pos-line { padding: 6px 8px; }
+	.passflow-pos-step { width: 36px; height: 36px; }
+	.passflow-pos-customer input { font-size: 16px; min-height: 38px; }
+	.passflow-pos-pay { flex: none; margin-top: 0; gap: 6px; }
+	.passflow-pos-paid select { min-height: 44px; font-size: 15px; }
+	.passflow-pos-paid .button { min-height: 44px; padding: 0 14px; }
+}
+
+/* Catalogue sur place (formulaire) */
+.passflow-cat-products { list-style: none; margin: 0 0 10px; padding: 0; display: flex; flex-direction: column; gap: 4px; max-width: 640px; }
+.passflow-cat-products li { display: flex; align-items: center; gap: 8px; margin: 0; padding: 6px 8px; background: #fff; border: 1px solid var(--passflow-line); border-radius: 8px; }
+.passflow-cat-products li img { width: 32px; height: 32px; object-fit: cover; border-radius: 4px; }
+.passflow-cat-products li > span { flex: 1; min-width: 0; }
+.passflow-cat-checks { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.passflow-cashdesk-items { list-style: none; margin: 4px 0; padding: 0; }
+.passflow-cashdesk-items li { margin: 2px 0; }
+.passflow-cashdesk-refund { display: inline-block; vertical-align: middle; }
+.passflow-cashdesk-refund summary { cursor: pointer; font-size: 12px; color: var(--passflow-brand); }
+.passflow-cashdesk-refund[open] { display: block; margin: 6px 0; padding: 10px 12px; background: #f6f7f7; border-radius: 10px; }
+.passflow-cashdesk-refund-form { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-top: 8px; }
+.passflow-cashdesk-refund-form p { flex-basis: 100%; margin: 0; font-size: 12px; }
+.passflow-cashdesk-find { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 8px; }
+.passflow-cashdesk-find input[type="search"] { flex: 1; min-width: 220px; max-width: 420px; }
+.passflow-cashdesk-find .dashicons { color: var(--passflow-muted); }
+.passflow-cashdesk-count { margin: 0 0 4px; font-size: 12px; }
+.passflow-cashdesk-sale-form { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px 16px; width: 100%; }
+.passflow-cashdesk-sale-main { min-width: 0; }
+.passflow-cashdesk-contact { color: var(--passflow-muted); font-size: 13px; margin-left: 4px; }
+.passflow-cashdesk-contact a { color: inherit; }
+.passflow-cashdesk-items li { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.passflow-cashdesk-pick { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.passflow-cashdesk-pick.is-static { cursor: default; padding-left: 22px; }
+.passflow-cashdesk-pick input { margin: 0; }
+.passflow-cashdesk-qty { min-height: 26px; padding: 0 22px 0 6px; font-size: 12px; }
+.passflow-cashdesk-items li.is-returned .passflow-cashdesk-item-name { text-decoration: line-through; color: var(--passflow-muted); }
+.passflow-cashdesk-returned { font-size: 12px; color: #9a6700; }
+.passflow-cashdesk-sale-side { flex-direction: column; align-items: flex-end; }
+.passflow-cashdesk-sale-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; }
+.passflow-cashdesk-return { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; margin-top: 6px; }
+.passflow-cashdesk-return[hidden] { display: none; }
+.passflow-cashdesk-send { font-size: 12px; color: var(--passflow-muted); }
+.passflow-cashdesk-pager { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 12px; }
+.passflow-cashdesk-pager a, .passflow-cashdesk-pager span { min-width: 32px; padding: 4px 8px; text-align: center; border: 1px solid var(--passflow-line); border-radius: 8px; text-decoration: none; }
+.passflow-cashdesk-pager .is-current { background: var(--passflow-brand); border-color: var(--passflow-brand); color: #fff; }
+@media (max-width: 600px) { .passflow-cashdesk-sale-form { flex-direction: column; } .passflow-cashdesk-sale-side, .passflow-cashdesk-return { align-items: flex-start; } .passflow-cashdesk-sale-top { justify-content: flex-start; } }
+.passflow-cashdesk-sku { font-size: 12px; color: var(--passflow-muted); font-variant-numeric: tabular-nums; }
+
+/* Caisse sur téléphone : grandes zones de toucher, une colonne */
+@media (max-width: 600px) {
+	.passflow-rollcall-tabs a { flex: 1; justify-content: center; padding: 12px 8px; }
+	.passflow-cashdesk-find { flex-wrap: nowrap; }
+	.passflow-cashdesk-find .dashicons { display: none; }
+	.passflow-cashdesk-find input[type="search"] { min-width: 0; min-height: 40px; font-size: 16px; }
+	.passflow-cashdesk-find .button { min-height: 40px; }
+	.passflow-cashdesk-card .button-primary, .passflow-cashdesk-return .button { width: 100%; justify-content: center; min-height: 44px; font-size: 15px; }
+	.passflow-cashdesk-contact { display: block; margin: 2px 0 0; word-break: break-word; }
+	.passflow-cashdesk-contact a { display: inline-block; padding: 2px 0; }
+	.passflow-cashdesk-items li { min-height: 36px; }
+	.passflow-cashdesk-pick input[type="checkbox"] { width: 22px; height: 22px; }
+	.passflow-cashdesk-pick.is-static { padding-left: 0; }
+	.passflow-cashdesk-qty { min-height: 36px; font-size: 16px; }
+	.passflow-cashdesk-return { width: 100%; align-items: stretch; }
+	.passflow-cashdesk-send { font-size: 13px; padding: 6px 0; }
+	.passflow-cashdesk-send input { width: 20px; height: 20px; vertical-align: middle; }
+	.passflow-cashdesk-sale-side { width: 100%; }
+	.passflow-cashdesk-sale-top .button { min-height: 36px; }
+	.passflow-cashdesk-pager a, .passflow-cashdesk-pager span { min-width: 44px; padding: 10px 8px; }
+	.passflow-cashdesk-table td { padding: 8px 0; }
+	.passflow-cashdesk-kpi strong { font-size: 20px; }
+}
+
+/* Fenêtre de confirmation maison et messages (gestion mobile) */
+.passflow-ask { position: fixed; inset: 0; z-index: 100001; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.passflow-ask[hidden] { display: none; }
+.passflow-ask-box { background: #fff; border-radius: 14px; width: min(440px, 100%); padding: 20px; box-shadow: 0 20px 60px rgba(0,0,0,.25); animation: passflow-pop .15s ease-out; }
+.passflow-ask-icon { width: 44px; height: 44px; border-radius: 50%; background: #fbeef3; color: var(--passflow-brand); display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+.passflow-ask-icon .dashicons { font-size: 24px; width: 24px; height: 24px; }
+.passflow-ask-box h2 { margin: 0 0 8px; font-size: 18px; }
+.passflow-ask-text p { margin: 0 0 8px; }
+.passflow-ask-lines { list-style: none; margin: 0 0 10px; padding: 0; border: 1px solid var(--passflow-line); border-radius: 10px; }
+.passflow-ask-lines li { display: flex; justify-content: space-between; gap: 12px; margin: 0; padding: 8px 12px; }
+.passflow-ask-lines li + li { border-top: 1px solid var(--passflow-line); }
+.passflow-ask-lines strong { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.passflow-ask-total { font-weight: 600; }
+.passflow-ask-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+@media (max-width: 480px) {
+	.passflow-ask { align-items: flex-end; padding: 0; }
+	.passflow-ask-box { border-radius: 16px 16px 0 0; padding: 20px 16px calc(16px + env(safe-area-inset-bottom)); }
+	.passflow-ask-actions { flex-direction: column-reverse; }
+	.passflow-ask-actions .button { width: 100%; justify-content: center; min-height: 46px; }
+}
+@keyframes passflow-pop { from { transform: translateY(8px); opacity: 0; } to { transform: none; opacity: 1; } }
+.passflow-toasts { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 100002; display: flex; flex-direction: column; gap: 8px; width: min(480px, calc(100% - 32px)); pointer-events: none; }
+.passflow-toast { pointer-events: auto; padding: 12px 16px; border-radius: 10px; background: #1d2327; color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,.2); font-size: 14px; animation: passflow-pop .2s ease-out; transition: opacity .4s, transform .4s; cursor: pointer; }
+.passflow-toast.is-success { background: #1e6b22; }
+.passflow-toast.is-error { background: #b32d2e; }
+.passflow-toast.is-out { opacity: 0; transform: translateY(6px); }
+.passflow-pos-error { margin: 0; padding: 8px 10px; border-radius: 8px; background: #fbebeb; color: #9b1c1c; font-size: 13px; }
+.passflow-pos-error[hidden] { display: none; }
+[data-passflow-cashdesk-panel] { transition: opacity .15s; }
+[data-passflow-cashdesk-panel].is-loading { opacity: .55; }
+.passflow-rollcall-panel[hidden] { display: none; }
+
+/* Onglet Participants sur téléphone */
+@media (max-width: 600px) {
+	.passflow-rollcall-search .passflow-btn-label { display: none; }
+	.passflow-rollcall-search .button { min-width: 44px; min-height: 44px; justify-content: center; padding: 0 10px; }
+	.passflow-rollcall-search .button .dashicons { margin: 0; }
+	.passflow-rollcall-filters button { padding: 8px 14px; font-size: 14px; }
+	.passflow-rollcall-sale .button { min-height: 36px; padding: 0 12px; font-size: 13px; }
+	.passflow-rollcall-docs .button { min-height: 32px; }
+	.passflow-rollcall-note summary { padding: 6px 0; }
+	.passflow-sale-bar p:last-child { flex-direction: column; }
+	.passflow-sale-bar .button { width: 100%; justify-content: center; min-height: 44px; }
+	.passflow-walkin-pending li .button { min-height: 36px; }
+	.passflow-rollcall-lock .passflow-force-switch { padding: 6px 0; }
+	.passflow-portal > p:last-child .button { min-height: 40px; }
+}
+
+/* Choix de l'atelier du jour (bouton ticket de la barre d'administration) */
+.passflow-today-pick { max-width: 560px; }
+.passflow-today-pick h2 { margin: 8px 0 4px; font-size: 20px; }
+.passflow-today-pick ul { list-style: none; margin: 12px 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.passflow-today-pick li { margin: 0; }
+.passflow-today-pick li a { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "hour arrow" "name arrow" "meta arrow"; gap: 2px 12px; align-items: center; padding: 14px 16px; background: #fff; border: 1px solid var(--passflow-line); border-left: 4px solid var(--passflow-brand); border-radius: 12px; text-decoration: none; color: var(--passflow-ink); min-height: 64px; }
+.passflow-today-pick li a:hover, .passflow-today-pick li a:focus-visible { border-color: var(--passflow-brand); box-shadow: 0 0 0 1px var(--passflow-brand); outline: none; }
+.passflow-today-hour { grid-area: hour; font-size: 13px; font-weight: 600; color: var(--passflow-brand); }
+.passflow-today-pick li strong { grid-area: name; font-size: 16px; }
+.passflow-today-pick li .passflow-muted { grid-area: meta; font-size: 13px; }
+.passflow-today-pick li .dashicons { grid-area: arrow; color: var(--passflow-muted); }
+.passflow-cashdesk-cancel.button { color: #b32d2e; border-color: #e4b5b5; }
+.passflow-cashdesk-cancel.button:hover { color: #8a1f1f; border-color: #b32d2e; }
+.passflow-cashdesk-cancel.disabled { opacity: .5; pointer-events: none; }
+.passflow-ask.is-danger .passflow-ask-icon { background: #fbebeb; color: #b32d2e; }
+.passflow-ask.is-danger [data-ask-ok] { background: #b32d2e; border-color: #b32d2e; }
+.passflow-rollcall-stats .passflow-gauge { margin-top: 0; } .passflow-rollcall-stats p { margin: 8px 0 0; }
+
+/* Gestion mobile d'un atelier : écran « focus », sans titre, intro ni notices d'autres extensions. */
+.passflow-focus { margin-top: 6px; }
+body:has(.passflow-focus) #wpbody-content > .notice,
+body:has(.passflow-focus) #wpbody-content > .update-nag,
+body:has(.passflow-focus) #wpbody-content > .error,
+body:has(.passflow-focus) .wrap.passflow-focus > .notice:not(.passflow-flash),
+body:has(.passflow-focus) #screen-meta-links { display: none; }
+.passflow-focus .passflow-rollcall-back { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 0; }
+.passflow-test-badge { font-size: 11px; font-weight: 600; line-height: 1; padding: 4px 8px; border-radius: 999px; background: #fcf0d4; color: #8a5a00; text-decoration: none; }
+@media (max-width: 782px) {
+	body:has(.passflow-focus) #wpbody-content { padding-top: 0; }
+	.passflow-focus { margin: 4px 8px 0; }
+}
+
+/* Écrans de travail (une date de l'espace intervenant) : pas de titre ni de bandeau, juste une pastille « Mode test ». */
+.passflow-admin.passflow-compact { padding-top: 6px; }
+.passflow-admin .passflow-test-chip { float: right; margin: 0 0 0 12px; }
+@media (max-width: 782px) {
+	.passflow-admin.passflow-compact-mobile > .smbb-codetool-page-header,
+	.passflow-admin.passflow-compact-mobile > .passflow-flash.notice-warning { display: none; }
+}
+
+/* Fiche journée : gros bouton « Gestion mobile » (le bouton du PDA).
+   Sélecteur renforcé : la règle CodeTool « .wrap.smbb-codetool a » colore les liens en accent. */
+body.wp-admin .wrap.passflow-admin a.passflow-mobile-cta { display: flex; align-items: center; gap: 14px; margin: 16px 0 4px; padding: 16px 20px; min-height: 64px; box-sizing: border-box; max-width: 520px; border-radius: 14px; text-decoration: none; color: var(--smbb-t-grad-ink, var(--smbb-t-accent-ink, #fff)); background: var(--smbb-t-grad, var(--smbb-t-accent, #2271b1)); box-shadow: 0 6px 18px rgba(var(--smbb-t-accent-rgb, 34, 113, 177), .28); transition: transform .12s ease, box-shadow .12s ease, background .12s ease; -webkit-tap-highlight-color: transparent; }
+body.wp-admin .wrap.passflow-admin a.passflow-mobile-cta:hover, body.wp-admin .wrap.passflow-admin a.passflow-mobile-cta:focus { color: var(--smbb-t-grad-ink, var(--smbb-t-accent-ink, #fff)); background: var(--smbb-t-grad-hover, var(--smbb-t-accent-hover, #135e96)); box-shadow: 0 8px 24px rgba(var(--smbb-t-accent-rgb, 34, 113, 177), .36); transform: translateY(-1px); }
+body.wp-admin .wrap.passflow-admin a.passflow-mobile-cta:focus-visible { outline: 3px solid rgba(var(--smbb-t-accent-rgb, 34, 113, 177), .45); outline-offset: 3px; }
+body.wp-admin .wrap.passflow-admin a.passflow-mobile-cta:active { transform: scale(.98); }
+body.wp-admin .wrap.passflow-admin a.passflow-mobile-cta .dashicons { font-size: 30px; width: 30px; height: 30px; line-height: 1; flex: 0 0 auto; }
+.passflow-admin .passflow-mobile-cta-text { display: flex; flex-direction: column; gap: 2px; flex: 1 1 auto; min-width: 0; }
+.passflow-admin .passflow-mobile-cta-text strong { font-size: 19px; font-weight: 700; line-height: 1.2; }
+.passflow-admin .passflow-mobile-cta-text small { font-size: 13px; opacity: .85; line-height: 1.3; }
+body.wp-admin .wrap.passflow-admin a.passflow-mobile-cta .passflow-mobile-cta-go { font-size: 24px; width: 24px; height: 24px; opacity: .8; }
+@media (max-width: 782px) {
+  body.wp-admin .wrap.passflow-admin a.passflow-mobile-cta { max-width: none; width: 100%; min-height: 76px; padding: 18px 20px; }
+  .passflow-admin .passflow-mobile-cta-text strong { font-size: 21px; }
+}
+@media print { body.wp-admin .wrap.passflow-admin a.passflow-mobile-cta { display: none; } }
+/* Ligne de tuiles de la fiche Journée : Gestion mobile (2/3) + Communication (1/3), empilées sur mobile. */
+.passflow-admin .passflow-cta-row { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin: 16px 0 4px; max-width: 900px; }
+body.wp-admin .wrap.passflow-admin .passflow-cta-row a.passflow-mobile-cta { margin: 0; max-width: none; }
+body.wp-admin .wrap.passflow-admin a.passflow-comm-cta { display: flex; align-items: center; gap: 12px; padding: 16px 18px; min-height: 64px; box-sizing: border-box; border-radius: 14px; text-decoration: none; color: var(--smbb-t-text, #1d2327); background: var(--smbb-t-card, #fff); border: 1px solid var(--smbb-t-line, var(--passflow-line)); box-shadow: 0 4px 14px rgba(0, 0, 0, .06); transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease; -webkit-tap-highlight-color: transparent; min-width: 0; }
+body.wp-admin .wrap.passflow-admin a.passflow-comm-cta:hover, body.wp-admin .wrap.passflow-admin a.passflow-comm-cta:focus { color: var(--smbb-t-text, #1d2327); border-color: rgba(var(--smbb-t-accent-rgb, 34, 113, 177), .5); box-shadow: 0 8px 22px rgba(var(--smbb-t-accent-rgb, 34, 113, 177), .16); transform: translateY(-1px); }
+body.wp-admin .wrap.passflow-admin a.passflow-comm-cta:focus-visible { outline: 3px solid rgba(var(--smbb-t-accent-rgb, 34, 113, 177), .45); outline-offset: 3px; }
+body.wp-admin .wrap.passflow-admin a.passflow-comm-cta:active { transform: scale(.98); }
+body.wp-admin .wrap.passflow-admin a.passflow-comm-cta .dashicons { font-size: 28px; width: 28px; height: 28px; line-height: 1; flex: 0 0 auto; color: var(--smbb-t-accent, #2271b1); }
+body.wp-admin .wrap.passflow-admin a.passflow-comm-cta .passflow-mobile-cta-go { font-size: 22px; width: 22px; height: 22px; opacity: .6; color: inherit; }
+.passflow-admin .passflow-comm-cta .passflow-mobile-cta-text strong { font-size: 17px; }
+@media (max-width: 782px) {
+  .passflow-admin .passflow-cta-row { grid-template-columns: 1fr; gap: 10px; }
+  body.wp-admin .wrap.passflow-admin a.passflow-comm-cta { min-height: 68px; padding: 16px 20px; }
+}
+@media print { .passflow-admin .passflow-cta-row { display: none; } }
+
+/* Écran Communication d'une journée. */
+.passflow-admin .passflow-bc-back { margin: 0 0 12px; }
+.passflow-admin .passflow-bc-targets { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; margin: 0 0 16px; }
+.passflow-admin .passflow-bc-choice { position: relative; display: flex; flex-direction: column; gap: 3px; padding: 12px 14px; border: 1px solid var(--smbb-t-line, var(--passflow-line)); border-radius: 12px; background: var(--smbb-t-card, #fff); color: var(--smbb-t-text, inherit); cursor: pointer; }
+.passflow-admin .passflow-bc-choice input { position: absolute; opacity: 0; pointer-events: none; }
+.passflow-admin .passflow-bc-choice strong { font-size: 14px; }
+.passflow-admin .passflow-bc-choice .passflow-bc-n { font-size: 22px; font-weight: 700; line-height: 1.1; }
+.passflow-admin .passflow-bc-choice small { color: var(--smbb-t-muted, var(--passflow-muted)); font-size: 12px; line-height: 1.3; }
+.passflow-admin .passflow-bc-choice:has(input:checked) { border-color: var(--smbb-t-accent, #2271b1); box-shadow: 0 0 0 2px rgba(var(--smbb-t-accent-rgb, 34, 113, 177), .35); }
+.passflow-admin .passflow-bc-choice:has(input:focus-visible) { outline: 2px solid var(--smbb-t-accent, #2271b1); outline-offset: 2px; }
+.passflow-admin .passflow-bc-choice.is-empty { opacity: .55; }
+.passflow-admin .passflow-bc-channels { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 16px; }
+.passflow-admin .passflow-bc-channels .passflow-bc-choice { flex-direction: row; align-items: center; gap: 8px; padding: 10px 14px; }
+.passflow-admin .passflow-bc-channels .passflow-bc-choice .dashicons { color: var(--smbb-t-accent, #2271b1); }
+/* Communication : mode RGPD (avec consentement / cas d'urgence), au-dessus des cibles. */
+.passflow-admin .passflow-bc-mode { display: inline-grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; margin: 0 0 8px; border: 1px solid var(--smbb-t-line, var(--passflow-line)); border-radius: 14px; background: var(--smbb-t-soft, rgba(0, 0, 0, .03)); max-width: 760px; width: 100%; box-sizing: border-box; }
+.passflow-admin .passflow-bc-mode-opt { position: relative; display: flex; gap: 10px; align-items: flex-start; padding: 10px 14px; border-radius: 10px; cursor: pointer; color: var(--smbb-t-muted, var(--passflow-muted)); transition: background .15s, box-shadow .15s, color .15s; }
+.passflow-admin .passflow-bc-mode-opt input { position: absolute; opacity: 0; pointer-events: none; }
+.passflow-admin .passflow-bc-mode-opt strong { display: block; font-size: 14px; color: var(--smbb-t-text, inherit); }
+.passflow-admin .passflow-bc-mode-opt small { display: block; font-size: 12px; line-height: 1.3; }
+.passflow-admin .passflow-bc-mode-opt .dashicons { margin-top: 1px; }
+.passflow-admin .passflow-bc-mode-opt:has(input:checked) { background: var(--smbb-t-card, #fff); box-shadow: 0 1px 3px rgba(0, 0, 0, .12); color: var(--smbb-t-text, inherit); }
+.passflow-admin .passflow-bc-mode-opt.is-consent:has(input:checked) .dashicons { color: #1e7a46; }
+.passflow-admin .passflow-bc-mode-opt.is-urgent:has(input:checked) { box-shadow: 0 0 0 2px #d63638, 0 1px 3px rgba(0, 0, 0, .12); }
+.passflow-admin .passflow-bc-mode-opt.is-urgent:has(input:checked) .dashicons,
+.passflow-admin .passflow-bc-mode-opt.is-urgent:has(input:checked) strong { color: #d63638; }
+.passflow-admin .passflow-bc-mode-opt:has(input:focus-visible) { outline: 2px solid var(--smbb-t-accent, #2271b1); outline-offset: 1px; }
+.passflow-admin .passflow-bc-mode-info { display: flex; gap: 6px; align-items: flex-start; max-width: 760px; margin: 0 0 12px; font-size: 13px; color: var(--smbb-t-muted, var(--passflow-muted)); }
+.passflow-admin .passflow-bc-mode-info .dashicons { flex: none; font-size: 18px; width: 18px; height: 18px; }
+.passflow-admin .passflow-bc-mode-info.is-warning .dashicons { color: #dba617; }
+.passflow-admin .passflow-bc-mode-info.is-urgent { color: #b32d2e; }
+.passflow-admin .passflow-bc-form[data-mode="consent"] [data-show="urgent"],
+.passflow-admin .passflow-bc-form[data-mode="urgent"] [data-show="consent"] { display: none; }
+.passflow-admin .passflow-bc-form[data-mode="urgent"] .passflow-bc-targets .passflow-bc-choice:has(input:checked) { border-color: #d63638; box-shadow: 0 0 0 2px rgba(214, 54, 56, .3); }
+@media (max-width: 600px) {
+    .passflow-admin .passflow-bc-mode { grid-template-columns: 1fr; display: grid; }
+}
+.passflow-admin .passflow-bc-field { margin: 0 0 14px; }
+.passflow-admin .passflow-bc-field label { display: block; font-weight: 600; margin-bottom: 4px; }
+.passflow-admin .passflow-bc-field input[type=text], .passflow-admin .passflow-bc-field textarea { width: 100%; max-width: 720px; box-sizing: border-box; }
+.passflow-admin .passflow-bc-field textarea { min-height: 130px; font-size: 14px; }
+.passflow-admin .passflow-bc-meter { color: var(--passflow-muted); font-size: 12px; margin-top: 4px; }
+.passflow-admin .passflow-bc-meter.is-long { color: #a2310c; }
+.passflow-admin .passflow-bc-presets { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
+.passflow-admin .passflow-bc-progress { display: block; width: 120px; height: 6px; border-radius: 3px; background: var(--smbb-t-fill, #f0f0f1); overflow: hidden; margin-top: 4px; }
+.passflow-admin .passflow-bc-progress span { display: block; height: 100%; background: var(--smbb-t-accent, #2271b1); }
+.passflow-admin .passflow-bc-h3 { font-size: 13px; margin: 0 0 8px; text-transform: uppercase; letter-spacing: .04em; color: var(--passflow-muted); }
+@media (max-width: 782px) {
+  .passflow-admin .passflow-bc-targets { grid-template-columns: 1fr 1fr; }
+  .passflow-admin .passflow-bc-submit .button { width: 100%; min-height: 48px; font-size: 16px; }
+}
+
+/* Bilan d'une journée (vue report du créneau) + 3e tuile de la fiche. */
+.passflow-admin .passflow-cta-row.has-report { grid-template-columns: 2fr 1fr 1fr; max-width: 1100px; }
+.passflow-admin .passflow-report-title { margin: 0 0 2px; font-size: 20px; }
+.passflow-admin .passflow-report-when { margin: 0 0 10px; color: var(--smbb-t-muted, var(--passflow-muted)); }
+.passflow-admin .passflow-report-kpis { margin: 0 0 14px; }
+.passflow-admin .passflow-report-bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: var(--smbb-t-fill, #f0f0f1); margin: 0 0 6px; max-width: 720px; }
+.passflow-admin .passflow-report-bar span, .passflow-admin .passflow-report-legend span { display: block; height: 100%; }
+.passflow-admin .passflow-report-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; font-size: 12px; color: var(--smbb-t-muted, var(--passflow-muted)); margin: 0 0 12px; }
+.passflow-admin .passflow-report-legend span { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: -8px; }
+.passflow-admin .passflow-report .is-present { background: #00a32a; }
+.passflow-admin .passflow-report .is-absent { background: #d63638; }
+.passflow-admin .passflow-report .is-unpointed { background: #dba617; }
+.passflow-admin .passflow-report-cols { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; margin: 0 0 12px; }
+.passflow-admin .passflow-report .passflow-num { text-align: right; white-space: nowrap; }
+.passflow-admin .passflow-report-ok { color: #00a32a; font-weight: 600; }
+.passflow-admin .passflow-report-notes { margin: 0; padding-left: 18px; list-style: disc; }
+@media (max-width: 1100px) { .passflow-admin .passflow-cta-row.has-report { grid-template-columns: 1fr 1fr; } .passflow-admin .passflow-cta-row.has-report > .passflow-mobile-cta { grid-column: 1 / -1; } }
+@media (max-width: 782px) {
+  .passflow-admin .passflow-cta-row.has-report { grid-template-columns: 1fr; }
+  .passflow-admin .passflow-report-cols { grid-template-columns: 1fr; }
+  .passflow-admin .passflow-report .passflow-table { display: block; overflow-x: auto; }
+}
+@media print {
+  .passflow-admin .passflow-report .passflow-kpi { border: 1px solid #ccc; break-inside: avoid; }
+  .passflow-admin .passflow-report .passflow-card { break-inside: avoid-page; margin-bottom: 14px; }
+  .passflow-admin .passflow-report-bar, .passflow-admin .passflow-report .is-present, .passflow-admin .passflow-report .is-absent, .passflow-admin .passflow-report .is-unpointed { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* Bilan › Avis des participants. */
+.passflow-admin .passflow-stars { color: #f5a623; letter-spacing: 1px; white-space: nowrap; }
+.passflow-admin .passflow-stars span { color: var(--smbb-t-line, #dcdcde); }
+.passflow-admin .passflow-kpi strong small { font-size: 14px; font-weight: 400; color: var(--smbb-t-muted, var(--passflow-muted)); }
+.passflow-admin .passflow-review-field { margin: 0 0 18px; max-width: 760px; }
+.passflow-admin .passflow-review-dist { width: 100%; max-width: 560px; table-layout: fixed; }
+.passflow-admin .passflow-review-dist td:first-child { width: 190px; }
+.passflow-admin .passflow-review-dist td:last-child { width: 40px; }
+.passflow-admin .passflow-review-bar { vertical-align: middle; }
+.passflow-admin .passflow-review-bar .passflow-bc-progress { width: 100%; height: 8px; margin: 0; }
+.passflow-admin .passflow-review-bar .passflow-bc-progress span { background: #f5a623; }
+.passflow-admin .passflow-review-quotes { margin: 0; padding: 0; list-style: none; }
+.passflow-admin .passflow-review-quotes li { margin: 0 0 8px; padding: 8px 12px; border-left: 3px solid var(--smbb-t-accent, #2271b1); background: var(--smbb-t-soft, rgba(0, 0, 0, .03)); border-radius: 0 8px 8px 0; }
+.passflow-admin .passflow-review-quotes q { font-style: italic; }
+
+/* Comparer (Suivi › Comparer, ouvert aussi depuis le Bilan). */
+.passflow-admin .passflow-compare-form { margin-top: 12px; }
+.passflow-admin .passflow-compare-picks { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; margin: 8px 0 12px; max-height: 340px; overflow-y: auto; }
+.passflow-admin .passflow-compare-pick { display: flex; gap: 8px; align-items: flex-start; padding: 8px 10px; border: 1px solid var(--smbb-t-line, var(--passflow-line)); border-radius: 10px; background: var(--smbb-t-card, #fff); cursor: pointer; }
+.passflow-admin .passflow-compare-pick span { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.passflow-admin .passflow-compare-pick.is-checked { border-color: var(--smbb-t-accent, var(--passflow-brand)); box-shadow: 0 0 0 1px var(--smbb-t-accent, var(--passflow-brand)); }
+.passflow-admin .passflow-compare-pick input:disabled + span { opacity: .5; }
+.passflow-admin .passflow-compare .passflow-actions label { margin-right: 8px; }
+.passflow-admin .passflow-compare-glance { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.passflow-admin .passflow-compare-row { display: grid; grid-template-columns: minmax(0, 9em) 1fr auto; gap: 8px; align-items: center; margin: 0 0 6px; font-size: 12px; }
+.passflow-admin .passflow-compare-row.is-ref .passflow-compare-label { font-weight: 700; }
+.passflow-admin .passflow-compare-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--smbb-t-muted, var(--passflow-muted)); }
+.passflow-admin .passflow-compare-track { display: block; height: 10px; border-radius: 5px; background: var(--smbb-t-fill, #f0f0f1); overflow: hidden; }
+.passflow-admin .passflow-compare-track span { display: block; height: 100%; border-radius: 5px; }
+.passflow-admin .passflow-compare-track .is-fill { background: var(--smbb-t-accent, var(--passflow-brand)); }
+.passflow-admin .passflow-compare-track .is-revenue { background: #2271b1; }
+.passflow-admin .passflow-compare-table th, .passflow-admin .passflow-compare-table td { vertical-align: top; }
+.passflow-admin .passflow-compare-table thead th { min-width: 120px; }
+.passflow-admin .passflow-compare-table thead th:first-child, .passflow-admin .passflow-compare-table tbody th { min-width: 160px; text-align: left; }
+.passflow-admin .passflow-compare-table .is-ref { background: rgba(var(--smbb-t-accent-rgb, 181, 71, 107), .07); }
+.passflow-admin .passflow-compare-table .is-best { font-weight: 700; }
+.passflow-admin .passflow-compare-group th { padding-top: 14px; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--smbb-t-muted, var(--passflow-muted)); border-bottom: 1px solid var(--smbb-t-line, var(--passflow-line)); }
+.passflow-admin .passflow-compare-ref { display: inline-block; margin-top: 2px; padding: 1px 6px; border-radius: 6px; font-size: 11px; background: var(--smbb-t-accent, var(--passflow-brand)); color: #fff; }
+.passflow-admin .passflow-compare-delta { display: inline-block; margin-left: 4px; padding: 0 5px; border-radius: 5px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.passflow-admin .passflow-compare-delta.is-up { color: #00a32a; background: rgba(0, 163, 42, .1); }
+.passflow-admin .passflow-compare-delta.is-down { color: #d63638; background: rgba(214, 54, 56, .1); }
+.passflow-admin .passflow-compare-delta.is-same, .passflow-admin .passflow-compare-delta.is-neutral { color: var(--smbb-t-muted, var(--passflow-muted)); background: var(--smbb-t-fill, #f0f0f1); }
+@media (max-width: 1100px) { .passflow-admin .passflow-compare-glance { grid-template-columns: 1fr; } }
+@media (max-width: 782px) { .passflow-admin .passflow-compare-picks { grid-template-columns: 1fr; } }
+@media print {
+  .passflow-admin .passflow-compare-track span, .passflow-admin .passflow-compare-delta, .passflow-admin .passflow-compare-ref, .passflow-admin .passflow-compare-table .is-ref { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .passflow-admin .passflow-compare-glance { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Fiche Journée : rangées de deux grandes cartes (Gestion mobile + Suivi tablette, puis Communication + Bilan). */
+.passflow-admin .passflow-cta-row.is-duo { grid-template-columns: 1fr 1fr; max-width: 1100px; margin: 16px 0 14px; }
+.passflow-admin .passflow-cta-row.is-duo + .passflow-cta-row.is-duo { margin-top: 0; }
+.passflow-admin .passflow-cta-row.is-duo > :only-child { grid-column: 1 / -1; max-width: 545px; }
+body.wp-admin .wrap.passflow-admin .passflow-cta-row.is-duo a.passflow-mobile-cta { min-height: 88px; }
+body.wp-admin .wrap.passflow-admin .passflow-cta-row.is-duo a.passflow-comm-cta { min-height: 72px; }
+@media (max-width: 782px) {
+  .passflow-admin .passflow-cta-row.is-duo { grid-template-columns: 1fr; gap: 10px; }
+  .passflow-admin .passflow-cta-row.is-duo > :only-child { max-width: none; }
+}
+.passflow-admin .passflow-portal-choice-title { margin: 8px 0 2px; font-size: 22px; }

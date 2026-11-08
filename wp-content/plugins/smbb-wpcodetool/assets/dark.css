@@ -1,0 +1,383 @@
+/* ==========================================================================
+ * CodeTool – mode sombre (réglage Clair / Sombre / Auto, Skin::mode()).
+ *
+ * Actif quand html porte .smbb-dark (posée par Skin::modeScript() avant l'affichage).
+ * Les variables --smbb-t-* prennent leurs valeurs sombres (Skin::css()) : tout ce qui les utilise
+ * bascule seul. Ce fichier reprend ce qui a des couleurs claires en dur : écrans WordPress,
+ * composants CodeTool, Tomo. L'éditeur de blocs garde son apparence (il a la sienne).
+ * ========================================================================== */
+
+html.smbb-dark {
+    color-scheme: dark;
+}
+
+/* 1. Fond, texte, titres, liens ------------------------------------------ */
+html.smbb-dark body.smbb-skin:not(.block-editor-page),
+html.smbb-dark body.smbb-skin:not(.block-editor-page) #wpwrap,
+html.smbb-dark body.smbb-skin:not(.block-editor-page) #wpcontent,
+html.smbb-dark body.smbb-skin:not(.block-editor-page) #wpbody-content,
+html.smbb-dark body.smbb-skin:not(.block-editor-page) #wpfooter {
+    background: var(--smbb-t-bg);
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) :is(h1, h2, h3, h4, h5, h6, .wrap h1, .wrap h2, .form-table th, label, legend, strong, dt, th),
+html.smbb-dark body.smbb-skin:not(.block-editor-page) .wp-heading-inline {
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) :is(p.description, .description, .howto, .form-table td .description, #wpfooter, .subsubsub, .count, .tablenav .displaying-num, .post-state, .row-title + .post-state, .comment-ays) {
+    color: var(--smbb-t-muted);
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) #wpbody-content a:where(:not(.button, .button-primary, .page-title-action, .smbb-appbar-tab, .smbb-appbar-brand, .nav-tab)) {
+    color: var(--smbb-t-accent);
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) #wpbody-content a:where(:not(.button, .button-primary, .page-title-action, .smbb-appbar-tab, .smbb-appbar-brand, .nav-tab)):hover {
+    color: var(--smbb-t-accent-hover);
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) :is(code, kbd, pre) {
+    background: var(--smbb-t-fill);
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) hr {
+    border-color: var(--smbb-t-line);
+}
+
+/* 2. Champs ---------------------------------------------------------------- */
+html.smbb-dark body.smbb-skin:not(.block-editor-page) :is(
+    input[type="text"], input[type="search"], input[type="email"], input[type="url"], input[type="password"],
+    input[type="number"], input[type="tel"], input[type="date"], input[type="datetime-local"], input[type="time"],
+    input[type="month"], input[type="week"], input[type="color"], select, textarea
+) {
+    border-color: var(--smbb-t-line-strong);
+    background-color: var(--smbb-t-fill);
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) :is(input, textarea)::placeholder {
+    color: var(--smbb-t-muted);
+    opacity: .8;
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) :is(input, select, textarea):disabled,
+html.smbb-dark body.smbb-skin:not(.block-editor-page) :is(input, textarea)[readonly] {
+    background-color: var(--smbb-t-bg);
+    color: var(--smbb-t-muted);
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) :is(input[type="checkbox"], input[type="radio"]) {
+    border-color: var(--smbb-t-line-strong);
+    background-color: var(--smbb-t-fill);
+}
+
+/* Flèche des listes déroulantes : WordPress la dessine en gris foncé. */
+html.smbb-dark body.smbb-skin:not(.block-editor-page) select {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23a1a1a8%22%2F%3E%3C%2Fsvg%3E");
+}
+
+/* 3. Boutons secondaires --------------------------------------------------- */
+html.smbb-dark body.smbb-skin:not(.block-editor-page) :is(.button, .button-secondary):not(.button-primary):not(.button-link) {
+    border-color: var(--smbb-t-line-strong);
+    background-color: var(--smbb-t-fill);
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) :is(.button, .button-secondary):not(.button-primary):not(.button-link):hover {
+    background-color: var(--smbb-t-fill-hover);
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) .button-link {
+    color: var(--smbb-t-accent);
+}
+
+/* 4. Surfaces : tableaux, boîtes, cartes, notices -------------------------- */
+html.smbb-dark body.smbb-skin:not(.block-editor-page) :is(.widefat, .wp-list-table, .postbox, .stuffbox, .card, .welcome-panel, .notice, div.updated, div.error, .plugin-card, .theme-overlay .theme-wrap, .wp-filter, .media-frame, .attachment-details, #screen-meta, #contextual-help-wrap, .community-events, .health-check-accordion, .site-health-progress-wrapper, .privacy-settings-accordion-panel, .nav-menus-php #menu-management, .menu-item-handle, .menu-item-settings, .accordion-section-content, .widgets-holder-wrap, .widget-top, .widget-inside, .tablenav .actions select) {
+    border-color: var(--smbb-t-line);
+    background-color: var(--smbb-t-card);
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) :is(.widefat, .wp-list-table) :is(td, th, thead th, tfoot th, tfoot td) {
+    border-color: var(--smbb-t-line);
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) :is(.widefat thead, .widefat tfoot) :is(th, td) {
+    background-color: var(--smbb-t-card);
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) :is(.striped > tbody > :nth-child(odd), ul.striped > :nth-child(odd), .alternate) {
+    background-color: var(--smbb-t-fill);
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) .wp-list-table tr:hover > :is(td, th) {
+    background-color: transparent;
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) :is(.postbox-header, .postbox .hndle, .stuffbox .hndle, .wp-filter .filter-links li > a, .plugin-card-bottom) {
+    border-color: var(--smbb-t-line);
+    background-color: transparent;
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) :is(.row-actions, .row-actions span) {
+    color: var(--smbb-t-muted);
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) .notice-alt {
+    background-color: var(--smbb-t-fill);
+}
+
+/* Onglets WordPress (Réglages, Extensions…). */
+html.smbb-dark body.smbb-skin:not(.block-editor-page) .nav-tab-wrapper,
+html.smbb-dark body.smbb-skin:not(.block-editor-page) .wrap h2.nav-tab-wrapper {
+    border-color: var(--smbb-t-line);
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) .nav-tab {
+    border-color: var(--smbb-t-line);
+    background: var(--smbb-t-fill);
+    color: var(--smbb-t-muted);
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) .nav-tab-active,
+html.smbb-dark body.smbb-skin:not(.block-editor-page) .nav-tab-active:hover {
+    border-bottom-color: var(--smbb-t-bg);
+    background: var(--smbb-t-bg);
+    color: var(--smbb-t-text);
+}
+
+/* Tableau de bord WordPress. */
+html.smbb-dark body.smbb-skin:not(.block-editor-page) :is(#dashboard_right_now li, #dashboard_activity li, .activity-block, #dashboard-widgets .inside, .community-events li, .rss-widget) {
+    border-color: var(--smbb-t-line);
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) #dashboard-widgets .postbox-container .empty-container {
+    border-color: var(--smbb-t-line-strong);
+}
+
+html.smbb-dark body.smbb-skin:not(.block-editor-page) #dashboard-widgets .postbox-container .empty-container::after {
+    color: var(--smbb-t-muted);
+}
+
+/* 5. Barre d'admin, menus déroulants, fenêtres --------------------------- */
+html.smbb-dark body.smbb-skin:not(.block-editor-page) :is(#wpadminbar .ab-sub-wrapper, #wpadminbar .quicklinks .menupop ul.ab-sub-secondary) {
+    background: var(--smbb-t-card);
+}
+
+html.smbb-dark body.smbb-skin :is(.media-modal-content, .media-frame-content, .media-sidebar, .media-toolbar, .media-frame-title, .media-frame-router, .media-menu, .attachments-browser .media-toolbar) {
+    border-color: var(--smbb-t-line);
+    background-color: var(--smbb-t-card);
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin :is(.media-modal-content h1, .media-frame-title h1, .media-menu-item, .media-router .media-menu-item, .attachment-details h2, .setting .name) {
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin .media-modal-backdrop {
+    background: #000;
+    opacity: .7;
+}
+
+/* 6. Composants CodeTool écrits en blanc ---------------------------------- */
+html.smbb-dark body.smbb-skin :is(
+    .smbb-codetool .smbb-theme-card, .smbb-codetool .smbb-choice, .smbb-codetool .smbb-appearance-shape,
+    .smbb-codetool .smbb-codetool-preset.is-active, .smbb-codetool-section, .smbb-codetool-panel,
+    .smbb-codetool-details-panel, .smbb-codetool-metric, .smbb-codetool-notice, .smbb-codetool-repeater-item,
+    .smbb-codetool-search-results, .smbb-codetool-search-item, .smbb-codetool-media-file, .smbb-codetool-list-tools,
+    .smbb-codetool-tablenav-pages .page-numbers, .smbb-codetool-tab-button.is-active, .smbb-ui-dialog-card,
+    .smbb-profile-style .smbb-theme-card, .smbb-profile-style .smbb-choice
+) {
+    background-color: var(--smbb-t-card);
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin :is(.smbb-codetool .smbb-theme-card, .smbb-codetool .smbb-choice, .smbb-codetool .smbb-appearance-shape) {
+    box-shadow: 0 0 0 1px var(--smbb-t-line);
+}
+
+html.smbb-dark body.smbb-skin :is(.smbb-codetool .smbb-codetool-presets) {
+    background: var(--smbb-t-fill);
+}
+
+html.smbb-dark body.smbb-skin :is(.smbb-codetool .smbb-codetool-preset) {
+    color: var(--smbb-t-text);
+}
+
+/* Les aperçus de palette et de menu restent des miniatures claires : ce sont des dessins. */
+html.smbb-dark body.smbb-skin :is(.smbb-theme-preview, .smbb-choice-preview, .smbb-menu-preview) {
+    filter: brightness(.92);
+}
+
+html.smbb-dark body.smbb-skin :is(.smbb-codetool-field-label, .smbb-appearance-toggle strong, .smbb-codetool-toggle-label) {
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin :is(.smbb-codetool-table thead th, .smbb-codetool-details-table th, .smbb-codetool-details-table td) {
+    border-color: var(--smbb-t-line);
+    background-color: transparent;
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin .smbb-codetool-toggle-thumb {
+    background: #f2f2f5;
+}
+
+html.smbb-dark body.smbb-skin :is(.smbb-codetool-badge, .smbb-codetool code) {
+    background-color: var(--smbb-t-fill);
+    color: var(--smbb-t-text);
+}
+
+/* 7. Ombres : sur fond sombre, une fine bordure claire remplace l'ombre portée. */
+html.smbb-dark body.smbb-skin {
+    --smbb-ui-shadow: 0 0 0 1px var(--smbb-t-line), 0 8px 24px -12px rgba(0, 0, 0, .6);
+    --smbb-ui-shadow-lg: 0 0 0 1px var(--smbb-t-line), 0 24px 64px -16px rgba(0, 0, 0, .7);
+}
+
+/* 8. Connexion ------------------------------------------------------------ */
+html.smbb-dark body.smbb-login {
+    background: var(--smbb-t-bg);
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-login :is(#loginform, #lostpasswordform, #registerform, .login form) {
+    border-color: var(--smbb-t-line);
+    background: var(--smbb-t-card);
+}
+
+html.smbb-dark body.smbb-login :is(label, .message, .notice) {
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-login :is(.message, .notice, #login_error) {
+    background: var(--smbb-t-card);
+}
+
+html.smbb-dark body.smbb-login :is(#nav a, #backtoblog a, .privacy-policy-link) {
+    color: var(--smbb-t-muted);
+}
+
+html.smbb-dark body.smbb-login :is(input[type="text"], input[type="password"], input[type="email"]) {
+    border-color: var(--smbb-t-line-strong);
+    background: var(--smbb-t-fill);
+    color: var(--smbb-t-text);
+}
+
+/* 9. Retouches vues à l'écran ---------------------------------------------- */
+/* Barre d'enregistrement CodeTool (verre blanc) et raccourci clavier. */
+html.smbb-dark body.smbb-skin .wrap.smbb-codetool :is(.form_container > form > p.submit, .form_container > p.submit, form:not(.smbb-codetool-filter-form):not(.smbb-codetool-search-form):not(.smbb-codetool-batch-form) > p.submit:last-child) {
+    background: color-mix(in srgb, var(--smbb-t-card) 82%, transparent);
+}
+
+html.smbb-dark body.smbb-skin .wrap.smbb-codetool p.submit kbd {
+    background: transparent;
+    color: var(--smbb-t-muted);
+}
+
+/* Extensions : lignes actives / inactives écrites en blanc et bleu pâle. */
+html.smbb-dark body.smbb-skin #wpbody .plugins :is(tr, .active, .inactive, .plugin-update-tr) > :is(th, td),
+html.smbb-dark body.smbb-skin #wpbody .plugins :is(.active, .inactive) + .plugin-update-tr .plugin-update {
+    background-color: var(--smbb-t-card);
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin #wpbody .plugins .active > :is(th, td) {
+    background-color: color-mix(in srgb, var(--smbb-t-accent) 6%, var(--smbb-t-card));
+}
+
+html.smbb-dark body.smbb-skin #wpbody .plugins :is(.plugin-title strong, .plugin-title .row-title) {
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin #wpbody .plugins :is(td, th, .desc p) {
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin #wpbody .plugins :is(.plugin-version-author-uri, .second) {
+    color: var(--smbb-t-muted);
+}
+
+/* Bienvenue du tableau de bord : le bas du panneau est blanc. */
+html.smbb-dark body.smbb-skin .welcome-panel :is(.welcome-panel-column-container, .welcome-panel-content) {
+    background: var(--smbb-t-card);
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin .welcome-panel :is(h3, p) {
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin .welcome-panel .welcome-panel-column p {
+    color: var(--smbb-t-muted);
+}
+
+html.smbb-dark body.smbb-skin .welcome-panel .welcome-panel-icon-pages,
+html.smbb-dark body.smbb-skin .welcome-panel [class*="welcome-panel-icon-"] {
+    background-color: var(--smbb-t-fill);
+}
+
+/* Liens soulignés trop épais en rose : on garde la couleur, souligné plus fin. */
+html.smbb-dark body.smbb-skin #wpfooter a {
+    color: var(--smbb-t-muted);
+}
+
+/* 10. Tomo : surfaces et fonds écrits en clair dans ses CSS --------------- */
+html.smbb-dark body.smbb-skin .passflow-admin :is(
+    .passflow-card, .passflow-kpi, .passflow-fold, .passflow-message-body, .passflow-create-account, .passflow-share, .passflow-doc-signature,
+    .passflow-redeem-result, .passflow-camp-request, .passflow-camp-folder > ul
+),
+html.smbb-dark body.smbb-skin :is(
+    .passflow-agenda-item, .passflow-rollcall-row, .passflow-assign-choices, .passflow-rollcall-tools, .passflow-rollcall-search, .passflow-rollcall-filters button,
+    .passflow-scan, .passflow-presence, .passflow-availability-btn, .passflow-availability-cal, .passflow-availability-cal-item, .passflow-walkin-modal-box, .passflow-walkin-choice,
+    .passflow-cashdesk-kpi, .passflow-pos-box, .passflow-pos-tab, .passflow-pos-tile, .passflow-pos-cart, .passflow-pos-line, .passflow-pos-customer,
+    .passflow-cat-products li, .passflow-ask-box, .passflow-today-pick li a, .passflow-rollcall-tabs a.is-active, .passflow-segments a.is-active
+) {
+    border-color: var(--smbb-t-line);
+    background-color: var(--smbb-t-card);
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin .passflow-admin :is(
+    .passflow-cal-head, .passflow-cal-day.is-outside, .passflow-cal-day.is-past, .passflow-fill-bar, .passflow-gift-code, .passflow-row-new td, .passflow-camp-tree > li,
+    .passflow-camp-request .passflow-camp-message, .passflow-badge--email, .passflow-badge--sms
+),
+html.smbb-dark body.smbb-skin :is(
+    .passflow-availability-cal-head span, .passflow-availability-cal-cell.is-empty, .passflow-pos-pic, .passflow-agenda-tabs a, .passflow-rollcall-tab-n, .passflow-rollcall-hint,
+    .passflow-presence-none input:checked + span, .smbb-codetool-repeater.is-empty, .smbb-appearance-logo-stage, .health-check-header
+) {
+    border-color: var(--smbb-t-line);
+    background-color: var(--smbb-t-fill);
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin .passflow-admin :is(.passflow-badge, .passflow-badge--archived, .passflow-badge--draft, .passflow-badge--done, .passflow-badge--past, .passflow-badge--expired) {
+    background-color: var(--smbb-t-fill);
+    color: var(--smbb-t-muted);
+}
+
+html.smbb-dark body.smbb-skin .passflow-rollcall-filters button.is-active {
+    border-color: var(--smbb-t-text);
+    background: var(--smbb-t-text);
+    color: var(--smbb-t-bg);
+}
+
+html.smbb-dark body.smbb-skin .passflow-admin :is(.passflow-camp-row, .passflow-camp-folder > ul) {
+    border-color: var(--smbb-t-line);
+}
+
+/* Tableau de bord WordPress : listes d'activité. */
+html.smbb-dark body.smbb-skin #dashboard-widgets :is(li, .activity-block h3, #latest-comments .comment-item) {
+    background: transparent;
+    color: var(--smbb-t-text);
+}
+
+html.smbb-dark body.smbb-skin .wp-list-table.comments p {
+    color: var(--smbb-t-text);
+}

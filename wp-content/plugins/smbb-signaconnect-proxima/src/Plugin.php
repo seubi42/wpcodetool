@@ -28,6 +28,7 @@ final class Plugin
         Front\AppActions::hooks();
         Front\SignShortcode::hooks();
         Service\Lifecycle::hooks();
+        Service\StorageMigration::hooks();
         add_action('init', array($this, 'shortcodes'), 5);
     }
 

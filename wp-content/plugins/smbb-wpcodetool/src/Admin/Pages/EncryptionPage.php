@@ -91,7 +91,7 @@ final class EncryptionPage extends AbstractAdminPage
                     <span class="smbb-codetool-section-icon" aria-hidden="true"><span class="dashicons dashicons-database"></span></span>
                     <div class="smbb-codetool-section-heading">
                         <h3><?php esc_html_e('Secrets enregistrés', 'smbb-wpcodetool'); ?></h3>
-                        <p class="description"><?php esc_html_e('Colonnes déclarées avec "secret": true dans les modèles de ressources.', 'smbb-wpcodetool'); ?></p>
+                        <p class="description"><?php esc_html_e('Colonnes déclarées avec "secret": true dans les modèles de ressources, et réglages sensibles enregistrés en option (mot de passe SMTP, jeton Twilio…).', 'smbb-wpcodetool'); ?></p>
                     </div>
                 </header>
                 <div class="smbb-codetool-section-body">
@@ -113,7 +113,7 @@ final class EncryptionPage extends AbstractAdminPage
                                 <?php foreach ($inventory as $entry) : ?>
                                     <tr>
                                         <td><?php echo esc_html($entry['label']); ?></td>
-                                        <td><code><?php echo esc_html($entry['column']); ?></code><?php echo $entry['length'] && $entry['length'] < 400 ? ' <span class="smbb-codetool-badge is-warning" title="' . esc_attr__('Colonne trop courte pour des valeurs chiffrées : synchronisez le schéma.', 'smbb-wpcodetool') . '">' . esc_html(sprintf(__('%d caractères', 'smbb-wpcodetool'), $entry['length'])) . '</span>' : ''; ?></td>
+                                        <td><code><?php echo esc_html($entry['column']); ?></code><?php echo isset($entry['option']) ? '<br><span class="description">' . esc_html(sprintf(__('option %s', 'smbb-wpcodetool'), $entry['option'])) . '</span>' : ''; ?><?php echo $entry['length'] && $entry['length'] < 400 ? ' <span class="smbb-codetool-badge is-warning" title="' . esc_attr__('Colonne trop courte pour des valeurs chiffrées : synchronisez le schéma.', 'smbb-wpcodetool') . '">' . esc_html(sprintf(__('%d caractères', 'smbb-wpcodetool'), $entry['length'])) . '</span>' : ''; ?></td>
                                         <td><?php echo self::count($entry['current'], 'is-success'); ?></td>
                                         <td><?php echo self::count($entry['plain'], 'is-warning'); ?></td>
                                         <td><?php echo self::count($entry['known'], 'is-warning'); ?></td>
@@ -241,6 +241,9 @@ final class EncryptionPage extends AbstractAdminPage
             }
         }
 
+        // Secrets rangés dans des options (mot de passe SMTP, jeton Twilio…).
+        $changed += \Smbb\WpCodeTool\Support\OptionSecrets::process($op);
+
         return array('changed' => $changed, 'skipped' => $skipped);
     }
 
@@ -285,7 +288,7 @@ final class EncryptionPage extends AbstractAdminPage
             }
         }
 
-        return $inventory;
+        return array_merge($inventory, \Smbb\WpCodeTool\Support\OptionSecrets::inventory());
     }
 
     /**

@@ -313,6 +313,15 @@ final class ResourceDefinition
         return $domain !== '' ? $domain : 'smbb-wpcodetool';
     }
 
+    /**
+     * Traduit un texte libre du modèle JSON dans le domaine du plugin qui le déclare, pour que
+     * ses filtres gettext s'appliquent (ex. le vocabulaire de Passflow : créneau → journée).
+     */
+    public function translate($text)
+    {
+        return $this->translateText($text);
+    }
+
     private function translateText($text)
     {
         $text = (string) $text;
@@ -484,7 +493,7 @@ final class ResourceDefinition
                 'enabled' => !array_key_exists('enabled', $config['search']) || (bool) $config['search']['enabled'],
                 'fields' => $fields,
                 'mode' => isset($config['search']['mode']) ? strtolower((string) $config['search']['mode']) : 'or',
-                'placeholder' => isset($config['search']['placeholder']) ? (string) $config['search']['placeholder'] : '',
+                'placeholder' => isset($config['search']['placeholder']) ? $this->translateText((string) $config['search']['placeholder']) : '',
                 'provider' => isset($config['search']['provider']) ? sanitize_key((string) $config['search']['provider']) : 'default',
             );
         }
@@ -627,7 +636,7 @@ final class ResourceDefinition
             $config = array('items' => $config);
         }
 
-        $all = array_key_exists('all', $config) ? $config['all'] : __('Tous', 'smbb-wpcodetool');
+        $all = array_key_exists('all', $config) ? (is_string($config['all']) ? $this->translateText($config['all']) : $config['all']) : __('Tous', 'smbb-wpcodetool');
         $items = array();
 
         foreach (isset($config['items']) && is_array($config['items']) ? $config['items'] : array() as $index => $item) {
@@ -637,7 +646,7 @@ final class ResourceDefinition
 
             $items[] = array(
                 'key' => !empty($item['key']) ? sanitize_key((string) $item['key']) : 'preset-' . $index,
-                'label' => (string) $item['label'],
+                'label' => $this->translateText((string) $item['label']),
                 'filter' => array(
                     'field' => sanitize_key((string) $item['filter']['field']),
                     'operator' => !empty($item['filter']['operator']) ? sanitize_key((string) $item['filter']['operator']) : 'eq',
@@ -718,7 +727,7 @@ final class ResourceDefinition
             }
 
             $definitions[$field] = array(
-                'label' => !empty($definition['label']) ? (string) $definition['label'] : ucfirst(str_replace('_', ' ', $field)),
+                'label' => !empty($definition['label']) ? $this->translateText((string) $definition['label']) : ucfirst(str_replace('_', ' ', $field)),
                 'operators' => isset($definition['operators']) && is_array($definition['operators']) ? array_values(array_unique(array_map('sanitize_key', $definition['operators']))) : array(),
             );
         }

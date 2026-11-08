@@ -27,7 +27,8 @@
       "parent": "smbb-codetool-scp",
       "title": "Réglages",
       "icon": "dashicons-admin-settings",
-      "position": 999
+      "position": 999,
+      "group": "Paramétrage"
     },
     "adminBar": {
       "newContent": false,

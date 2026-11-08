@@ -1,0 +1,49 @@
+/* Passflow : factures (Mon compte et administration). */
+.passflow-inv { --inv-brand: var(--passflow-brand, #8c3c34); max-width: 920px; }
+.passflow-inv-step { display: flex; align-items: center; gap: 8px; margin: 22px 0 6px; font-size: 1.05em; }
+.passflow-inv-step span { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--inv-brand); color: #fff; font-size: 13px; }
+.passflow-inv-help, .passflow-inv-muted { color: #6b625c; font-size: .92em; }
+.passflow-inv-lines { width: 100%; border-collapse: collapse; margin: 8px 0; }
+.passflow-inv-lines th, .passflow-inv-lines td { padding: 8px 6px; border-bottom: 1px solid #eee5df; text-align: left; vertical-align: middle; }
+.passflow-inv-lines tr.passflow-inv-item th { background: #f7f4f1; font-weight: normal; }
+.passflow-inv-lines td:last-child { text-align: right; width: 180px; }
+.passflow-inv-lines select { min-width: 150px; max-width: 100%; }
+.passflow-inv-price { color: #6b625c; white-space: nowrap; }
+.passflow-inv-link { background: none; border: 0; padding: 0; color: var(--inv-brand); text-decoration: underline; cursor: pointer; font: inherit; }
+.passflow-inv-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+.passflow-inv-group { border: 1px solid #e3d9d2; border-radius: 10px; padding: 12px 14px; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; background: #fff; }
+.passflow-inv-group.is-empty { opacity: .6; }
+.passflow-inv-group legend { font-weight: 600; padding: 0 6px; }
+.passflow-inv-total { font-weight: normal; color: var(--inv-brand); margin-left: 6px; }
+.passflow-inv-field { display: flex; flex-direction: column; gap: 3px; font-size: .9em; }
+.passflow-inv-field input, .passflow-inv-field select, .passflow-inv-field textarea { width: 100%; box-sizing: border-box; }
+.passflow-inv-f-name, .passflow-inv-f-contact, .passflow-inv-wide, .passflow-inv-check { grid-column: 1 / -1; }
+.passflow-inv-check { font-size: .9em; }
+.passflow-inv-msg { margin-top: 8px; }
+.passflow-inv-msg.is-ok { color: #1f7a3a; }
+.passflow-inv-msg.is-error { color: #b32d2e; }
+.passflow-inv-docs { width: 100%; margin: 10px 0 16px; }
+.passflow-inv-docs .num, .passflow-inv-list .num { text-align: right; white-space: nowrap; }
+.passflow-inv-filters { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 10px; }
+.passflow-inv-dialog { position: fixed; inset: 0; background: rgba(30, 20, 15, .45); display: grid; place-items: center; z-index: 100000; padding: 16px; }
+.passflow-inv-dialog-card { background: #fff; border-radius: 12px; padding: 18px 20px; max-width: 420px; width: 100%; box-shadow: 0 10px 40px rgba(0, 0, 0, .25); }
+.passflow-inv-dialog-q { font-size: 1.15em; font-weight: 600; margin: 0 0 6px; }
+.passflow-inv-dialog-h { color: #6b625c; margin: 0 0 14px; }
+.passflow-inv-dialog-b { text-align: right; margin: 0; }
+@media (max-width: 600px) {
+    .passflow-inv-group { grid-template-columns: 1fr; }
+    .passflow-inv-lines td:last-child { width: auto; }
+    .passflow-inv-lines select { min-width: 0; }
+}
+/* Version cases à cocher. */
+.passflow-inv [hidden] { display: none !important; }
+.passflow-inv-lines td.passflow-inv-cb { width: 34px; text-align: center; }
+.passflow-inv-lines td.num, .passflow-inv-lines th.num { text-align: right; width: auto; white-space: nowrap; }
+.passflow-inv-lines td:last-child { width: auto; }
+.passflow-inv-lines input[type=checkbox] { width: 20px; height: 20px; }
+.passflow-inv-lines label { cursor: pointer; }
+.passflow-inv-lines tfoot th { padding-top: 10px; font-size: 1.05em; }
+.passflow-inv-lines tr.is-closed td { color: #8a817b; }
+.passflow-inv-qty { margin-left: 8px; min-width: 0 !important; }
+.passflow-inv-billing .passflow-inv-group { max-width: 560px; }
+.passflow-inv.is-billing .passflow-inv-lines { opacity: .7; }

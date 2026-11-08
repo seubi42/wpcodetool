@@ -164,6 +164,11 @@
       "length": 40,
       "nullable": true
     },
+    "storage_unit": {
+      "type": "varchar",
+      "length": 64,
+      "nullable": true
+    },
     "s3_endpoint": {
       "type": "varchar",
       "length": 255,
@@ -329,7 +334,9 @@
       "parent": "smbb-codetool-scp",
       "title": "Organisations",
       "icon": "dashicons-building",
-      "position": 10
+      "position": 10,
+      "group": "Clients",
+      "groupIcon": "dashicons-building"
     },
     "adminBar": {
       "newContent": false,

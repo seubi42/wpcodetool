@@ -105,9 +105,10 @@ final class FormElement
      */
     public function showIf($field_name, $value = '1')
     {
+        // Plusieurs valeurs possibles : showIf('type', array('select', 'radio')) ou 'select|radio'.
         $this->attributes['showIf'] = array(
             'field' => (string) $field_name,
-            'value' => (string) $value,
+            'value' => is_array($value) ? implode('|', array_map('strval', $value)) : (string) $value,
         );
 
         return $this;
@@ -120,7 +121,7 @@ final class FormElement
     {
         $this->attributes['hideIf'] = array(
             'field' => (string) $field_name,
-            'value' => (string) $value,
+            'value' => is_array($value) ? implode('|', array_map('strval', $value)) : (string) $value,
         );
 
         return $this;
@@ -135,6 +136,99 @@ final class FormElement
     public function setIcon($icon)
     {
         $this->attributes['icon'] = (string) $icon;
+
+        return $this;
+    }
+
+    /**
+     * Repeater à plusieurs sortes de lignes : le bouton « Ajouter » ouvre un menu de types.
+     *
+     * $form->repeater('Champs')->setName('fields')->types(array(
+     *     'text'   => array('label' => 'Texte', 'icon' => 'dashicons-editor-textcolor', 'group' => 'Base'),
+     *     'select' => array('label' => 'Liste', 'icon' => 'dashicons-menu-alt', 'group' => 'Choix'),
+     * ));
+     *
+     * Chaque ligne garde son type dans un champ caché (« type » par défaut) : les sous-champs
+     * propres à un type se déclarent avec showIf('type', array('select', 'radio')).
+     *
+     * @param array<string,string|array{label?:string,icon?:string,group?:string}> $types
+     */
+    public function types(array $types, $field = 'type')
+    {
+        $clean = array();
+
+        foreach ($types as $key => $def) {
+            $key = sanitize_key((string) $key);
+
+            if ($key === '') {
+                continue;
+            }
+
+            $def = is_array($def) ? $def : array('label' => (string) $def);
+            $clean[$key] = array(
+                'label' => isset($def['label']) ? (string) $def['label'] : $key,
+                'icon' => isset($def['icon']) ? sanitize_html_class((string) $def['icon']) : '',
+                'group' => isset($def['group']) ? (string) $def['group'] : '',
+            );
+        }
+
+        $this->attributes['types'] = $clean;
+        $this->attributes['typeField'] = $field !== '' ? (string) $field : 'type';
+
+        return $this;
+    }
+
+    /**
+     * Titre de chaque ligne = valeur d'un de ses champs, mise à jour pendant la saisie
+     * (au lieu de « Élément 3 »).
+     */
+    public function titleFrom($field)
+    {
+        $this->attributes['titleFrom'] = (string) $field;
+
+        return $this;
+    }
+
+    /**
+     * Largeur de chaque ligne en mode aperçu, lue dans un de ses champs : full | half | third | two-thirds.
+     */
+    public function widthFrom($field)
+    {
+        $this->attributes['widthFrom'] = (string) $field;
+
+        return $this;
+    }
+
+    /**
+     * Identifiant stable par ligne (champ caché), créé à l'ajout et renouvelé à la duplication.
+     * Utile quand d'autres données pointent vers une ligne (ex. les entrées d'un formulaire).
+     */
+    public function uid($field = 'key', $prefix = '')
+    {
+        $this->attributes['uidField'] = (string) $field;
+        $this->attributes['uidPrefix'] = sanitize_key((string) $prefix);
+
+        return $this;
+    }
+
+    /**
+     * Mode d'affichage du repeater.
+     *
+     * - 'cards' (défaut) : les lignes dépliables habituelles ;
+     * - 'preview' : chaque ligne s'affiche comme un aperçu, posé en grille (widthFrom) ; un clic
+     *   ouvre ses réglages dans un panneau latéral, une palette (types) permet d'ajouter par
+     *   clic ou glisser-déposer. Un bouton permet de repasser en cartes à tout moment.
+     *
+     * Options du mode aperçu :
+     * - renderer : nom d'une fonction déclarée dans window.SmbbRepeaterPreviews,
+     *   appelée avec (valeurs de la ligne, contexte) et qui rend le HTML de l'aperçu ;
+     * - palette  : true pour afficher les types en panneau à gauche (défaut true si types()) ;
+     * - empty    : texte affiché quand il n'y a encore aucune ligne.
+     */
+    public function mode($mode, array $options = array())
+    {
+        $this->attributes['mode'] = $mode === 'preview' ? 'preview' : 'cards';
+        $this->attributes['modeOptions'] = $options;
 
         return $this;
     }
@@ -710,26 +804,133 @@ final class FormElement
         $field_name = $this->fieldName();
         $template_index = '__smbb_index__';
         $is_empty = empty($rows);
-        $html = '<div class="smbb-codetool-repeater" data-smbb-repeater data-name="' . esc_attr($field_name) . '" data-limit="' . esc_attr($limit) . '">';
+        $types = $this->repeaterTypes();
+        $preview = $this->repeaterMode() === 'preview';
+        $options = isset($this->attributes['modeOptions']) && is_array($this->attributes['modeOptions']) ? $this->attributes['modeOptions'] : array();
+        $data = array(
+            'data-smbb-repeater' => true,
+            'data-name' => $field_name,
+            'data-limit' => $limit,
+            'data-title-from' => isset($this->attributes['titleFrom']) ? $this->attributes['titleFrom'] : null,
+            'data-width-from' => isset($this->attributes['widthFrom']) ? $this->attributes['widthFrom'] : null,
+            'data-uid-field' => isset($this->attributes['uidField']) ? $this->attributes['uidField'] : null,
+            'data-uid-prefix' => !empty($this->attributes['uidPrefix']) ? $this->attributes['uidPrefix'] : null,
+            'data-type-field' => $types ? $this->attributes['typeField'] : null,
+            'data-mode' => $preview ? 'preview' : null,
+            'data-preview-renderer' => $preview && !empty($options['renderer']) ? (string) $options['renderer'] : null,
+            'data-type-labels' => $types ? wp_json_encode(wp_list_pluck($types, 'label')) : null,
+        );
+        $class = 'smbb-codetool-repeater' . ($types ? ' has-types' : '') . ($preview ? ' is-builder is-view-preview' : '');
+        $html = '<div class="' . esc_attr($class) . '"';
 
-        $html .= $this->renderRepeaterToolbar('top', !$is_empty);
+        foreach ($data as $key => $value) {
+            if ($value === null) {
+                continue;
+            }
+
+            $html .= $value === true ? ' ' . $key : ' ' . $key . '="' . esc_attr((string) $value) . '"';
+        }
+
+        $html .= '>';
+
+        $html .= $this->renderRepeaterToolbar('top', $preview || !$is_empty);
 
         $html .= '<template data-smbb-repeater-template>';
         $html .= $this->renderRepeaterItem($template_index, array(), true);
         $html .= '</template>';
 
-        $html .= '<ol class="smbb-codetool-repeater-items" data-smbb-repeater-items>';
+        $items = '<ol class="smbb-codetool-repeater-items' . ($preview ? ' smbb-codetool-builder-items' : '') . '" data-smbb-repeater-items>';
 
         foreach ($rows as $index => $row) {
-            $html .= $this->renderRepeaterItem($index, is_array($row) ? $row : array(), false);
+            $items .= $this->renderRepeaterItem($index, is_array($row) ? $row : array(), false);
         }
 
-        $html .= '</ol>';
-        $html .= '<p class="smbb-codetool-repeater-empty"' . ($is_empty ? '' : ' hidden') . '>' . esc_html__('Aucun élément pour l\'instant. Ajoutez le premier.', 'smbb-wpcodetool') . '</p>';
-        $html .= $this->renderRepeaterToolbar('bottom', true);
+        $items .= '</ol>';
+        $empty_text = $preview && !empty($options['empty'])
+            ? (string) $options['empty']
+            : ($preview && $types ? __('Ajoutez un premier élément depuis la palette, par un clic ou en le glissant ici.', 'smbb-wpcodetool') : __('Aucun élément pour l\'instant. Ajoutez le premier.', 'smbb-wpcodetool'));
+        $items .= '<p class="smbb-codetool-repeater-empty"' . ($is_empty ? '' : ' hidden') . '>' . esc_html($empty_text) . '</p>';
+
+        if ($preview) {
+            $palette = !array_key_exists('palette', $options) || !empty($options['palette']);
+            $html .= '<div class="smbb-codetool-builder' . ($palette && $types ? ' has-palette' : '') . '">';
+
+            if ($palette && $types) {
+                $html .= '<aside class="smbb-codetool-builder-palette" aria-label="' . esc_attr__('Ajouter', 'smbb-wpcodetool') . '">'
+                    . '<h3 class="smbb-codetool-builder-panel-title">' . esc_html__('Ajouter', 'smbb-wpcodetool') . '</h3>'
+                    . $this->renderRepeaterTypeButtons($types, true)
+                    . '<p class="description">' . esc_html__('Clic : ajout sous l\'élément choisi. Ou glissez-le à sa place.', 'smbb-wpcodetool') . '</p>'
+                    . '</aside>';
+            }
+
+            $html .= '<div class="smbb-codetool-builder-canvas">' . $items . '</div>';
+            $html .= '<aside class="smbb-codetool-builder-inspector" data-smbb-repeater-inspector aria-live="polite">'
+                . '<div class="smbb-codetool-builder-inspector-head">'
+                . '<strong class="smbb-codetool-builder-panel-title" data-smbb-inspector-title>' . esc_html__('Réglages', 'smbb-wpcodetool') . '</strong>'
+                . '<span class="smbb-codetool-builder-type" data-smbb-inspector-type></span>'
+                . '</div>'
+                . '<p class="description smbb-codetool-builder-inspector-empty" data-smbb-inspector-empty>' . esc_html__('Cliquez sur un élément pour le régler.', 'smbb-wpcodetool') . '</p>'
+                . '<div class="smbb-codetool-builder-inspector-body" data-smbb-inspector-body></div>'
+                . '</aside>';
+            $html .= '</div>';
+        } else {
+            $html .= $items;
+            $html .= $this->renderRepeaterToolbar('bottom', true);
+        }
+
         $html .= '</div>';
 
         return $this->wrapField($html);
+    }
+
+    /**
+     * Types déclarés par types(), ou tableau vide.
+     *
+     * @return array<string,array{label:string,icon:string,group:string}>
+     */
+    private function repeaterTypes()
+    {
+        return isset($this->attributes['types']) && is_array($this->attributes['types']) ? $this->attributes['types'] : array();
+    }
+
+    private function repeaterMode()
+    {
+        return isset($this->attributes['mode']) && $this->attributes['mode'] === 'preview' ? 'preview' : 'cards';
+    }
+
+    /**
+     * Boutons d'ajout par type, rangés par groupe (menu « Ajouter » ou palette du mode aperçu).
+     */
+    private function renderRepeaterTypeButtons(array $types, $draggable)
+    {
+        $groups = array();
+
+        foreach ($types as $key => $def) {
+            $groups[$def['group']][$key] = $def;
+        }
+
+        $html = '';
+
+        foreach ($groups as $group => $items) {
+            $html .= '<div class="smbb-codetool-type-group">';
+
+            if ($group !== '') {
+                $html .= '<p class="smbb-codetool-type-group-title">' . esc_html($group) . '</p>';
+            }
+
+            $html .= '<div class="smbb-codetool-type-grid">';
+
+            foreach ($items as $key => $def) {
+                $html .= '<button type="button" class="smbb-codetool-type-button" data-smbb-repeater-action="add" data-type="' . esc_attr($key) . '"'
+                    . ($draggable ? ' draggable="true" data-smbb-palette-type="' . esc_attr($key) . '"' : '') . '>'
+                    . ($def['icon'] !== '' ? '<span class="dashicons ' . esc_attr($def['icon']) . '" aria-hidden="true"></span>' : '')
+                    . '<span>' . esc_html($def['label']) . '</span></button>';
+            }
+
+            $html .= '</div></div>';
+        }
+
+        return $html;
     }
 
     /**
@@ -746,12 +947,40 @@ final class FormElement
         $attributes = array(
             'data-smbb-repeater-add-position' => $add_position,
         );
+        $types = $this->repeaterTypes();
+        $preview = $this->repeaterMode() === 'preview';
         $hidden = $visible ? '' : ' hidden';
         $html = '<div class="' . esc_attr($class) . '" role="toolbar" aria-label="' . esc_attr__('Commandes de la liste répétable', 'smbb-wpcodetool') . '"' . $hidden . '>';
-        $html .= $this->renderRepeaterActionButton('add', 'dashicons-plus-alt2', __('Ajouter un élément', 'smbb-wpcodetool'), $attributes, 'is-primary');
+
+        if ($types) {
+            // Menu des types : même boutons que la palette, dans une liste déroulante.
+            $html .= '<div class="smbb-codetool-repeater-add" data-smbb-repeater-add-position="' . esc_attr($add_position) . '">';
+            $html .= '<button type="button" class="button button-primary smbb-codetool-repeater-add-toggle" data-smbb-repeater-action="add-menu" aria-expanded="false">'
+                . '<span class="dashicons dashicons-plus-alt2" aria-hidden="true"></span>' . esc_html__('Ajouter', 'smbb-wpcodetool') . '</button>';
+            $html .= '<div class="smbb-codetool-repeater-add-menu" data-smbb-repeater-add-menu hidden>' . $this->renderRepeaterTypeButtons($types, false) . '</div>';
+            $html .= '</div>';
+        } else {
+            $html .= $this->renderRepeaterActionButton('add', 'dashicons-plus-alt2', __('Ajouter un élément', 'smbb-wpcodetool'), $attributes, 'is-primary');
+        }
+
+        if ($preview && $position === 'top') {
+            $html .= '<span class="smbb-codetool-repeater-toolbar-spacer"></span>';
+            $html .= '<span class="smbb-codetool-segmented" role="group" aria-label="' . esc_attr__('Affichage', 'smbb-wpcodetool') . '">'
+                . '<button type="button" class="is-active" data-smbb-repeater-action="view" data-view="preview" aria-pressed="true">' . esc_html__('Aperçu', 'smbb-wpcodetool') . '</button>'
+                . '<button type="button" data-smbb-repeater-action="view" data-view="cards" aria-pressed="false">' . esc_html__('Cartes', 'smbb-wpcodetool') . '</button>'
+                . '</span>';
+            $html .= '<span class="smbb-codetool-repeater-cards-tools">';
+        }
+
         $html .= $this->renderRepeaterActionButton('collapse-all', 'dashicons-arrow-up-alt2', __('Tout replier', 'smbb-wpcodetool'));
         $html .= $this->renderRepeaterActionButton('expand-all', 'dashicons-arrow-down-alt2', __('Tout déplier', 'smbb-wpcodetool'));
-        $html .= $this->renderRepeaterActionButton('clear', 'dashicons-trash', __('Effacer', 'smbb-wpcodetool'), array(), 'is-danger');
+
+        if ($preview && $position === 'top') {
+            $html .= '</span>';
+        } else {
+            $html .= $this->renderRepeaterActionButton('clear', 'dashicons-trash', __('Effacer', 'smbb-wpcodetool'), array(), 'is-danger');
+        }
+
         $html .= '</div>';
 
         return $html;
@@ -1363,11 +1592,37 @@ final class FormElement
         $prefix = $field_name . '[' . $index . ']';
         $context = $this->context;
         $context['item'] = $row;
-        $html = '<li class="smbb-codetool-repeater-item" data-smbb-repeater-item' . ($is_template ? ' data-smbb-repeater-template-item="1"' : '') . '>';
+        $types = $this->repeaterTypes();
+        $type_field = $types ? (string) $this->attributes['typeField'] : '';
+        $type = $type_field !== '' && isset($row[$type_field]) ? sanitize_key((string) $row[$type_field]) : '';
+        $title_from = isset($this->attributes['titleFrom']) ? (string) $this->attributes['titleFrom'] : '';
+        $title = $title_from !== '' && isset($row[$title_from]) && is_scalar($row[$title_from]) ? trim(wp_strip_all_tags((string) $row[$title_from])) : '';
+        $width_from = isset($this->attributes['widthFrom']) ? (string) $this->attributes['widthFrom'] : '';
+        $width = $width_from !== '' && isset($row[$width_from]) ? sanitize_key((string) $row[$width_from]) : '';
+        $uid_field = isset($this->attributes['uidField']) ? (string) $this->attributes['uidField'] : '';
+        $attrs = ' data-smbb-repeater-item' . ($is_template ? ' data-smbb-repeater-template-item="1"' : '');
+
+        if ($type !== '') {
+            $attrs .= ' data-type="' . esc_attr($type) . '"';
+        }
+
+        if ($width !== '') {
+            $attrs .= ' data-width="' . esc_attr($width) . '"';
+        }
+
+        $html = '<li class="smbb-codetool-repeater-item"' . $attrs . '>';
 
         $html .= '<div class="smbb-codetool-repeater-item-header">';
-        $html .= '<span class="smbb-codetool-repeater-handle dashicons dashicons-menu" aria-hidden="true"></span>';
-        $html .= '<strong class="smbb-codetool-repeater-title">' . esc_html__('Élément', 'smbb-wpcodetool') . ' <span data-smbb-repeater-number>' . esc_html(is_numeric($index) ? ((int) $index + 1) : '') . '</span></strong>';
+        $html .= '<span class="smbb-codetool-repeater-handle dashicons dashicons-menu" aria-hidden="true" title="' . esc_attr__('Glisser pour déplacer', 'smbb-wpcodetool') . '"></span>';
+        $html .= '<strong class="smbb-codetool-repeater-title">'
+            . '<span data-smbb-repeater-label' . ($title === '' ? ' hidden' : '') . '>' . esc_html($title) . '</span>'
+            . '<span data-smbb-repeater-fallback' . ($title === '' ? '' : ' hidden') . '>' . esc_html__('Élément', 'smbb-wpcodetool') . ' <span data-smbb-repeater-number>' . esc_html(is_numeric($index) ? ((int) $index + 1) : '') . '</span></span>'
+            . '</strong>';
+
+        if ($types) {
+            $html .= '<span class="smbb-codetool-repeater-type" data-smbb-repeater-type-label>' . esc_html($type !== '' && isset($types[$type]) ? $types[$type]['label'] : '') . '</span>';
+        }
+
         $html .= '<div class="smbb-codetool-repeater-actions">';
         $html .= $this->renderRepeaterActionButton('toggle', 'dashicons-arrow-up-alt2', __('Replier', 'smbb-wpcodetool'), array('aria-expanded' => 'true'));
         $html .= $this->renderRepeaterActionButton('move-up', 'dashicons-arrow-up', __('Monter', 'smbb-wpcodetool'));
@@ -1376,7 +1631,23 @@ final class FormElement
         $html .= $this->renderRepeaterActionButton('remove', 'dashicons-trash', __('Retirer', 'smbb-wpcodetool'), array(), 'is-danger');
         $html .= '</div></div>';
 
-        $html .= '<div class="smbb-codetool-repeater-item-body">';
+        if ($this->repeaterMode() === 'preview') {
+            // Rempli par le JS (window.SmbbRepeaterPreviews) depuis les valeurs de la ligne.
+            $html .= '<div class="smbb-codetool-repeater-preview" data-smbb-repeater-preview></div>';
+        }
+
+        $html .= '<div class="smbb-codetool-repeater-item-body" data-smbb-repeater-body>';
+
+        // Champs techniques de la ligne : type (types()) et identifiant stable (uid()).
+        if ($type_field !== '') {
+            $html .= '<input type="hidden" name="' . esc_attr($prefix . '[' . $type_field . ']') . '" value="' . esc_attr($type) . '" data-smbb-repeater-type>';
+        }
+
+        if ($uid_field !== '') {
+            $uid = isset($row[$uid_field]) && is_scalar($row[$uid_field]) ? sanitize_key((string) $row[$uid_field]) : '';
+            $html .= '<input type="hidden" name="' . esc_attr($prefix . '[' . $uid_field . ']') . '" value="' . esc_attr($uid) . '" data-smbb-repeater-uid>';
+        }
+
         $html .= $this->renderChildrenForContext($context, $prefix);
         $html .= '</div></li>';
 

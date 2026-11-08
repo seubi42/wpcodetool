@@ -1,0 +1,2730 @@
+/*
+ * CodeTool – le thème appliqué au reste de WordPress (CodeTool › Apparence).
+ * Couleurs : variables --smbb-t-* posées par Skin::css() sur body.smbb-skin / body.smbb-login.
+ * 1. Barre du haut et menu de gauche (body.smbb-wp-chrome)
+ * 2. Écrans natifs (body.smbb-wp-screens)
+ * 3. Cloche des messages (toujours chargée avec l'option)
+ * 4. Page de connexion (body.smbb-login)
+ */
+
+/* ------------------------------------------------------------------ */
+/* 1. Barre du haut                                                    */
+/* ------------------------------------------------------------------ */
+body.smbb-wp-chrome #wpadminbar {
+    background: var(--smbb-t-card);
+    box-shadow: 0 1px 0 var(--smbb-t-line), 0 4px 14px -10px rgba(0, 0, 0, .25);
+}
+
+body.smbb-wp-chrome #wpadminbar .ab-empty-item,
+body.smbb-wp-chrome #wpadminbar a.ab-item,
+body.smbb-wp-chrome #wpadminbar > #wp-toolbar span.ab-label,
+body.smbb-wp-chrome #wpadminbar > #wp-toolbar span.noticon,
+body.smbb-wp-chrome #wpadminbar .ab-item {
+    color: var(--smbb-t-text);
+}
+
+body.smbb-wp-chrome #wpadminbar .ab-icon,
+body.smbb-wp-chrome #wpadminbar .ab-icon:before,
+body.smbb-wp-chrome #wpadminbar .ab-item:before,
+body.smbb-wp-chrome #wpadminbar .ab-item:after,
+body.smbb-wp-chrome #wpadminbar #adminbarsearch:before {
+    color: var(--smbb-t-muted);
+}
+
+body.smbb-wp-chrome #wpadminbar .ab-top-menu > li.hover > .ab-item,
+body.smbb-wp-chrome #wpadminbar.nojq .quicklinks .ab-top-menu > li > .ab-item:focus,
+body.smbb-wp-chrome #wpadminbar:not(.mobile) .ab-top-menu > li:hover > .ab-item,
+body.smbb-wp-chrome #wpadminbar:not(.mobile) .ab-top-menu > li > .ab-item:focus,
+body.smbb-wp-chrome #wpadminbar .ab-top-menu > li.menupop.hover > .ab-item {
+    background: var(--smbb-t-fill);
+    color: var(--smbb-t-accent-deep);
+}
+
+body.smbb-wp-chrome #wpadminbar:not(.mobile) li:hover .ab-icon:before,
+body.smbb-wp-chrome #wpadminbar:not(.mobile) li:hover .ab-item:before,
+body.smbb-wp-chrome #wpadminbar:not(.mobile) li:hover .ab-item:after,
+body.smbb-wp-chrome #wpadminbar:not(.mobile) li:hover #adminbarsearch:before,
+body.smbb-wp-chrome #wpadminbar li.hover .ab-icon:before,
+body.smbb-wp-chrome #wpadminbar li.hover .ab-item:before,
+body.smbb-wp-chrome #wpadminbar li.hover .ab-item:after {
+    color: var(--smbb-t-accent);
+}
+
+/* Menus déroulants de la barre : carte blanche à ombre douce. */
+body.smbb-wp-chrome #wpadminbar .menupop .ab-sub-wrapper,
+body.smbb-wp-chrome #wpadminbar .shortlink-input {
+    background: var(--smbb-t-card);
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 0 0 1px var(--smbb-t-line), 0 14px 30px -12px rgba(0, 0, 0, .3);
+    overflow: hidden;
+}
+
+body.smbb-wp-chrome #wpadminbar .quicklinks .menupop ul.ab-sub-secondary,
+body.smbb-wp-chrome #wpadminbar .quicklinks .menupop ul.ab-sub-secondary .ab-submenu {
+    background: var(--smbb-t-fill);
+}
+
+body.smbb-wp-chrome #wpadminbar .quicklinks .menupop ul li a,
+body.smbb-wp-chrome #wpadminbar .quicklinks .menupop ul li .ab-item,
+body.smbb-wp-chrome #wpadminbar .quicklinks .menupop.hover ul li a,
+body.smbb-wp-chrome #wpadminbar .quicklinks .menupop ul.ab-sub-secondary li a,
+body.smbb-wp-chrome #wpadminbar #wp-admin-bar-user-info .display-name,
+body.smbb-wp-chrome #wpadminbar #wp-admin-bar-user-info .username {
+    color: var(--smbb-t-text);
+}
+
+body.smbb-wp-chrome #wpadminbar .quicklinks .menupop ul li a:hover,
+body.smbb-wp-chrome #wpadminbar .quicklinks .menupop ul li a:focus,
+body.smbb-wp-chrome #wpadminbar .quicklinks .menupop ul li a:hover strong,
+body.smbb-wp-chrome #wpadminbar .quicklinks .menupop.hover ul li a:hover,
+body.smbb-wp-chrome #wpadminbar .quicklinks .menupop.hover ul li a:focus,
+body.smbb-wp-chrome #wpadminbar li #adminbarsearch.adminbar-focused:before,
+body.smbb-wp-chrome #wpadminbar li .ab-item:focus .ab-icon:before,
+body.smbb-wp-chrome #wpadminbar li a:focus .ab-icon:before,
+body.smbb-wp-chrome #wpadminbar .menupop .menupop > .ab-item:hover:before {
+    color: var(--smbb-t-accent);
+}
+
+body.smbb-wp-chrome #wpadminbar #wp-admin-bar-user-info .username {
+    color: var(--smbb-t-muted);
+}
+
+body.smbb-wp-chrome #wpadminbar #wp-admin-bar-my-account.with-avatar > a img {
+    border-radius: 50%;
+    border-color: var(--smbb-t-line);
+    background: var(--smbb-t-fill);
+}
+
+body.smbb-wp-chrome #wpadminbar .ab-label.awaiting-mod,
+body.smbb-wp-chrome #wpadminbar #wp-admin-bar-comments .ab-label,
+body.smbb-wp-chrome #wpadminbar .ab-item .update-count {
+    color: var(--smbb-t-text);
+}
+
+/* ------------------------------------------------------------------ */
+/* 1. Menu de gauche                                                   */
+/* ------------------------------------------------------------------ */
+body.smbb-wp-chrome #adminmenuback,
+body.smbb-wp-chrome #adminmenuwrap,
+body.smbb-wp-chrome #adminmenu {
+    background: var(--smbb-t-card);
+}
+
+body.smbb-wp-chrome #adminmenuback {
+    box-shadow: 1px 0 0 var(--smbb-t-line);
+}
+
+body.smbb-wp-chrome #adminmenu {
+    margin-top: 10px;
+}
+
+body.smbb-wp-chrome #adminmenu a,
+body.smbb-wp-chrome #adminmenu div.wp-menu-name {
+    color: var(--smbb-t-text);
+}
+
+body.smbb-wp-chrome #adminmenu div.wp-menu-image:before {
+    color: var(--smbb-t-muted);
+    transition: color .15s ease;
+}
+
+/* Entrées principales en pastilles arrondies. */
+body.smbb-wp-chrome #adminmenu li.menu-top > a.menu-top {
+    margin: 1px 8px;
+    border-radius: 9px;
+    transition: background-color .15s ease, color .15s ease;
+}
+
+body.smbb-wp-chrome #adminmenu li.menu-top:hover,
+body.smbb-wp-chrome #adminmenu li.opensub > a.menu-top,
+body.smbb-wp-chrome #adminmenu li > a.menu-top:focus {
+    background: transparent;
+    color: var(--smbb-t-text);
+}
+
+body.smbb-wp-chrome #adminmenu li.menu-top:hover > a.menu-top,
+body.smbb-wp-chrome #adminmenu li.opensub > a.menu-top,
+body.smbb-wp-chrome #adminmenu li > a.menu-top:focus {
+    background: var(--smbb-t-fill);
+    color: var(--smbb-t-text);
+}
+
+body.smbb-wp-chrome #adminmenu li.menu-top:hover div.wp-menu-image:before,
+body.smbb-wp-chrome #adminmenu li.opensub > a.menu-top div.wp-menu-image:before,
+body.smbb-wp-chrome #adminmenu li > a.menu-top:focus div.wp-menu-image:before {
+    color: var(--smbb-t-accent);
+}
+
+body.smbb-wp-chrome #adminmenu li.current a.menu-top,
+body.smbb-wp-chrome #adminmenu li.wp-has-current-submenu a.wp-has-current-submenu,
+body.smbb-wp-chrome #adminmenu li.wp-has-current-submenu .wp-submenu .wp-submenu-head,
+body.smbb-wp-chrome #adminmenu .wp-menu-arrow,
+body.smbb-wp-chrome #adminmenu .wp-menu-arrow div,
+body.smbb-wp-chrome .folded #adminmenu li.current.menu-top,
+body.smbb-wp-chrome .folded #adminmenu li.wp-has-current-submenu {
+    background: var(--smbb-t-accent-soft);
+    color: var(--smbb-t-accent-deep);
+}
+
+body.smbb-wp-chrome #adminmenu li.current a.menu-top div.wp-menu-name,
+body.smbb-wp-chrome #adminmenu li.wp-has-current-submenu a.wp-has-current-submenu div.wp-menu-name {
+    color: var(--smbb-t-accent-deep);
+    font-weight: 600;
+}
+
+body.smbb-wp-chrome #adminmenu li.current div.wp-menu-image:before,
+body.smbb-wp-chrome #adminmenu li.wp-has-current-submenu div.wp-menu-image:before,
+body.smbb-wp-chrome #adminmenu a.current:hover div.wp-menu-image:before,
+body.smbb-wp-chrome #adminmenu li.wp-has-current-submenu a:focus div.wp-menu-image:before,
+body.smbb-wp-chrome #adminmenu li.wp-has-current-submenu.opensub div.wp-menu-image:before {
+    color: var(--smbb-t-accent);
+}
+
+/* La flèche vers le contenu n'a plus de sens avec un menu clair. */
+body.smbb-wp-chrome #adminmenu li.current a.menu-top:after,
+body.smbb-wp-chrome #adminmenu li.wp-has-current-submenu a.wp-has-current-submenu:after,
+body.smbb-wp-chrome #adminmenu li.wp-has-submenu.wp-not-current-submenu.opensub:hover:after,
+body.smbb-wp-chrome #adminmenu li.wp-has-submenu.wp-not-current-submenu:focus-within:after {
+    display: none;
+}
+
+/* Sous-menu de l'entrée courante : liste en retrait, sans fond sombre. */
+body.smbb-wp-chrome #adminmenu .wp-submenu,
+body.smbb-wp-chrome #adminmenu .wp-has-current-submenu .wp-submenu,
+body.smbb-wp-chrome #adminmenu .wp-has-current-submenu.opensub .wp-submenu,
+body.smbb-wp-chrome #adminmenu a.wp-has-current-submenu:focus + .wp-submenu,
+body.smbb-wp-chrome .no-js li.wp-has-current-submenu:hover .wp-submenu {
+    background: var(--smbb-t-card);
+}
+
+body.smbb-wp-chrome #adminmenu .wp-has-current-submenu .wp-submenu {
+    padding: 4px 0 8px;
+}
+
+body.smbb-wp-chrome #adminmenu .wp-submenu a {
+    color: var(--smbb-t-muted);
+}
+
+body.smbb-wp-chrome #adminmenu .wp-has-current-submenu .wp-submenu a {
+    margin: 0 8px;
+    padding-left: 36px;
+    border-radius: 7px;
+}
+
+body.smbb-wp-chrome #adminmenu .wp-submenu a:hover,
+body.smbb-wp-chrome #adminmenu .wp-submenu a:focus {
+    color: var(--smbb-t-accent);
+    box-shadow: none;
+}
+
+body.smbb-wp-chrome #adminmenu .wp-submenu li.current a,
+body.smbb-wp-chrome #adminmenu .wp-submenu li.current a:hover,
+body.smbb-wp-chrome #adminmenu .wp-submenu li.current a:focus {
+    color: var(--smbb-t-accent-deep);
+    font-weight: 600;
+}
+
+/* Sous-menu flottant au survol des autres entrées : carte à ombre douce. */
+body.smbb-wp-chrome #adminmenu .wp-not-current-submenu .wp-submenu,
+body.smbb-wp-chrome .folded #adminmenu .wp-has-current-submenu .wp-submenu {
+    border-radius: 12px;
+    box-shadow: 0 0 0 1px var(--smbb-t-line), 0 14px 30px -12px rgba(0, 0, 0, .3);
+    padding: 6px 0;
+}
+
+body.smbb-wp-chrome #adminmenu .wp-not-current-submenu .wp-submenu a {
+    margin: 0 6px;
+    border-radius: 7px;
+}
+
+body.smbb-wp-chrome #adminmenu .wp-not-current-submenu .wp-submenu a:hover {
+    background: var(--smbb-t-fill);
+}
+
+body.smbb-wp-chrome #adminmenu .wp-submenu .wp-submenu-head {
+    color: var(--smbb-t-text);
+    font-weight: 600;
+}
+
+/* Pastilles de compte (commentaires, mises à jour). */
+body.smbb-wp-chrome #adminmenu .awaiting-mod,
+body.smbb-wp-chrome #adminmenu .update-plugins,
+body.smbb-wp-chrome #adminmenu li a.wp-has-current-submenu .update-plugins,
+body.smbb-wp-chrome #adminmenu li.current a .awaiting-mod {
+    background: var(--smbb-t-accent);
+    color: var(--smbb-t-accent-ink);
+}
+
+body.smbb-wp-chrome #collapse-button,
+body.smbb-wp-chrome #collapse-button .collapse-button-icon:after {
+    color: var(--smbb-t-muted);
+}
+
+body.smbb-wp-chrome #collapse-button:hover,
+body.smbb-wp-chrome #collapse-button:focus,
+body.smbb-wp-chrome #collapse-button:hover .collapse-button-icon:after {
+    color: var(--smbb-t-accent);
+}
+
+body.smbb-wp-chrome #adminmenu div.separator {
+    border-top: 1px solid var(--smbb-t-line);
+    margin: 4px 16px;
+    height: 0;
+}
+
+/* Icônes SVG d'extensions (dessinées en gris clair par WordPress) : un peu plus lisibles. */
+body.smbb-wp-chrome #adminmenu div.wp-menu-image.svg {
+    filter: brightness(.55);
+}
+
+body.smbb-wp-chrome #adminmenu li.current div.wp-menu-image.svg,
+body.smbb-wp-chrome #adminmenu li.wp-has-current-submenu div.wp-menu-image.svg {
+    filter: none;
+}
+
+@media screen and (max-width: 782px) {
+    body.smbb-wp-chrome #adminmenu li.menu-top > a.menu-top {
+        margin: 1px 6px;
+    }
+
+    body.smbb-wp-chrome #wpadminbar .ab-icon:before,
+    body.smbb-wp-chrome #wpadminbar .ab-item:before {
+        color: var(--smbb-t-muted);
+    }
+}
+
+/* Menu réduit (bouton « Réduire le menu » ou écran moyen) : WordPress le fige à 36 px,
+   trop étroit pour les pastilles arrondies. On passe à 56 px pour tous les styles sauf le rail. */
+@media screen and (min-width: 783px) {
+    body.smbb-wp-chrome:not(.smbb-menu-rail).folded #adminmenuback,
+    body.smbb-wp-chrome:not(.smbb-menu-rail).folded #adminmenuwrap,
+    body.smbb-wp-chrome:not(.smbb-menu-rail).folded #adminmenu,
+    body.smbb-wp-chrome:not(.smbb-menu-rail).folded #adminmenu li.menu-top,
+    body.smbb-wp-chrome:not(.smbb-menu-rail).folded #collapse-button {
+        width: 56px;
+    }
+
+    body.smbb-wp-chrome:not(.smbb-menu-rail).folded #adminmenu li.menu-top > a.menu-top {
+        box-sizing: border-box;
+        width: 40px;
+        margin: 2px 8px;
+        padding: 0;
+    }
+
+    body.smbb-wp-chrome:not(.smbb-menu-rail).folded #adminmenu div.wp-menu-image {
+        width: 40px;
+    }
+
+    body.smbb-wp-chrome:not(.smbb-menu-rail).folded #adminmenu li.current.menu-top,
+    body.smbb-wp-chrome:not(.smbb-menu-rail).folded #adminmenu li.wp-has-current-submenu {
+        background: transparent;
+    }
+
+    body.smbb-wp-chrome:not(.smbb-menu-rail).folded #adminmenu .wp-submenu,
+    body.smbb-wp-chrome:not(.smbb-menu-rail).folded #adminmenu .opensub .wp-submenu,
+    body.smbb-wp-chrome:not(.smbb-menu-rail).folded #adminmenu .wp-has-current-submenu .wp-submenu,
+    body.smbb-wp-chrome:not(.smbb-menu-rail).folded #adminmenu a.wp-has-current-submenu:focus + .wp-submenu {
+        left: 56px;
+    }
+
+    body.smbb-wp-chrome:not(.smbb-menu-rail).folded #wpcontent,
+    body.smbb-wp-chrome:not(.smbb-menu-rail).folded #wpfooter {
+        margin-left: 76px;
+    }
+
+    body.smbb-wp-chrome.smbb-menu-float.folded #wpcontent,
+    body.smbb-wp-chrome.smbb-menu-float.folded #wpfooter {
+        margin-left: 88px;
+    }
+}
+
+@media screen and (min-width: 783px) and (max-width: 960px) {
+    body.smbb-wp-chrome:not(.smbb-menu-rail).auto-fold:not(.folded) #adminmenuback,
+    body.smbb-wp-chrome:not(.smbb-menu-rail).auto-fold:not(.folded) #adminmenuwrap,
+    body.smbb-wp-chrome:not(.smbb-menu-rail).auto-fold:not(.folded) #adminmenu,
+    body.smbb-wp-chrome:not(.smbb-menu-rail).auto-fold:not(.folded) #adminmenu li.menu-top,
+    body.smbb-wp-chrome:not(.smbb-menu-rail).auto-fold:not(.folded) #collapse-button {
+        width: 56px;
+    }
+
+    body.smbb-wp-chrome:not(.smbb-menu-rail).auto-fold:not(.folded) #adminmenu li.menu-top > a.menu-top {
+        box-sizing: border-box;
+        width: 40px;
+        margin: 2px 8px;
+        padding: 0;
+    }
+
+    body.smbb-wp-chrome:not(.smbb-menu-rail).auto-fold:not(.folded) #adminmenu div.wp-menu-image {
+        width: 40px;
+    }
+
+    body.smbb-wp-chrome:not(.smbb-menu-rail).auto-fold:not(.folded) #adminmenu li.current.menu-top,
+    body.smbb-wp-chrome:not(.smbb-menu-rail).auto-fold:not(.folded) #adminmenu li.wp-has-current-submenu {
+        background: transparent;
+    }
+
+    body.smbb-wp-chrome:not(.smbb-menu-rail).auto-fold:not(.folded) #adminmenu .wp-submenu,
+    body.smbb-wp-chrome:not(.smbb-menu-rail).auto-fold:not(.folded) #adminmenu .opensub .wp-submenu,
+    body.smbb-wp-chrome:not(.smbb-menu-rail).auto-fold:not(.folded) #adminmenu .wp-has-current-submenu .wp-submenu,
+    body.smbb-wp-chrome:not(.smbb-menu-rail).auto-fold:not(.folded) #adminmenu a.wp-has-current-submenu:focus + .wp-submenu {
+        left: 56px;
+    }
+
+    body.smbb-wp-chrome:not(.smbb-menu-rail).auto-fold:not(.folded) #wpcontent,
+    body.smbb-wp-chrome:not(.smbb-menu-rail).auto-fold:not(.folded) #wpfooter {
+        margin-left: 76px;
+    }
+
+    body.smbb-wp-chrome.smbb-menu-float.auto-fold:not(.folded) #wpcontent,
+    body.smbb-wp-chrome.smbb-menu-float.auto-fold:not(.folded) #wpfooter {
+        margin-left: 88px;
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* 1 bis. Styles du menu (Apparence + profil) : smbb-menu-<style>      */
+/* « light » = les règles ci-dessus.                                   */
+/* ------------------------------------------------------------------ */
+
+/* Sombre teinté (et la colonne d'icônes du rail). */
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) {
+    --smbb-menu-bg: color-mix(in srgb, var(--smbb-t-accent) 12%, #16131a);
+    --smbb-menu-pop: color-mix(in srgb, var(--smbb-t-accent) 14%, #241f28);
+}
+
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenuback,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenuwrap,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu {
+    background: var(--smbb-menu-bg);
+    box-shadow: none;
+}
+
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu a,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu div.wp-menu-name {
+    color: #ece6ea;
+}
+
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu div.wp-menu-image:before {
+    color: rgba(255, 255, 255, .55);
+}
+
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu li.menu-top:hover > a.menu-top,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu li.opensub > a.menu-top,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu li > a.menu-top:focus {
+    background: rgba(255, 255, 255, .08);
+    color: #fff;
+}
+
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu li.menu-top:hover div.wp-menu-image:before,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu li.opensub > a.menu-top div.wp-menu-image:before,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu li > a.menu-top:focus div.wp-menu-image:before {
+    color: #fff;
+}
+
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu li.current a.menu-top,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu li.wp-has-current-submenu a.wp-has-current-submenu {
+    background: var(--smbb-t-accent);
+    box-shadow: 0 8px 18px -10px rgba(var(--smbb-t-accent-rgb), .9);
+    color: var(--smbb-t-accent-ink);
+}
+
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu li.current a.menu-top div.wp-menu-name,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu li.wp-has-current-submenu a.wp-has-current-submenu div.wp-menu-name,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu li.current div.wp-menu-image:before,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu li.wp-has-current-submenu div.wp-menu-image:before {
+    color: var(--smbb-t-accent-ink);
+}
+
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu .wp-submenu,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu .wp-has-current-submenu .wp-submenu,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu .wp-has-current-submenu.opensub .wp-submenu,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu a.wp-has-current-submenu:focus + .wp-submenu {
+    background: var(--smbb-menu-bg);
+}
+
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu .wp-not-current-submenu .wp-submenu,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail).folded #adminmenu .wp-has-current-submenu .wp-submenu {
+    background: var(--smbb-menu-pop);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, .06), 0 18px 36px -12px rgba(0, 0, 0, .6);
+}
+
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu .wp-submenu a {
+    color: rgba(255, 255, 255, .66);
+}
+
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu .wp-submenu a:hover,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu .wp-submenu a:focus,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu .wp-not-current-submenu .wp-submenu a:hover {
+    background: rgba(255, 255, 255, .06);
+    color: #fff;
+}
+
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu .wp-submenu li.current a,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu .wp-submenu li.current a:hover,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu .wp-submenu .wp-submenu-head {
+    color: #fff;
+}
+
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu div.separator {
+    border-top-color: rgba(255, 255, 255, .08);
+}
+
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu div.wp-menu-image.svg {
+    filter: none;
+}
+
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #collapse-button,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #collapse-button .collapse-button-icon:after {
+    color: rgba(255, 255, 255, .5);
+}
+
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu .wp-submenu li.smbb-menu-group-start::before {
+    color: rgba(255, 255, 255, .45);
+}
+
+@media screen and (min-width: 783px) {
+    /* Carte flottante : le menu détaché du bord, coins arrondis. */
+    body.smbb-wp-chrome.smbb-menu-float #adminmenuback {
+        background: transparent;
+        box-shadow: none;
+    }
+
+    body.smbb-wp-chrome.smbb-menu-float #adminmenuwrap {
+        margin: 12px 0 12px 12px;
+        padding: 6px 0;
+        border-radius: 18px;
+        box-shadow: 0 0 0 1px var(--smbb-t-line), 0 18px 40px -24px rgba(var(--smbb-t-accent-rgb), .5);
+    }
+
+    body.smbb-wp-chrome.smbb-menu-float #adminmenu {
+        margin: 4px 0;
+        border-radius: 18px;
+    }
+
+    body.smbb-wp-chrome.smbb-menu-float #wpcontent,
+    body.smbb-wp-chrome.smbb-menu-float #wpfooter {
+        margin-left: 184px;
+    }
+
+    body.smbb-wp-chrome.smbb-menu-float.folded #wpcontent,
+    body.smbb-wp-chrome.smbb-menu-float.folded #wpfooter {
+        margin-left: 60px;
+    }
+
+    /* Rail d'icônes + panneau : une colonne d'icônes, les pages de l'app ouverte à côté. */
+    body.smbb-wp-chrome.smbb-menu-rail #adminmenuback,
+    body.smbb-wp-chrome.smbb-menu-rail #adminmenuwrap,
+    body.smbb-wp-chrome.smbb-menu-rail #adminmenu {
+        width: 60px;
+    }
+
+    body.smbb-wp-chrome.smbb-menu-rail #adminmenu {
+        margin-top: 10px;
+    }
+
+    body.smbb-wp-chrome.smbb-menu-rail #adminmenu li.menu-top > a.menu-top {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        width: 44px;
+        height: 40px;
+        min-height: 0;
+        margin: 3px 8px;
+        padding: 0;
+        border-radius: 11px;
+    }
+
+    body.smbb-wp-chrome.smbb-menu-rail #adminmenu div.wp-menu-image {
+        float: none;
+        width: 44px;
+        height: 40px;
+        background-position: center;
+    }
+
+    body.smbb-wp-chrome.smbb-menu-rail #adminmenu div.wp-menu-image:before {
+        padding: 10px 0 0;
+    }
+
+    body.smbb-wp-chrome.smbb-menu-rail #adminmenu div.wp-menu-name,
+    body.smbb-wp-chrome.smbb-menu-rail #adminmenu .wp-menu-arrow,
+    body.smbb-wp-chrome.smbb-menu-rail #collapse-menu {
+        display: none;
+    }
+
+    /* Survol d'une icône : la carte de l'app, avec son nom en tête. */
+    body.smbb-wp-chrome.smbb-menu-rail #adminmenu .wp-submenu {
+        left: 60px;
+    }
+
+    body.smbb-wp-chrome.smbb-menu-rail #adminmenu .wp-submenu .wp-submenu-head {
+        display: block;
+        padding: 6px 14px 6px 12px;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+
+    body.smbb-wp-chrome.smbb-menu-rail #adminmenu li.menu-top:not(.wp-has-submenu):hover > .wp-submenu,
+    body.smbb-wp-chrome.smbb-menu-rail #adminmenu li.menu-top:not(.wp-has-submenu) > a:focus + .wp-submenu {
+        top: 2px;
+        min-width: 140px;
+        border-radius: 12px;
+        background: var(--smbb-menu-pop);
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, .06), 0 18px 36px -12px rgba(0, 0, 0, .6);
+    }
+
+    /* Le panneau : sous-menu de l'app courante, collé au rail. */
+    body.smbb-wp-chrome.smbb-menu-rail #adminmenu li.wp-has-current-submenu > .wp-submenu {
+        position: fixed;
+        top: 32px;
+        bottom: 0;
+        left: 60px;
+        z-index: 9990;
+        box-sizing: border-box;
+        width: 190px;
+        min-width: 0;
+        margin: 0;
+        padding: 16px 10px;
+        overflow-y: auto;
+        border: 0;
+        border-radius: 0;
+        background: var(--smbb-t-card);
+        box-shadow: 1px 0 0 var(--smbb-t-line);
+    }
+
+    body.smbb-wp-chrome.smbb-menu-rail #adminmenu li.wp-has-current-submenu > .wp-submenu .wp-submenu-head {
+        background: transparent;
+        padding: 2px 8px 12px;
+        color: var(--smbb-t-text);
+        font-size: 15px;
+        font-weight: 650;
+    }
+
+    body.smbb-wp-chrome.smbb-menu-rail #adminmenu li.wp-has-current-submenu > .wp-submenu a {
+        margin: 0;
+        padding: 7px 8px;
+        border-radius: 8px;
+        color: var(--smbb-t-text);
+        font-size: 13px;
+    }
+
+    body.smbb-wp-chrome.smbb-menu-rail #adminmenu li.wp-has-current-submenu > .wp-submenu a:hover {
+        background: var(--smbb-t-fill);
+        color: var(--smbb-t-text);
+    }
+
+    body.smbb-wp-chrome.smbb-menu-rail #adminmenu li.wp-has-current-submenu > .wp-submenu li.current a {
+        background: var(--smbb-t-accent-soft);
+        color: var(--smbb-t-accent-deep);
+    }
+
+    body.smbb-wp-chrome.smbb-menu-rail #adminmenu li.wp-has-current-submenu > .wp-submenu li.smbb-menu-group-start::before {
+        padding-left: 8px;
+        color: var(--smbb-t-muted);
+    }
+
+    body.smbb-wp-chrome.smbb-menu-rail:not(:has(#adminmenu li.wp-has-current-submenu)) {
+        --smbb-menu-panel: 0px;
+    }
+
+    body.smbb-wp-chrome.smbb-menu-rail #wpcontent,
+    body.smbb-wp-chrome.smbb-menu-rail #wpfooter {
+        margin-left: calc(60px + var(--smbb-menu-panel, 190px));
+    }
+}
+
+/* « Tout | L'essentiel » en bas du menu (assets/wp-menu.js), tous styles. */
+body.smbb-wp-chrome #adminmenu li.smbb-ess-foot {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin: 6px 6px 14px;
+    padding: 0;
+}
+
+body.smbb-wp-chrome #adminmenu .smbb-ess-switch {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    padding: 2px;
+    border-radius: 9px;
+    background: var(--smbb-t-fill);
+}
+
+body.smbb-wp-chrome #adminmenu .smbb-ess-switch button,
+body.smbb-wp-chrome #adminmenu .smbb-ess-edit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin: 0;
+    border: 0;
+    background: none;
+    color: var(--smbb-t-muted);
+    font: inherit;
+    font-size: 12px;
+    line-height: 1.2;
+    cursor: pointer;
+}
+
+body.smbb-wp-chrome #adminmenu .smbb-ess-switch button {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 5px 5px;
+    border-radius: 7px;
+    font-size: 11.5px;
+    letter-spacing: -.01em;
+    white-space: nowrap;
+    transition: background-color .15s ease, color .15s ease;
+}
+
+body.smbb-wp-chrome #adminmenu .smbb-ess-switch button .dashicons {
+    display: none;
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+}
+
+body.smbb-wp-chrome #adminmenu .smbb-ess-switch button:hover {
+    color: var(--smbb-t-text);
+}
+
+body.smbb-wp-chrome #adminmenu .smbb-ess-switch button[aria-pressed="true"] {
+    background: var(--smbb-t-card);
+    color: var(--smbb-t-accent-deep);
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .08), 0 0 0 1px var(--smbb-t-line);
+}
+
+body.smbb-wp-chrome #adminmenu .smbb-ess-edit {
+    flex-shrink: 0;
+    width: 26px;
+    height: 28px;
+    padding: 0;
+    border-radius: 8px;
+}
+
+body.smbb-wp-chrome #adminmenu .smbb-ess-edit .dashicons {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+}
+
+body.smbb-wp-chrome #adminmenu .smbb-ess-edit:hover {
+    background: var(--smbb-t-fill);
+    color: var(--smbb-t-accent);
+}
+
+body.smbb-wp-chrome #adminmenu .smbb-ess-foot button:focus-visible {
+    outline: 2px solid var(--smbb-t-accent);
+    outline-offset: 1px;
+}
+
+/* Menu sombre et rail. */
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu .smbb-ess-switch {
+    background: rgba(255, 255, 255, .06);
+}
+
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu .smbb-ess-foot button {
+    color: rgba(255, 255, 255, .55);
+}
+
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu .smbb-ess-foot button:hover {
+    background: rgba(255, 255, 255, .06);
+    color: #fff;
+}
+
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu .smbb-ess-switch button[aria-pressed="true"] {
+    background: rgba(255, 255, 255, .14);
+    color: #fff;
+    box-shadow: none;
+}
+
+/* Menu étroit (réduit, écran moyen, rail) : icônes seules, empilées. */
+@media screen and (min-width: 783px) {
+    body.smbb-wp-chrome:is(.folded, .smbb-menu-rail) #adminmenu li.smbb-ess-foot {
+        flex-direction: column;
+        margin: 8px 8px 14px;
+    }
+
+    body.smbb-wp-chrome:is(.folded, .smbb-menu-rail) #adminmenu .smbb-ess-switch {
+        flex-direction: column;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    body.smbb-wp-chrome:is(.folded, .smbb-menu-rail) #adminmenu .smbb-ess-switch button {
+        padding: 6px 0;
+    }
+
+    body.smbb-wp-chrome:is(.folded, .smbb-menu-rail) #adminmenu .smbb-ess-switch .dashicons {
+        display: inline-block;
+    }
+
+    body.smbb-wp-chrome:is(.folded, .smbb-menu-rail) #adminmenu .smbb-ess-label {
+        display: none;
+    }
+
+    body.smbb-wp-chrome.smbb-menu-rail #adminmenu li.smbb-ess-foot {
+        width: 44px;
+    }
+}
+
+@media screen and (min-width: 783px) and (max-width: 960px) {
+    body.smbb-wp-chrome.auto-fold #adminmenu li.smbb-ess-foot {
+        flex-direction: column;
+        margin: 8px 8px 14px;
+    }
+
+    body.smbb-wp-chrome.auto-fold #adminmenu .smbb-ess-switch {
+        flex-direction: column;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    body.smbb-wp-chrome.auto-fold #adminmenu .smbb-ess-switch button {
+        padding: 6px 0;
+    }
+
+    body.smbb-wp-chrome.auto-fold #adminmenu .smbb-ess-switch .dashicons {
+        display: inline-block;
+    }
+
+    body.smbb-wp-chrome.auto-fold #adminmenu .smbb-ess-label {
+        display: none;
+    }
+}
+
+/* Fenêtre « L'essentiel du menu » : arbre à deux niveaux. */
+.smbb-ess-dialog {
+    box-sizing: border-box;
+    width: min(460px, calc(100vw - 32px));
+    max-height: calc(100vh - 64px);
+    padding: 0;
+    border: 0;
+    border-radius: 16px;
+    background: var(--smbb-t-card, #fff);
+    color: var(--smbb-t-text, #1d2327);
+    box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .45), 0 0 0 1px var(--smbb-t-line, #dcdcde);
+}
+
+.smbb-ess-dialog::backdrop {
+    background: rgba(20, 12, 18, .4);
+}
+
+.smbb-ess-dialog form {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 64px);
+    box-sizing: border-box;
+    padding: 20px 22px 18px;
+}
+
+.smbb-ess-dialog h2 {
+    margin: 0 0 4px;
+    font-size: 18px;
+    font-weight: 650;
+    color: inherit;
+}
+
+.smbb-ess-help {
+    margin: 0 0 12px;
+    color: var(--smbb-t-muted, #646970);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.smbb-ess-tree,
+.smbb-ess-tree ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.smbb-ess-tree {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    margin: 0 -8px;
+    padding: 0 8px;
+}
+
+.smbb-ess-tree > li {
+    margin: 0;
+    padding: 4px 0;
+    border-top: 1px solid var(--smbb-t-line, #f0f0f1);
+}
+
+.smbb-ess-tree > li:first-child {
+    border-top: 0;
+}
+
+.smbb-ess-tree ul {
+    margin: 0 0 4px 11px;
+    padding-left: 15px;
+    border-left: 1px solid var(--smbb-t-line, #dcdcde);
+}
+
+.smbb-ess-tree li {
+    margin: 0;
+}
+
+.smbb-ess-tree label {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 5px 6px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.smbb-ess-tree label:hover {
+    background: var(--smbb-t-fill, #f6f7f7);
+}
+
+.smbb-ess-tree .smbb-ess-top {
+    font-weight: 600;
+}
+
+.smbb-ess-tree input[type="checkbox"] {
+    margin: 0;
+    accent-color: var(--smbb-t-accent, #2271b1);
+}
+
+.smbb-ess-tree li.is-off ul {
+    opacity: .45;
+}
+
+.smbb-ess-tree li.is-off ul label {
+    cursor: default;
+}
+
+.smbb-ess-here {
+    margin-left: auto;
+    padding: 1px 7px;
+    border-radius: 99px;
+    background: var(--smbb-t-accent-soft, #f0f6fc);
+    color: var(--smbb-t-accent-deep, #135e96);
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 500;
+}
+
+.smbb-ess-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--smbb-t-line, #dcdcde);
+}
+
+.smbb-ess-actions .smbb-ess-all {
+    margin-right: auto;
+}
+
+/* ------------------------------------------------------------------ */
+/* 2. Écrans natifs                                                    */
+/* ------------------------------------------------------------------ */
+body.smbb-wp-screens,
+body.smbb-wp-screens #wpwrap,
+body.smbb-wp-screens #wpcontent,
+body.smbb-wp-screens #wpbody {
+    background: var(--smbb-t-bg);
+}
+
+body.smbb-wp-screens #wpbody-content > .wrap:not(.smbb-codetool) > h1,
+body.smbb-wp-screens #wpbody-content > .wrap:not(.smbb-codetool) > h1.wp-heading-inline,
+body.smbb-wp-screens #wpbody-content > .wrap:not(.smbb-codetool) > h2:first-child {
+    color: var(--smbb-t-text);
+    font-size: 26px;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+}
+
+body.smbb-wp-screens .wrap:not(.smbb-codetool) a:where(:not(.button, .page-title-action, .nav-tab, .row-title, .ab-item)) {
+    color: var(--smbb-t-accent);
+}
+
+body.smbb-wp-screens .wrap:not(.smbb-codetool) a.row-title {
+    color: var(--smbb-t-text);
+}
+
+body.smbb-wp-screens .wrap:not(.smbb-codetool) a.row-title:hover {
+    color: var(--smbb-t-accent);
+}
+
+/* Boutons. */
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) .button,
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) .button-secondary,
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) .page-title-action {
+    min-height: 32px;
+    line-height: 30px;
+    padding: 0 12px;
+    border: 1px solid var(--smbb-t-line-strong);
+    border-radius: 8px;
+    background: var(--smbb-t-card);
+    color: var(--smbb-t-text);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+    transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) .button:hover,
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) .button-secondary:hover {
+    background: var(--smbb-t-fill);
+    border-color: var(--smbb-t-line-strong);
+    color: var(--smbb-t-text);
+}
+
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) .button-primary,
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) .page-title-action {
+    background: var(--smbb-t-accent);
+    border-color: var(--smbb-t-accent);
+    color: var(--smbb-t-accent-ink);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16), 0 1px 2px rgba(var(--smbb-t-accent-rgb), .35);
+}
+
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) .page-title-action {
+    top: -4px;
+    margin-left: 10px;
+    font-weight: 500;
+}
+
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) .button-primary:hover,
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) .button-primary:focus,
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) .page-title-action:hover,
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) .page-title-action:focus {
+    background: var(--smbb-t-accent-hover);
+    border-color: var(--smbb-t-accent-hover);
+    color: var(--smbb-t-accent-ink);
+}
+
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) .button:focus,
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) .page-title-action:focus {
+    box-shadow: 0 0 0 3px rgba(var(--smbb-t-accent-rgb), .25);
+    outline: none;
+}
+
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) .button-link {
+    border: 0;
+    background: none;
+    box-shadow: none;
+    color: var(--smbb-t-accent);
+}
+
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) .button-link-delete,
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) a.submitdelete,
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) .row-actions .trash a,
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) .row-actions .delete a {
+    color: #b32d2e;
+}
+
+/* Champs. */
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input[type="text"],
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input[type="search"],
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input[type="email"],
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input[type="url"],
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input[type="tel"],
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input[type="number"],
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input[type="password"],
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input[type="date"],
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) select,
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) textarea {
+    border-color: var(--smbb-t-line-strong);
+    border-radius: 8px;
+    box-shadow: none;
+}
+
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input[type="text"],
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input[type="search"],
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input[type="email"],
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input[type="url"],
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input[type="number"],
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input[type="password"],
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) select {
+    min-height: 32px;
+}
+
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input:focus,
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) select:focus,
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) textarea:focus {
+    border-color: var(--smbb-t-accent);
+    box-shadow: 0 0 0 3px rgba(var(--smbb-t-accent-rgb), .2);
+    outline: none;
+}
+
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) select:hover {
+    color: var(--smbb-t-accent);
+}
+
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input[type="checkbox"],
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input[type="radio"],
+body.smbb-wp-screens .wp-list-table input[type="checkbox"] {
+    border-color: var(--smbb-t-line-strong);
+}
+
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input[type="checkbox"]:checked,
+body.smbb-wp-screens .wp-list-table input[type="checkbox"]:checked {
+    background: var(--smbb-t-accent);
+    border-color: var(--smbb-t-accent);
+}
+
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input[type="checkbox"]:checked::before,
+body.smbb-wp-screens .wp-list-table input[type="checkbox"]:checked::before {
+    content: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%23ffffff%27%2F%3E%3C%2Fsvg%3E");
+}
+
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input[type="radio"]:checked {
+    border: 5px solid var(--smbb-t-accent);
+    background: #fff;
+}
+
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) input[type="radio"]:checked::before {
+    content: none;
+}
+
+/* Tableaux de liste : carte arrondie, en-tête discret, survol de ligne. */
+body.smbb-wp-screens .wrap:not(.smbb-codetool) table.widefat {
+    border: 0;
+    border-radius: 12px;
+    background: var(--smbb-t-card);
+    box-shadow: 0 0 0 1px var(--smbb-t-line), 0 4px 16px -10px rgba(0, 0, 0, .12);
+    overflow: hidden;
+}
+
+body.smbb-wp-screens .wrap:not(.smbb-codetool) table.widefat thead td,
+body.smbb-wp-screens .wrap:not(.smbb-codetool) table.widefat thead th,
+body.smbb-wp-screens .wrap:not(.smbb-codetool) table.widefat tfoot td,
+body.smbb-wp-screens .wrap:not(.smbb-codetool) table.widefat tfoot th {
+    border-color: var(--smbb-t-line);
+    color: var(--smbb-t-muted);
+    font-weight: 600;
+}
+
+body.smbb-wp-screens .wrap:not(.smbb-codetool) table.widefat thead th a,
+body.smbb-wp-screens .wrap:not(.smbb-codetool) table.widefat tfoot th a {
+    color: var(--smbb-t-muted);
+}
+
+body.smbb-wp-screens .wrap:not(.smbb-codetool) .striped > tbody > :nth-child(odd),
+body.smbb-wp-screens .wrap:not(.smbb-codetool) ul.striped > :nth-child(odd),
+body.smbb-wp-screens .wrap:not(.smbb-codetool) .alternate {
+    background: rgba(var(--smbb-t-accent-rgb), .025);
+}
+
+body.smbb-wp-screens .wrap:not(.smbb-codetool) .wp-list-table tbody tr:hover {
+    background: rgba(var(--smbb-t-accent-rgb), .06);
+}
+
+body.smbb-wp-screens .wrap:not(.smbb-codetool) .plugins .active td,
+body.smbb-wp-screens .wrap:not(.smbb-codetool) .plugins .active th {
+    background: rgba(var(--smbb-t-accent-rgb), .05);
+}
+
+body.smbb-wp-screens .wrap:not(.smbb-codetool) .plugins .active th.check-column {
+    border-left-color: var(--smbb-t-accent);
+}
+
+body.smbb-wp-screens .wrap:not(.smbb-codetool) .subsubsub a.current {
+    color: var(--smbb-t-text);
+}
+
+body.smbb-wp-screens .wrap:not(.smbb-codetool) .subsubsub a .count {
+    color: var(--smbb-t-muted);
+}
+
+/* Cartes et boîtes. */
+body.smbb-wp-screens #wpbody-content .postbox,
+body.smbb-wp-screens #wpbody-content .stuffbox,
+body.smbb-wp-screens #wpbody-content .card,
+body.smbb-wp-screens #wpbody-content #dashboard-widgets .postbox,
+body.smbb-wp-screens #wpbody-content .welcome-panel {
+    border: 0;
+    border-radius: 14px;
+    background: var(--smbb-t-card);
+    box-shadow: 0 0 0 1px var(--smbb-t-line), 0 4px 16px -10px rgba(0, 0, 0, .12);
+}
+
+body.smbb-wp-screens #wpbody-content .postbox .postbox-header {
+    border-bottom-color: var(--smbb-t-line);
+}
+
+body.smbb-wp-screens #wpbody-content .postbox .hndle {
+    color: var(--smbb-t-text);
+}
+
+body.smbb-wp-screens #wpbody-content .welcome-panel {
+    overflow: hidden;
+}
+
+body.smbb-wp-screens #wpbody-content .welcome-panel-header {
+    background: linear-gradient(135deg, var(--smbb-t-accent), var(--smbb-t-accent-deep));
+}
+
+body.smbb-wp-screens #wpbody-content .welcome-panel-content {
+    background: transparent;
+}
+
+/* Onglets. */
+body.smbb-wp-screens .wrap:not(.smbb-codetool) .nav-tab-wrapper,
+body.smbb-wp-screens .wrap:not(.smbb-codetool) h2.nav-tab-wrapper {
+    border-bottom-color: var(--smbb-t-line);
+}
+
+body.smbb-wp-screens .wrap:not(.smbb-codetool) .nav-tab {
+    margin: 0 2px 0 0;
+    padding: 9px 14px;
+    border: 0;
+    border-radius: 8px 8px 0 0;
+    background: transparent;
+    color: var(--smbb-t-muted);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* WooCommerce et d'autres mettent les onglets collés au titre : un peu d'air. */
+body.smbb-wp-screens .wrap:not(.smbb-codetool) .nav-tab-wrapper,
+body.smbb-wp-screens .wrap:not(.smbb-codetool) nav.woo-nav-tab-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 2px;
+    margin: 16px 0 20px;
+    padding-top: 0;
+}
+
+/* Écart serré entre onglets : WooCommerce ajoute ses propres marges et espaces. */
+body.smbb-wp-screens .wrap:not(.smbb-codetool) .nav-tab-wrapper > .nav-tab,
+body.smbb-wp-screens .wrap:not(.smbb-codetool) nav.woo-nav-tab-wrapper > .nav-tab {
+    float: none;
+    margin: 0 0 -1px;
+}
+
+body.smbb-wp-screens .wrap:not(.smbb-codetool) .nav-tab:hover {
+    background: var(--smbb-t-fill);
+    color: var(--smbb-t-text);
+}
+
+body.smbb-wp-screens .wrap:not(.smbb-codetool) .nav-tab-active,
+body.smbb-wp-screens .wrap:not(.smbb-codetool) .nav-tab-active:hover,
+body.smbb-wp-screens .wrap:not(.smbb-codetool) .nav-tab-active:focus {
+    background: var(--smbb-t-card);
+    box-shadow: inset 0 -2px 0 var(--smbb-t-accent);
+    color: var(--smbb-t-text);
+}
+
+/* Notices : cartes arrondies, liseré de couleur à gauche. */
+body.smbb-wp-screens #wpbody-content .notice,
+body.smbb-wp-screens #wpbody-content div.updated,
+body.smbb-wp-screens #wpbody-content div.error {
+    border: 0;
+    border-radius: 10px;
+    background: var(--smbb-t-card);
+    box-shadow: inset 4px 0 0 #72aee6, 0 0 0 1px var(--smbb-t-line), 0 4px 14px -10px rgba(0, 0, 0, .15);
+}
+
+body.smbb-wp-screens #wpbody-content .notice-success,
+body.smbb-wp-screens #wpbody-content div.updated {
+    box-shadow: inset 4px 0 0 #00a32a, 0 0 0 1px var(--smbb-t-line), 0 4px 14px -10px rgba(0, 0, 0, .15);
+}
+
+body.smbb-wp-screens #wpbody-content .notice-warning {
+    box-shadow: inset 4px 0 0 #dba617, 0 0 0 1px var(--smbb-t-line), 0 4px 14px -10px rgba(0, 0, 0, .15);
+}
+
+body.smbb-wp-screens #wpbody-content .notice-error,
+body.smbb-wp-screens #wpbody-content div.error {
+    box-shadow: inset 4px 0 0 #d63638, 0 0 0 1px var(--smbb-t-line), 0 4px 14px -10px rgba(0, 0, 0, .15);
+}
+
+body.smbb-wp-screens #wpbody-content .notice.inline {
+    box-shadow: inset 4px 0 0 #dba617;
+}
+
+/* Petits plus. */
+body.smbb-wp-screens #screen-meta-links .show-settings {
+    border: 0;
+    border-radius: 0 0 8px 8px;
+    background: var(--smbb-t-card);
+    box-shadow: 0 0 0 1px var(--smbb-t-line);
+    color: var(--smbb-t-muted);
+}
+
+body.smbb-wp-screens #screen-meta {
+    border-color: var(--smbb-t-line);
+    border-radius: 0 0 12px 12px;
+}
+
+body.smbb-wp-screens #wpfooter,
+body.smbb-wp-screens #wpfooter a {
+    color: var(--smbb-t-muted);
+}
+
+body.smbb-wp-screens .wrap:not(.smbb-codetool) .form-table th {
+    color: var(--smbb-t-text);
+    font-weight: 600;
+}
+
+body.smbb-wp-screens .wrap:not(.smbb-codetool) .tablenav .tablenav-pages a,
+body.smbb-wp-screens .wrap:not(.smbb-codetool) .tablenav-pages-navspan {
+    border-radius: 8px;
+    border-color: var(--smbb-t-line-strong);
+    background: var(--smbb-t-card);
+    color: var(--smbb-t-text);
+}
+
+/* ------------------------------------------------------------------ */
+/* 3. Cloche des messages des extensions                               */
+/* ------------------------------------------------------------------ */
+#wpadminbar #wp-admin-bar-smbb-notices.hidden {
+    display: none;
+}
+
+#wpadminbar #wp-admin-bar-smbb-notices > .ab-item {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+#wpadminbar #wp-admin-bar-smbb-notices .ab-icon {
+    margin-right: 0;
+}
+
+#wpadminbar #wp-admin-bar-smbb-notices .ab-icon:before {
+    content: "\f16d";
+    top: 3px;
+}
+
+#wpadminbar #wp-admin-bar-smbb-notices .smbb-notices-count {
+    display: inline-block;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    box-sizing: border-box;
+    border-radius: 9px;
+    background: var(--smbb-t-accent, #d63638);
+    color: var(--smbb-t-accent-ink, #fff);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 18px;
+    text-align: center;
+}
+
+.smbb-notices-panel {
+    position: fixed;
+    top: 40px;
+    right: 12px;
+    z-index: 100000;
+    width: min(460px, calc(100vw - 24px));
+    max-height: calc(100vh - 64px);
+    overflow: auto;
+    padding: 12px;
+    box-sizing: border-box;
+    border-radius: 14px;
+    background: var(--smbb-t-bg, #f0f0f1);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, .08), 0 24px 48px -16px rgba(0, 0, 0, .35);
+    animation: smbb-notices-in .16s ease;
+}
+
+.smbb-notices-panel[hidden] {
+    display: none;
+}
+
+.smbb-notices-panel-title {
+    margin: 0 4px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--smbb-t-text, #1d2327);
+}
+
+.smbb-notices-panel .notice,
+.smbb-notices-panel div.updated,
+.smbb-notices-panel div.error,
+.smbb-notices-panel .update-nag {
+    display: block;
+    margin: 0 0 8px;
+    max-width: none;
+}
+
+.smbb-notices-panel .notice,
+.smbb-notices-panel div.updated,
+.smbb-notices-panel div.error {
+    border: 0;
+    border-radius: 10px;
+    background: var(--smbb-t-card, #fff);
+    box-shadow: inset 4px 0 0 #72aee6, 0 0 0 1px var(--smbb-t-line, #dcdcde);
+}
+
+.smbb-notices-panel .notice-success,
+.smbb-notices-panel div.updated {
+    box-shadow: inset 4px 0 0 #00a32a, 0 0 0 1px var(--smbb-t-line, #dcdcde);
+}
+
+.smbb-notices-panel .notice-warning {
+    box-shadow: inset 4px 0 0 #dba617, 0 0 0 1px var(--smbb-t-line, #dcdcde);
+}
+
+.smbb-notices-panel .notice-error,
+.smbb-notices-panel div.error {
+    box-shadow: inset 4px 0 0 #d63638, 0 0 0 1px var(--smbb-t-line, #dcdcde);
+}
+
+.smbb-notices-panel a {
+    color: var(--smbb-t-accent, #2271b1);
+}
+
+.smbb-notices-panel > :last-child {
+    margin-bottom: 0;
+}
+
+@keyframes smbb-notices-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: none; }
+}
+
+@media screen and (max-width: 782px) {
+    .smbb-notices-panel {
+        top: 54px;
+    }
+
+    #wpadminbar #wp-admin-bar-smbb-notices {
+        display: block;
+    }
+
+    #wpadminbar #wp-admin-bar-smbb-notices > .ab-item {
+        width: auto;
+        padding: 0 10px;
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* 4. Page de connexion                                                */
+/* ------------------------------------------------------------------ */
+body.login.smbb-login {
+    background: radial-gradient(1200px 600px at 50% -10%, var(--smbb-t-accent-soft), transparent 70%), var(--smbb-t-bg);
+    color: var(--smbb-t-text);
+}
+
+body.smbb-login #login {
+    padding-top: 10vh;
+}
+
+body.smbb-login #login h1 {
+    text-align: center;
+}
+
+/* Le logo est dans le lien (texte de login_headertext), plus en image de fond. */
+body.smbb-login #login h1 a {
+    display: inline-flex;
+    width: auto;
+    height: auto;
+    margin: 0 auto 24px;
+    background: none;
+    text-indent: 0;
+    overflow: visible;
+}
+
+/* Nom du site : pour les lecteurs d'écran seulement. */
+body.smbb-login #login h1 .smbb-login-name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Heure et date façon écran de verrouillage (interrupteur login_clock), au-dessus du logo. */
+body.smbb-login.smbb-login-has-clock #login {
+    padding-top: 2vh;
+}
+
+.smbb-login-clock {
+    padding-top: 8vh;
+    text-align: center;
+    color: var(--smbb-t-text);
+    user-select: none;
+    animation: smbb-clock-in .9s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.smbb-login-clock-time {
+    display: inline-flex;
+    align-items: baseline;
+    font-size: clamp(64px, 14vw, 104px);
+    font-weight: 200;
+    line-height: 1;
+    letter-spacing: -.03em;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Dégradé du thème posé sur chaque morceau : un parent en background-clip:text perd ses enfants animés. */
+.smbb-login-clock-time > span {
+    display: inline-block;
+    background: var(--smbb-t-grad, linear-gradient(180deg, var(--smbb-t-text), var(--smbb-t-accent-deep, var(--smbb-t-accent))));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Les deux points battent doucement, comme une respiration. */
+.smbb-login-clock-sep {
+    margin: 0 .04em;
+    transform: translateY(-.06em);
+    animation: smbb-clock-blink 2s ease-in-out infinite;
+}
+
+/* Chiffre qui change : il descend en fondu. */
+.smbb-login-clock-time .is-tick {
+    animation: smbb-clock-tick .5s cubic-bezier(.2, .8, .2, 1);
+}
+
+.smbb-login-clock-date {
+    margin-top: 10px;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: .01em;
+    color: var(--smbb-t-muted, var(--smbb-t-text));
+}
+
+/* Un trait d'accent sous la date, puis le logo. */
+.smbb-login-clock-date::after {
+    content: "";
+    display: block;
+    width: 28px;
+    height: 3px;
+    margin: 14px auto 0;
+    border-radius: 3px;
+    background: var(--smbb-t-grad, var(--smbb-t-accent));
+    opacity: .7;
+}
+
+@keyframes smbb-clock-in {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes smbb-clock-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .25; }
+}
+
+@keyframes smbb-clock-tick {
+    from { opacity: 0; transform: translateY(-.25em); }
+    to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .smbb-login-clock,
+    .smbb-login-clock-sep,
+    .smbb-login-clock-time .is-tick {
+        animation: none;
+    }
+}
+
+/* Petits écrans en hauteur : l'horloge se fait plus discrète pour laisser le formulaire visible. */
+@media (max-height: 700px) {
+    .smbb-login-clock { padding-top: 3vh; }
+    .smbb-login-clock-time { font-size: 56px; }
+    .smbb-login-clock-date { margin-top: 6px; font-size: 15px; }
+    .smbb-login-clock-date::after { margin-top: 10px; }
+}
+
+/* Cadre du logo : aucun, boîte arrondie ou rond (aussi l'aperçu de la page Apparence). */
+.smbb-login-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    height: 104px;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.smbb-login-logo img {
+    display: block;
+    max-width: 260px;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.smbb-login-logo .smbb-mark {
+    width: 104px;
+    height: 104px;
+}
+
+.smbb-login-logo.is-rounded,
+.smbb-login-logo.is-circle {
+    width: 120px;
+    height: 120px;
+    padding: 20px;
+    background: var(--smbb-t-card, #fff);
+    box-shadow: 0 0 0 1px var(--smbb-t-line, rgba(0, 0, 0, .08)), 0 18px 40px -18px rgba(var(--smbb-t-accent-rgb, 0, 0, 0), .45);
+}
+
+.smbb-login-logo.is-rounded {
+    border-radius: 30px;
+}
+
+.smbb-login-logo.is-circle {
+    border-radius: 50%;
+}
+
+.smbb-login-logo.is-rounded img,
+.smbb-login-logo.is-circle img {
+    max-width: 100%;
+}
+
+.smbb-login-logo.is-rounded .smbb-mark,
+.smbb-login-logo.is-circle .smbb-mark {
+    width: 100%;
+    height: 100%;
+}
+
+.smbb-login-logo.is-circle.has-image {
+    padding: 24px;
+}
+
+body.smbb-login #login h1 a:hover .smbb-login-logo {
+    transform: translateY(-2px);
+}
+
+body.smbb-login #login h1 a:focus {
+    box-shadow: none;
+    outline: 2px solid var(--smbb-t-accent);
+    outline-offset: 4px;
+    border-radius: 8px;
+}
+
+body.smbb-login #loginform,
+body.smbb-login #lostpasswordform,
+body.smbb-login #registerform,
+body.smbb-login #resetpassform {
+    border: 0;
+    border-radius: 18px;
+    padding: 28px 24px;
+    background: var(--smbb-t-card);
+    box-shadow: 0 0 0 1px var(--smbb-t-line), 0 24px 48px -24px rgba(var(--smbb-t-accent-rgb), .35);
+}
+
+body.smbb-login label {
+    color: var(--smbb-t-text);
+    font-weight: 500;
+}
+
+body.smbb-login input[type="text"],
+body.smbb-login input[type="password"],
+body.smbb-login input[type="email"] {
+    border-color: var(--smbb-t-line-strong);
+    border-radius: 10px;
+    box-shadow: none;
+    font-size: 18px;
+}
+
+body.smbb-login input[type="text"]:focus,
+body.smbb-login input[type="password"]:focus,
+body.smbb-login input[type="email"]:focus {
+    border-color: var(--smbb-t-accent);
+    box-shadow: 0 0 0 3px rgba(var(--smbb-t-accent-rgb), .2);
+    outline: none;
+}
+
+body.smbb-login input[type="checkbox"] {
+    border-color: var(--smbb-t-line-strong);
+    border-radius: 5px;
+}
+
+body.smbb-login input[type="checkbox"]:checked {
+    background: var(--smbb-t-accent);
+    border-color: var(--smbb-t-accent);
+}
+
+body.smbb-login input[type="checkbox"]:checked::before {
+    content: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%23ffffff%27%2F%3E%3C%2Fsvg%3E");
+}
+
+body.smbb-login .button-primary {
+    min-height: 38px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--smbb-t-accent);
+    color: var(--smbb-t-accent-ink);
+    font-weight: 600;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16), 0 6px 16px -8px rgba(var(--smbb-t-accent-rgb), .7);
+}
+
+body.smbb-login .button-primary:hover,
+body.smbb-login .button-primary:focus {
+    background: var(--smbb-t-accent-hover);
+    color: var(--smbb-t-accent-ink);
+}
+
+body.smbb-login .button-primary:focus {
+    box-shadow: 0 0 0 3px rgba(var(--smbb-t-accent-rgb), .3);
+}
+
+body.smbb-login .button.wp-hide-pw {
+    color: var(--smbb-t-muted);
+}
+
+body.smbb-login .button.wp-hide-pw:focus {
+    border-color: var(--smbb-t-accent);
+    box-shadow: 0 0 0 1px var(--smbb-t-accent);
+}
+
+body.smbb-login #nav,
+body.smbb-login #backtoblog {
+    text-align: center;
+}
+
+body.smbb-login #nav a,
+body.smbb-login #backtoblog a,
+body.smbb-login .privacy-policy-page-link a {
+    color: var(--smbb-t-muted);
+}
+
+body.smbb-login #nav a:hover,
+body.smbb-login #backtoblog a:hover {
+    color: var(--smbb-t-accent);
+}
+
+body.smbb-login .message,
+body.smbb-login .notice,
+body.smbb-login #login_error {
+    border: 0;
+    border-radius: 12px;
+    background: var(--smbb-t-card);
+    box-shadow: inset 4px 0 0 var(--smbb-t-accent), 0 0 0 1px var(--smbb-t-line);
+}
+
+body.smbb-login #login_error,
+body.smbb-login .notice-error {
+    box-shadow: inset 4px 0 0 #d63638, 0 0 0 1px var(--smbb-t-line);
+}
+
+body.smbb-login .language-switcher {
+    opacity: .8;
+}
+
+.smbb-ess-dialog .button,
+.smbb-ess-dialog .button-primary {
+    min-height: 34px;
+    padding: 0 14px;
+    border-radius: 8px;
+}
+
+.smbb-ess-dialog .button {
+    border-color: var(--smbb-t-line-strong, #8c8f94);
+    background: var(--smbb-t-card, #fff);
+    color: var(--smbb-t-text, #1d2327);
+}
+
+.smbb-ess-dialog .button-primary,
+.smbb-ess-dialog .button-primary:hover,
+.smbb-ess-dialog .button-primary:focus {
+    border-color: var(--smbb-t-accent, #2271b1);
+    background: var(--smbb-t-accent, #2271b1);
+    color: var(--smbb-t-accent-ink, #fff);
+}
+
+.smbb-ess-dialog .button-primary:hover {
+    background: var(--smbb-t-accent-hover, #135e96);
+}
+
+.smbb-ess-dialog .button-link {
+    color: var(--smbb-t-accent, #2271b1);
+}
+
+/* Cloche : les bandeaux qu'elle va ranger sont masqués dès l'affichage, pour qu'ils ne
+   s'affichent pas une fraction de seconde avant d'être déplacés. Même tri que wp-notices.js. */
+body.smbb-wp-bell #wpbody-content > :is(.notice, div.updated, div.error, .update-nag):not(#message, [id^="setting-error-"], [data-smbb-keep], .inline, .hidden, .smbb-codetool-notice, .smbb-keep-notice, .passflow-flash),
+body.smbb-wp-bell #wpbody-content > .wrap > :is(.notice, div.updated, div.error, .update-nag):not(#message, [id^="setting-error-"], [data-smbb-keep], .inline, .hidden, .smbb-codetool-notice, .smbb-keep-notice, .passflow-flash),
+body.smbb-wp-bell #wpbody-content .wrap :is(h1, h2, .wp-header-end) ~ :is(.notice, div.updated, div.error, .update-nag):not(#message, [id^="setting-error-"], [data-smbb-keep], .inline, .hidden, .smbb-codetool-notice, .smbb-keep-notice, .passflow-flash),
+body.smbb-wp-bell #wpbody-content :is(.passflow-test-notice, .passflow-flash.notice-warning:not(.is-dismissible), [data-smbb-bell]) {
+    display: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* 5. Effets (CodeTool › Apparence › Effets)                           */
+/* ------------------------------------------------------------------ */
+
+/* 5.1 Verre dépoli : barres et menus translucides qui floutent ce qui passe dessous. */
+body.smbb-fx-glass #wpadminbar {
+    background: rgba(29, 35, 39, .78);
+    -webkit-backdrop-filter: saturate(180%) blur(18px);
+    backdrop-filter: saturate(180%) blur(18px);
+}
+
+body.smbb-fx-glass.smbb-wp-chrome #wpadminbar {
+    background: color-mix(in srgb, var(--smbb-t-card) 70%, transparent);
+}
+
+/* Les sous-menus sortent de la barre : un flou de leur côté ne verrait rien, on les garde presque opaques. */
+body.smbb-fx-glass.smbb-wp-chrome #wpadminbar .ab-sub-wrapper,
+body.smbb-fx-glass.smbb-wp-chrome #wpadminbar .menupop .ab-sub-wrapper {
+    background: color-mix(in srgb, var(--smbb-t-card) 94%, transparent);
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 0 0 1px var(--smbb-t-line), 0 18px 36px -14px rgba(0, 0, 0, .3);
+}
+
+body.smbb-fx-glass .smbb-appbar {
+    background: color-mix(in srgb, var(--smbb-t-card) 68%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+}
+
+body.smbb-fx-glass .smbb-notices-panel {
+    background: color-mix(in srgb, var(--smbb-t-bg, #f0f0f1) 72%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(24px);
+    backdrop-filter: saturate(180%) blur(24px);
+}
+
+body.smbb-fx-glass.smbb-wp-chrome:not(.smbb-menu-dark):not(.smbb-menu-rail) #adminmenu .wp-not-current-submenu .wp-submenu,
+body.smbb-fx-glass.smbb-wp-chrome:not(.smbb-menu-dark):not(.smbb-menu-rail).folded #adminmenu .wp-has-current-submenu .wp-submenu {
+    background: color-mix(in srgb, var(--smbb-t-card) 80%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+}
+
+body.smbb-fx-glass :is(.smbb-ess-dialog, .smbb-ui-dialog)::backdrop {
+    background: rgba(20, 12, 18, .25);
+    -webkit-backdrop-filter: blur(6px) saturate(140%);
+    backdrop-filter: blur(6px) saturate(140%);
+}
+
+body.smbb-fx-glass .smbb-ess-dialog {
+    background: color-mix(in srgb, var(--smbb-t-card, #fff) 88%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(24px);
+    backdrop-filter: saturate(180%) blur(24px);
+}
+
+/* 5.2 Transitions entre les pages (navigateurs avec View Transitions ; activé par WpSkin).
+   La barre du haut, le menu et la barre d'app restent en place ; le contenu glisse dans le sens
+   noté au clic (wp-fx.js, WpSkin::transitionHead) ; l'onglet actif de la barre d'app glisse
+   jusqu'au nouvel onglet. */
+body.smbb-fx-transitions #wpadminbar {
+    view-transition-name: smbb-adminbar;
+}
+
+body.smbb-fx-transitions #adminmenuwrap {
+    view-transition-name: smbb-menu;
+}
+
+body.smbb-fx-transitions .smbb-appbar {
+    view-transition-name: smbb-appbar;
+}
+
+body.smbb-fx-transitions .smbb-appbar-tabs a.is-active:not(.smbb-vt-off) {
+    view-transition-name: smbb-tab;
+}
+
+body.smbb-fx-transitions .smbb-appbar-sub a.is-active:not(.smbb-vt-off) {
+    view-transition-name: smbb-pill;
+}
+
+::view-transition-old(smbb-adminbar) {
+    display: none;
+}
+
+::view-transition-new(smbb-adminbar) {
+    animation: none;
+}
+
+::view-transition-group(smbb-menu),
+::view-transition-group(smbb-appbar) {
+    animation-duration: .22s;
+}
+
+/* L'onglet actif : sa pastille se déplace d'un onglet à l'autre, le libellé se fond. */
+::view-transition-group(smbb-tab),
+::view-transition-group(smbb-pill) {
+    animation-duration: .34s;
+    animation-timing-function: cubic-bezier(.3, .9, .3, 1);
+}
+
+::view-transition-old(smbb-tab),
+::view-transition-new(smbb-tab),
+::view-transition-old(smbb-pill),
+::view-transition-new(smbb-pill) {
+    height: 100%;
+    animation-duration: .2s;
+}
+
+/* Sans sens connu (lien quelconque, script) : fondu qui monte un peu. */
+::view-transition-old(root) {
+    animation: smbb-vt-out .16s ease both;
+}
+
+::view-transition-new(root) {
+    animation: smbb-vt-in .3s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+/* On ouvre une fiche : l'écran part à gauche, la fiche arrive de la droite. */
+html:active-view-transition-type(smbb-forward)::view-transition-old(root) {
+    animation: smbb-vt-to-left .2s cubic-bezier(.4, 0, 1, 1) both;
+}
+
+html:active-view-transition-type(smbb-forward)::view-transition-new(root) {
+    animation: smbb-vt-from-right .36s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+/* Retour à la liste (lien, bouton Précédent) : l'inverse. */
+html:active-view-transition-type(smbb-back)::view-transition-old(root) {
+    animation: smbb-vt-to-right .2s cubic-bezier(.4, 0, 1, 1) both;
+}
+
+html:active-view-transition-type(smbb-back)::view-transition-new(root) {
+    animation: smbb-vt-from-left .36s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+/* Onglet voisin dans la barre d'app : petit glissé latéral, comme une page qu'on tourne. */
+html:active-view-transition-type(smbb-next)::view-transition-old(root) {
+    animation: smbb-vt-to-left-s .18s ease-in both;
+}
+
+html:active-view-transition-type(smbb-next)::view-transition-new(root) {
+    animation: smbb-vt-from-right-s .3s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+html:active-view-transition-type(smbb-prev)::view-transition-old(root) {
+    animation: smbb-vt-to-right-s .18s ease-in both;
+}
+
+html:active-view-transition-type(smbb-prev)::view-transition-new(root) {
+    animation: smbb-vt-from-left-s .3s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+/* Enregistrement, rechargement : la page revient presque sans bouger. */
+html:active-view-transition-type(smbb-save)::view-transition-old(root) {
+    animation: smbb-vt-out .12s ease both;
+}
+
+html:active-view-transition-type(smbb-save)::view-transition-new(root) {
+    animation: smbb-vt-fade .2s ease both;
+}
+
+@keyframes smbb-vt-out {
+    to { opacity: 0; }
+}
+
+@keyframes smbb-vt-fade {
+    from { opacity: 0; }
+}
+
+@keyframes smbb-vt-in {
+    from { opacity: 0; transform: translateY(8px); }
+}
+
+@keyframes smbb-vt-to-left {
+    to { opacity: 0; transform: translateX(-36px); }
+}
+
+@keyframes smbb-vt-from-right {
+    from { opacity: 0; transform: translateX(56px); }
+}
+
+@keyframes smbb-vt-to-right {
+    to { opacity: 0; transform: translateX(36px); }
+}
+
+@keyframes smbb-vt-from-left {
+    from { opacity: 0; transform: translateX(-56px); }
+}
+
+@keyframes smbb-vt-to-left-s {
+    to { opacity: 0; transform: translateX(-16px); }
+}
+
+@keyframes smbb-vt-from-right-s {
+    from { opacity: 0; transform: translateX(24px); }
+}
+
+@keyframes smbb-vt-to-right-s {
+    to { opacity: 0; transform: translateX(16px); }
+}
+
+@keyframes smbb-vt-from-left-s {
+    from { opacity: 0; transform: translateX(-24px); }
+}
+
+/* 5.2 bis Dans la page : onglets de formulaire, fenêtres, volets, menus, appuis.
+   Uniquement si le système n'a pas demandé moins d'animations (et pas « Moins d'animations »
+   du widget, qui retire la classe smbb-fx-transitions côté serveur et coupe tout en direct). */
+@media (prefers-reduced-motion: no-preference) {
+    /* Onglet de formulaire qui s'affiche : il se pose en fondu. */
+    body.smbb-fx-transitions .smbb-codetool-tab-panel.is-active {
+        animation: smbb-fx-panel .24s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    /* Fenêtres (<dialog>) sans animation à elles : apparition douce, fond qui s'assombrit. */
+    body.smbb-fx-transitions :where(dialog[open]) {
+        animation: smbb-fx-pop .22s cubic-bezier(.2, .9, .3, 1.1) both;
+    }
+
+    body.smbb-fx-transitions :where(dialog[open])::backdrop {
+        animation: smbb-fx-fade .22s ease both;
+    }
+
+    /* Menus déroulants de la barre d'app (« + Créer »). */
+    body.smbb-fx-transitions .smbb-appbar-create[open] .smbb-appbar-menu {
+        animation: smbb-fx-drop .16s cubic-bezier(.2, .9, .3, 1) both;
+        transform-origin: top right;
+    }
+
+    /* Volets repliables (<details>) du contenu : ils s'ouvrent et se ferment en glissant. */
+    body.smbb-fx-transitions #wpbody-content details:not(.smbb-appbar-create) {
+        interpolate-size: allow-keywords;
+    }
+
+    body.smbb-fx-transitions #wpbody-content details:not(.smbb-appbar-create)::details-content {
+        height: 0;
+        overflow: clip;
+        transition: height .26s cubic-bezier(.2, .8, .2, 1), content-visibility .26s allow-discrete;
+    }
+
+    body.smbb-fx-transitions #wpbody-content details:not(.smbb-appbar-create)[open]::details-content {
+        height: auto;
+    }
+
+    /* Appui : boutons et onglets s'enfoncent un peu, comme sur une app. */
+    body.smbb-fx-transitions :is(.button, .smbb-appbar-tab, .smbb-appbar-pill, .smbb-appbar-create-button, .smbb-codetool-tab-button, .page-title-action) {
+        transition-property: background-color, border-color, color, box-shadow, transform;
+    }
+
+    body.smbb-fx-transitions :is(.button, .smbb-appbar-tab, .smbb-appbar-pill, .smbb-appbar-create-button, .smbb-codetool-tab-button, .page-title-action):active:not(:disabled) {
+        transform: scale(.97);
+    }
+}
+
+@keyframes smbb-fx-panel {
+    from { opacity: 0; transform: translateY(6px); }
+}
+
+@keyframes smbb-fx-pop {
+    from { opacity: 0; transform: translateY(8px) scale(.97); }
+}
+
+@keyframes smbb-fx-fade {
+    from { opacity: 0; }
+}
+
+@keyframes smbb-fx-drop {
+    from { opacity: 0; transform: translateY(-4px) scale(.98); }
+}
+
+/* 5.3 Bulles de confirmation (assets/wp-fx.js ; mêmes bulles que les écrans CodeTool). */
+body.smbb-fx-toasts #wpbody-content :is(#message.updated, #message.notice-success, [id^="setting-error-"].notice-success, [id^="setting-error-"].updated, .passflow-flash.notice-success):not(.smbb-toast-kept):not(:has(form, ul, ol, pre, input, select, textarea)) {
+    display: none;
+}
+
+body .smbb-ui-toasts {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    z-index: 100000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+body .smbb-ui-toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 440px;
+    padding: 11px 16px;
+    border-radius: 12px;
+    background: rgba(29, 29, 31, .86);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, .4);
+    color: #fff;
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.4;
+    pointer-events: auto;
+    animation: smbb-ui-toast-in .35s cubic-bezier(.2, .9, .3, 1.2);
+}
+
+body .smbb-ui-toast::before {
+    flex: 0 0 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #30d158;
+    content: "";
+}
+
+body .smbb-ui-toast.is-leaving {
+    opacity: 0;
+    transform: translateY(6px) scale(.98);
+    transition: opacity .25s ease, transform .25s ease;
+}
+
+body .smbb-ui-toast a {
+    color: #fff;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+@keyframes smbb-ui-toast-in {
+    from { opacity: 0; transform: translateY(10px) scale(.96); }
+}
+
+@media (max-width: 782px) {
+    body .smbb-ui-toasts {
+        left: 12px;
+        right: 12px;
+        transform: none;
+    }
+}
+
+/* 5.4 Squelette de chargement (assets/wp-fx.js) : la page quitte, sa silhouette pulse. */
+body.smbb-fx-skeleton #wpbody-content {
+    position: relative;
+}
+
+body.smbb-is-leaving #wpbody-content > :not(.smbb-skeleton) {
+    opacity: .0;
+    transition: opacity .18s ease;
+}
+
+.smbb-skeleton {
+    position: absolute;
+    inset: 0 0 auto 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 26px 20px 0 0;
+    animation: smbb-sk-in .2s ease both;
+}
+
+.smbb-skeleton :is(.smbb-sk-title, .smbb-sk-row i, .smbb-sk-card b) {
+    display: block;
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--smbb-t-fill, #ececec) 0%, var(--smbb-t-fill-hover, #e2e2e2) 40%, var(--smbb-t-fill, #ececec) 80%);
+    background-size: 300% 100%;
+    animation: smbb-sk-shine 1.4s ease-in-out infinite;
+}
+
+.smbb-skeleton .smbb-sk-title {
+    width: 260px;
+    max-width: 60%;
+    height: 28px;
+}
+
+.smbb-skeleton .smbb-sk-row {
+    display: flex;
+    gap: 10px;
+}
+
+.smbb-skeleton .smbb-sk-row i {
+    width: 110px;
+    height: 32px;
+    border-radius: 99px;
+}
+
+.smbb-skeleton .smbb-sk-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 22px;
+    border-radius: 14px;
+    background: var(--smbb-t-card, #fff);
+    box-shadow: 0 0 0 1px var(--smbb-t-line, #e5e5e5);
+}
+
+.smbb-skeleton .smbb-sk-card b {
+    height: 12px;
+}
+
+.smbb-skeleton .smbb-sk-card b:nth-child(1) { width: 40%; height: 16px; }
+.smbb-skeleton .smbb-sk-card b:nth-child(2) { width: 86%; }
+.smbb-skeleton .smbb-sk-card b:nth-child(3) { width: 72%; }
+.smbb-skeleton .smbb-sk-card b:nth-child(4) { width: 80%; }
+.smbb-skeleton .smbb-sk-card b:nth-child(5) { width: 55%; }
+.smbb-skeleton .smbb-sk-card.is-short b:nth-child(2) { width: 64%; }
+
+/* Silhouettes selon la forme de la page attendue (wp-fx.js) : liste, fiche, tableau de bord. */
+.smbb-skeleton :is(.smbb-sk-tr i, .smbb-sk-field b, .smbb-sk-field s) {
+    display: block;
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--smbb-t-fill, #ececec) 0%, var(--smbb-t-fill-hover, #e2e2e2) 40%, var(--smbb-t-fill, #ececec) 80%);
+    background-size: 300% 100%;
+    animation: smbb-sk-shine 1.4s ease-in-out infinite;
+}
+
+/* Titre déjà connu (lien de la barre d'app ou du menu) : on l'écrit en vrai. */
+.smbb-skeleton .smbb-sk-heading {
+    margin: 0;
+    padding: 0;
+    color: var(--smbb-t-text, #1d2327);
+    font-size: 23px;
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+.smbb-skeleton .smbb-sk-row i.is-wide {
+    width: 220px;
+    margin-left: auto;
+}
+
+.smbb-skeleton .smbb-sk-table {
+    overflow: hidden;
+    border-radius: 14px;
+    background: var(--smbb-t-card, #fff);
+    box-shadow: 0 0 0 1px var(--smbb-t-line, #e5e5e5);
+}
+
+.smbb-skeleton .smbb-sk-tr {
+    display: flex;
+    align-items: center;
+    gap: 6%;
+    padding: 15px 20px;
+    border-top: 1px solid var(--smbb-t-line, #eee);
+}
+
+.smbb-skeleton .smbb-sk-tr:first-child {
+    border-top: 0;
+}
+
+.smbb-skeleton .smbb-sk-tr i {
+    height: 11px;
+}
+
+.smbb-skeleton .smbb-sk-tr i:first-child {
+    height: 13px;
+}
+
+.smbb-skeleton .smbb-sk-tr.is-head i {
+    height: 9px;
+    opacity: .7;
+}
+
+.smbb-skeleton .smbb-sk-card.is-form {
+    gap: 18px;
+}
+
+.smbb-skeleton .smbb-sk-card .is-head {
+    width: 30%;
+    height: 16px;
+}
+
+.smbb-skeleton .smbb-sk-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.smbb-skeleton .smbb-sk-field b {
+    width: 18%;
+    min-width: 90px;
+    height: 10px;
+}
+
+.smbb-skeleton .smbb-sk-field s {
+    width: 100%;
+    max-width: 560px;
+    height: 36px;
+    border-radius: 10px;
+    text-decoration: none;
+}
+
+.smbb-skeleton .smbb-sk-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+.smbb-skeleton .smbb-sk-card.is-tile {
+    min-height: 120px;
+}
+
+.smbb-skeleton .smbb-sk-card.is-tile b:nth-child(1) { width: 34%; height: 12px; }
+.smbb-skeleton .smbb-sk-card.is-tile b:nth-child(2) { width: 52%; height: 28px; }
+.smbb-skeleton .smbb-sk-card.is-tile b:nth-child(3) { width: 70%; }
+
+@media (max-width: 782px) {
+    .smbb-skeleton {
+        padding-right: 10px;
+    }
+
+    .smbb-skeleton .smbb-sk-tr i:nth-child(n + 3),
+    .smbb-skeleton .smbb-sk-row i.is-wide {
+        display: none;
+    }
+}
+
+/* Trait de progression sous la barre du haut : le clic est pris en compte. */
+.smbb-progress {
+    position: fixed;
+    top: var(--wp-admin--admin-bar--height, 32px);
+    left: 0;
+    z-index: 100001;
+    width: 100%;
+    height: 2px;
+    pointer-events: none;
+    transform: scaleX(0);
+    transform-origin: left center;
+    background: var(--smbb-t-grad, var(--smbb-t-accent, #2271b1));
+    box-shadow: 0 0 8px color-mix(in srgb, var(--smbb-t-accent, #2271b1) 60%, transparent);
+}
+
+.smbb-progress.is-running {
+    transform: scaleX(.86);
+    transition: transform 6s cubic-bezier(.08, .7, .2, 1);
+}
+
+/* Onglet cliqué de la barre d'app, en attendant la page. */
+body.smbb-skin .smbb-appbar a.smbb-is-pending:not(.is-active) {
+    background: var(--smbb-t-fill, #f0f0f1);
+    color: var(--smbb-t-text, #1d2327);
+}
+
+@keyframes smbb-sk-shine {
+    from { background-position: 100% 0; }
+    to { background-position: -50% 0; }
+}
+
+@keyframes smbb-sk-in {
+    from { opacity: 0; }
+}
+
+/* 5.5 Densité compacte : tableaux, formulaires et menu plus serrés. */
+body.smbb-density-compact .wp-list-table :is(td, th) {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+body.smbb-density-compact .wp-list-table .row-actions {
+    padding-top: 0;
+}
+
+body.smbb-density-compact .form-table :is(th, td) {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+body.smbb-density-compact .wrap.smbb-codetool .smbb-codetool-table tbody :is(td, th) {
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+body.smbb-density-compact .wrap.smbb-codetool .smbb-codetool-table thead :is(td, th) {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+body.smbb-density-compact .wrap.smbb-codetool .smbb-codetool-section-header {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+body.smbb-density-compact .wrap.smbb-codetool .smbb-codetool-section-body {
+    padding-bottom: 14px;
+}
+
+body.smbb-density-compact .wrap.smbb-codetool .smbb-codetool-field {
+    margin-top: 10px;
+}
+
+body.smbb-density-compact .passflow-admin .passflow-card {
+    padding: 12px 16px;
+    margin-bottom: 12px;
+}
+
+body.smbb-density-compact.smbb-wp-chrome:not(.smbb-menu-rail) #adminmenu li.menu-top > a.menu-top {
+    min-height: 30px;
+}
+
+body.smbb-density-compact.smbb-wp-chrome:not(.smbb-menu-rail) #adminmenu div.wp-menu-name {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+body.smbb-density-compact.smbb-wp-chrome:not(.smbb-menu-rail) #adminmenu div.wp-menu-image:before {
+    padding-top: 6px;
+}
+
+body.smbb-density-compact.smbb-wp-chrome #adminmenu .wp-submenu a {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body .smbb-ui-toast,
+    .smbb-skeleton,
+    .smbb-skeleton * {
+        animation: none !important;
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* 6. Page profil / modification d'un compte (assets/wp-profile.js)    */
+/* ------------------------------------------------------------------ */
+
+/* Le formulaire attend d'être rangé ; s'il n'y a pas de script, il réapparaît seul. */
+body.smbb-wp-profile #your-profile:not(.smbb-pf-ready) {
+    opacity: 0;
+    animation: smbb-pf-reveal 0s 1.2s forwards;
+}
+
+body.smbb-wp-profile #your-profile.smbb-pf-ready .smbb-pf-cards {
+    animation: smbb-pf-in .3s ease both;
+}
+
+@keyframes smbb-pf-reveal {
+    to { opacity: 1; }
+}
+
+@keyframes smbb-pf-in {
+    from { opacity: 0; transform: translateY(6px); }
+}
+
+body.smbb-wp-profile .smbb-pf-layout {
+    max-width: 980px;
+    margin-top: 18px;
+}
+
+/* Onglets en haut : même bandeau segmenté que la barre CodeTool (theme.css, .smbb-appbar-tabs). */
+body.smbb-wp-profile .smbb-pf-tabs {
+    position: sticky;
+    top: 40px;
+    z-index: 20;
+    display: inline-flex;
+    gap: 2px;
+    max-width: 100%;
+    margin: 0 0 18px;
+    padding: 3px;
+    overflow-x: auto;
+    border-radius: 12px;
+    background: var(--smbb-t-fill, #f0f0f1);
+    box-shadow: 0 0 0 4px var(--smbb-t-bg, #f0f0f1);
+    scrollbar-width: none;
+}
+
+body.smbb-wp-profile .smbb-pf-tab {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 7px 14px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--smbb-t-muted, #646970);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease, box-shadow .15s ease;
+}
+
+body.smbb-wp-profile .smbb-pf-tab .dashicons {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    opacity: .8;
+}
+
+body.smbb-wp-profile .smbb-pf-tab:hover {
+    color: var(--smbb-t-text, #1d2327);
+}
+
+body.smbb-wp-profile .smbb-pf-tab.is-active {
+    background: var(--smbb-t-card, #fff);
+    box-shadow: 0 1px 2px rgba(28, 24, 32, .08), 0 2px 8px -4px rgba(28, 24, 32, .18);
+    color: var(--smbb-t-text, #1d2327);
+    font-weight: 600;
+}
+
+body.smbb-wp-profile .smbb-pf-tab.is-active .dashicons {
+    color: var(--smbb-t-accent, #2271b1);
+    opacity: 1;
+}
+
+body.smbb-wp-profile .smbb-pf-tab:focus-visible {
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba(var(--smbb-t-accent-rgb, 34, 113, 177), .28);
+}
+
+body.smbb-wp-profile .smbb-pf-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+body.smbb-wp-profile .smbb-pf-panel[hidden] {
+    display: none;
+}
+
+body.smbb-wp-profile .smbb-pf-panel:not([hidden]) {
+    animation: smbb-pf-in .25s ease both;
+}
+
+body.smbb-wp-profile .smbb-pf-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-width: 0;
+}
+
+body.smbb-wp-profile .smbb-pf-card {
+    scroll-margin-top: 100px;
+    border-radius: 16px;
+    background: var(--smbb-t-card, #fff);
+    box-shadow: 0 0 0 1px var(--smbb-t-line, #e5e5e5), 0 10px 30px -24px rgba(0, 0, 0, .35);
+}
+
+body.smbb-wp-profile .smbb-pf-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--smbb-t-line, #f0f0f1);
+}
+
+body.smbb-wp-profile .smbb-pf-icon {
+    display: inline-flex;
+    flex: 0 0 32px;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    background: var(--smbb-t-accent-soft, #f0f6fc);
+    color: var(--smbb-t-accent, #2271b1);
+    font-size: 18px;
+}
+
+body.smbb-wp-profile .smbb-pf-head h2 {
+    margin: 0;
+    padding: 0;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -.01em;
+}
+
+body.smbb-wp-profile .smbb-pf-body {
+    padding: 4px 22px 14px;
+}
+
+body.smbb-wp-profile .smbb-pf-body > .form-table {
+    margin: 0;
+}
+
+body.smbb-wp-profile .smbb-pf-body .form-table tr + tr :is(th, td) {
+    border-top: 1px solid var(--smbb-t-line, #f0f0f1);
+}
+
+body.smbb-wp-profile .smbb-pf-body .form-table th {
+    width: 190px;
+    padding-left: 0;
+}
+
+body.smbb-wp-profile .smbb-pf-body .form-table td {
+    padding-right: 0;
+}
+
+body.smbb-wp-profile .smbb-pf-body :is(input.regular-text, select, textarea) {
+    max-width: 100%;
+}
+
+body.smbb-wp-profile .smbb-pf-body .application-passwords > p:first-child,
+body.smbb-wp-profile .smbb-pf-body > p:first-child {
+    margin-top: 14px;
+}
+
+/* Bouton « Mettre à jour » : barre collée en bas de l'écran. */
+body.smbb-wp-profile .smbb-pf-savebar {
+    position: sticky;
+    bottom: 12px;
+    z-index: 10;
+    display: flex;
+    justify-content: flex-end;
+    margin: 0;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--smbb-t-card, #fff) 82%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+    backdrop-filter: saturate(180%) blur(16px);
+    box-shadow: 0 0 0 1px var(--smbb-t-line, #e5e5e5), 0 14px 30px -18px rgba(0, 0, 0, .4);
+}
+
+@media screen and (max-width: 782px) {
+    body.smbb-wp-profile .smbb-pf-tabs {
+        top: 46px;
+        display: flex;
+    }
+}
+
+@media screen and (max-width: 782px) {
+    body.smbb-wp-profile .smbb-pf-body .form-table th {
+        width: auto;
+    }
+}
+
+/* Pastilles de compte du menu (WooCommerce, commentaires, mises à jour) : WordPress 7 les
+   colore par le jeu de couleurs avec des sélecteurs plus précis que les nôtres. */
+body.smbb-wp-chrome #adminmenu li :is(.awaiting-mod, .update-plugins, .menu-counter) {
+    background: var(--smbb-t-accent) !important;
+    color: var(--smbb-t-accent-ink) !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* 7. Profil : bloc « Apparence des écrans CodeTool » (Skin::profileField) */
+/* Mêmes cartes que CodeTool › Apparence (admin.css), aux couleurs du thème. */
+/* ------------------------------------------------------------------ */
+.smbb-profile-style {
+    --smbb-ui-accent: var(--smbb-t-accent, #2271b1);
+    --smbb-ui-accent-soft: var(--smbb-t-accent-soft, #f0f6fc);
+    --smbb-ui-text: var(--smbb-t-text, #1d2327);
+    --smbb-ui-muted: var(--smbb-t-muted, #646970);
+    --smbb-ui-line: var(--smbb-t-line, #e3e3e8);
+    --smbb-ui-card: var(--smbb-t-card, #fff);
+    --smbb-ui-bg: var(--smbb-t-bg, #f0f0f1);
+    --smbb-ui-fill: var(--smbb-t-fill, #f2f2f4);
+    --smbb-ui-fill-hover: var(--smbb-t-fill-hover, #e8e8ec);
+    --smbb-ui-radius: 14px;
+    --smbb-ui-radius-sm: 9px;
+    --smbb-ui-focus: 0 0 0 3px rgba(var(--smbb-t-accent-rgb, 34, 113, 177), .22);
+    max-width: 980px;
+    margin: 8px 0 18px;
+    color: var(--smbb-ui-text);
+}
+
+.smbb-profile-style > .smbb-appearance-toggle:first-of-type {
+    border-top: 0;
+}
+
+.smbb-profile-style .smbb-codetool-toggle-input:checked + .smbb-codetool-toggle-track {
+    background: var(--smbb-ui-accent);
+    border-color: var(--smbb-ui-accent);
+}
+
+.smbb-profile-style .smbb-codetool-toggle-input:focus-visible + .smbb-codetool-toggle-track {
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--smbb-ui-accent);
+}
+
+.smbb-profile-style .smbb-codetool-field-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 18px 0 4px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.smbb-profile-style .smbb-codetool-field-label .dashicons {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--smbb-ui-accent-soft);
+    color: var(--smbb-ui-accent);
+    font-size: 16px;
+}
+
+.smbb-profile-style .smbb-profile-style-details {
+    animation: smbb-pf-in .25s ease both;
+}
+
+/* Interrupteur coupé : on suit le site, les choix se replient. */
+.smbb-profile-style:has(#smbb-appearance-smbb_codetool_custom_style:not(:checked)) .smbb-profile-style-details {
+    display: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* 8. Palettes à dégradé (Bleu Apple, UniFi…) : --smbb-t-grad n'existe que pour elles. */
+/* ------------------------------------------------------------------ */
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) :is(.button-primary, .page-title-action),
+body.smbb-login .button-primary,
+.smbb-ess-dialog .button-primary,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu li.current a.menu-top,
+body.smbb-wp-chrome:is(.smbb-menu-dark, .smbb-menu-rail) #adminmenu li.wp-has-current-submenu a.wp-has-current-submenu {
+    background-image: var(--smbb-t-grad, none);
+}
+
+body.smbb-wp-screens :is(.wrap:not(.smbb-codetool), #screen-meta) :is(.button-primary, .page-title-action):is(:hover, :focus),
+body.smbb-login .button-primary:is(:hover, :focus),
+.smbb-ess-dialog .button-primary:hover {
+    background-image: var(--smbb-t-grad-hover, none);
+}
+
+/* Pastilles d'icône des cartes du profil : dégradé plein, icône blanche. */
+body.smbb-wp-profile .smbb-pf-icon {
+    background-image: var(--smbb-t-grad, none);
+    color: var(--smbb-t-grad-ink, var(--smbb-t-accent, #2271b1));
+}
+
+/* Profil : choix Clair / Sombre / Auto en bandeau segmenté (comme les onglets). */
+.smbb-profile-style .smbb-mode-choice {
+    display: inline-flex;
+    gap: 2px;
+    margin: 4px 0 6px;
+    padding: 3px;
+    border-radius: 12px;
+    background: var(--smbb-ui-fill);
+}
+
+.smbb-profile-style .smbb-mode-option {
+    position: relative;
+    margin: 0;
+}
+
+.smbb-profile-style .smbb-mode-option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.smbb-profile-style .smbb-mode-option > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border-radius: 9px;
+    color: var(--smbb-ui-muted);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease, box-shadow .15s ease;
+}
+
+.smbb-profile-style .smbb-mode-option .dashicons {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+}
+
+.smbb-profile-style .smbb-mode-option input:checked + span {
+    background: var(--smbb-ui-card);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .08), 0 2px 8px -4px rgba(0, 0, 0, .2);
+    color: var(--smbb-ui-text);
+    font-weight: 600;
+}
+
+.smbb-profile-style .smbb-mode-option input:checked + span .dashicons {
+    color: var(--smbb-ui-accent);
+}
+
+.smbb-profile-style .smbb-mode-option input:focus-visible + span {
+    box-shadow: var(--smbb-ui-focus);
+}
+
+.smbb-profile-style .smbb-mode-note {
+    margin: 0 0 14px;
+}

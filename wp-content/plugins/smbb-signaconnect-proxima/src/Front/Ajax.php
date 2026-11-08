@@ -453,7 +453,7 @@ final class Ajax
         }
 
         // Sans copie sur S3, le PDF signé et l'attestation sont lus chez Universign.
-        $path = $key ? Storage::forOrganization($organization)->download($key) : UniversignFlow::download($document, $what);
+        $path = $key ? Storage::forDocument($document, $organization)->download($key) : UniversignFlow::download($document, $what);
         $name = Documents::downloadName($document, $what);
 
         while (ob_get_level() > 0) {

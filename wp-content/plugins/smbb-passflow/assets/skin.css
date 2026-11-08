@@ -1,0 +1,301 @@
+/* ==========================================================================
+ * Passflow – pont vers la peau CodeTool (thèmes nommés, Aubergine par défaut).
+ *
+ * Chargé après admin.css (et dashboard.css) seulement quand la peau est active
+ * (body.smbb-skin). Remplace les gris et le bleu WordPress écrits en dur par les
+ * couleurs du thème. En apparence classique, ce fichier n'est pas chargé.
+ * ========================================================================== */
+
+body.smbb-skin .passflow-admin {
+    --passflow-brand: var(--smbb-t-accent);
+    --passflow-brand-dark: var(--smbb-t-accent-hover);
+    --passflow-ink: var(--smbb-t-text);
+    --passflow-muted: var(--smbb-t-muted);
+    --passflow-line: var(--smbb-t-line);
+    color: var(--smbb-t-text);
+}
+
+/* Onglets de section (Inscriptions | Liste d'attente…) et segments. */
+body.smbb-skin .passflow-admin .passflow-segments {
+    background: var(--smbb-t-fill);
+    border-radius: 12px;
+}
+
+body.smbb-skin .passflow-admin .passflow-segments a[href] {
+    color: var(--smbb-t-muted);
+    font-weight: 500;
+    transition: background-color .15s ease, color .15s ease;
+}
+
+body.smbb-skin .passflow-admin .passflow-segments a[href]:hover {
+    color: var(--smbb-t-text);
+}
+
+body.smbb-skin .passflow-admin .passflow-segments a[href].is-active {
+    background: var(--smbb-t-card);
+    box-shadow: 0 1px 2px rgba(28, 24, 32, 0.08), 0 2px 8px -4px rgba(28, 24, 32, 0.16);
+    color: var(--smbb-t-text);
+    font-weight: 600;
+}
+
+body.smbb-skin .passflow-admin .passflow-segments a:focus-visible {
+    box-shadow: 0 0 0 3px rgba(var(--smbb-t-accent-rgb), 0.24);
+    outline: none;
+}
+
+/* Boutons principaux toujours aux couleurs du thème (le réglage « boutons » devient inutile). */
+body.smbb-skin .passflow-admin .button-primary,
+body.smbb-skin .passflow-pos .button-primary {
+    background: var(--smbb-t-accent);
+    border-color: var(--smbb-t-accent);
+    color: var(--smbb-t-accent-ink);
+}
+
+body.smbb-skin .passflow-admin .button-primary:hover,
+body.smbb-skin .passflow-admin .button-primary:focus,
+body.smbb-skin .passflow-pos .button-primary:hover {
+    background: var(--smbb-t-accent-hover);
+    border-color: var(--smbb-t-accent-hover);
+    color: var(--smbb-t-accent-ink);
+}
+
+/* Fonds gris WordPress -> gris teintés du thème. */
+body.smbb-skin .passflow-admin .passflow-message-body,
+body.smbb-skin .passflow-admin .passflow-redeem-result,
+body.smbb-skin .passflow-admin .passflow-cashdesk-kpi,
+body.smbb-skin .passflow-admin .passflow-chip--draft,
+body.smbb-skin .passflow-admin .passflow-chip--cancelled,
+body.smbb-skin .passflow-rollcall-hint,
+body.smbb-skin .passflow-scan-result.is-busy,
+body.smbb-skin .passflow-pos-pic,
+body.smbb-skin .passflow-pos-cart,
+body.smbb-skin .passflow-cashdesk-refund[open],
+body.smbb-skin .passflow-availability-cal-head span {
+    background: var(--smbb-t-fill);
+}
+
+body.smbb-skin .passflow-admin .passflow-badge,
+body.smbb-skin .passflow-admin .passflow-badge--email,
+body.smbb-skin .passflow-admin .passflow-badge--sms,
+body.smbb-skin .passflow-admin .passflow-fill-bar,
+body.smbb-skin .passflow-admin .passflow-dash-chip.is-mute {
+    background-color: var(--smbb-t-fill);
+}
+
+/* Le bleu WordPress -> l'accent du thème. */
+body.smbb-skin .passflow-switch input:checked + .passflow-switch-track,
+body.smbb-skin .passflow-availability-cal-cell.is-today .passflow-availability-cal-day {
+    background: var(--smbb-t-accent);
+}
+
+body.smbb-skin .passflow-rollcall-row[data-status="present"] .passflow-switch-label,
+body.smbb-skin .passflow-admin .passflow-chart-table summary,
+body.smbb-skin .passflow-walkin-choice .dashicons {
+    color: var(--smbb-t-accent);
+}
+
+body.smbb-skin .passflow-rollcall-row[data-status="present"],
+body.smbb-skin .passflow-walkin {
+    border-left-color: var(--smbb-t-accent);
+}
+
+body.smbb-skin .passflow-walkin-choice:hover,
+body.smbb-skin .passflow-walkin-choice:focus {
+    border-color: var(--smbb-t-accent);
+    box-shadow: 0 0 0 3px rgba(var(--smbb-t-accent-rgb), 0.18);
+}
+
+body.smbb-skin .passflow-force-switch input:focus-visible + .passflow-force-switch-ui {
+    outline-color: var(--smbb-t-accent);
+}
+
+/* Calendrier : carte arrondie, en-têtes teintés. */
+body.smbb-skin .passflow-admin .passflow-cal {
+    background: var(--smbb-t-card);
+    border-radius: 14px;
+    box-shadow: 0 1px 2px rgba(28, 24, 32, 0.05), 0 8px 24px -10px rgba(28, 24, 32, 0.12);
+    overflow: hidden;
+}
+
+body.smbb-skin .passflow-admin .passflow-cal-head {
+    background: color-mix(in srgb, var(--smbb-t-fill) 60%, var(--smbb-t-card));
+    letter-spacing: 0.04em;
+}
+
+body.smbb-skin .passflow-admin .passflow-cal-day.is-outside,
+body.smbb-skin .passflow-admin .passflow-cal-day.is-past {
+    background: color-mix(in srgb, var(--smbb-t-bg) 70%, var(--smbb-t-card));
+}
+
+body.smbb-skin .passflow-admin .passflow-cal-day {
+    transition: background-color .15s ease;
+}
+
+body.smbb-skin .passflow-admin .passflow-cal-day:hover {
+    background: rgba(var(--smbb-t-accent-rgb), 0.035);
+}
+
+body.smbb-skin .passflow-admin .passflow-chip {
+    transition: transform .15s cubic-bezier(.2, .8, .2, 1), box-shadow .15s ease;
+}
+
+body.smbb-skin .passflow-admin .passflow-chip:hover {
+    box-shadow: 0 4px 12px -6px rgba(28, 24, 32, 0.35);
+    filter: none;
+    transform: translateY(-1px);
+}
+
+/* Tableau de bord : cartes avec ombre douce et léger soulèvement au survol. */
+body.smbb-skin .passflow-admin .passflow-dash {
+    --passflow-ok: #17845a;
+    --passflow-ok-soft: #dff3ea;
+    --passflow-warn: #b5650c;
+    --passflow-warn-soft: #fbeedd;
+    --passflow-bad: #c0322b;
+    --passflow-bad-soft: #fbe4e2;
+    --passflow-info: var(--smbb-t-accent);
+    --passflow-info-soft: var(--smbb-t-accent-soft);
+}
+
+body.smbb-skin .passflow-admin .passflow-dash h1 {
+    font-weight: 650;
+    letter-spacing: -0.025em;
+}
+
+body.smbb-skin .passflow-admin .passflow-dash-slot,
+body.smbb-skin .passflow-admin .passflow-dash-todo,
+body.smbb-skin .passflow-admin .passflow-dash-kpi,
+body.smbb-skin .passflow-admin .passflow-dash-strip,
+body.smbb-skin .passflow-admin .passflow-dash-feed,
+body.smbb-skin .passflow-admin .passflow-dash-empty {
+    background: var(--smbb-t-card);
+    border-color: transparent;
+    border-radius: 16px;
+    box-shadow: 0 1px 2px rgba(28, 24, 32, 0.05), 0 8px 24px -10px rgba(28, 24, 32, 0.12), 0 0 0 1px var(--smbb-t-line);
+}
+
+body.smbb-skin .passflow-admin .passflow-dash-slot,
+body.smbb-skin .passflow-admin a.passflow-dash-kpi {
+    transition: transform .2s cubic-bezier(.2, .8, .2, 1), box-shadow .2s ease;
+}
+
+body.smbb-skin .passflow-admin .passflow-dash-slot:hover,
+body.smbb-skin .passflow-admin a.passflow-dash-kpi:hover {
+    box-shadow: 0 2px 4px rgba(28, 24, 32, 0.06), 0 16px 32px -14px rgba(28, 24, 32, 0.22), 0 0 0 1px var(--smbb-t-line);
+    transform: translateY(-2px);
+}
+
+body.smbb-skin .passflow-admin .passflow-dash-slot.is-now {
+    box-shadow: 0 0 0 2px var(--smbb-t-accent), 0 12px 28px -12px rgba(var(--smbb-t-accent-rgb), 0.45);
+}
+
+body.smbb-skin .passflow-admin .passflow-dash-kpi strong {
+    font-weight: 650;
+    letter-spacing: -0.02em;
+}
+
+body.smbb-skin .passflow-admin .passflow-dash-bar {
+    background: var(--smbb-t-fill);
+}
+
+body.smbb-skin .passflow-admin .passflow-dash-bar i {
+    animation: passflow-skin-grow .7s cubic-bezier(.2, .8, .2, 1) both;
+    transform-origin: left center;
+}
+
+body.smbb-skin .passflow-admin .passflow-dash-ev {
+    border-radius: 8px;
+    transition: transform .15s ease;
+}
+
+body.smbb-skin .passflow-admin .passflow-dash-ev:hover {
+    filter: none;
+    transform: translateY(-1px);
+}
+
+/* Entrée en douceur des blocs du tableau de bord. */
+body.smbb-skin .passflow-admin .passflow-dash > * {
+    animation: passflow-skin-in .42s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+body.smbb-skin .passflow-admin .passflow-dash > :nth-child(2) { animation-delay: .05s; }
+body.smbb-skin .passflow-admin .passflow-dash > :nth-child(3) { animation-delay: .1s; }
+body.smbb-skin .passflow-admin .passflow-dash > :nth-child(4) { animation-delay: .15s; }
+body.smbb-skin .passflow-admin .passflow-dash > :nth-child(n+5) { animation-delay: .2s; }
+
+@keyframes passflow-skin-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes passflow-skin-grow {
+    from { transform: scaleX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.smbb-skin .passflow-admin *,
+    body.smbb-skin .passflow-admin .passflow-dash > * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* Espace intervenant : onglets et filtres actifs aux couleurs du thème (plus de noir). */
+body.smbb-skin .wrap.passflow-admin .passflow-agenda-tabs a {
+    background: var(--smbb-t-card);
+    border-color: var(--smbb-t-line);
+    color: var(--smbb-t-muted);
+    font-weight: 500;
+    transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+
+body.smbb-skin .wrap.passflow-admin .passflow-agenda-tabs a:hover {
+    color: var(--smbb-t-text);
+}
+
+body.smbb-skin .wrap.passflow-admin .passflow-agenda-tabs a.is-on,
+body.smbb-skin .passflow-rollcall-filters button.is-active {
+    background: var(--smbb-t-accent-soft);
+    border-color: var(--smbb-t-accent-soft);
+    color: var(--smbb-t-accent-deep);
+    font-weight: 600;
+}
+
+body.smbb-skin .passflow-rollcall-filters button {
+    background: var(--smbb-t-card);
+    border-color: var(--smbb-t-line);
+    color: var(--smbb-t-text);
+}
+
+/* Les lignes d'agenda sont des liens : texte normal, l'accent reste pour l'état. */
+body.smbb-skin .wrap.passflow-admin a.passflow-agenda-item,
+body.smbb-skin .wrap.passflow-admin a.passflow-agenda-item:hover,
+body.smbb-skin .wrap.passflow-admin a.passflow-agenda-item:focus {
+    color: var(--smbb-t-text);
+}
+
+body.smbb-skin .passflow-agenda-item {
+    border-color: transparent;
+    border-radius: 16px;
+    box-shadow: 0 1px 2px rgba(28, 24, 32, 0.05), 0 8px 24px -12px rgba(28, 24, 32, 0.14), 0 0 0 1px var(--smbb-t-line);
+    transition: transform .15s cubic-bezier(.2, .8, .2, 1), box-shadow .15s ease;
+}
+
+body.smbb-skin .passflow-agenda-item:hover,
+body.smbb-skin .passflow-agenda-item:focus {
+    box-shadow: 0 2px 4px rgba(28, 24, 32, 0.06), 0 16px 32px -14px rgba(28, 24, 32, 0.22), 0 0 0 1px var(--smbb-t-line);
+    transform: translateY(-1px);
+}
+
+body.smbb-skin .passflow-agenda-item.is-today {
+    box-shadow: 0 0 0 2px var(--smbb-t-accent), 0 10px 24px -14px rgba(var(--smbb-t-accent-rgb), 0.5);
+}
+
+/* Barre d'outils de l'appel : fond du thème, et sous la barre d'app quand il y en a une. */
+body.smbb-skin .passflow-rollcall-tools {
+    background: var(--smbb-t-bg);
+}
+
+body.smbb-skin.smbb-has-appbar .passflow-rollcall-tools {
+    top: calc(32px + var(--smbb-appbar-h, 0px));
+}

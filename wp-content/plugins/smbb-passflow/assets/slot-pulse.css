@@ -1,0 +1,66 @@
+
+/* Fiche Journée vivante : jauge animée + compte à rebours (Admin\SlotPulse, assets/slot-pulse.js). */
+.passflow-admin .passflow-pulse { --passflow-pulse-accent: var(--smbb-t-accent, var(--passflow-brand)); --passflow-pulse-rgb: var(--smbb-t-accent-rgb, 181, 71, 107); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 16px; margin: 0 0 18px; }
+.passflow-admin .passflow-pulse--high { --passflow-pulse-accent: #e07b3c; --passflow-pulse-rgb: 224, 123, 60; }
+.passflow-admin .passflow-pulse--full { --passflow-pulse-accent: #00a32a; --passflow-pulse-rgb: 0, 163, 42; }
+.passflow-admin .passflow-pulse-fill, .passflow-admin .passflow-pulse-clock { position: relative; display: flex; align-items: center; gap: 18px; min-width: 0; padding: 16px 20px; border: 1px solid var(--smbb-t-line, var(--passflow-line)); border-radius: 16px; background: var(--smbb-t-card, #fff); box-sizing: border-box; animation: passflow-pulse-in .5s cubic-bezier(.2, .8, .2, 1) both; }
+.passflow-admin .passflow-pulse-clock { flex-direction: column; align-items: flex-start; justify-content: center; gap: 6px; overflow: hidden; animation-delay: .08s; }
+.passflow-admin .passflow-pulse-gauge { position: relative; flex: 0 0 auto; width: 104px; height: 104px; }
+.passflow-admin .passflow-pulse-ring { display: block; width: 100%; height: 100%; }
+.passflow-admin .passflow-pulse-track { fill: none; stroke: var(--smbb-t-fill, #f0f0f1); stroke-width: 12; }
+.passflow-admin .passflow-pulse-bar { fill: none; stroke: var(--passflow-pulse-accent); stroke-width: 12; stroke-linecap: round; stroke-dashoffset: var(--passflow-pulse-offset); animation: passflow-pulse-ring 1.1s cubic-bezier(.2, .8, .2, 1) .15s both; filter: drop-shadow(0 2px 4px rgba(var(--passflow-pulse-rgb), .35)); }
+.passflow-admin .passflow-pulse-pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums; color: var(--smbb-t-text, var(--passflow-ink)); }
+.passflow-admin .passflow-pulse-pct strong { font-size: 26px; font-weight: 800; line-height: 1; letter-spacing: -.02em; }
+.passflow-admin .passflow-pulse-pct small { margin: 4px 0 0 1px; font-size: 13px; font-weight: 600; color: var(--smbb-t-muted, var(--passflow-muted)); }
+.passflow-admin .passflow-pulse-facts { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.passflow-admin .passflow-pulse-kicker { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--smbb-t-muted, var(--passflow-muted)); }
+.passflow-admin .passflow-pulse-big { font-variant-numeric: tabular-nums; color: var(--smbb-t-text, var(--passflow-ink)); line-height: 1.1; }
+.passflow-admin .passflow-pulse-big strong { font-size: 34px; font-weight: 800; letter-spacing: -.02em; }
+.passflow-admin .passflow-pulse-of { font-size: 18px; font-weight: 600; color: var(--smbb-t-muted, var(--passflow-muted)); }
+.passflow-admin .passflow-pulse-sub { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; color: var(--smbb-t-muted, var(--passflow-muted)); }
+.passflow-admin .passflow-pulse-chip { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0; text-transform: none; color: var(--passflow-pulse-accent); background: rgba(var(--passflow-pulse-rgb), .12); }
+.passflow-admin .passflow-pulse-chip.is-wait { color: #996800; background: rgba(219, 166, 23, .16); }
+.passflow-admin .passflow-pulse-chip.is-full { position: relative; overflow: hidden; color: #fff; background: var(--passflow-pulse-accent); }
+.passflow-admin .passflow-pulse-chip.is-full::after { content: ""; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, .55) 50%, transparent 70%); transform: translateX(-120%); animation: passflow-pulse-shine 1.4s ease 1.3s 1 both; }
+.passflow-admin .passflow-pulse-count { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; min-height: 40px; font-variant-numeric: tabular-nums; color: var(--smbb-t-text, var(--passflow-ink)); }
+.passflow-admin .passflow-pulse-seg { display: inline-flex; align-items: baseline; gap: 3px; }
+.passflow-admin .passflow-pulse-seg b { font-size: 34px; font-weight: 800; line-height: 1.1; letter-spacing: -.02em; }
+.passflow-admin .passflow-pulse-seg small, .passflow-admin .passflow-pulse-ends { font-size: 13px; font-weight: 600; color: var(--smbb-t-muted, var(--passflow-muted)); }
+.passflow-admin .passflow-pulse-seg:first-child b { color: var(--smbb-t-accent, var(--passflow-brand)); }
+.passflow-admin .passflow-pulse-state { font-size: 22px; font-weight: 700; line-height: 1.3; color: var(--smbb-t-text, var(--passflow-ink)); }
+.passflow-admin .passflow-pulse-when { font-size: 13px; color: var(--smbb-t-muted, var(--passflow-muted)); }
+.passflow-admin .passflow-pulse-clock::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--smbb-t-line, var(--passflow-line)); }
+.passflow-admin .passflow-pulse-clock.is-before::before, .passflow-admin .passflow-pulse-clock.is-near::before { background: var(--smbb-t-accent, var(--passflow-brand)); }
+.passflow-admin .passflow-pulse-clock.is-near { background: linear-gradient(135deg, rgba(var(--smbb-t-accent-rgb, 181, 71, 107), .07), var(--smbb-t-card, #fff) 60%); }
+.passflow-admin .passflow-pulse-clock.is-soon { border-color: rgba(224, 123, 60, .5); background: linear-gradient(135deg, rgba(224, 123, 60, .1), var(--smbb-t-card, #fff) 60%); }
+.passflow-admin .passflow-pulse-clock.is-soon::before { background: #e07b3c; }
+.passflow-admin .passflow-pulse-clock.is-soon .passflow-pulse-seg:last-child b { animation: passflow-pulse-beat 1s ease-in-out infinite; }
+.passflow-admin .passflow-pulse-clock.is-live { border-color: rgba(0, 163, 42, .45); background: linear-gradient(135deg, rgba(0, 163, 42, .09), var(--smbb-t-card, #fff) 60%); }
+.passflow-admin .passflow-pulse-clock.is-live::before { background: #00a32a; }
+.passflow-admin .passflow-pulse-clock.is-live .passflow-pulse-kicker { color: #007a1f; }
+.passflow-admin .passflow-pulse-clock.is-live .passflow-pulse-seg:first-of-type b { color: #007a1f; }
+.passflow-admin .passflow-pulse-clock.is-done .passflow-pulse-state, .passflow-admin .passflow-pulse-clock.is-off .passflow-pulse-state { color: var(--smbb-t-muted, var(--passflow-muted)); }
+.passflow-admin .passflow-pulse-clock.is-go { animation: passflow-pulse-go 1.2s ease; }
+.passflow-admin .passflow-pulse-dot { position: relative; width: 8px; height: 8px; border-radius: 50%; background: #00a32a; }
+.passflow-admin .passflow-pulse-dot::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #00a32a; animation: passflow-pulse-ping 1.6s cubic-bezier(0, 0, .2, 1) infinite; }
+@keyframes passflow-pulse-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes passflow-pulse-ring { from { stroke-dashoffset: var(--passflow-pulse-circ); } to { stroke-dashoffset: var(--passflow-pulse-offset); } }
+@keyframes passflow-pulse-shine { to { transform: translateX(120%); } }
+@keyframes passflow-pulse-beat { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+@keyframes passflow-pulse-ping { 75%, 100% { transform: scale(2.6); opacity: 0; } }
+@keyframes passflow-pulse-go { 0% { box-shadow: 0 0 0 0 rgba(0, 163, 42, .45); } 100% { box-shadow: 0 0 0 18px rgba(0, 163, 42, 0); } }
+@media (max-width: 960px) { .passflow-admin .passflow-pulse { grid-template-columns: 1fr; } }
+@media (max-width: 480px) {
+  .passflow-admin .passflow-pulse-fill, .passflow-admin .passflow-pulse-clock { padding: 14px 16px; gap: 14px; }
+  .passflow-admin .passflow-pulse-gauge { width: 84px; height: 84px; }
+  .passflow-admin .passflow-pulse-pct strong { font-size: 21px; }
+  .passflow-admin .passflow-pulse-big strong, .passflow-admin .passflow-pulse-seg b { font-size: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .passflow-admin .passflow-pulse *, .passflow-admin .passflow-pulse *::before, .passflow-admin .passflow-pulse *::after, .passflow-admin .passflow-pulse-fill, .passflow-admin .passflow-pulse-clock { animation: none !important; transition: none !important; }
+}
+@media print {
+  .passflow-admin .passflow-pulse { grid-template-columns: 1fr 1fr; }
+  .passflow-admin .passflow-pulse *, .passflow-admin .passflow-pulse-fill, .passflow-admin .passflow-pulse-clock { animation: none !important; }
+  .passflow-admin .passflow-pulse-bar, .passflow-admin .passflow-pulse-chip, .passflow-admin .passflow-pulse-clock::before { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

@@ -1,0 +1,854 @@
+/* ==========================================================================
+ * CodeTool – peau « premium » à thèmes nommés (Aubergine en premier).
+ *
+ * Chargé après admin.css, seulement quand l'utilisateur n'est pas en apparence classique.
+ * Les couleurs du thème arrivent en variables --smbb-t-* posées sur body.smbb-skin par
+ * Skin::css() ; ce fichier ne contient aucune couleur de marque en dur. Pas de police
+ * ajoutée : la typo reste celle de l'admin WordPress.
+ * ========================================================================== */
+
+/* 1. Jetons : les --smbb-ui-* d'admin.css prennent les couleurs du thème. */
+body.smbb-skin .wrap.smbb-codetool,
+body.smbb-skin .smbb-ui-toasts,
+body.smbb-skin .smbb-ui-dialog,
+body.smbb-skin .passflow-admin {
+    --smbb-ui-accent: var(--smbb-t-accent);
+    --smbb-ui-accent-soft: var(--smbb-t-accent-soft);
+    --smbb-ui-text: var(--smbb-t-text);
+    --smbb-ui-muted: var(--smbb-t-muted);
+    --smbb-ui-line: var(--smbb-t-line);
+    --smbb-ui-line-strong: var(--smbb-t-line-strong);
+    --smbb-ui-card: var(--smbb-t-card);
+    --smbb-ui-fill: var(--smbb-t-fill);
+    --smbb-ui-radius: 16px;
+    --smbb-ui-radius-sm: 10px;
+    --smbb-ui-shadow: 0 1px 2px rgba(28, 24, 32, 0.05), 0 8px 24px -10px rgba(28, 24, 32, 0.12);
+    --smbb-ui-shadow-lg: 0 24px 64px -16px rgba(28, 24, 32, 0.28);
+    --smbb-ui-focus: 0 0 0 3px rgba(var(--smbb-t-accent-rgb), 0.24);
+    --smbb-ui-glow: 0 6px 18px -6px rgba(var(--smbb-t-accent-rgb), 0.55);
+    --smbb-ui-success: #17845a;
+    --smbb-ui-danger: #c0322b;
+    --smbb-ui-warning: #b5650c;
+    --smbb-ui-ease: cubic-bezier(.2, .8, .2, 1);
+}
+
+/* 2. Fond de page légèrement teinté, comme la maquette. */
+body.smbb-skin,
+body.smbb-skin #wpwrap,
+body.smbb-skin #wpcontent,
+body.smbb-skin #wpbody-content {
+    background: var(--smbb-t-bg);
+}
+
+body.smbb-skin .wrap.smbb-codetool a:where(:not(.button, .page-title-action, .smbb-codetool-preset, .smbb-codetool-hero-button)) {
+    color: var(--smbb-t-accent);
+}
+
+body.smbb-skin .wrap.smbb-codetool a:where(:not(.button, .page-title-action, .smbb-codetool-preset, .smbb-codetool-hero-button)):hover {
+    color: var(--smbb-t-accent-hover);
+}
+
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-primary-cell-link {
+    color: var(--smbb-t-text) !important;
+}
+
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-primary-cell-link:hover {
+    color: var(--smbb-t-accent) !important;
+}
+
+/* 3. En-tête de page : icône en pastille teintée, titre plus affirmé. */
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-page-icon {
+    background: linear-gradient(145deg, var(--smbb-t-accent-soft), var(--smbb-t-card));
+    box-shadow: inset 0 0 0 1px rgba(var(--smbb-t-accent-rgb), 0.16), 0 6px 16px -10px rgba(var(--smbb-t-accent-rgb), 0.6);
+    color: var(--smbb-t-accent);
+}
+
+body.smbb-skin .wrap.smbb-codetool .wp-heading-inline,
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-page-title {
+    font-weight: 650;
+    letter-spacing: -0.025em;
+}
+
+/* 4. Boutons. */
+body.smbb-skin .wrap.smbb-codetool .button,
+body.smbb-skin .wrap.smbb-codetool .page-title-action {
+    text-decoration: none;
+    transition: background-color .18s var(--smbb-ui-ease), box-shadow .18s var(--smbb-ui-ease), transform .12s var(--smbb-ui-ease), color .18s ease;
+}
+
+body.smbb-skin .wrap.smbb-codetool .button:hover {
+    background: var(--smbb-t-fill-hover);
+}
+
+body.smbb-skin .wrap.smbb-codetool .button-primary,
+body.smbb-skin .wrap.smbb-codetool .page-title-action {
+    background: var(--smbb-t-accent);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 1px 2px rgba(var(--smbb-t-accent-rgb), 0.4);
+    color: var(--smbb-t-accent-ink);
+}
+
+body.smbb-skin .wrap.smbb-codetool .button-primary:hover,
+body.smbb-skin .wrap.smbb-codetool .page-title-action:hover {
+    background: var(--smbb-t-accent-hover);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), var(--smbb-ui-glow);
+    color: var(--smbb-t-accent-ink);
+    transform: translateY(-1px);
+}
+
+body.smbb-skin .wrap.smbb-codetool .button-primary:active,
+body.smbb-skin .wrap.smbb-codetool .page-title-action:active {
+    transform: translateY(0) scale(0.98);
+}
+
+body.smbb-skin .wrap.smbb-codetool .button-link,
+body.smbb-skin .wrap.smbb-codetool .button-link:hover {
+    background: transparent;
+    box-shadow: none;
+    color: var(--smbb-t-accent);
+    transform: none;
+}
+
+body.smbb-skin .wrap.smbb-codetool .button:focus-visible,
+body.smbb-skin .wrap.smbb-codetool .page-title-action:focus-visible {
+    box-shadow: var(--smbb-ui-focus);
+}
+
+/* 5. Champs : contour net, anneau de focus aux couleurs du thème. */
+body.smbb-skin .wrap.smbb-codetool input:focus,
+body.smbb-skin .wrap.smbb-codetool select:focus,
+body.smbb-skin .wrap.smbb-codetool textarea:focus {
+    border-color: var(--smbb-t-accent);
+    box-shadow: var(--smbb-ui-focus);
+}
+
+/* Cases cochées : fond de la couleur du thème, coche blanche (WordPress la dessine en bleu). */
+body.smbb-skin .wrap.smbb-codetool input[type="checkbox"]:checked {
+    background: var(--smbb-t-accent);
+    border-color: var(--smbb-t-accent);
+}
+
+body.smbb-skin .wrap.smbb-codetool input[type="checkbox"]:checked::before {
+    content: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%23ffffff%27%2F%3E%3C%2Fsvg%3E");
+}
+
+/* Boutons radio : anneau épais de la couleur du thème, sans le point de WordPress (qui suit le
+   jeu de couleurs de l'admin et donnait un rond bleu autour d'un point coloré). */
+body.smbb-skin .wrap.smbb-codetool input[type="radio"]:checked {
+    background: #fff;
+    border: 5px solid var(--smbb-t-accent);
+    box-shadow: none;
+}
+
+body.smbb-skin .wrap.smbb-codetool input[type="radio"]:checked::before {
+    content: none;
+    display: none;
+}
+
+body.smbb-skin .wrap.smbb-codetool input[type="radio"]:focus-visible {
+    box-shadow: var(--smbb-ui-focus);
+}
+
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-toggle-input:checked + .smbb-codetool-toggle-track {
+    background: var(--smbb-t-accent);
+    border-color: var(--smbb-t-accent);
+}
+
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-toggle-input:focus + .smbb-codetool-toggle-track {
+    box-shadow: var(--smbb-ui-focus);
+}
+
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-toggle-thumb {
+    transition: transform .22s var(--smbb-ui-ease);
+}
+
+/* 6. Onglets segmentés et préfiltres. */
+body.smbb-skin .wrap.smbb-codetool .nav-tab-wrapper {
+    background: var(--smbb-t-fill);
+}
+
+body.smbb-skin .wrap.smbb-codetool .nav-tab-wrapper > .nav-tab {
+    color: var(--smbb-t-muted);
+}
+
+body.smbb-skin .wrap.smbb-codetool .nav-tab-wrapper > .nav-tab:hover {
+    color: var(--smbb-t-text);
+}
+
+body.smbb-skin .wrap.smbb-codetool .nav-tab-wrapper > .nav-tab-active .dashicons {
+    color: var(--smbb-t-accent);
+}
+
+body.smbb-skin .wrap.smbb-codetool .nav-tab-wrapper > .nav-tab-active,
+body.smbb-skin .wrap.smbb-codetool .nav-tab-wrapper > .nav-tab-active:hover,
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-tab-button.is-active,
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-preset.is-active {
+    background: var(--smbb-t-card);
+    box-shadow: 0 1px 2px rgba(28, 24, 32, 0.08), 0 2px 8px -4px rgba(28, 24, 32, 0.16);
+    color: var(--smbb-t-text);
+}
+
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-presets {
+    background: var(--smbb-t-fill);
+    border-radius: 12px;
+}
+
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-preset {
+    color: var(--smbb-t-muted);
+    font-weight: 500;
+    transition: background-color .15s ease, color .15s ease;
+}
+
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-preset:hover {
+    color: var(--smbb-t-text);
+}
+
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-preset:focus-visible {
+    box-shadow: var(--smbb-ui-focus);
+}
+
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-preset-count {
+    background: var(--smbb-t-line);
+    color: var(--smbb-t-text);
+}
+
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-preset.is-active .smbb-codetool-preset-count {
+    background: var(--smbb-t-accent);
+    color: var(--smbb-t-accent-ink);
+}
+
+/* 7. Cartes : sections, panneaux, tables. */
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-section,
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-fieldset.postbox,
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-panel,
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-details-panel,
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-table,
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-metric {
+    box-shadow: var(--smbb-ui-shadow), 0 0 0 1px var(--smbb-t-line);
+}
+
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-section-icon {
+    background: var(--smbb-t-accent-soft);
+    color: var(--smbb-t-accent);
+}
+
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-table thead th,
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-table thead td {
+    background: color-mix(in srgb, var(--smbb-t-fill) 55%, var(--smbb-t-card));
+}
+
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-table tbody tr {
+    transition: background-color .12s ease;
+}
+
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-table tbody tr:hover {
+    background: rgba(var(--smbb-t-accent-rgb), 0.045);
+}
+
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-table tbody tr:has(.check-column input:checked) {
+    background: rgba(var(--smbb-t-accent-rgb), 0.08);
+}
+
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-table tbody tr:has(.check-column input:checked) td:first-child {
+    box-shadow: inset 3px 0 0 var(--smbb-t-accent);
+}
+
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-tablenav-pages .page-numbers.current {
+    background: var(--smbb-t-accent);
+    color: var(--smbb-t-accent-ink);
+}
+
+/* Écran vide : pastille teintée. */
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-empty-icon {
+    background: var(--smbb-t-accent-soft);
+    color: var(--smbb-t-accent);
+}
+
+/* Notice d'info et barre d'enregistrement. */
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-notice.is-info::before {
+    background: var(--smbb-t-accent);
+}
+
+body.smbb-skin .wrap.smbb-codetool form.is-dirty p.submit .smbb-ui-dirty::before {
+    background: var(--smbb-t-accent);
+}
+
+/* 8. Vue d'ensemble CodeTool : le bandeau prend la couleur du thème. */
+body.smbb-skin .smbb-codetool-hero {
+    background:
+        radial-gradient(circle at 16% 20%, rgba(var(--smbb-t-accent-rgb), 0.45), transparent 38%),
+        radial-gradient(circle at 70% 90%, rgba(255, 255, 255, 0.08), transparent 30%),
+        linear-gradient(118deg, var(--smbb-t-accent-deep) 0%, color-mix(in srgb, var(--smbb-t-accent-deep) 70%, #000) 60%, #17131a 100%);
+    border-radius: 18px;
+    box-shadow: var(--smbb-ui-shadow-lg);
+}
+
+body.smbb-skin .smbb-codetool-hero-button.is-primary {
+    background: var(--smbb-t-accent);
+    color: var(--smbb-t-accent-ink);
+}
+
+body.smbb-skin .smbb-codetool-hero-button.is-primary:hover,
+body.smbb-skin .smbb-codetool-hero-button.is-primary:focus {
+    box-shadow: var(--smbb-ui-glow);
+    filter: brightness(1.06);
+}
+
+body.smbb-skin .smbb-codetool-hero-chip {
+    background: rgba(255, 255, 255, 0.16);
+    color: #fff;
+}
+
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-hero a.smbb-codetool-hero-footer-link {
+    color: rgba(255, 255, 255, 0.86) !important;
+}
+
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-hero a.smbb-codetool-hero-footer-link:hover {
+    color: #fff !important;
+}
+
+/* 9. Notices WordPress affichées sur nos pages : cartes arrondies. */
+body.smbb-skin #wpbody-content > .notice,
+body.smbb-skin #wpbody-content > .updated,
+body.smbb-skin #wpbody-content > .error,
+body.smbb-skin .wrap.smbb-codetool > .notice {
+    border-radius: 12px;
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 0;
+    box-shadow: var(--smbb-ui-shadow, 0 1px 2px rgba(0, 0, 0, .05)), 0 0 0 1px var(--smbb-t-line);
+}
+
+/* 10. Toasts et fenêtre de confirmation. */
+body.smbb-skin .smbb-ui-toast.is-info::before {
+    background: var(--smbb-t-accent-soft);
+}
+
+body.smbb-skin .smbb-ui-dialog-card {
+    border-radius: 20px;
+    box-shadow: var(--smbb-ui-shadow-lg);
+    color: var(--smbb-t-text);
+}
+
+body.smbb-skin .smbb-ui-dialog-text {
+    color: var(--smbb-t-muted);
+}
+
+body.smbb-skin .smbb-ui-dialog-actions .is-cancel {
+    background: var(--smbb-t-fill);
+    color: var(--smbb-t-text);
+}
+
+body.smbb-skin .smbb-ui-dialog-actions button:focus-visible {
+    box-shadow: var(--smbb-ui-focus);
+}
+
+body.smbb-skin .smbb-ui-dialog::backdrop {
+    background: rgba(28, 24, 32, 0.36);
+}
+
+/* 11. Mouvement : les blocs de la page arrivent en douceur, l'un après l'autre. */
+@keyframes smbb-skin-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+}
+
+body.smbb-skin .wrap.smbb-codetool > *,
+body.smbb-skin .passflow-admin > .passflow-sections {
+    animation: smbb-skin-in .42s var(--smbb-ui-ease) both;
+}
+
+body.smbb-skin .wrap.smbb-codetool > :nth-child(2) { animation-delay: .04s; }
+body.smbb-skin .wrap.smbb-codetool > :nth-child(3) { animation-delay: .08s; }
+body.smbb-skin .wrap.smbb-codetool > :nth-child(4) { animation-delay: .12s; }
+body.smbb-skin .wrap.smbb-codetool > :nth-child(5) { animation-delay: .16s; }
+body.smbb-skin .wrap.smbb-codetool > :nth-child(n+6) { animation-delay: .2s; }
+
+/* La barre d'enregistrement collante ne doit pas être décalée par l'animation. */
+body.smbb-skin .wrap.smbb-codetool > form,
+body.smbb-skin .wrap.smbb-codetool > .form_container {
+    animation-name: smbb-skin-fade;
+}
+
+@keyframes smbb-skin-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.smbb-skin .wrap.smbb-codetool *,
+    body.smbb-skin .wrap.smbb-codetool > *,
+    body.smbb-skin .passflow-admin > * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* ==========================================================================
+ * 12. Barre d'app (AppBar.php) : nom de l'app, groupes en onglets, recherche,
+ *     « + Créer », puis les pages du groupe ouvert. Collée sous la barre d'admin.
+ * ========================================================================== */
+body.smbb-skin .smbb-appbar {
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    backdrop-filter: saturate(180%) blur(14px);
+    background: color-mix(in srgb, var(--smbb-t-card) 86%, transparent);
+    border-bottom: 1px solid var(--smbb-t-line);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 6px 20px -16px rgba(28, 24, 32, 0.35);
+    color: var(--smbb-t-text);
+    margin: 0 0 8px -20px;
+    position: sticky;
+    top: 32px;
+    z-index: 9989;
+}
+
+body.smbb-skin .smbb-appbar-main {
+    align-items: center;
+    display: flex;
+    gap: 18px;
+    min-height: 58px;
+    padding: 8px 24px;
+}
+
+body.smbb-skin .smbb-appbar-brand {
+    align-items: center;
+    color: var(--smbb-t-text);
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: 16px;
+    font-weight: 650;
+    gap: 10px;
+    letter-spacing: -0.015em;
+    text-decoration: none;
+}
+
+body.smbb-skin .smbb-appbar-brand:hover,
+body.smbb-skin .smbb-appbar-brand:focus {
+    color: var(--smbb-t-text);
+}
+
+body.smbb-skin .smbb-appbar-icon {
+    align-items: center;
+    background-color: var(--smbb-t-accent);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 18px;
+    border-radius: 9px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 4px 10px -4px rgba(var(--smbb-t-accent-rgb), 0.6);
+    color: var(--smbb-t-accent-ink);
+    display: inline-flex;
+    font-size: 18px;
+    height: 32px;
+    justify-content: center;
+    line-height: 1;
+    width: 32px;
+}
+
+body.smbb-skin .smbb-appbar-icon[style] {
+    background-color: var(--smbb-t-accent-soft);
+}
+
+body.smbb-skin .smbb-appbar-icon.dashicons::before {
+    line-height: 32px;
+}
+
+body.smbb-skin .smbb-appbar-tabs {
+    background: var(--smbb-t-fill);
+    border-radius: 12px;
+    display: flex;
+    gap: 2px;
+    min-width: 0;
+    overflow-x: auto;
+    padding: 3px;
+    scrollbar-width: none;
+}
+
+body.smbb-skin .smbb-appbar-tab {
+    align-items: center;
+    border-radius: 9px;
+    color: var(--smbb-t-muted);
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: 13px;
+    font-weight: 500;
+    gap: 6px;
+    padding: 7px 14px;
+    text-decoration: none;
+    transition: background-color .15s ease, color .15s ease, box-shadow .15s ease;
+    white-space: nowrap;
+}
+
+body.smbb-skin .smbb-appbar-tab:hover {
+    color: var(--smbb-t-text);
+}
+
+body.smbb-skin .smbb-appbar-tab.is-active {
+    background: var(--smbb-t-card);
+    box-shadow: 0 1px 2px rgba(28, 24, 32, 0.08), 0 2px 8px -4px rgba(28, 24, 32, 0.18);
+    color: var(--smbb-t-text);
+    font-weight: 600;
+}
+
+body.smbb-skin .smbb-appbar a:focus-visible,
+body.smbb-skin .smbb-appbar button:focus-visible,
+body.smbb-skin .smbb-appbar summary:focus-visible {
+    box-shadow: 0 0 0 3px rgba(var(--smbb-t-accent-rgb), 0.28);
+    outline: none;
+}
+
+/* Clic à la souris : pas l'anneau bleu de WordPress (a:focus), seulement au clavier (ci-dessus). */
+body.smbb-skin .smbb-appbar :is(a, button, summary):not(.is-active):focus:not(:focus-visible) {
+    box-shadow: none;
+    outline: none;
+}
+
+body.smbb-skin .smbb-appbar-count {
+    background: #c0322b;
+    border-radius: 999px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 18px;
+    min-width: 18px;
+    padding: 0 5px;
+    text-align: center;
+}
+
+body.smbb-skin .smbb-appbar-tools {
+    align-items: center;
+    display: flex;
+    flex: 0 0 auto;
+    gap: 10px;
+    margin-left: auto;
+}
+
+body.smbb-skin .smbb-appbar-search {
+    align-items: center;
+    background: var(--smbb-t-card);
+    border: 1px solid var(--smbb-t-line);
+    border-radius: 10px;
+    color: var(--smbb-t-muted);
+    cursor: pointer;
+    display: inline-flex;
+    font: inherit;
+    font-size: 13px;
+    gap: 8px;
+    min-height: 36px;
+    min-width: 230px;
+    padding: 0 8px 0 10px;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+body.smbb-skin .smbb-appbar-search[hidden] {
+    display: none;
+}
+
+body.smbb-skin .smbb-appbar-search:hover {
+    border-color: var(--smbb-t-line-strong);
+    box-shadow: 0 2px 8px -4px rgba(28, 24, 32, 0.2);
+}
+
+body.smbb-skin .smbb-appbar-search .dashicons {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+}
+
+body.smbb-skin .smbb-appbar-search-label {
+    flex: 1;
+    text-align: left;
+}
+
+body.smbb-skin .smbb-appbar kbd {
+    background: var(--smbb-t-fill);
+    border: 1px solid var(--smbb-t-line);
+    border-radius: 6px;
+    color: var(--smbb-t-muted);
+    font-size: 11px;
+    padding: 1px 6px;
+}
+
+body.smbb-skin .smbb-appbar-create {
+    position: relative;
+}
+
+body.smbb-skin .smbb-appbar-create-button {
+    align-items: center;
+    background: var(--smbb-t-accent);
+    border-radius: 10px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 1px 2px rgba(var(--smbb-t-accent-rgb), 0.4);
+    color: var(--smbb-t-accent-ink);
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 13px;
+    font-weight: 600;
+    gap: 6px;
+    list-style: none;
+    min-height: 36px;
+    padding: 0 14px 0 10px;
+    transition: background-color .15s ease, box-shadow .15s ease, transform .12s ease;
+    user-select: none;
+}
+
+body.smbb-skin .smbb-appbar-create-button::-webkit-details-marker {
+    display: none;
+}
+
+body.smbb-skin .smbb-appbar-create-button:hover {
+    background: var(--smbb-t-accent-hover);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 6px 18px -6px rgba(var(--smbb-t-accent-rgb), 0.55);
+    transform: translateY(-1px);
+}
+
+body.smbb-skin .smbb-appbar-create-button .dashicons {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+}
+
+body.smbb-skin .smbb-appbar-menu {
+    animation: smbb-appbar-pop .16s cubic-bezier(.2, .8, .2, 1);
+    background: var(--smbb-t-card);
+    border-radius: 14px;
+    box-shadow: 0 24px 48px -16px rgba(28, 24, 32, 0.32), 0 0 0 1px var(--smbb-t-line);
+    display: grid;
+    min-width: 240px;
+    padding: 6px;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    z-index: 2;
+}
+
+body.smbb-skin .smbb-appbar-menu a {
+    border-radius: 9px;
+    color: var(--smbb-t-text);
+    font-size: 13px;
+    padding: 9px 12px;
+    text-decoration: none;
+}
+
+body.smbb-skin .smbb-appbar-menu a:hover,
+body.smbb-skin .smbb-appbar-menu a:focus {
+    background: var(--smbb-t-accent-soft);
+    color: var(--smbb-t-accent-deep);
+}
+
+@keyframes smbb-appbar-pop {
+    from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+}
+
+body.smbb-skin .smbb-appbar-sub {
+    display: flex;
+    gap: 4px;
+    /* overflow-x: auto rogne aussi en vertical : 4px de marge en haut (repris par la marge négative)
+       pour que l'anneau de focus des pastilles ne soit pas coupé. */
+    margin-top: -4px;
+    overflow-x: auto;
+    padding: 4px 24px 10px;
+    scrollbar-width: none;
+}
+
+body.smbb-skin .smbb-appbar-pill {
+    align-items: center;
+    border-radius: 999px;
+    color: var(--smbb-t-muted);
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: 13px;
+    font-weight: 500;
+    gap: 6px;
+    padding: 5px 12px;
+    text-decoration: none;
+    transition: background-color .15s ease, color .15s ease;
+    white-space: nowrap;
+}
+
+body.smbb-skin .smbb-appbar-pill:hover {
+    background: var(--smbb-t-fill);
+    color: var(--smbb-t-text);
+}
+
+body.smbb-skin .smbb-appbar-pill.is-active {
+    background: var(--smbb-t-accent-soft);
+    color: var(--smbb-t-accent-deep);
+    font-weight: 600;
+}
+
+@media screen and (max-width: 782px) {
+    body.smbb-skin .smbb-appbar {
+        margin-left: -10px;
+        position: static;
+    }
+
+    body.smbb-skin .smbb-appbar-main {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px 12px;
+    }
+
+    body.smbb-skin .smbb-appbar-tabs {
+        order: 3;
+        width: 100%;
+    }
+
+    body.smbb-skin .smbb-appbar-search {
+        min-width: 0;
+    }
+
+    body.smbb-skin .smbb-appbar-search-label,
+    body.smbb-skin .smbb-appbar-search kbd {
+        display: none;
+    }
+
+    body.smbb-skin .smbb-appbar-sub {
+        padding: 4px 12px 10px;
+    }
+}
+
+/* Palette de commandes maison (quand WordPress n'a pas la sienne sur l'écran). */
+body.smbb-skin .smbb-palette {
+    background: transparent;
+    border: 0;
+    margin: 12vh auto 0;
+    max-width: calc(100vw - 32px);
+    padding: 0;
+    width: 560px;
+}
+
+body.smbb-skin .smbb-palette::backdrop {
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+    background: rgba(28, 24, 32, 0.32);
+}
+
+body.smbb-skin .smbb-palette[open] {
+    animation: smbb-appbar-pop .18s cubic-bezier(.2, .8, .2, 1);
+}
+
+body.smbb-skin .smbb-palette-card {
+    background: var(--smbb-t-card);
+    border-radius: 18px;
+    box-shadow: 0 30px 70px -20px rgba(28, 24, 32, 0.5), 0 0 0 1px var(--smbb-t-line);
+    overflow: hidden;
+}
+
+body.smbb-skin .smbb-palette-input {
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--smbb-t-line);
+    border-radius: 0;
+    box-shadow: none;
+    color: var(--smbb-t-text);
+    font-size: 16px;
+    padding: 16px 18px;
+    width: 100%;
+}
+
+body.smbb-skin .smbb-palette-input:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+body.smbb-skin .smbb-palette-list {
+    margin: 0;
+    max-height: 50vh;
+    overflow-y: auto;
+    padding: 6px;
+}
+
+body.smbb-skin .smbb-palette-list li {
+    margin: 0;
+}
+
+body.smbb-skin .smbb-palette-list a {
+    border-radius: 10px;
+    color: var(--smbb-t-text);
+    display: block;
+    font-size: 14px;
+    padding: 10px 12px;
+    text-decoration: none;
+}
+
+body.smbb-skin .smbb-palette-list li.is-active a,
+body.smbb-skin .smbb-palette-list a:hover {
+    background: var(--smbb-t-accent-soft);
+    color: var(--smbb-t-accent-deep);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.smbb-skin .smbb-appbar *,
+    body.smbb-skin .smbb-palette {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* Petites icônes des onglets et pastilles de la barre d'app. */
+body.smbb-skin .smbb-appbar-glyph {
+    font-size: 16px;
+    height: 16px;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity .15s ease, color .15s ease;
+    width: 16px;
+}
+
+body.smbb-skin .smbb-appbar-tab:hover .smbb-appbar-glyph,
+body.smbb-skin .smbb-appbar-pill:hover .smbb-appbar-glyph {
+    opacity: 1;
+}
+
+body.smbb-skin .smbb-appbar-tab.is-active .smbb-appbar-glyph,
+body.smbb-skin .smbb-appbar-pill.is-active .smbb-appbar-glyph {
+    color: var(--smbb-t-accent);
+    opacity: 1;
+}
+
+body.smbb-skin .smbb-appbar-pill.is-active .smbb-appbar-glyph {
+    color: var(--smbb-t-accent-deep);
+}
+
+/* Icône entonnoir des listes. */
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-filter-toggle { background: var(--smbb-t-fill); }
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-filter-toggle:hover { background: var(--smbb-t-fill-hover); }
+body.smbb-skin .wrap.smbb-codetool .smbb-codetool-filter-toggle[aria-expanded="true"] { background: var(--smbb-t-accent-soft); color: var(--smbb-t-accent-deep); }
+
+/* ------------------------------------------------------------------ */
+/* Palettes à dégradé (Bleu Apple, UniFi…) : --smbb-t-grad n'existe que pour elles ;   */
+/* ailleurs background-image retombe sur none et l'aplat reste.                        */
+/* ------------------------------------------------------------------ */
+body.smbb-skin .wrap.smbb-codetool :is(.button-primary, .page-title-action),
+body.smbb-skin .smbb-codetool-hero-button.is-primary,
+body.smbb-skin .smbb-appbar-create-button,
+body.smbb-skin .smbb-appbar-icon:not([style]) {
+    background-image: var(--smbb-t-grad, none);
+}
+
+body.smbb-skin .wrap.smbb-codetool :is(.button-primary, .page-title-action):hover,
+body.smbb-skin .smbb-codetool-hero-button.is-primary:hover,
+body.smbb-skin .smbb-appbar-create-button:hover {
+    background-image: var(--smbb-t-grad-hover, none);
+}
+
+/* L'icône d'app règle background-size à 18px pour ses SVG : le dégradé, lui, couvre tout. */
+body.smbb-skin .smbb-appbar-icon:not([style]) {
+    background-size: 100% 100%;
+}
+
+/* Icône SVG (data URI) affichée en masque : elle suit currentColor comme une dashicon. */
+.smbb-svg-icon {
+    background-color: currentColor;
+    display: inline-block;
+    height: 1em;
+    -webkit-mask: var(--smbb-icon) center / contain no-repeat;
+    mask: var(--smbb-icon) center / contain no-repeat;
+    vertical-align: middle;
+    width: 1em;
+}
+
+.smbb-svg-icon.dashicons::before {
+    content: none;
+}
+
+.smbb-appbar-icon .smbb-svg-icon {
+    font-size: 18px;
+}

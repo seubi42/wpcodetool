@@ -168,7 +168,9 @@
       "parent": "smbb-codetool-scp",
       "title": "Forfaits",
       "icon": "dashicons-tag",
-      "position": 30
+      "position": 30,
+      "group": "Offre et facturation",
+      "groupIcon": "dashicons-money-alt"
     },
     "adminBar": {
       "newContent": false,

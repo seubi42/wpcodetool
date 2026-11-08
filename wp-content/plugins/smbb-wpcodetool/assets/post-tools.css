@@ -1,0 +1,318 @@
+/* ==========================================================================
+ * CodeTool – « Enfants de… » dans les listes hiérarchiques. Voir assets/post-tools.js.
+ * Couleurs : variables du thème CodeTool (--smbb-t-*), valeurs WordPress sinon.
+ * ========================================================================== */
+
+.smbb-children-filter {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 6px;
+    vertical-align: top;
+}
+
+/* WordPress décale les dashicons des boutons (marge négative, vertical-align, hauteur de ligne de 20 px) :
+   on les remet à plat pour qu'elles soient centrées par le flex du bouton. */
+.wp-core-ui .smbb-children-filter .button .dashicons,
+.smbb-children-filter .dashicons {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    line-height: 1;
+    vertical-align: 0;
+    top: 0;
+}
+
+.smbb-children-filter .dashicons::before {
+    display: block;
+    line-height: 1;
+}
+
+.wp-core-ui .smbb-children-open.button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Filtre actif : pastille « Enfants de X » + croix. */
+.smbb-children-chip {
+    display: inline-flex;
+    align-items: stretch;
+    min-height: 30px;
+    border: 1px solid color-mix(in srgb, var(--smbb-t-accent, #2271b1) 40%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--smbb-t-accent, #2271b1) 10%, transparent);
+    color: var(--smbb-t-accent-deep, var(--smbb-t-accent, #135e96));
+    overflow: hidden;
+}
+
+.smbb-children-chip-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 320px;
+    margin: 0;
+    padding: 0 6px 0 12px;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.smbb-children-chip-label strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.smbb-children-clear {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 9px 0 4px;
+    color: inherit;
+    text-decoration: none;
+}
+
+.smbb-children-clear:hover,
+.smbb-children-clear:focus,
+.smbb-children-chip-label:hover {
+    color: var(--smbb-t-text, #1d2327);
+}
+
+/* Fenêtre. */
+.smbb-children-dialog {
+    width: min(520px, calc(100vw - 32px));
+    max-height: min(640px, calc(100vh - 64px));
+    padding: 0;
+    border: 1px solid var(--smbb-t-line, #dcdcde);
+    border-radius: 16px;
+    background: var(--smbb-t-card, #fff);
+    color: var(--smbb-t-text, #1d2327);
+    box-shadow: 0 24px 60px -12px rgba(0, 0, 0, .35);
+}
+
+.smbb-children-dialog[open] {
+    display: flex;
+    flex-direction: column;
+}
+
+.smbb-children-dialog::backdrop {
+    background: rgba(15, 15, 20, .45);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+}
+
+.smbb-children-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 16px 8px 20px;
+}
+
+.smbb-children-head h2 {
+    margin: 0;
+    font-size: 16px;
+    color: inherit;
+}
+
+.smbb-children-close {
+    display: inline-flex;
+    padding: 4px;
+    border: 0;
+    border-radius: 8px;
+    background: none;
+    color: var(--smbb-t-muted, #646970);
+    cursor: pointer;
+}
+
+.smbb-children-close:hover {
+    background: var(--smbb-t-fill, #f0f0f1);
+    color: inherit;
+}
+
+.smbb-children-searchbox {
+    position: relative;
+    margin: 0 16px 8px;
+}
+
+.smbb-children-searchbox .dashicons {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    color: var(--smbb-t-muted, #646970);
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.smbb-children-dialog .smbb-children-search {
+    width: 100%;
+    min-height: 36px;
+    padding: 0 10px 0 34px;
+    border: 1px solid var(--smbb-t-line, #dcdcde);
+    border-radius: 10px;
+    background: var(--smbb-t-fill, #f6f7f7);
+    color: inherit;
+}
+
+.smbb-children-tree {
+    flex: 1 1 auto;
+    min-height: 80px;
+    padding: 0 8px 8px;
+    overflow-y: auto;
+}
+
+.smbb-children-tree ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.smbb-children-tree li {
+    margin: 0;
+}
+
+.smbb-children-item > ul {
+    display: none;
+}
+
+.smbb-children-item.is-open > ul {
+    display: block;
+}
+
+.smbb-children-row {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding-left: calc(var(--smbb-depth, 0) * 18px);
+}
+
+.smbb-children-toggle {
+    flex: none;
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: none;
+    color: var(--smbb-t-muted, #646970);
+    cursor: pointer;
+}
+
+.smbb-children-toggle::before {
+    content: "";
+    display: block;
+    width: 6px;
+    height: 6px;
+    margin: auto;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform .15s ease;
+}
+
+.smbb-children-item.is-open > .smbb-children-row > .smbb-children-toggle::before {
+    transform: rotate(45deg);
+}
+
+.smbb-children-toggle:disabled {
+    cursor: default;
+}
+
+.smbb-children-toggle:disabled::before {
+    width: 4px;
+    height: 4px;
+    border: 0;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: .4;
+    transform: none;
+}
+
+.smbb-children-toggle:not(:disabled):hover {
+    background: var(--smbb-t-fill, #f0f0f1);
+}
+
+.smbb-children-link {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 6px 8px;
+    border-radius: 8px;
+    color: inherit;
+    text-decoration: none;
+}
+
+.smbb-children-link:hover,
+.smbb-children-link:focus {
+    background: var(--smbb-t-fill, #f0f0f1);
+    color: inherit;
+    box-shadow: none;
+}
+
+.smbb-children-link.is-current {
+    background: color-mix(in srgb, var(--smbb-t-accent, #2271b1) 12%, transparent);
+    font-weight: 600;
+}
+
+.smbb-children-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.smbb-children-item.is-match > .smbb-children-row .smbb-children-title {
+    color: var(--smbb-t-accent-deep, var(--smbb-t-accent, #135e96));
+}
+
+.smbb-children-status {
+    flex: none;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: var(--smbb-t-fill, #f0f0f1);
+    color: var(--smbb-t-muted, #646970);
+    font-size: 11px;
+}
+
+.smbb-children-count {
+    flex: none;
+    min-width: 22px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--smbb-t-accent, #2271b1) 12%, transparent);
+    color: var(--smbb-t-accent-deep, var(--smbb-t-accent, #135e96));
+    font-size: 11px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+}
+
+.smbb-children-empty {
+    margin: 0;
+    padding: 4px 24px 12px;
+    color: var(--smbb-t-muted, #646970);
+}
+
+.smbb-children-foot {
+    margin: 0;
+    padding: 10px 20px 14px;
+    border-top: 1px solid var(--smbb-t-line, #dcdcde);
+    color: var(--smbb-t-muted, #646970);
+    font-size: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .smbb-children-toggle::before {
+        transition: none;
+    }
+}

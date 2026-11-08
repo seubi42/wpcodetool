@@ -1,0 +1,32 @@
+{
+  "codetool_appearance": {
+    "preset": "galet",
+    "theme": "aubergine"
+  },
+  "offer": {
+    "name": "Atelier mochi",
+    "location": "Atelier, Paris 11e",
+    "duration_minutes": 90,
+    "default_price": 75,
+    "default_capacity": 10,
+    "color": "#8c3c34",
+    "description": "Préparez vos mochis daifuku avec le chef : pâte, garnitures, façonnage. Dégustation et boîte à emporter."
+  },
+  "demo": {
+    "host": [
+      "Kenji",
+      "Tanaka"
+    ],
+    "time": "19:00",
+    "catalog": [
+      {
+        "name": "Thé matcha",
+        "price": 4
+      },
+      {
+        "name": "Coffret de wagashi",
+        "price": 18
+      }
+    ]
+  }
+}

@@ -136,7 +136,8 @@
       "parent": "smbb-codetool-scp",
       "title": "Équipes",
       "icon": "dashicons-groups",
-      "position": 20
+      "position": 20,
+      "group": "Clients"
     },
     "adminBar": {
       "newContent": false,

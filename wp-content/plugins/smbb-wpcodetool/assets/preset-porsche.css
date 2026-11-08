@@ -1,0 +1,334 @@
+/* ==========================================================================
+ * CodeTool – allure « Porsche » (CodeTool › Apparence › Style › Allure).
+ *
+ * Reprend les codes du Porsche Design System v4 (designsystem.porsche.com/v4) sans rien changer
+ * à la technique de WordPress : police Porsche Next (si chargée, sinon Arial Narrow / Arial),
+ * titres en graisse normale, aplats sans ombre ni dégradé, gris neutres « surface / canvas »,
+ * boutons à l'encre, anneau de focus bleu #1A44EA, couleurs d'état du design system.
+ * Chargé après les autres feuilles, seulement avec body.smbb-preset-porsche.
+ * Les couleurs restent celles de la palette choisie (la palette « Encre » est le noir du design system).
+ * Échelle : texte de base 16 px et contrôles de 40 px, comme le design system (l'admin WordPress est à 13 px).
+ * ========================================================================== */
+
+body.smbb-preset-porsche {
+    --smbb-pp-font: 'Porsche Next', 'Arial Narrow', Arial, 'Heiti SC', SimHei, sans-serif;
+    --smbb-pp-focus: #1a44ea;
+    --smbb-pp-radius: 12px;
+    --smbb-pp-radius-sm: 8px;
+    /* Pas de dégradé : les règles retombent sur leur aplat d'accent. */
+    --smbb-t-grad: initial;
+    --smbb-t-grad-hover: initial;
+}
+
+/* 1. Jetons des écrans CodeTool. */
+body.smbb-preset-porsche .wrap.smbb-codetool,
+body.smbb-preset-porsche .smbb-ui-toasts,
+body.smbb-preset-porsche .smbb-ui-dialog,
+body.smbb-preset-porsche .passflow-admin {
+    --smbb-ui-radius: var(--smbb-pp-radius);
+    --smbb-ui-radius-sm: var(--smbb-pp-radius-sm);
+    --smbb-ui-shadow: none;
+    --smbb-ui-shadow-lg: 0 24px 64px -24px rgba(1, 2, 5, .35);
+    --smbb-ui-glow: none;
+    --smbb-ui-focus: 0 0 0 2px var(--smbb-t-card), 0 0 0 4px var(--smbb-pp-focus);
+    --smbb-ui-success: #197e10;
+    --smbb-ui-danger: #ba171f;
+    --smbb-ui-warning: #ac5102;
+    --smbb-ui-ease: cubic-bezier(.25, .1, .25, 1);
+}
+
+html.smbb-dark body.smbb-preset-porsche .wrap.smbb-codetool,
+html.smbb-dark body.smbb-preset-porsche .passflow-admin {
+    --smbb-ui-success: #10c784;
+    --smbb-ui-danger: #fb3c3c;
+    --smbb-ui-warning: #f2903c;
+}
+
+/* 2. Typographie : Porsche Next partout, graisse normale pour les titres. */
+/* Par héritage : les icônes (dashicons, polices d'icônes des extensions) gardent leur police. */
+body.smbb-preset-porsche,
+body.smbb-preset-porsche :is(input, select, textarea, button, h1, h2, h3, h4, h5, h6),
+body.smbb-preset-porsche #wpadminbar *:not(.ab-icon, [class*="dashicons"]) {
+    font-family: var(--smbb-pp-font);
+}
+
+html body.smbb-preset-porsche.smbb-skin #wpbody-content > .wrap > h1.wp-heading-inline,
+html body.smbb-preset-porsche #wpbody-content .wrap :is(h1, .wp-heading-inline, .smbb-codetool-page-title),
+html body.smbb-preset-porsche #wpbody-content .passflow-admin h1 {
+    font-size: clamp(1.8rem, 1.56vw + 1.29rem, 2.75rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: 0;
+}
+
+body.smbb-preset-porsche #wpbody-content :is(h2, h3, .smbb-codetool-section-heading h3) {
+    font-weight: 600;
+    letter-spacing: 0;
+}
+
+body.smbb-preset-porsche #wpbody-content :is(.wrap > h2, .passflow-admin h2) {
+    font-size: clamp(1.27rem, .51vw + 1.16rem, 1.6rem);
+    font-weight: 400;
+}
+
+body.smbb-preset-porsche #wpbody-content :is(h3, .smbb-codetool-section-heading h3, .postbox .hndle) {
+    font-size: clamp(1.06rem, .21vw + 1.02rem, 1.2rem);
+}
+
+body.smbb-preset-porsche #wpbody-content :is(p, td, th, label, li) {
+    line-height: 1.5;
+}
+
+/* Petits libellés : capitales espacées, comme les en-têtes du design system. */
+body.smbb-preset-porsche :is(.smbb-cmdk-group, .smbb-codetool-field-label, .smbb-menu-group-label, .smbb-pf-tab) {
+    letter-spacing: .04em;
+}
+
+/* 2 bis. Échelle du design system : 16 px de base au lieu des 13-14 px de WordPress. */
+body.smbb-preset-porsche #wpbody-content,
+body.smbb-preset-porsche #wpbody-content :is(p, li, label, td, th, dd, dt, legend, input, select, textarea, .button, .page-title-action) {
+    font-size: 1rem;
+}
+
+body.smbb-preset-porsche #wpbody-content :is(.description, .smbb-theme-note, .row-actions, .subsubsub, .tablenav .displaying-num, .smbb-codetool-help, small) {
+    font-size: .875rem;
+}
+
+body.smbb-preset-porsche #wpbody-content :is(.wp-list-table, .smbb-codetool-table) :is(td, th) {
+    padding: 14px 14px;
+    font-size: .9375rem;
+}
+
+body.smbb-preset-porsche .wrap.smbb-codetool .smbb-codetool-section-header {
+    padding: 20px 28px;
+    background: transparent;
+}
+
+body.smbb-preset-porsche .wrap.smbb-codetool .smbb-codetool-section-body {
+    padding: 12px 28px 28px;
+}
+
+body.smbb-preset-porsche .wrap.smbb-codetool .smbb-codetool-section + .smbb-codetool-section {
+    margin-top: 24px;
+}
+
+body.smbb-preset-porsche #wpbody-content :is(.postbox .inside, .card) {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+body.smbb-preset-porsche #wpbody-content .form-table :is(th, td) {
+    padding-top: 18px;
+    padding-bottom: 18px;
+}
+
+/* Menu de gauche, barre d'app et barre du haut un cran au-dessus. */
+body.smbb-preset-porsche #adminmenu :is(a, .wp-menu-name) {
+    font-size: 15px;
+}
+
+body.smbb-preset-porsche #adminmenu .wp-submenu a {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+body.smbb-preset-porsche :is(.smbb-appbar-tab, .smbb-appbar-pill) {
+    font-size: 15px;
+}
+
+body.smbb-preset-porsche .smbb-appbar-tab {
+    padding: 9px 16px;
+}
+
+body.smbb-preset-porsche #wpadminbar :is(.ab-item, .ab-label, .ab-empty-item) {
+    font-size: 14px;
+}
+
+/* 3. Cartes : aplats sur fond « surface », sans ombre ni contour marqué. */
+body.smbb-preset-porsche .wrap.smbb-codetool :is(.smbb-codetool-section, .smbb-codetool-fieldset.postbox, .smbb-codetool-panel, .smbb-codetool-details-panel, .smbb-codetool-table, .smbb-codetool-metric),
+body.smbb-preset-porsche #wpbody-content :is(.postbox, .card, .wp-list-table, .welcome-panel) {
+    border-color: transparent;
+    box-shadow: none;
+}
+
+body.smbb-preset-porsche .wrap.smbb-codetool .smbb-codetool-page-icon,
+body.smbb-preset-porsche .wrap.smbb-codetool .smbb-codetool-section-icon {
+    background: var(--smbb-t-fill);
+    box-shadow: none;
+    color: var(--smbb-t-text);
+}
+
+body.smbb-preset-porsche .passflow-admin :is([class*="-card"], [class*="-tile"], [class*="-panel"], [class*="-box"]):not(button, a) {
+    box-shadow: none;
+}
+
+body.smbb-preset-porsche .smbb-codetool-hero {
+    background: var(--smbb-t-text);
+    background-image: none;
+    color: var(--smbb-t-card);
+    box-shadow: none;
+}
+
+/* 4. Boutons : encre pleine pour le principal, contour d'encre pour les autres. */
+body.smbb-preset-porsche #wpbody-content :is(.button, .page-title-action, .smbb-codetool-hero-button),
+body.smbb-preset-porsche.smbb-login .button:not(.wp-hide-pw) {
+    min-height: 40px;
+    padding: 0 20px;
+    border: 1px solid var(--smbb-t-text);
+    border-radius: var(--smbb-pp-radius-sm);
+    background: transparent;
+    background-image: none;
+    box-shadow: none;
+    color: var(--smbb-t-text);
+    font-weight: 400;
+    line-height: 38px;
+    letter-spacing: 0;
+    text-shadow: none;
+    transition: background-color .2s, border-color .2s, color .2s;
+}
+
+body.smbb-preset-porsche #wpbody-content :is(.button, .page-title-action):hover {
+    border-color: var(--smbb-t-text);
+    background: var(--smbb-t-fill);
+    color: var(--smbb-t-text);
+}
+
+body.smbb-preset-porsche #wpbody-content :is(.button-primary, .page-title-action),
+body.smbb-preset-porsche.smbb-login .button-primary {
+    border-color: var(--smbb-t-accent);
+    background: var(--smbb-t-accent);
+    background-image: none;
+    color: var(--smbb-t-accent-ink, #fff);
+    box-shadow: none;
+}
+
+body.smbb-preset-porsche #wpbody-content :is(.button-primary, .page-title-action):is(:hover, :focus),
+body.smbb-preset-porsche.smbb-login .button-primary:is(:hover, :focus) {
+    border-color: var(--smbb-t-accent-hover);
+    background: var(--smbb-t-accent-hover);
+    background-image: none;
+    color: var(--smbb-t-accent-ink, #fff);
+    box-shadow: none;
+    transform: none;
+}
+
+body.smbb-preset-porsche #wpbody-content .button.button-small {
+    min-height: 32px;
+    padding: 0 14px;
+    font-size: .875rem;
+    line-height: 30px;
+}
+
+/* « Options de l'écran » et « Aide » : discrets, contour fin. */
+body.smbb-preset-porsche #screen-meta-links .button.show-settings {
+    min-height: 34px;
+    border-color: var(--smbb-t-line-strong);
+    font-size: .875rem;
+    line-height: 32px;
+}
+
+body.smbb-preset-porsche #wpbody-content .button-link {
+    border: 0;
+    background: none;
+    min-height: 0;
+    padding: 0;
+    line-height: inherit;
+}
+
+/* 5. Champs : contour net, survol à l'encre. */
+body.smbb-preset-porsche #wpbody-content :is(input[type="text"], input[type="search"], input[type="email"], input[type="url"], input[type="password"], input[type="number"], input[type="tel"], input[type="date"], input[type="time"], input[type="datetime-local"], select, textarea),
+body.smbb-preset-porsche.smbb-login :is(input[type="text"], input[type="password"], input[type="email"]) {
+    border: 1px solid var(--smbb-t-line-strong);
+    border-radius: var(--smbb-pp-radius-sm);
+    box-shadow: none;
+}
+
+body.smbb-preset-porsche #wpbody-content :is(input[type="text"], input[type="search"], input[type="email"], input[type="url"], input[type="password"], input[type="number"], input[type="tel"], input[type="date"], input[type="time"], input[type="datetime-local"], select) {
+    min-height: 40px;
+    padding: 6px 12px;
+    line-height: 1.5;
+}
+
+body.smbb-preset-porsche #wpbody-content select:not([multiple]) {
+    padding-right: 34px;
+    background-position: right 10px top 55%;
+}
+
+body.smbb-preset-porsche #wpbody-content textarea {
+    padding: 10px 12px;
+}
+
+body.smbb-preset-porsche #wpbody-content :is(input, select, textarea):not([type="checkbox"], [type="radio"], [type="submit"], [type="button"]):hover {
+    border-color: var(--smbb-t-text);
+}
+
+body.smbb-preset-porsche #wpbody-content input[type="checkbox"] {
+    border-radius: 4px;
+}
+
+/* 6. Focus : l'anneau bleu du design system, partout. */
+body.smbb-preset-porsche :is(a, button, input, select, textarea, summary, [tabindex]):focus-visible,
+body.smbb-preset-porsche #wpbody-content :is(input, select, textarea):focus {
+    outline: 2px solid var(--smbb-pp-focus);
+    outline-offset: 2px;
+    box-shadow: none;
+}
+
+/* 7. Tableaux : en-têtes discrets, lignes séparées d'un trait fin. */
+body.smbb-preset-porsche #wpbody-content :is(.wp-list-table, .smbb-codetool-table) thead :is(th, td),
+body.smbb-preset-porsche #wpbody-content :is(.wp-list-table, .smbb-codetool-table) tfoot :is(th, td) {
+    color: var(--smbb-t-muted);
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+body.smbb-preset-porsche #wpbody-content :is(.wp-list-table, .smbb-codetool-table) :is(th, td) a.row-title,
+body.smbb-preset-porsche #wpbody-content .smbb-codetool-primary-cell-link {
+    font-weight: 600;
+}
+
+/* 8. Navigation : barre d'app, onglets et pastilles en aplats neutres. */
+body.smbb-preset-porsche :is(.smbb-appbar-tab, .smbb-codetool-tab-button, .smbb-codetool-preset, .smbb-pf-tab) {
+    font-weight: 400;
+}
+
+body.smbb-preset-porsche :is(.smbb-appbar-tab.is-active, .smbb-pf-tab.is-active, .smbb-pf-tab[aria-selected="true"]) {
+    font-weight: 600;
+}
+
+body.smbb-preset-porsche .smbb-appbar-icon {
+    background-image: none;
+    box-shadow: none;
+}
+
+/* 9. Page de connexion. */
+body.smbb-preset-porsche.smbb-login,
+body.smbb-preset-porsche.smbb-login :is(input, button, label, a, p, h1) {
+    font-family: var(--smbb-pp-font);
+}
+
+body.smbb-preset-porsche.smbb-login #loginform {
+    box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.smbb-preset-porsche * {
+        transition: none !important;
+    }
+}
+
+/* Heure de la page de connexion : encre pleine, graisse régulière, sans dégradé. */
+body.smbb-preset-porsche .smbb-login-clock-time {
+    font-weight: 400;
+    letter-spacing: -.02em;
+}
+
+body.smbb-preset-porsche .smbb-login-clock-time > span {
+    background: none;
+    -webkit-text-fill-color: currentColor;
+}
+
+body.smbb-preset-porsche .smbb-login-clock-date::after {
+    background: currentColor;
+}

@@ -1,0 +1,73 @@
+{
+  "name": "passflow_broadcast_queue",
+  "label": "Message en file",
+  "pluralLabel": "Messages en file",
+  "description": "File d'attente des messages d'une communication : un message par inscrit et par canal.",
+  "storage": {
+    "table": "passflow_broadcast_queue",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "broadcast_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "booking_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "channel": {
+      "type": "varchar",
+      "length": 10,
+      "nullable": false,
+      "default": ""
+    },
+    "status": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "queued"
+    },
+    "attempts": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "error": {
+      "type": "text",
+      "nullable": true
+    },
+    "sent_at": {
+      "type": "datetime",
+      "nullable": true
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_broadcast_status",
+      "type": "index",
+      "columns": [
+        "broadcast_id",
+        "status"
+      ]
+    }
+  ],
+  "admin": {
+    "enabled": false
+  },
+  "api": {
+    "enabled": false
+  }
+}

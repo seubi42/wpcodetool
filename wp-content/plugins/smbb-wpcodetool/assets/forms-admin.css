@@ -1,0 +1,574 @@
+/*
+ * Formulaires CodeTool : pages d'admin (liste, builder, entrées, reprise WPForms).
+ * Variables de la peau CodeTool (--smbb-ui-*), avec repli sur les couleurs de WordPress.
+ */
+.smbb-codetool {
+    --smbb-forms-accent: var(--smbb-ui-accent, #2271b1);
+    --smbb-forms-soft: var(--smbb-ui-accent-soft, #f0f6fc);
+    --smbb-forms-line: var(--smbb-ui-line, #dcdcde);
+    --smbb-forms-card: var(--smbb-ui-card, #fff);
+    --smbb-forms-muted: var(--smbb-ui-muted, #646970);
+    --smbb-forms-radius: var(--smbb-ui-radius, 12px);
+    --smbb-forms-danger: var(--smbb-ui-danger, #b32d2e);
+}
+
+.smbb-forms-meta {
+    margin-top: 2px;
+    font-size: 12px;
+    color: var(--smbb-forms-muted);
+}
+
+.smbb-forms-code {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: var(--smbb-forms-soft);
+    font-size: 12px;
+    user-select: all;
+}
+
+.smbb-forms-badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: var(--smbb-forms-accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 18px;
+}
+
+.smbb-forms-row-actions {
+    white-space: nowrap;
+    text-align: right;
+}
+
+.smbb-forms-row-actions,
+.smbb-forms-row-actions form {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+}
+
+.smbb-forms-actions-col {
+    width: 150px;
+}
+
+/* ------------------------------------------------------------ Création */
+
+.smbb-forms-create {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 16px 20px;
+    margin: 0 0 20px;
+    padding: 18px 20px;
+    border: 1px solid var(--smbb-forms-line);
+    border-radius: var(--smbb-forms-radius);
+    background: var(--smbb-forms-card);
+}
+
+.smbb-forms-create-title {
+    display: flex;
+    flex: 1 1 260px;
+    flex-direction: column;
+    gap: 6px;
+    font-weight: 600;
+}
+
+.smbb-forms-create-title input {
+    width: 100%;
+    min-height: 38px;
+}
+
+.smbb-forms-templates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.smbb-forms-templates legend {
+    margin-bottom: 6px;
+    padding: 0;
+    font-weight: 600;
+}
+
+.smbb-forms-template {
+    position: relative;
+    cursor: pointer;
+}
+
+.smbb-forms-template input {
+    position: absolute;
+    opacity: 0;
+}
+
+.smbb-forms-template span {
+    display: flex;
+    flex-direction: column;
+    min-width: 110px;
+    padding: 8px 12px;
+    border: 1px solid var(--smbb-forms-line);
+    border-radius: 10px;
+    background: var(--smbb-forms-card);
+    font-weight: 600;
+    transition: border-color .15s ease, background-color .15s ease;
+}
+
+.smbb-forms-template small {
+    font-weight: 400;
+    color: var(--smbb-forms-muted);
+}
+
+.smbb-forms-template input:checked + span {
+    border-color: var(--smbb-forms-accent);
+    background: var(--smbb-forms-soft);
+    box-shadow: inset 0 0 0 1px var(--smbb-forms-accent);
+}
+
+.smbb-forms-template input:focus-visible + span {
+    outline: 2px solid var(--smbb-forms-accent);
+    outline-offset: 2px;
+}
+
+.smbb-forms-create .button-primary,
+.smbb-forms-filters .button,
+.smbb-forms-entry-nav .button,
+.smbb-forms-entry-actions .button,
+.smbb-forms-import .button-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.smbb-forms-create .button-primary {
+    min-height: 38px;
+}
+
+/* ------------------------------------------------------------ Builder */
+
+.smbb-forms-builder .smbb-forms-key {
+    margin: 4px 0 0;
+}
+
+.smbb-forms-tag,
+.smbb-forms-tags code {
+    cursor: copy;
+    border-radius: 5px;
+    transition: background-color .15s ease;
+}
+
+.smbb-forms-tag.is-copied,
+.smbb-forms-tags code.is-copied {
+    background: var(--smbb-ui-success, #00a32a);
+    color: #fff;
+}
+
+.smbb-forms-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    margin: 6px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.smbb-forms-tags li {
+    margin: 0;
+    font-size: 12px;
+    color: var(--smbb-forms-muted);
+}
+
+/* Aperçu des champs : rendu du site (forms.css), inerte, à l'échelle de l'admin. */
+.smbb-forms-preview {
+    --smbb-form-accent: var(--smbb-forms-accent);
+    --smbb-form-control-height: 38px;
+    color: var(--smbb-ui-text, #1d2327);
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.smbb-forms-preview input,
+.smbb-forms-preview select,
+.smbb-forms-preview textarea {
+    pointer-events: none;
+}
+
+.smbb-forms-preview textarea {
+    min-height: 72px;
+}
+
+.smbb-forms-preview .smbb-form-file {
+    padding: 10px 12px;
+}
+
+.smbb-forms-preview .smbb-form-file .dashicons {
+    vertical-align: text-bottom;
+}
+
+.smbb-forms-preview .smbb-form-section-title {
+    margin: 0 0 2px;
+}
+
+.smbb-forms-preview .smbb-form-field--section {
+    padding-top: 0;
+    border-top: 0;
+}
+
+.smbb-forms-preview-muted {
+    color: var(--smbb-forms-muted);
+    font-style: italic;
+}
+
+.smbb-forms-preview-hidden {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border: 1px dashed var(--smbb-forms-line);
+    border-radius: 999px;
+    color: var(--smbb-forms-muted);
+    font-size: 12px;
+}
+
+
+/* ------------------------------------------------------------ Entrées */
+
+.smbb-forms-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 14px;
+}
+
+.smbb-forms-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid var(--smbb-forms-line);
+    border-radius: 999px;
+    background: var(--smbb-forms-card);
+    color: inherit;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.smbb-forms-tab .dashicons {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    color: var(--smbb-forms-muted);
+}
+
+.smbb-forms-tab:hover,
+.smbb-forms-tab:focus {
+    border-color: var(--smbb-forms-accent);
+    color: inherit;
+}
+
+.smbb-forms-tab.is-active {
+    border-color: var(--smbb-forms-accent);
+    background: var(--smbb-forms-soft);
+    box-shadow: inset 0 0 0 1px var(--smbb-forms-accent);
+}
+
+.smbb-forms-tab.is-active .dashicons {
+    color: var(--smbb-forms-accent);
+}
+
+.smbb-forms-tab-count {
+    min-width: 18px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, .06);
+    font-size: 11px;
+    line-height: 18px;
+    text-align: center;
+}
+
+.smbb-forms-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 10px 12px;
+    margin: 0 0 6px;
+    padding: 12px 14px;
+    border: 1px solid var(--smbb-forms-line);
+    border-radius: var(--smbb-forms-radius);
+    background: var(--smbb-forms-card);
+}
+
+.smbb-forms-filters label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.smbb-forms-filter-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--smbb-forms-muted);
+}
+
+.smbb-forms-search {
+    position: relative;
+    flex: 1 1 220px;
+}
+
+.smbb-forms-search .dashicons {
+    position: absolute;
+    left: 9px;
+    bottom: 9px;
+    color: var(--smbb-forms-muted);
+}
+
+.smbb-forms-search input {
+    width: 100%;
+    padding-left: 34px;
+}
+
+.smbb-forms-filter-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.smbb-forms-entries tr.is-unread td {
+    font-weight: 600;
+}
+
+.smbb-forms-star-col {
+    width: 28px;
+    text-align: center;
+}
+
+.smbb-forms-star {
+    color: #dba617;
+}
+
+.smbb-forms-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 6px;
+    border-radius: 50%;
+    background: var(--smbb-forms-accent);
+    vertical-align: middle;
+}
+
+/* ------------------------------------------------------------ Détail d'une entrée */
+
+.smbb-forms-entry-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 16px;
+}
+
+.smbb-forms-entry-step {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.smbb-forms-entry-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-left: auto;
+}
+
+.smbb-forms-entry-actions .smbb-forms-danger {
+    color: var(--smbb-forms-danger);
+    border-color: currentColor;
+}
+
+.smbb-forms-entry {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 20px;
+    align-items: start;
+}
+
+.smbb-forms-answers,
+.smbb-forms-entry-meta {
+    margin: 0;
+    padding: 6px 22px;
+    border: 1px solid var(--smbb-forms-line);
+    border-radius: var(--smbb-forms-radius);
+    background: var(--smbb-forms-card);
+}
+
+.smbb-forms-answer {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--smbb-forms-line);
+}
+
+.smbb-forms-answer:last-child {
+    border-bottom: 0;
+}
+
+.smbb-forms-answer dt {
+    margin: 0 0 4px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    color: var(--smbb-forms-muted);
+}
+
+.smbb-forms-answer dd {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    word-break: break-word;
+}
+
+.smbb-forms-answer--section dt {
+    font-size: 14px;
+    color: inherit;
+}
+
+.smbb-forms-empty {
+    color: var(--smbb-forms-muted);
+}
+
+.smbb-forms-file {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 10px 4px 0;
+}
+
+.smbb-forms-entry-meta {
+    padding-top: 14px;
+    padding-bottom: 14px;
+}
+
+.smbb-forms-entry-meta h3 {
+    margin: 0 0 10px;
+    font-size: 14px;
+}
+
+.smbb-forms-entry-meta dl {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 8px 12px;
+    margin: 0;
+    font-size: 13px;
+}
+
+.smbb-forms-entry-meta dt {
+    color: var(--smbb-forms-muted);
+}
+
+.smbb-forms-entry-meta dd {
+    margin: 0;
+    word-break: break-word;
+}
+
+.smbb-forms-ua {
+    font-size: 12px;
+    color: var(--smbb-forms-muted);
+}
+
+@media (max-width: 960px) {
+    .smbb-forms-entry {
+        grid-template-columns: 1fr;
+    }
+
+    .smbb-forms-entry-actions {
+        margin-left: 0;
+    }
+}
+
+/* ------------------------------------------------------------ Reprise WPForms */
+
+.smbb-forms-import-options {
+    margin: 16px 0 0;
+}
+
+.smbb-forms-import .button-primary {
+    min-height: 36px;
+}
+
+.smbb-forms-report {
+    margin: 6px 0 0 18px;
+    list-style: disc;
+}
+
+/* Formulaires WPForms à reprendre (liste des formulaires). */
+.smbb-forms-import-hint {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 14px;
+    margin: 0 0 16px;
+    padding: 12px 16px;
+    border: 1px solid var(--smbb-forms-accent);
+    border-radius: var(--smbb-forms-radius);
+    background: var(--smbb-forms-soft);
+}
+
+.smbb-forms-import-hint > .dashicons {
+    color: var(--smbb-forms-accent);
+}
+
+.smbb-forms-import-hint p {
+    flex: 1 1 260px;
+    margin: 0;
+}
+
+/* Logique conditionnelle : rappel de la règle dans l'aperçu d'un champ. */
+.smbb-forms-logic-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 100%;
+    margin: 0 0 6px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--smbb-forms-soft);
+    color: var(--smbb-forms-accent);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.smbb-forms-logic-badge .dashicons {
+    width: 14px;
+    height: 14px;
+    font-size: 14px;
+}
+
+/* Origine d'une entrée remplie dans le flux d'un plugin (documents Passflow…). */
+.smbb-forms-origin {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: var(--smbb-forms-soft);
+    color: var(--smbb-forms-accent);
+    font-size: 11px;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+/* Réponses affichées dans l'écran d'un plugin (EntryView::html compact). */
+.smbb-forms-answers--compact {
+    padding: 0;
+    border: 0;
+    background: none;
+}
+
+.smbb-forms-answers--compact .smbb-forms-answer {
+    padding: 8px 0;
+}

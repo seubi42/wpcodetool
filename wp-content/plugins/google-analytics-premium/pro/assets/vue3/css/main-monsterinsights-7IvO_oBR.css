@@ -1,0 +1,42 @@
+
+.monsterinsights-countries-expandable-table__toggle[data-v-c69e78ea] {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	/* Never shrink: the name beside it gives up space first. */
+	flex: 0 0 auto;
+	width: 28px;
+	height: 28px;
+	padding: 0;
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	color: inherit;
+	transition: transform 0.15s ease;
+}
+.monsterinsights-countries-expandable-table__toggle.is-expanded[data-v-c69e78ea] {
+	transform: rotate(180deg);
+}
+.monsterinsights-countries-expandable-table__label-cell[data-v-c69e78ea] {
+	white-space: nowrap;
+}
+
+/* Keeps the outcome of the misplaced-toggle fix (ea469eca0) — arrow and name on
+   one centred line, name ellipsising — by a different mechanism. That fix had to
+   undo the shared `td:first-child span { display: block }` rule with
+   inline-block plus `max-width: calc(100% - 32px)` to reserve room for a leading
+   toggle. The cell is now a flex row (see styles/components/_overview.scss), so
+   the toggle reserves its own width as a sibling and the name just needs to be
+   allowed to shrink. */
+.monsterinsights-countries-expandable-table__label-cell .monsterinsights-countries-expandable-table__name[data-v-c69e78ea] {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.monsterinsights-countries-expandable-table__name--region[data-v-c69e78ea] {
+	padding-left: 36px;
+	display: inline-block;
+}
+.monsterinsights-countries-expandable-table__region-row td[data-v-c69e78ea] {
+	background: rgba(0, 0, 0, 0.02);
+}

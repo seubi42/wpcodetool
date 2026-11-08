@@ -1,0 +1,446 @@
+/*
+ * Formulaires CodeTool : rendu sur le site (et aperçus du builder dans l'admin).
+ *
+ * Tout passe par des variables : un thème peut les redéfinir sur .smbb-form sans toucher au reste.
+ * Les couleurs suivent le thème (currentColor, couleurs de bouton de l'éditeur de site).
+ */
+.smbb-form {
+    --smbb-form-gap: 18px;
+    --smbb-form-radius: 10px;
+    --smbb-form-border: color-mix(in srgb, currentColor 22%, transparent);
+    --smbb-form-border-strong: color-mix(in srgb, currentColor 45%, transparent);
+    --smbb-form-bg: color-mix(in srgb, currentColor 3%, transparent);
+    --smbb-form-muted: color-mix(in srgb, currentColor 62%, transparent);
+    --smbb-form-accent: var(--wp--preset--color--primary, var(--wp--preset--color--contrast, #2f6fed));
+    --smbb-form-error: #c62828;
+    --smbb-form-success: #1b7f4b;
+    --smbb-form-control-height: 46px;
+    box-sizing: border-box;
+    max-width: 100%;
+    font: inherit;
+}
+
+.smbb-form *,
+.smbb-form *::before,
+.smbb-form *::after {
+    box-sizing: inherit;
+}
+
+.smbb-form-title {
+    margin: 0 0 12px;
+}
+
+.smbb-form-description {
+    margin: 0 0 20px;
+    color: var(--smbb-form-muted);
+}
+
+.smbb-form-description > :last-child {
+    margin-bottom: 0;
+}
+
+/* Grille 6 colonnes : moitié = 3, tiers = 2, deux tiers = 4. */
+.smbb-form-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--smbb-form-gap) 16px;
+}
+
+.smbb-form-field {
+    grid-column: span 6;
+    min-width: 0;
+}
+
+.smbb-form-field[data-width="half"] { grid-column: span 3; }
+.smbb-form-field[data-width="third"] { grid-column: span 2; }
+.smbb-form-field[data-width="two-thirds"] { grid-column: span 4; }
+
+@media (max-width: 600px) {
+    .smbb-form-field[data-width] { grid-column: span 6; }
+}
+
+.smbb-form-label {
+    display: block;
+    margin: 0 0 6px;
+    padding: 0;
+    font-weight: 600;
+    font-size: .95em;
+    line-height: 1.35;
+}
+
+.smbb-form-required {
+    margin-left: 3px;
+    color: var(--smbb-form-error);
+}
+
+.smbb-form input[type="text"],
+.smbb-form input[type="email"],
+.smbb-form input[type="tel"],
+.smbb-form input[type="number"],
+.smbb-form input[type="date"],
+.smbb-form input[type="url"],
+.smbb-form select,
+.smbb-form textarea {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-height: var(--smbb-form-control-height);
+    margin: 0;
+    padding: 10px 14px;
+    border: 1px solid var(--smbb-form-border);
+    border-radius: var(--smbb-form-radius);
+    background: #fff;
+    background: color-mix(in srgb, Canvas 96%, currentColor 4%);
+    color: inherit;
+    font: inherit;
+    line-height: 1.4;
+    box-shadow: none;
+    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+.smbb-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.smbb-form select {
+    appearance: none;
+    padding-right: 40px;
+    background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+    background-position: calc(100% - 20px) 52%, calc(100% - 15px) 52%;
+    background-size: 5px 5px;
+    background-repeat: no-repeat;
+}
+
+.smbb-form input:focus,
+.smbb-form select:focus,
+.smbb-form textarea:focus {
+    outline: none;
+    border-color: var(--smbb-form-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--smbb-form-accent) 22%, transparent);
+}
+
+.smbb-form ::placeholder {
+    color: var(--smbb-form-muted);
+    opacity: .8;
+}
+
+/* Choix (cases, boutons radio, consentement). */
+.smbb-form-choices {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+}
+
+.smbb-form-choices .smbb-form-label {
+    float: none;
+    width: 100%;
+}
+
+.smbb-form-choice {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 0 0 8px;
+    cursor: pointer;
+    line-height: 1.45;
+}
+
+.smbb-form-choice:last-child {
+    margin-bottom: 0;
+}
+
+.smbb-form-choice input {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    margin: 2px 0 0;
+    accent-color: var(--smbb-form-accent);
+}
+
+.smbb-form-consent {
+    font-size: .95em;
+}
+
+/* Fichiers. */
+.smbb-form-file {
+    display: block;
+    padding: 14px;
+    border: 1px dashed var(--smbb-form-border-strong);
+    border-radius: var(--smbb-form-radius);
+    background: var(--smbb-form-bg);
+}
+
+.smbb-form-file input[type="file"] {
+    display: block;
+    width: 100%;
+    font: inherit;
+}
+
+.smbb-form-file-hint {
+    display: block;
+    margin-top: 6px;
+    font-size: .85em;
+    color: var(--smbb-form-muted);
+}
+
+/* Sections et texte libre. */
+.smbb-form-field--section {
+    padding-top: 6px;
+    border-top: 1px solid var(--smbb-form-border);
+}
+
+.smbb-form-field--section:first-child {
+    padding-top: 0;
+    border-top: 0;
+}
+
+.smbb-form-section-title {
+    margin: 8px 0 4px;
+    font-size: 1.15em;
+}
+
+.smbb-form-section-text,
+.smbb-form-field--html {
+    margin: 0;
+    color: var(--smbb-form-muted);
+}
+
+.smbb-form-field--html > :first-child { margin-top: 0; }
+.smbb-form-field--html > :last-child { margin-bottom: 0; }
+
+/* Aide et erreurs. */
+.smbb-form-help {
+    margin: 6px 0 0;
+    font-size: .85em;
+    color: var(--smbb-form-muted);
+}
+
+.smbb-form-error {
+    margin: 6px 0 0;
+    font-size: .88em;
+    font-weight: 600;
+    color: var(--smbb-form-error);
+}
+
+.smbb-form-field.has-error input,
+.smbb-form-field.has-error select,
+.smbb-form-field.has-error textarea,
+.smbb-form-field.has-error .smbb-form-file {
+    border-color: var(--smbb-form-error);
+}
+
+.smbb-form-alert,
+.smbb-form-confirmation {
+    margin: 0 0 20px;
+    padding: 14px 18px;
+    border-radius: var(--smbb-form-radius);
+    border: 1px solid;
+    outline: none;
+}
+
+.smbb-form-alert {
+    border-color: color-mix(in srgb, var(--smbb-form-error) 40%, transparent);
+    background: color-mix(in srgb, var(--smbb-form-error) 8%, transparent);
+    color: var(--smbb-form-error);
+    font-weight: 600;
+}
+
+.smbb-form-confirmation {
+    border-color: color-mix(in srgb, var(--smbb-form-success) 35%, transparent);
+    background: color-mix(in srgb, var(--smbb-form-success) 8%, transparent);
+    animation: smbb-form-in .35s ease both;
+}
+
+.smbb-form-confirmation > :first-child { margin-top: 0; }
+.smbb-form-confirmation > :last-child { margin-bottom: 0; }
+
+@keyframes smbb-form-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+}
+
+/* Envoi. */
+.smbb-form-turnstile {
+    margin-top: var(--smbb-form-gap);
+}
+
+.smbb-form-actions {
+    margin-top: calc(var(--smbb-form-gap) + 4px);
+}
+
+.smbb-form-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: var(--smbb-form-control-height);
+    padding: 10px 26px;
+    border-radius: var(--smbb-form-radius);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+}
+
+/* Bouton par défaut, sans poids (:where) : les styles de bouton du thème (.wp-element-button) passent devant. */
+:where(.smbb-form-submit) {
+    border: 0;
+    background: var(--smbb-form-accent);
+    color: #fff;
+}
+
+.smbb-form-submit:hover {
+    filter: brightness(1.06);
+}
+
+.smbb-form-submit[disabled] {
+    opacity: .65;
+    cursor: progress;
+}
+
+.smbb-form-submit.is-sending::after {
+    content: "";
+    width: 14px;
+    height: 14px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: smbb-form-spin .7s linear infinite;
+}
+
+@keyframes smbb-form-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Champ piège : hors de l'écran, jamais display:none (certains robots le repèrent). */
+.smbb-form-hp {
+    position: absolute !important;
+    left: -9999px !important;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.smbb-form-missing {
+    padding: 12px 16px;
+    border: 1px dashed currentColor;
+    border-radius: 8px;
+    opacity: .7;
+}
+
+/* ---------------------------------------------------------------- Styles au choix */
+
+/* Souligné : pas de cadre, juste un trait sous le champ. */
+.smbb-form--underline input[type="text"],
+.smbb-form--underline input[type="email"],
+.smbb-form--underline input[type="tel"],
+.smbb-form--underline input[type="number"],
+.smbb-form--underline input[type="date"],
+.smbb-form--underline input[type="url"],
+.smbb-form--underline select,
+.smbb-form--underline textarea {
+    border-width: 0 0 2px;
+    border-radius: 0;
+    background-color: transparent;
+    padding-left: 2px;
+}
+
+.smbb-form--underline input:focus,
+.smbb-form--underline select:focus,
+.smbb-form--underline textarea:focus {
+    box-shadow: 0 2px 0 0 var(--smbb-form-accent);
+}
+
+/* Plein : fond teinté, bordure invisible jusqu'au focus. */
+.smbb-form--filled input[type="text"],
+.smbb-form--filled input[type="email"],
+.smbb-form--filled input[type="tel"],
+.smbb-form--filled input[type="number"],
+.smbb-form--filled input[type="date"],
+.smbb-form--filled input[type="url"],
+.smbb-form--filled select,
+.smbb-form--filled textarea {
+    border-color: transparent;
+    background-color: color-mix(in srgb, currentColor 7%, transparent);
+}
+
+.smbb-form--filled .smbb-form-file {
+    border-style: solid;
+    border-color: transparent;
+    background: color-mix(in srgb, currentColor 7%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .smbb-form *,
+    .smbb-form-confirmation {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* Logique conditionnelle : champ masqué (le thème ne doit pas le réafficher), apparition douce. */
+.smbb-form-field[hidden] {
+    display: none !important;
+}
+
+.smbb-form-field[data-logic]:not([hidden]) {
+    animation: smbb-form-in .25s ease both;
+}
+
+/* Note en étoiles (type « rating ») : HTML de 5 à 1, affiché de 1 à 5. */
+.smbb-form-rating {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    gap: 2px;
+    line-height: 1;
+}
+
+.smbb-form .smbb-form-rating input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.smbb-form-rating label {
+    font-size: 34px;
+    color: var(--smbb-form-border-strong);
+    cursor: pointer;
+    padding: 0 2px;
+    transition: color .12s, transform .12s;
+}
+
+.smbb-form-rating input:checked ~ label,
+.smbb-form-rating label:hover,
+.smbb-form-rating label:hover ~ label,
+.smbb-form-rating.is-preview label.is-on {
+    color: #f5a623;
+}
+
+.smbb-form-rating label:hover {
+    transform: scale(1.12);
+}
+
+.smbb-form-rating input:focus-visible + label {
+    outline: 2px solid var(--smbb-form-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+.smbb-form-rating.is-preview label {
+    cursor: default;
+    font-size: 26px;
+}
+
+.smbb-form-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}

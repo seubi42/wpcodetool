@@ -1,0 +1,75 @@
+{
+  "name": "passflow_wallet",
+  "label": "Appareil Wallet",
+  "pluralLabel": "Appareils Wallet",
+  "description": "iPhones qui ont ajouté un billet à Apple Wallet : Passflow les prévient quand le billet change (présence, annulation, déplacement).",
+  "storage": {
+    "table": "passflow_wallet",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "device_id": {
+      "type": "varchar",
+      "length": 128,
+      "nullable": false,
+      "default": ""
+    },
+    "push_token": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": false,
+      "default": ""
+    },
+    "serial": {
+      "type": "varchar",
+      "length": 64,
+      "nullable": false,
+      "default": ""
+    },
+    "pass_type": {
+      "type": "varchar",
+      "length": 190,
+      "nullable": false,
+      "default": ""
+    },
+    "pass_updated": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "created_at": {
+      "type": "datetime",
+      "nullable": true
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_serial",
+      "type": "index",
+      "columns": [
+        "serial"
+      ]
+    },
+    {
+      "name": "idx_device_id",
+      "type": "index",
+      "columns": [
+        "device_id"
+      ]
+    }
+  ],
+  "admin": {
+    "enabled": false
+  },
+  "api": {
+    "enabled": false
+  }
+}

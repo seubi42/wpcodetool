@@ -112,7 +112,26 @@ final class Organizations
         return isset($organization['status']) && $organization['status'] === 'blocked';
     }
 
+    /**
+     * Stockage des documents prêt : une unité de CodeTool choisie (onglet Stockage), ou l'ancien réglage S3.
+     */
+    public static function hasStorage(array $organization)
+    {
+        return \Smbb\SignConnectProxima\Service\Storage::unitOf($organization) !== '' || self::hasLegacyS3($organization);
+    }
+
+    /**
+     * @deprecated Ancien nom de hasStorage() (le stockage n'est plus forcément un S3).
+     */
     public static function hasS3(array $organization)
+    {
+        return self::hasStorage($organization);
+    }
+
+    /**
+     * Ancien réglage S3 propre à l'organisation (colonnes s3_*), repris dans CodeTool par StorageMigration.
+     */
+    public static function hasLegacyS3(array $organization)
     {
         return !empty($organization['s3_bucket']) && !empty($organization['s3_access_key']) && !empty($organization['s3_secret_key']);
     }

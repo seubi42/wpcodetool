@@ -1,0 +1,313 @@
+/* CodeTool – recherche Ctrl K dans toute l'admin (assets/wp-palette.js). Couleurs du thème si présentes. */
+.smbb-cmdk {
+    width: min(640px, calc(100vw - 32px));
+    max-height: min(560px, calc(100vh - 120px));
+    max-height: min(600px, calc(100dvh - 120px));
+    margin: 12vh auto auto;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    border-radius: 18px;
+    background: var(--smbb-t-card, #fff);
+    color: var(--smbb-t-text, #1d2327);
+    box-shadow: 0 0 0 1px var(--smbb-t-line, rgba(0, 0, 0, .08)), 0 30px 80px -20px rgba(0, 0, 0, .45);
+}
+
+.smbb-cmdk::backdrop {
+    background: rgba(20, 16, 24, .32);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+
+.smbb-cmdk[open] {
+    animation: smbb-cmdk-in .18s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+@keyframes smbb-cmdk-in {
+    from { opacity: 0; transform: translateY(-8px) scale(.98); }
+}
+
+.smbb-cmdk-card {
+    display: flex;
+    flex-direction: column;
+    max-height: inherit;
+}
+
+.smbb-cmdk-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--smbb-t-line, #e3e3e8);
+}
+
+.smbb-cmdk-field .dashicons {
+    color: var(--smbb-t-muted, #646970);
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+html body .smbb-cmdk input.smbb-cmdk-input,
+html body .smbb-cmdk input.smbb-cmdk-input:focus {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    padding: 4px 0;
+    border: 0 !important; /* passe devant les champs du mode sombre */
+    background: transparent !important;
+    box-shadow: none;
+    color: inherit;
+    font-size: 17px;
+    outline: 0;
+}
+
+.smbb-cmdk-input::-webkit-search-cancel-button {
+    display: none;
+}
+
+html body .smbb-cmdk .smbb-cmdk-field kbd {
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: var(--smbb-t-fill, #f0f0f1);
+    color: var(--smbb-t-muted, #646970);
+    font-size: 11px;
+}
+
+.smbb-cmdk-list {
+    flex: 1;
+    min-height: 0;
+    padding: 6px 8px 8px;
+    overflow-y: auto;
+}
+
+.smbb-cmdk-group {
+    padding: 10px 10px 4px;
+    color: var(--smbb-t-muted, #646970);
+    font-size: 11px;
+    font-weight: 650;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.smbb-cmdk .smbb-cmdk-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 10px;
+    color: inherit;
+    font-size: 14px;
+    text-decoration: none;
+    box-shadow: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.smbb-cmdk .smbb-cmdk-item .dashicons {
+    flex-shrink: 0;
+    color: var(--smbb-t-muted, #646970);
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.smbb-cmdk .smbb-cmdk-item.is-active {
+    background: var(--smbb-t-accent-soft, #f0f6fc);
+    color: var(--smbb-t-accent-deep, #135e96);
+}
+
+.smbb-cmdk .smbb-cmdk-item.is-active .dashicons {
+    color: var(--smbb-t-accent, #2271b1);
+}
+
+.smbb-cmdk-label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.smbb-cmdk-meta {
+    flex-shrink: 0;
+    padding: 1px 8px;
+    border-radius: 99px;
+    background: var(--smbb-t-fill, #f0f0f1);
+    color: var(--smbb-t-muted, #646970);
+    font-size: 11.5px;
+}
+
+.smbb-cmdk-empty {
+    margin: 0;
+    padding: 22px 10px;
+    color: var(--smbb-t-muted, #646970);
+    text-align: center;
+}
+
+.smbb-cmdk-hint {
+    margin: 0;
+    padding: 9px 18px;
+    border-top: 1px solid var(--smbb-t-line, #e3e3e8);
+    color: var(--smbb-t-muted, #646970);
+    font-size: 12px;
+}
+
+/* Résultats métier (participants, commandes…) : deux lignes, pastille d'état, actions rapides. */
+.smbb-cmdk-text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.smbb-cmdk-text .smbb-cmdk-label {
+    flex: none;
+}
+
+.smbb-cmdk-sub {
+    overflow: hidden;
+    color: var(--smbb-t-muted, #646970);
+    font-size: 12.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.smbb-cmdk .smbb-cmdk-item mark {
+    padding: 0;
+    border-radius: 3px;
+    background: transparent;
+    color: inherit;
+    font-weight: 700;
+    box-shadow: inset 0 -.38em 0 var(--smbb-t-accent-soft, #dbe9f6);
+}
+
+.smbb-cmdk .smbb-cmdk-item.is-active mark {
+    box-shadow: inset 0 -.38em 0 color-mix(in srgb, var(--smbb-t-accent, #2271b1) 22%, transparent);
+}
+
+.smbb-cmdk-meta--ok { background: #e6f4ea; color: #1e6b34; }
+.smbb-cmdk-meta--warn { background: #fdf1d8; color: #8a5a00; }
+.smbb-cmdk-meta--info { background: var(--smbb-t-accent-soft, #e7f0fa); color: var(--smbb-t-accent-deep, #135e96); }
+.smbb-cmdk-meta--danger { background: #fce8e8; color: #a12424; }
+.smbb-cmdk-meta--off { opacity: .8; text-decoration: line-through; }
+
+/* Les actions passent sur une 2e ligne, sous le nom, alignées sur le texte. */
+.smbb-cmdk .smbb-cmdk-item--biz {
+    flex-wrap: wrap;
+}
+
+.smbb-cmdk-actions {
+    display: none;
+    flex-wrap: wrap;
+    order: 5;
+    gap: 5px;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 2px 0 2px 28px;
+}
+
+/* Actions visibles sur le résultat choisi (et toujours au doigt : pas de survol sur téléphone). */
+.smbb-cmdk .smbb-cmdk-item.is-active .smbb-cmdk-actions {
+    display: flex;
+    animation: smbb-cmdk-actions-in .14s ease-out both;
+}
+
+@keyframes smbb-cmdk-actions-in {
+    from { opacity: 0; transform: translateY(-3px); }
+}
+
+.smbb-cmdk .smbb-cmdk-item .smbb-cmdk-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px 3px 7px;
+    border: 1px solid var(--smbb-t-line, #dcdcde);
+    border-radius: 99px;
+    background: var(--smbb-t-card, #fff);
+    color: var(--smbb-t-text, #1d2327);
+    font-size: 12px;
+    line-height: 1.4;
+    text-decoration: none;
+    white-space: nowrap;
+    box-shadow: none;
+    transition: background-color .12s, border-color .12s, color .12s;
+}
+
+.smbb-cmdk .smbb-cmdk-item .smbb-cmdk-action .dashicons {
+    color: inherit;
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.smbb-cmdk .smbb-cmdk-item .smbb-cmdk-action.is-active,
+.smbb-cmdk .smbb-cmdk-item .smbb-cmdk-action:hover {
+    border-color: var(--smbb-t-accent, #2271b1);
+    background: var(--smbb-t-accent, #2271b1);
+    color: #fff;
+}
+
+.smbb-cmdk .smbb-cmdk-item.has-action {
+    background: var(--smbb-t-fill, #f6f7f7);
+    color: inherit;
+}
+
+/* Recherche en cours : petit cercle dans le champ. */
+.smbb-cmdk-spin {
+    display: none;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--smbb-t-line, #dcdcde);
+    border-top-color: var(--smbb-t-accent, #2271b1);
+    border-radius: 50%;
+    animation: smbb-cmdk-spin .7s linear infinite;
+}
+
+.smbb-cmdk.is-loading .smbb-cmdk-spin {
+    display: block;
+}
+
+@keyframes smbb-cmdk-spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (max-width: 600px) {
+    /* Téléphone : collée en haut, à la hauteur de la partie visible quand le clavier est ouvert
+       (--smbb-cmdk-vh suit window.visualViewport). */
+    .smbb-cmdk {
+        width: calc(100vw - 16px);
+        max-height: calc(var(--smbb-cmdk-vh, 100dvh) - 16px);
+        margin-top: 8px;
+        border-radius: 16px;
+    }
+
+    .smbb-cmdk-field kbd,
+    .smbb-cmdk-hint {
+        display: none;
+    }
+
+    .smbb-cmdk-sub {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        white-space: normal;
+    }
+
+    .smbb-cmdk .smbb-cmdk-item--biz .smbb-cmdk-actions {
+        display: flex;
+        animation: none;
+    }
+
+    .smbb-cmdk .smbb-cmdk-item .smbb-cmdk-action {
+        padding: 5px 10px 5px 8px; /* cible au doigt */
+        font-size: 12.5px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .smbb-cmdk[open],
+    .smbb-cmdk .smbb-cmdk-item.is-active .smbb-cmdk-actions {
+        animation: none;
+    }
+}

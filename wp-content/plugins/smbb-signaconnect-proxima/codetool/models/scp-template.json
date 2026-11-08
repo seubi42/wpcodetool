@@ -165,7 +165,9 @@
       "parent": "smbb-codetool-scp",
       "title": "Modèles",
       "icon": "dashicons-layout",
-      "position": 50
+      "position": 50,
+      "group": "Paramétrage",
+      "groupIcon": "dashicons-admin-generic"
     },
     "adminBar": {
       "newContent": false,

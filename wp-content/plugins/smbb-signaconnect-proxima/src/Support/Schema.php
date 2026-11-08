@@ -9,14 +9,14 @@ defined('ABSPATH') || exit;
 
 /**
  * Crée tout seul les petites tables ajoutées après coup (libellés, archivage des transactions)
- * et les colonnes ajoutées aux tables existantes (tampon d'équipe 0.9.0, ville de l'organisation 0.9.4, ville de l'équipe 0.9.6, réglages d'envoi des modèles et équipe « modèles uniquement » 0.10.0, champs perso et nom d'origine des documents 0.11.0),
+ * et les colonnes ajoutées aux tables existantes (tampon d'équipe 0.9.0, ville de l'organisation 0.9.4, ville de l'équipe 0.9.6, réglages d'envoi des modèles et équipe « modèles uniquement » 0.10.0, champs perso et nom d'origine des documents 0.11.0, unité de stockage CodeTool des organisations et des documents 0.12.0),
  * avec le synchroniseur de CodeTool : l'admin CodeTool les voit ensuite « à jour ».
  * Une option retient la version appliquée, pour ne rien refaire à chaque page.
  */
 final class Schema
 {
     const OPTION = 'smbb_scp_schema';
-    const VERSION = '0.11.0';
+    const VERSION = '0.12.0';
     const MODELS = array('scp-tag', 'scp-document-tag', 'scp-document-user', 'scp-team', 'scp-organization', 'scp-template', 'scp-document');
 
     public static function hooks()

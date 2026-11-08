@@ -1,0 +1,94 @@
+/* Cartes : cadre, en-tête, pied, poignées de liaison, redimensionnement */
+.tf-card {
+  position: absolute;
+  min-height: 48px;
+  padding: 12px 16px 12px 24px;
+  border-radius: var(--tf-radius);
+  background: var(--tf-card);
+  border: 1px solid var(--tf-card-border);
+  box-shadow: 0 1px 2px var(--tf-shadow-s), 0 4px 14px var(--tf-shadow-s);
+  cursor: grab;
+  transition: box-shadow .12s;
+}
+.tf-card:not([data-color="default"]) {
+  background: color-mix(in srgb, var(--c) var(--tf-tint), var(--tf-card));
+  border-color: color-mix(in srgb, var(--c) 45%, var(--tf-card-border));
+}
+.tf-card:not([data-color="default"])::before {
+  content: ""; position: absolute; left: 10px; right: 10px; top: -1px; height: 3px;
+  border-radius: 0 0 3px 3px; background: var(--c);
+}
+.tf-card:hover { box-shadow: 0 1px 2px rgba(0,0,0,.25), 0 8px 24px var(--tf-shadow); }
+.tf-card.tf-selected { box-shadow: 0 0 0 2px var(--tf-accent), 0 8px 24px var(--tf-shadow); }
+.tf-card.tf-editing { cursor: auto; box-shadow: 0 0 0 2px var(--tf-accent), 0 12px 32px var(--tf-shadow); }
+.tf-card.tf-drop-target { box-shadow: 0 0 0 3px var(--tf-accent), 0 0 24px color-mix(in srgb, var(--tf-accent) 40%, transparent); }
+
+.tf-card-head { display: flex; align-items: flex-start; gap: 7px; }
+.tf-board-icon { display: none; flex: none; width: 18px; height: 18px; margin-top: 1px; color: var(--c); }
+.tf-card[data-color="default"] .tf-board-icon { color: var(--tf-accent); }
+.tf-board-icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tf-card.tf-is-board .tf-board-icon { display: block; }
+.tf-card-title {
+  flex: 1; min-width: 0;
+  font-size: 15.5px; font-weight: 700; line-height: 1.3;
+  outline: none; word-wrap: break-word;
+}
+.tf-card-title:empty { display: none; }
+.tf-card-body { margin-top: 6px; font-size: 13px; color: var(--tf-body); }
+.tf-card.tf-empty-body:not(.tf-editing) .tf-card-body { display: none; }
+.tf-card-title:empty + * { margin-top: 0; }
+.tf-card.tf-editing .tf-card-title:empty { display: block; }
+.tf-card.tf-editing .tf-card-title:empty::before { content: attr(data-placeholder); color: var(--tf-faint); pointer-events: none; }
+.tf-card.tf-editing .tf-card-title,
+.tf-card.tf-editing .tf-bc { cursor: text; user-select: text; -webkit-user-select: text; }
+
+.tf-card-foot:empty { display: none; }
+.tf-card-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  margin-top: 10px; padding-top: 9px;
+  border-top: 1px solid color-mix(in srgb, var(--tf-text) 10%, transparent);
+}
+.tf-open {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 7px; border: 0;
+  background: color-mix(in srgb, var(--c, var(--tf-accent)) 28%, transparent);
+  font-size: 12.5px; font-weight: 600; cursor: pointer;
+}
+.tf-card[data-color="default"] .tf-open { background: color-mix(in srgb, var(--tf-accent) 26%, transparent); }
+.tf-open:hover { filter: brightness(1.25); }
+.tf-open svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.tf-count { font-size: 12px; color: var(--tf-muted); }
+
+/* connection handles */
+.tf-handle {
+  position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  background: var(--tf-accent);
+  border: 2.5px solid var(--tf-bg);
+  opacity: 0; transform: scale(.6);
+  transition: opacity .12s, transform .12s;
+  cursor: crosshair;
+  z-index: 2;
+}
+.tf-handle::after { content: ""; position: absolute; inset: -8px; border-radius: 50%; }
+.tf-handle[data-side="t"] { left: 50%; top: 0; }
+.tf-handle[data-side="b"] { left: 50%; top: 100%; }
+.tf-handle[data-side="l"] { left: 0; top: 50%; }
+.tf-handle[data-side="r"] { left: 100%; top: 50%; }
+.tf-card:hover .tf-handle, .tf-card.tf-selected .tf-handle { opacity: 1; transform: scale(1); }
+.tf-handle:hover { transform: scale(1.3) !important; }
+.tf-root.tf-moving .tf-handle, .tf-root.tf-panning .tf-handle { opacity: 0 !important; }
+
+/* resize */
+.tf-resize { position: absolute; pointer-events: auto; z-index: 1; }
+.tf-resize-w { top: 10px; bottom: 10px; right: -5px; width: 10px; cursor: ew-resize; }
+.tf-resize-both {
+  right: -6px; bottom: -6px; width: 16px; height: 16px; cursor: nwse-resize;
+}
+.tf-resize-both::after {
+  content: ""; position: absolute; right: 6px; bottom: 6px; width: 8px; height: 8px;
+  border-right: 2px solid color-mix(in srgb, var(--c) 70%, transparent);
+  border-bottom: 2px solid color-mix(in srgb, var(--c) 70%, transparent);
+  border-radius: 0 0 3px 0;
+}
+

@@ -101,7 +101,7 @@ final class SigningService
             throw new \InvalidArgumentException(__('Signature illisible, recommencez.', 'smbb-signaconnect-proxima'));
         }
 
-        $storage = Storage::forOrganization($organization);
+        $storage = Storage::forDocument($document, $organization);
         $signed_at = current_time('mysql');
         $ip = self::ip();
         $source = '';

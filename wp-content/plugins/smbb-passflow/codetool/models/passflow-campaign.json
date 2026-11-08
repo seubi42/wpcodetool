@@ -1,0 +1,65 @@
+{
+  "name": "passflow_campaign",
+  "label": "Demande de dispo",
+  "pluralLabel": "Demandes de dispo",
+  "description": "Campagnes de demande de disponibilités envoyées aux intervenants.",
+  "storage": {
+    "table": "passflow_campaign",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "message": {
+      "type": "text",
+      "nullable": true
+    },
+    "slot_ids": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "host_ids": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "channels": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": ""
+    },
+    "sent_at": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "sent_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "reminded_at": {
+      "type": "datetime",
+      "nullable": true
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_sent_at",
+      "type": "index",
+      "columns": [
+        "sent_at"
+      ]
+    }
+  ],
+  "admin": {
+    "enabled": false
+  },
+  "api": {
+    "enabled": false
+  }
+}

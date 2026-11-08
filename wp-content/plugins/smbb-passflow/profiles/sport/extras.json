@@ -1,0 +1,32 @@
+{
+  "codetool_appearance": {
+    "preset": "cristal",
+    "theme": "bleu"
+  },
+  "offer": {
+    "name": "Stage surf débutant",
+    "location": "Plage de la Côte des Basques",
+    "duration_minutes": 120,
+    "default_price": 45,
+    "default_capacity": 12,
+    "color": "#1f6fb2",
+    "description": "Séance encadrée par un moniteur diplômé : planche et combinaison fournies."
+  },
+  "demo": {
+    "host": [
+      "Léo",
+      "Garcia"
+    ],
+    "time": "10:00",
+    "catalog": [
+      {
+        "name": "Wax",
+        "price": 8
+      },
+      {
+        "name": "Lycra du club",
+        "price": 25
+      }
+    ]
+  }
+}

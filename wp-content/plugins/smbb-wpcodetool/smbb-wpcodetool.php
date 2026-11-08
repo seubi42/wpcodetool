@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SMBB WP CodeTool
  * Description: Lightweight toolkit for declarative admin pages, custom table resources, option-backed settings pages, and REST API helpers.
- * Version: 0.3.1
+ * Version: 0.4.5
  * Author: SMBB
  * Text Domain: smbb-wpcodetool
  * Requires at least: 6.0
@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
 
 // Version interne du plugin. Elle servira plus tard pour les migrations, les caches compilés,
 // ou les éventuelles évolutions de format des fichiers codetool/*.json.
-define('SMBB_WPCODETOOL_VERSION', '0.3.1');
+define('SMBB_WPCODETOOL_VERSION', '0.4.5');
 
 // Chemins de référence du plugin. On les centralise ici pour éviter de recalculer les chemins
 // dans chaque classe du moteur.
@@ -104,6 +104,11 @@ function smbb_wpcodetool_autoload($class)
 // une fois que WordPress et les plugins sont chargés.
 add_action('plugins_loaded', 'smbb_wpcodetool_loaded');
 
+// À l'activation : si des réglages WP Mail SMTP sont en base, l'import est (re)proposé.
+register_activation_hook(__FILE__, function () {
+    \Smbb\WpCodeTool\Mail\WpMailSmtpImport::onActivation();
+});
+
 /**
  * Signale que le noyau CodeTool est chargé.
  *
@@ -119,7 +124,63 @@ function smbb_wpcodetool_loaded()
     if (is_admin()) {
         $admin = new \Smbb\WpCodeTool\Admin\AdminManager($scanner);
         $admin->hooks();
+
+        // Assistants de démarrage déclarés par les plugins (codetool/wizards/*.json).
+        $wizards = new \Smbb\WpCodeTool\Wizard\WizardManager($scanner);
+        $wizards->hooks();
     }
+
+    // Page de connexion aux couleurs du thème (réglage CodeTool › Apparence).
+    \Smbb\WpCodeTool\Admin\WpSkin::loginHooks();
+
+    // Page « Mon compte » de WooCommerce aux couleurs du thème (réglage CodeTool › Apparence).
+    \Smbb\WpCodeTool\Admin\WcAccount::hooks();
+
+    // Carte bancaire FICTIVE pour les tests (réglage CodeTool › WooCommerce). Rien n'est accroché si c'est coupé.
+    \Smbb\WpCodeTool\Woo\FakeCard::hooks();
+
+    // Envoi des e-mails par SMTP, test, journal 15 jours, alertes et import WP Mail SMTP (CodeTool › E-mails).
+    \Smbb\WpCodeTool\Mail\Mailer::hooks();
+
+    // File d'envoi commune : SMS et e-mails groupés diffusés par lots (CodeTool › Communication › File d'envoi).
+    // Les plugins y déposent avec Outbox::queue() et se déclarent par le filtre smbb_wpcodetool_outbox_sources.
+    \Smbb\WpCodeTool\Outbox\Outbox::hooks();
+
+    // En direct : bulle discrète + petit son dans l'admin à chaque nouvelle vente (commandes WooCommerce payées,
+    // enrichies par les plugins via smbb_wpcodetool_live_order_event ; autres événements : Live\LiveFeed::push()).
+    \Smbb\WpCodeTool\Live\LiveFeed::hooks();
+
+    // Sécurité de la connexion : Turnstile, limitation des tentatives, double authentification (CodeTool › Sécurité).
+    // Coupée d'un coup par define('SMBB_SECURITY_OFF', true); dans wp-config.php (accès de secours).
+    \Smbb\WpCodeTool\Security\Security::hooks();
+
+    // Fiche utilisateur : champ « Téléphone » (méta billing_phone) quand WooCommerce n'est pas actif.
+    \Smbb\WpCodeTool\Support\UserPhone::hooks();
+
+    // Journal d'activité : qui a fait quoi et quand (CodeTool › Sécurité › Journal d'activité).
+    // Les plugins y écrivent avec do_action('smbb_wpcodetool_activity', 'evenement', array(...)).
+    \Smbb\WpCodeTool\Activity\ActivityLog::hooks();
+
+    // Unités de stockage (CodeTool › Réglages › Stockage) : WordPress par défaut, S3… Plugins : Storage::disk($id).
+    \Smbb\WpCodeTool\Storage\Storage::boot();
+
+    // Formulaires : builder, bloc « Formulaire », entrées, e-mails/SMS, reprise WPForms (menu Formulaires).
+    // Coupé par add_filter('smbb_wpcodetool_forms_enabled', '__return_false');
+    \Smbb\WpCodeTool\Forms\Forms::hooks();
+
+    // Contenu WP : blog, commentaires, pages de médias, pages auteur, XML-RPC, émojis (réglage CodeTool › Contenu WP).
+    // Sur init 0, juste après l'enregistrement des types de contenu de WordPress.
+    add_action('init', array(\Smbb\WpCodeTool\Admin\WpContent::class, 'hooks'), 0);
+
+    // Médiathèque : « Remplacer le fichier » (même ID, même URL) et envoi de SVG nettoyés (réglage CodeTool › Contenu WP).
+    add_action('init', array(\Smbb\WpCodeTool\Media\MediaTools::class, 'hooks'), 0);
+
+    // Médiathèque : catégories colorées (arborescence, pastilles, filtre, classement par glisser-déposer).
+    add_action('init', array(\Smbb\WpCodeTool\Media\MediaCategories::class, 'hooks'), 0);
+
+    // Marque blanche et ménage (favicon, barre du haut, accueil, colonnes, Ctrl K).
+    // Sur init : les réglages utilisent des traductions.
+    add_action('init', array(\Smbb\WpCodeTool\Admin\WpExtras::class, 'hooks'), 0);
 
     $api = new \Smbb\WpCodeTool\Api\ApiManager($scanner);
     $api->hooks();

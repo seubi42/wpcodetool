@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TeamFlow — démonstrateur</title>
+  <link rel="stylesheet" href="dist/teamflow.css?v=0.4.0">
+  <style>
+    html, body { margin: 0; height: 100%; background: #16171a; }
+    #app { position: fixed; inset: 0; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script src="dist/teamflow.js?v=0.4.0"></script>
+  <script>
+    // Le même appel servira dans l'admin WordPress, avec TeamFlow.storage.rest(...)
+    window.teamflow = TeamFlow.mount(document.getElementById('app'), {
+      storage: TeamFlow.storage.local('teamflow-demo')
+    });
+  </script>
+</body>
+</html>

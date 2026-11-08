@@ -127,7 +127,8 @@
       "parent": "smbb-codetool-scp",
       "title": "Utilisateurs",
       "icon": "dashicons-admin-users",
-      "position": 40
+      "position": 25,
+      "group": "Clients"
     },
     "adminBar": {
       "newContent": false,

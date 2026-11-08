@@ -1,0 +1,78 @@
+/* Jetons de thème (sombre par défaut, clair via data-theme) et base de la racine */
+.tf-root {
+  --tf-bg: #16171a;
+  --tf-dot: #2a2c31;
+  --tf-panel: #212327;
+  --tf-panel-border: #33363c;
+  --tf-card: #24262b;
+  --tf-card-border: #34373e;
+  --tf-text: #e7e8eb;
+  --tf-muted: #9a9ea8;
+  --tf-faint: #6b6f78;
+  --tf-accent: #5b8cff;
+  --tf-neutral: #7d818b;
+  --tf-mm-card: #5d616b;
+  --tf-danger: #ff6369;
+  --tf-body: #cfd1d6;
+  --tf-hover: rgba(255,255,255,.07);
+  --tf-callout-bg: rgba(255,255,255,.055);
+  --tf-code-bg: rgba(0,0,0,.32);
+  --tf-code-fg: #c9f0b0;
+  --tf-icode-bg: var(--tf-shadow);
+  --tf-icode-fg: #d6e2ff;
+  --tf-link: #8fb0ff;
+  --tf-shadow: rgba(0,0,0,.35);
+  --tf-menu-ic-bg: #eef0f3;
+  --tf-menu-ic-fg: #1d1f23;
+  --tf-toast-bg: #f1f2f4;
+  --tf-toast-fg: #17181b;
+  --tf-tint: 15%;
+  --tf-radius: 10px;
+  --tf-z: 1;
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--tf-bg);
+  color: var(--tf-text);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.tf-root *, .tf-root *::before, .tf-root *::after { box-sizing: border-box; }
+.tf-root svg { display: block; }
+.tf-root button { font: inherit; color: inherit; }
+
+.tf-root { --tf-shadow-s: rgba(0,0,0,.2); }
+.tf-root[data-theme="light"] {
+  --tf-bg: #f4f4f1;
+  --tf-dot: #d3d3ce;
+  --tf-panel: #ffffff;
+  --tf-panel-border: #e2e2de;
+  --tf-card: #ffffff;
+  --tf-card-border: #dcdcd7;
+  --tf-text: #1d1e21;
+  --tf-muted: #63666e;
+  --tf-faint: #9a9ca3;
+  --tf-accent: #3d6df2;
+  --tf-neutral: #8b8d95;
+  --tf-mm-card: #b9bbc1;
+  --tf-danger: #d93036;
+  --tf-body: #34363b;
+  --tf-hover: rgba(0,0,0,.06);
+  --tf-callout-bg: rgba(0,0,0,.045);
+  --tf-code-bg: #f1f2f4;
+  --tf-code-fg: #2b5e14;
+  --tf-icode-bg: rgba(0,0,0,.06);
+  --tf-icode-fg: #a1311f;
+  --tf-link: #2f5fd6;
+  --tf-shadow: rgba(0,0,0,.14);
+  --tf-shadow-s: rgba(0,0,0,.07);
+  --tf-menu-ic-bg: #f0f0ee;
+  --tf-menu-ic-fg: #1d1f23;
+  --tf-toast-bg: #1d1e21;
+  --tf-toast-fg: #f4f4f1;
+  --tf-tint: 10%;
+}

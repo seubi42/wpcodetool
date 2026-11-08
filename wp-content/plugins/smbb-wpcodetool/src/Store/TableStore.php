@@ -794,12 +794,20 @@ final class TableStore implements TableStoreInterface
             return wp_json_encode($value);
         }
 
+        $definition = $this->columnDefinition($column);
+        $type = isset($definition['type']) ? strtolower((string) $definition['type']) : '';
+
+        if ($value === null || $value === '') {
+            $fallback = $this->emptyValueForNotNull($definition, $type);
+
+            if ($fallback !== null) {
+                return $fallback;
+            }
+        }
+
         if ($value === null) {
             return null;
         }
-
-        $definition = $this->columnDefinition($column);
-        $type = isset($definition['type']) ? strtolower((string) $definition['type']) : '';
 
         if ($value === '') {
             /*
@@ -827,6 +835,36 @@ final class TableStore implements TableStoreInterface
         }
 
         return $value;
+    }
+
+    /**
+     * Valeur de repli pour un champ vide sur une colonne NOT NULL.
+     *
+     * Un input numerique laisse vide arrive en "" ou NULL : sur une colonne NOT NULL,
+     * MySQL repond "Column 'x' cannot be null". On prend la valeur par defaut du modele
+     * si elle existe, sinon 0 pour les types numeriques. Les colonnes nullable, les cles
+     * primaires et les autres types gardent leur comportement habituel (renvoie null).
+     *
+     * @param array<string,mixed> $definition
+     * @return int|float|string|null
+     */
+    private function emptyValueForNotNull(array $definition, $type)
+    {
+        if (!$definition || !empty($definition['nullable']) || !empty($definition['primary'])) {
+            return null;
+        }
+
+        $numeric = in_array($type, array('bigint', 'int', 'integer', 'mediumint', 'smallint', 'tinyint', 'decimal', 'float', 'double'), true);
+
+        if (!$numeric) {
+            return null;
+        }
+
+        if (array_key_exists('default', $definition) && $definition['default'] !== null && is_scalar($definition['default'])) {
+            return $definition['default'];
+        }
+
+        return 0;
     }
 
     /**

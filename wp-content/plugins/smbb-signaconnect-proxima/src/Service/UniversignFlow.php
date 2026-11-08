@@ -34,7 +34,7 @@ final class UniversignFlow
     public static function start(array $document, array $organization, $auth)
     {
         $client = Universign::forOrganization($organization);
-        $storage = Storage::forOrganization($organization);
+        $storage = Storage::forDocument($document, $organization);
         $level = $document['signature_level'];
         $source = $storage->download($document['source_storage_path']);
         $prepared = '';
@@ -304,7 +304,12 @@ final class UniversignFlow
             $update = array('signed_sha256' => hash_file('sha256', $signed));
 
             if (!empty($organization['copy_universign_to_s3'])) {
-                $storage = Storage::forOrganization($organization);
+                $storage = !empty($document['storage_unit']) ? Storage::forDocument($document, $organization) : Storage::forOrganization($organization);
+
+                if (empty($document['storage_unit']) && Storage::unitOf($organization) !== '' && \Smbb\SignConnectProxima\Support\Schema::atLeast('0.12.0')) {
+                    $update['storage_unit'] = Storage::unitOf($organization);
+                }
+
                 $update['signed_storage_path'] = Storage::documentKey($organization['id'], $document['id'], 'signed');
                 $storage->putFile($update['signed_storage_path'], $signed);
 

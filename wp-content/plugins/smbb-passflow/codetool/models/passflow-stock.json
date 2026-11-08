@@ -1,0 +1,35 @@
+{
+  "name": "passflow_stock",
+  "label": "Produits constatés d'avance",
+  "pluralLabel": "Produits constatés d'avance",
+  "description": "Places vendues qui n'ont pas encore eu lieu : inscriptions à venir et réservations sans date.",
+  "storage": {
+    "type": "none"
+  },
+  "admin": {
+    "enabled": true,
+    "capability": "manage_passflow",
+    "menu": {
+      "placement": "submenu",
+      "title": "PCA",
+      "icon": "dashicons-tickets-alt",
+      "position": 52,
+      "parent": "smbb-codetool-passflow",
+      "group": "Suivi"
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "type": "page",
+    "page": {
+      "defaultView": "stock"
+    },
+    "views": {
+      "stock": "views/passflow-stock/stock.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

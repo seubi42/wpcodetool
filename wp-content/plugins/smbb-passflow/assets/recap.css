@@ -1,0 +1,230 @@
+/* Passflow : récap animé d'une journée (façon « Wrapped »). Préfixe rc-, racine .passflow-recap. */
+
+html.passflow-recap-open, html.passflow-recap-open body { overflow: hidden; }
+
+.passflow-recap {
+  --rc-brand: #8c3c34;
+  --rc-ink: #fff;
+  --rc-dark: #120e16;
+  --rc-a: #ffd166;
+  --rc-b: #4cc9f0;
+  --rc-c: #ef476f;
+  --rc-d: #06d6a0;
+  position: fixed; inset: 0; z-index: 100000;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--rc-brand) 45%, #000) 0%, #07060a 70%);
+  color: var(--rc-ink);
+  font: 16px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.passflow-recap *, .passflow-recap *::before, .passflow-recap *::after { box-sizing: border-box; }
+.passflow-recap-noscript { padding: 24px; }
+
+/* Le cadre « story » : plein écran sur téléphone, 9:16 sur ordinateur. */
+.passflow-recap .rc-stage {
+  position: relative; overflow: hidden; outline: none;
+  width: min(100vw, calc(min(100dvh, 920px) * 9 / 16));
+  height: min(100dvh, 920px);
+  border-radius: 22px;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, .55);
+  background: var(--rc-dark);
+  user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+}
+@media (max-width: 600px) {
+  .passflow-recap .rc-stage { width: 100vw; height: 100dvh; border-radius: 0; box-shadow: none; }
+}
+
+/* Barres de progression. */
+.passflow-recap .rc-bars { position: absolute; z-index: 6; top: max(12px, env(safe-area-inset-top)); left: 12px; right: 12px; display: flex; gap: 4px; }
+.passflow-recap .rc-bars > span { flex: 1; height: 3px; border-radius: 3px; background: rgba(255, 255, 255, .3); overflow: hidden; }
+.passflow-recap .rc-bars i { display: block; height: 100%; background: #fff; transform: scaleX(0); transform-origin: left; }
+
+.passflow-recap .rc-top { position: absolute; z-index: 7; top: calc(max(12px, env(safe-area-inset-top)) + 12px); left: 16px; right: 10px; display: flex; align-items: center; gap: 6px; }
+.passflow-recap .rc-brand { flex: 1; font-size: 13px; font-weight: 600; letter-spacing: .04em; opacity: .85; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.passflow-recap .rc-icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 0; border-radius: 50%; background: rgba(0, 0, 0, .18); color: #fff; font-size: 16px; text-decoration: none; cursor: pointer; }
+.passflow-recap .rc-icon:hover, .passflow-recap .rc-icon:focus-visible { background: rgba(0, 0, 0, .38); color: #fff; outline: none; }
+.passflow-recap .rc-pause-ico { width: 12px; height: 14px; border-left: 4px solid #fff; border-right: 4px solid #fff; }
+.passflow-recap.is-paused .rc-pause-ico { width: 0; height: 0; border-style: solid; border-width: 7px 0 7px 12px; border-color: transparent transparent transparent #fff; margin-left: 3px; }
+.passflow-recap.is-final .rc-icon[data-act="pause"] { visibility: hidden; }
+
+/* Zones de navigation : gauche (30 %) = précédente, le reste = suivante. */
+.passflow-recap .rc-nav { position: absolute; z-index: 4; top: 70px; bottom: 0; border: 0; background: transparent; cursor: pointer; padding: 0; }
+.passflow-recap .rc-nav.is-prev { left: 0; width: 30%; }
+.passflow-recap .rc-nav.is-next { right: 0; width: 70%; }
+.passflow-recap .rc-nav:focus-visible { outline: 2px solid rgba(255, 255, 255, .6); outline-offset: -6px; }
+.passflow-recap.is-final .rc-nav { display: none; }
+
+.passflow-recap .rc-confetti { position: absolute; inset: 0; z-index: 8; width: 100%; height: 100%; pointer-events: none; }
+
+/* Cartes. */
+.passflow-recap .rc-card {
+  position: absolute; inset: 0; z-index: 1;
+  display: flex; align-items: center;
+  padding: 92px 28px calc(36px + env(safe-area-inset-bottom));
+  opacity: 0; visibility: hidden;
+  transform: scale(1.04);
+  transition: opacity .5s ease, transform .6s cubic-bezier(.2, .8, .2, 1), visibility 0s linear .6s;
+  --rc-bg1: var(--rc-brand); --rc-bg2: var(--rc-dark); --rc-acc: var(--rc-a);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--rc-bg1) 92%, #fff) 0%, var(--rc-bg1) 35%, var(--rc-bg2) 100%);
+}
+.passflow-recap .rc-card.is-before { transform: scale(.94); }
+.passflow-recap .rc-card.is-active { opacity: 1; visibility: visible; transform: none; z-index: 2; transition-delay: 0s; }
+.passflow-recap.is-final .rc-card.is-active { z-index: 5; }
+.passflow-recap .rc-body { position: relative; z-index: 2; width: 100%; max-height: 100%; overflow: hidden; }
+.passflow-recap .rc-card.is-outro .rc-body { overflow-y: auto; }
+
+.passflow-recap .rc-card.is-intro { --rc-bg1: var(--rc-brand); --rc-bg2: #1b1033; --rc-acc: var(--rc-a); }
+.passflow-recap .rc-card.is-presence { --rc-bg1: color-mix(in srgb, var(--rc-brand) 35%, #0d6e6e); --rc-bg2: #06202a; --rc-acc: var(--rc-d); }
+.passflow-recap .rc-card.is-trend { --rc-bg1: color-mix(in srgb, var(--rc-brand) 30%, #3a2ad1); --rc-bg2: #0f0b2c; --rc-acc: var(--rc-b); }
+.passflow-recap .rc-card.is-money { --rc-bg1: color-mix(in srgb, var(--rc-brand) 30%, #b7791f); --rc-bg2: #2a1505; --rc-acc: var(--rc-a); }
+.passflow-recap .rc-card.is-top { --rc-bg1: color-mix(in srgb, var(--rc-brand) 30%, #c2185b); --rc-bg2: #2a0718; --rc-acc: var(--rc-a); }
+.passflow-recap .rc-card.is-reviews { --rc-bg1: color-mix(in srgb, var(--rc-brand) 30%, #7b2cbf); --rc-bg2: #170827; --rc-acc: var(--rc-a); }
+.passflow-recap .rc-card.is-backstage { --rc-bg1: color-mix(in srgb, var(--rc-brand) 25%, #1f6f50); --rc-bg2: #04170f; --rc-acc: var(--rc-d); }
+.passflow-recap .rc-card.is-outro { --rc-bg1: var(--rc-brand); --rc-bg2: #0d0a12; --rc-acc: var(--rc-a); }
+
+/* Formes qui flottent derrière. */
+.passflow-recap .rc-bg { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
+.passflow-recap .rc-bg i { position: absolute; border-radius: 50%; filter: blur(2px); opacity: .22; background: var(--rc-acc); }
+.passflow-recap .rc-bg i:nth-child(1) { width: 70%; aspect-ratio: 1; right: -25%; top: -12%; animation: rc-float 12s ease-in-out infinite; }
+.passflow-recap .rc-bg i:nth-child(2) { width: 55%; aspect-ratio: 1; left: -22%; bottom: -10%; background: var(--rc-b); opacity: .16; animation: rc-float 15s ease-in-out infinite reverse; }
+.passflow-recap .rc-bg i:nth-child(3) { width: 22%; aspect-ratio: 1; left: 12%; top: 18%; background: #fff; opacity: .08; animation: rc-float 9s ease-in-out infinite; }
+.passflow-recap .rc-card.is-intro .rc-bg i:nth-child(1) { border-radius: 38% 62% 55% 45% / 45% 40% 60% 55%; animation: rc-blob 10s ease-in-out infinite; }
+@keyframes rc-float { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-6%, 8%) scale(1.08); } }
+@keyframes rc-blob { 0%, 100% { transform: rotate(0) scale(1); border-radius: 38% 62% 55% 45% / 45% 40% 60% 55%; } 50% { transform: rotate(40deg) scale(1.12); border-radius: 60% 40% 35% 65% / 55% 65% 35% 45%; } }
+
+/* Entrées en cascade (--d = rang posé par le script). */
+.passflow-recap .rc-in { opacity: 0; transform: translateY(26px); filter: blur(6px); }
+.passflow-recap .rc-card.is-played .rc-in { animation: rc-in .75s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(var(--d, 0) * 110ms + 150ms); }
+@keyframes rc-in { from { opacity: 0; transform: translateY(26px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+
+/* Typo. */
+.passflow-recap .rc-kicker { margin: 0 0 10px; font-size: 14px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--rc-acc); }
+.passflow-recap .rc-title { margin: 0 0 10px; font-size: clamp(30px, 8.5vw, 44px); line-height: 1.05; font-weight: 800; letter-spacing: -.02em; color: #fff; overflow-wrap: anywhere; }
+.passflow-recap .rc-sub { margin: 0 0 8px; font-size: 17px; opacity: .88; }
+.passflow-recap .rc-site { margin: 0 0 22px; font-weight: 700; opacity: .85; }
+.passflow-recap .rc-logo { display: block; max-width: 140px; max-height: 64px; object-fit: contain; margin: 0 0 26px; filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .3)); }
+.passflow-recap .rc-big-q { margin: 34px 0 0; font-size: clamp(26px, 7vw, 34px); font-weight: 800; line-height: 1.1; }
+.passflow-recap .rc-big-q.is-small { font-size: 22px; margin-top: 26px; }
+.passflow-recap .rc-hint { margin: 10px 0 0; font-size: 13px; opacity: .65; }
+.passflow-recap .rc-card.is-played .rc-hint { animation: rc-in .75s both, rc-pulse 2.2s ease-in-out 2s infinite; }
+@keyframes rc-pulse { 0%, 100% { opacity: .65; } 50% { opacity: .25; } }
+.passflow-recap .rc-pill { display: inline-block; margin: 10px 0 0; padding: 6px 12px; border-radius: 999px; background: rgba(255, 255, 255, .16); font-size: 14px; font-weight: 600; }
+
+.passflow-recap .rc-hero { margin: 0 0 4px; font-size: clamp(92px, 30vw, 150px); line-height: .95; font-weight: 900; letter-spacing: -.04em; color: #fff; text-shadow: 0 8px 40px color-mix(in srgb, var(--rc-acc) 45%, transparent); font-variant-numeric: tabular-nums; }
+.passflow-recap .rc-hero small { font-size: .32em; font-weight: 700; letter-spacing: 0; opacity: .8; }
+.passflow-recap .rc-hero.is-money { font-size: clamp(50px, 15vw, 76px); letter-spacing: -.03em; white-space: nowrap; }
+.passflow-recap .rc-hero.is-small { font-size: clamp(60px, 18vw, 92px); }
+.passflow-recap .rc-count small { font-size: .45em; }
+
+/* Anneaux de présence. */
+.passflow-recap .rc-rings { display: flex; gap: 18px; margin: 24px 0 6px; }
+.passflow-recap .rc-ring { position: relative; margin: 0; width: 46%; max-width: 170px; aspect-ratio: 1; }
+.passflow-recap .rc-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.passflow-recap .rc-ring circle { fill: none; stroke-width: 11; }
+.passflow-recap .rc-ring-bg { stroke: rgba(255, 255, 255, .16); }
+.passflow-recap .rc-ring-fg { stroke: var(--rc-acc); stroke-linecap: round; transition: stroke-dashoffset 1.6s cubic-bezier(.2, .8, .2, 1); }
+.passflow-recap .rc-ring.is-alt .rc-ring-fg { stroke: #fff; }
+.passflow-recap .rc-ring figcaption { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.passflow-recap .rc-ring strong { font-size: clamp(26px, 7vw, 34px); font-weight: 800; }
+.passflow-recap .rc-ring figcaption > span { font-size: 12px; opacity: .8; max-width: 80%; line-height: 1.2; }
+
+/* Tendance. */
+.passflow-recap .rc-trends { list-style: none; margin: 22px 0 0; padding: 0; display: grid; gap: 10px; }
+.passflow-recap .rc-trend { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "l v" "d d"; gap: 2px 10px; padding: 14px 16px; border-radius: 16px; background: rgba(255, 255, 255, .1); backdrop-filter: blur(6px); }
+.passflow-recap .rc-trend-label { grid-area: l; font-size: 14px; opacity: .8; align-self: center; }
+.passflow-recap .rc-trend-value { grid-area: v; font-size: 26px; font-weight: 800; }
+.passflow-recap .rc-trend-delta { grid-area: d; font-size: 15px; font-weight: 700; }
+.passflow-recap .rc-trend.is-up .rc-trend-delta { color: #7cf5c4; }
+.passflow-recap .rc-trend.is-down .rc-trend-delta { color: #ffb4c2; }
+.passflow-recap .rc-trend-delta i { font-style: normal; }
+.passflow-recap .rc-record { display: inline-block; padding: 2px 10px; border-radius: 999px; background: var(--rc-a); color: #3a2a00; animation: rc-glow 1.6s ease-in-out infinite; }
+@keyframes rc-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 209, 102, .6); } 50% { box-shadow: 0 0 0 8px rgba(255, 209, 102, 0); } }
+
+/* CA. */
+.passflow-recap .rc-split { display: flex; height: 18px; margin: 26px 0 12px; border-radius: 9px; overflow: hidden; background: rgba(255, 255, 255, .14); }
+.passflow-recap .rc-split span { display: block; height: 100%; width: 0; transition: width 1.4s cubic-bezier(.2, .8, .2, 1); }
+.passflow-recap .rc-split .is-a, .passflow-recap .rc-legend .is-a { background: var(--rc-a); }
+.passflow-recap .rc-split .is-b, .passflow-recap .rc-legend .is-b { background: #fff; }
+.passflow-recap .rc-legend { list-style: none; margin: 0 0 6px; padding: 0; display: grid; gap: 6px; font-size: 15px; }
+.passflow-recap .rc-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 8px; }
+.passflow-recap .rc-legend strong { float: right; }
+
+/* Meilleure vente. */
+.passflow-recap .rc-trophy { font-size: 74px; line-height: 1; margin: 6px 0 14px; transform-origin: 50% 90%; }
+.passflow-recap .rc-card.is-played .rc-trophy { animation: rc-in .75s both, rc-wiggle 2.4s ease-in-out 1.2s infinite; }
+@keyframes rc-wiggle { 0%, 70%, 100% { transform: rotate(0); } 78% { transform: rotate(-10deg) scale(1.06); } 86% { transform: rotate(8deg) scale(1.06); } 94% { transform: rotate(-4deg); } }
+.passflow-recap .rc-podium { list-style: none; margin: 20px 0 0; padding: 0; display: grid; gap: 8px; }
+.passflow-recap .rc-podium li { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 14px; background: rgba(255, 255, 255, .1); }
+.passflow-recap .rc-rank { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(255, 255, 255, .2); font-weight: 800; flex: none; }
+.passflow-recap .rc-name { flex: 1; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.passflow-recap .rc-qty { font-size: 14px; opacity: .8; white-space: nowrap; }
+
+/* Avis. */
+.passflow-recap .rc-stars { position: relative; display: inline-block; margin: 0 0 8px; font-size: 34px; letter-spacing: 4px; line-height: 1; }
+.passflow-recap .rc-stars > span:first-child { color: rgba(255, 255, 255, .22); }
+.passflow-recap .rc-stars-on { position: absolute; left: 0; top: 0; overflow: hidden; white-space: nowrap; width: 0; color: var(--rc-a); transition: width 1.6s cubic-bezier(.2, .8, .2, 1); }
+.passflow-recap .rc-quote { margin: 14px 0 0; padding: 14px 16px; border-radius: 4px 18px 18px 18px; background: rgba(255, 255, 255, .12); font-size: 16px; font-style: italic; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.passflow-recap .rc-quote:nth-of-type(even) { margin-left: 18px; border-radius: 18px 4px 18px 18px; }
+
+/* Coulisses. */
+.passflow-recap .rc-tiles { list-style: none; margin: 20px 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.passflow-recap .rc-tiles li { display: flex; flex-direction: column; gap: 2px; padding: 18px 16px; border-radius: 18px; background: rgba(255, 255, 255, .1); }
+.passflow-recap .rc-tiles li:only-child, .passflow-recap .rc-tiles li:nth-child(3):last-child { grid-column: 1 / -1; }
+.passflow-recap .rc-tiles strong { font-size: 38px; font-weight: 800; line-height: 1.1; }
+.passflow-recap .rc-tiles li > span:last-child { font-size: 14px; opacity: .8; }
+
+/* Fin. */
+.passflow-recap .rc-summary { list-style: none; margin: 18px 0 20px; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.passflow-recap .rc-summary li { display: flex; flex-direction: column; padding: 14px; border-radius: 16px; background: rgba(255, 255, 255, .12); }
+.passflow-recap .rc-summary strong { font-size: 26px; font-weight: 800; line-height: 1.15; overflow-wrap: anywhere; }
+.passflow-recap .rc-summary small { font-size: 13px; opacity: .8; }
+.passflow-recap .rc-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.passflow-recap .rc-btn { flex: 1 1 calc(50% - 8px); display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 10px 14px; border: 1px solid rgba(255, 255, 255, .35); border-radius: 999px; background: rgba(255, 255, 255, .1); color: #fff; font: inherit; font-weight: 700; font-size: 15px; text-decoration: none; cursor: pointer; transition: transform .15s ease, background .15s ease; }
+.passflow-recap .rc-btn:hover, .passflow-recap .rc-btn:focus-visible { background: rgba(255, 255, 255, .2); color: #fff; outline: none; transform: translateY(-1px); }
+.passflow-recap .rc-btn.is-primary { background: #fff; border-color: #fff; color: #17121c; }
+.passflow-recap .rc-btn.is-primary:hover, .passflow-recap .rc-btn.is-primary:focus-visible { background: var(--rc-a); border-color: var(--rc-a); color: #17121c; }
+.passflow-recap .rc-btn.is-ghost { border-color: transparent; background: transparent; }
+.passflow-recap .rc-share { margin: 14px 0 0; padding: 14px; border-radius: 16px; background: rgba(0, 0, 0, .3); }
+.passflow-recap .rc-share p { margin: 0 0 10px; }
+.passflow-recap .rc-share small { opacity: .8; }
+.passflow-recap .rc-check { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; font-size: 15px; cursor: pointer; }
+.passflow-recap .rc-check input { width: 20px; height: 20px; margin: 0; accent-color: var(--rc-a); }
+.passflow-recap .rc-url { display: block; width: 100%; margin: 0 0 10px; padding: 10px 12px; border: 0; border-radius: 10px; background: rgba(255, 255, 255, .92); color: #17121c; font-size: 13px; }
+
+/* Icônes (SVG intégrés). */
+.passflow-recap .rc-ico { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; margin: 0 0 10px; border-radius: 12px; background: color-mix(in srgb, var(--rc-acc) 22%, transparent); color: var(--rc-acc) !important; }
+.passflow-recap .rc-ico svg { width: 22px; height: 22px; display: block; }
+.passflow-recap .rc-summary li:nth-child(2) .rc-ico { --rc-acc: var(--rc-d); }
+.passflow-recap .rc-summary li:nth-child(3) .rc-ico { --rc-acc: var(--rc-a); }
+.passflow-recap .rc-summary li:nth-child(4) .rc-ico { --rc-acc: var(--rc-b); }
+.passflow-recap .rc-tiles li:nth-child(2) .rc-ico { --rc-acc: var(--rc-b); }
+.passflow-recap .rc-tiles li:nth-child(3) .rc-ico { --rc-acc: var(--rc-a); }
+.passflow-recap .rc-trophy .rc-ico { width: 92px; height: 92px; margin: 0; border-radius: 28px; --rc-acc: var(--rc-a); box-shadow: 0 10px 40px color-mix(in srgb, var(--rc-a) 35%, transparent); }
+.passflow-recap .rc-trophy .rc-ico svg { width: 52px; height: 52px; }
+
+/* Verrou : quel que soit le thème du skin CodeTool (fonds transparents ou blancs forcés,
+ * couleurs de titres et de liens), le récap garde ses propres fonds et son texte blanc. */
+body .passflow-recap, body .passflow-recap :is(h1, h2, h3, p, li, span, strong, small, blockquote, figcaption, label) { color: #fff !important; }
+body .passflow-recap .rc-kicker { color: var(--rc-acc) !important; }
+body .passflow-recap { background: radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--rc-brand) 45%, #000) 0%, #07060a 70%) !important; }
+body .passflow-recap .rc-stage { background: var(--rc-dark) !important; border: 0 !important; }
+body .passflow-recap .rc-card { background: linear-gradient(160deg, color-mix(in srgb, var(--rc-bg1) 92%, #fff) 0%, var(--rc-bg1) 35%, var(--rc-bg2) 100%) !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; margin: 0 !important; max-width: none !important; }
+body .passflow-recap :is(h1, h2, h3) { font-family: inherit !important; border: 0 !important; padding: 0 !important; background: none !important; text-transform: none; }
+body .passflow-recap :is(h1, h2, h3)::before, body .passflow-recap :is(h1, h2, h3)::after { content: none !important; display: none !important; }
+body .passflow-recap a.rc-icon, body .passflow-recap a.rc-btn { color: #fff !important; }
+body .passflow-recap .rc-btn.is-primary { color: #17121c !important; }
+body .passflow-recap .rc-btn.is-primary:hover { color: #17121c !important; }
+body .passflow-recap .rc-legend strong { color: #fff !important; }
+body .passflow-recap .rc-record { color: #3a2a00 !important; }
+body .passflow-recap .rc-url { color: #17121c !important; }
+body .passflow-recap .rc-rank { color: #fff !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .passflow-recap .rc-card, .passflow-recap .rc-ring-fg, .passflow-recap .rc-split span, .passflow-recap .rc-stars-on { transition: none !important; }
+  .passflow-recap .rc-in, .passflow-recap .rc-card.is-played .rc-in { animation: none !important; opacity: 1; transform: none; filter: none; }
+  .passflow-recap .rc-bg i, .passflow-recap .rc-record, .passflow-recap .rc-trophy, .passflow-recap .rc-hint { animation: none !important; }
+}
+
+@media print {
+  .passflow-recap { display: none; }
+}

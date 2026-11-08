@@ -1,0 +1,131 @@
+{
+  "name": "passflow_catalog",
+  "label": "Catalogue",
+  "pluralLabel": "Catalogue sur place",
+  "description": "Les produits que l'équipe vend sur place depuis la feuille d'appel, rangés en catalogues et sous-catalogues.",
+  "storage": {
+    "table": "passflow_catalog",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "name": {
+      "type": "varchar",
+      "length": 190,
+      "nullable": false,
+      "default": ""
+    },
+    "parent_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "position": {
+      "type": "int",
+      "nullable": false,
+      "default": 0
+    },
+    "active": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 1
+    },
+    "activity_ids": {
+      "type": "longtext",
+      "nullable": true,
+      "format": "json"
+    },
+    "host_ids": {
+      "type": "longtext",
+      "nullable": true,
+      "format": "json"
+    },
+    "product_ids": {
+      "type": "longtext",
+      "nullable": true,
+      "format": "json"
+    },
+    "notes": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "creation_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "create_datetime"
+    },
+    "creation_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "create_user"
+    },
+    "lastupdate_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "update_datetime"
+    },
+    "lastupdate_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "update_user"
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_parent_id",
+      "type": "index",
+      "columns": [
+        "parent_id"
+      ]
+    }
+  ],
+  "admin": {
+    "enabled": true,
+    "capability": "manage_passflow",
+    "menu": {
+      "placement": "submenu",
+      "title": "Catalogue sur place",
+      "icon": "dashicons-store",
+      "position": 74,
+      "parent": "smbb-codetool-passflow",
+      "group": "Paramétrage"
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "list": {
+      "perPage": 100,
+      "search": {
+        "enabled": false
+      },
+      "filters": {
+        "enabled": false
+      },
+      "defaultOrder": {
+        "by": "position",
+        "direction": "asc"
+      }
+    },
+    "views": {
+      "list": "views/passflow-catalog/list.php",
+      "form": "views/passflow-catalog/form.php"
+    }
+  },
+  "hooks": {
+    "file": "hooks/CatalogHooks.php",
+    "class": "Smbb\\Passflow\\CodeTool\\CatalogHooks"
+  },
+  "api": {
+    "enabled": false
+  }
+}

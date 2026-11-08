@@ -1,0 +1,22 @@
+/* Flèches entre cartes */
+.tf-edges { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+.tf-edge { pointer-events: none; }
+.tf-edge-hit { fill: none; stroke: transparent; stroke-width: 16; pointer-events: stroke; cursor: pointer; }
+.tf-edge-line { fill: none; stroke-width: 2; stroke-linecap: round; pointer-events: none; }
+.tf-edge:hover .tf-edge-line { stroke-width: 2.6; }
+.tf-edge.tf-selected .tf-edge-line { stroke: var(--tf-accent); stroke-width: 2.6; }
+.tf-sel-fill { fill: var(--tf-accent); }
+.tf-temp-edge { fill: none; stroke: var(--tf-accent); stroke-width: 2; stroke-dasharray: 6 5; display: none; }
+.tf-edge-label-fo { overflow: visible; pointer-events: none; }
+.tf-edge-label { display: flex; justify-content: center; align-items: center; height: 100%; }
+.tf-edge-label span {
+  padding: 2px 9px; border-radius: 99px;
+  background: var(--tf-bg);
+  border: 1px solid color-mix(in srgb, var(--c) 60%, transparent);
+  color: var(--tf-text); font-size: 12px; font-weight: 500; white-space: nowrap;
+  pointer-events: auto; cursor: pointer;
+}
+.tf-edge.tf-selected .tf-edge-label span { border-color: var(--tf-accent); }
+
+.tf-edge-line.tf-dashed { stroke-dasharray: 7 6; }
+.tf-temp-edge { stroke-dasharray: 6 5; }

@@ -1,0 +1,36 @@
+{
+  "name": "passflow_invoices",
+  "label": "Factures",
+  "pluralLabel": "Factures",
+  "description": "Factures et avoirs : liste, export pour la comptabilité, établissement des factures d'une commande.",
+  "storage": {
+    "type": "none"
+  },
+  "admin": {
+    "enabled": true,
+    "capability": "manage_passflow",
+    "menu": {
+      "placement": "submenu",
+      "title": "Factures",
+      "icon": "dashicons-media-spreadsheet",
+      "position": 50,
+      "parent": "smbb-codetool-passflow",
+      "group": "Suivi",
+      "groupIcon": "dashicons-chart-area"
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "type": "page",
+    "page": {
+      "defaultView": "factures"
+    },
+    "views": {
+      "factures": "views/passflow-invoices/invoices.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

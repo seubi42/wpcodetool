@@ -1,0 +1,970 @@
+/**
+ * Mode « Jour J » : écran d'accueil plein écran (tablette). Scène sombre, lisible de loin,
+ * accent = couleur de la marque Passflow. Couche fixe sur <body> (voir dayboard.js).
+ */
+
+html.passflow-jj-on,
+html.passflow-jj-on body {
+    overflow: hidden;
+}
+
+.passflow-jj-layer {
+    --jj-bg: #0f1115;
+    --jj-panel: #181b22;
+    --jj-panel-2: #20242d;
+    --jj-line: rgba(255, 255, 255, 0.08);
+    --jj-ink: #f3f4f6;
+    --jj-muted: #9aa1ad;
+    --jj-ok: #22c55e;
+    --jj-late: #f97316;
+    --jj-bad: #ef4444;
+    --jj-warn: #facc15;
+    --jj-accent: var(--passflow-brand, #b5476b);
+    position: fixed;
+    inset: 0;
+    z-index: 100100;
+    background: var(--jj-bg);
+    color: var(--jj-ink);
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+}
+
+.passflow-jj {
+    display: grid;
+    grid-template-columns: minmax(240px, 300px) 1fr;
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas: "top top" "banner banner" "hero cols";
+    gap: 16px;
+    height: 100%;
+    box-sizing: border-box;
+    padding: max(16px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+}
+
+.passflow-jj * {
+    box-sizing: border-box;
+}
+
+/* ---------- Barre du haut ---------- */
+
+.passflow-jj-top {
+    grid-area: top;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+}
+
+.passflow-jj-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    flex: none;
+    border: 1px solid var(--jj-line);
+    border-radius: 14px;
+    background: var(--jj-panel);
+    color: var(--jj-ink);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s, transform 0.1s;
+}
+
+.passflow-jj-btn:hover,
+.passflow-jj-btn:focus {
+    background: var(--jj-panel-2);
+    color: var(--jj-ink);
+}
+
+.passflow-jj-btn:active {
+    transform: scale(0.94);
+}
+
+.passflow-jj-btn[aria-pressed="true"] {
+    background: var(--jj-accent);
+    border-color: transparent;
+}
+
+.passflow-jj-btn .dashicons {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+}
+
+.passflow-jj-title {
+    flex: 1;
+    min-width: 0;
+}
+
+.passflow-jj-title small {
+    display: block;
+    color: var(--jj-muted);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.passflow-jj-title h1 {
+    margin: 2px 0 0;
+    padding: 0;
+    color: var(--jj-ink);
+    font-size: clamp(22px, 2.6vw, 32px);
+    font-weight: 700;
+    line-height: 1.15;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.passflow-jj-where {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--jj-muted);
+    font-size: 13px;
+}
+
+.passflow-jj-where .dashicons {
+    font-size: 15px;
+    width: 15px;
+    height: 15px;
+}
+
+.passflow-jj-clock {
+    text-align: right;
+    flex: none;
+}
+
+.passflow-jj-clock strong {
+    display: block;
+    font-size: clamp(30px, 4vw, 48px);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+
+.passflow-jj-clock span {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: var(--jj-panel-2);
+    color: var(--jj-muted);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.passflow-jj-clock span.is-soon {
+    background: rgba(250, 204, 21, 0.16);
+    color: var(--jj-warn);
+}
+
+.passflow-jj-clock span.is-on {
+    background: rgba(34, 197, 94, 0.16);
+    color: var(--jj-ok);
+}
+
+.passflow-jj-tools {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: none;
+}
+
+.passflow-jj-live,
+.passflow-jj-scan {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: var(--jj-panel);
+    color: var(--jj-muted);
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.passflow-jj-live i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--jj-ok);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+    animation: passflow-jj-pulse 2s infinite;
+}
+
+.passflow-jj-live.is-off i {
+    background: var(--jj-bad);
+    animation: none;
+}
+
+.passflow-jj-scan .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.passflow-jj-scan.is-busy {
+    color: var(--jj-ink);
+    background: var(--jj-accent);
+}
+
+@keyframes passflow-jj-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); }
+    70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+.passflow-jj-banner {
+    grid-area: banner;
+    margin: 0;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: rgba(250, 204, 21, 0.12);
+    color: var(--jj-warn);
+    font-weight: 600;
+}
+
+.passflow-jj-banner[hidden] {
+    display: none;
+}
+
+.passflow-jj-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.passflow-jj-banner > span {
+    flex: 1;
+}
+
+.passflow-jj-banner.is-forced {
+    background: rgba(56, 189, 248, 0.14);
+    color: #7dd3fc;
+}
+
+.passflow-jj-force {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: none;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--jj-warn);
+    color: #111827;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.passflow-jj-banner.is-forced .passflow-jj-force {
+    background: var(--jj-panel-2);
+    color: var(--jj-ink);
+}
+
+.passflow-jj-force .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* ---------- Chiffres ---------- */
+
+.passflow-jj-hero {
+    grid-area: hero;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 0;
+}
+
+.passflow-jj-ring {
+    position: relative;
+    width: 100%;
+    max-width: 260px;
+    aspect-ratio: 1;
+    margin: 0 auto;
+}
+
+.passflow-jj-ring svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.passflow-jj-ring circle {
+    fill: none;
+    stroke-width: 12;
+    stroke-linecap: round;
+}
+
+.passflow-jj-ring-bg {
+    stroke: var(--jj-panel-2);
+}
+
+.passflow-jj-ring-absent {
+    stroke: #4b5563;
+    stroke-dasharray: 0 400;
+    transition: stroke-dasharray 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.passflow-jj-ring-fill {
+    stroke: var(--jj-ok);
+    stroke-dasharray: 0 400;
+    transition: stroke-dasharray 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    filter: drop-shadow(0 0 6px rgba(34, 197, 94, 0.45));
+}
+
+.passflow-jj-ring.is-full .passflow-jj-ring-fill {
+    animation: passflow-jj-glow 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes passflow-jj-glow {
+    to { filter: drop-shadow(0 0 14px rgba(34, 197, 94, 0.9)); }
+}
+
+.passflow-jj-ring-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.passflow-jj-ring-text strong {
+    font-size: clamp(48px, 6vw, 76px);
+    font-weight: 800;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.passflow-jj-ring-text span {
+    margin-top: 4px;
+    color: var(--jj-muted);
+    font-size: 14px;
+}
+
+.passflow-jj-kpis {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.passflow-jj-kpi {
+    padding: 12px 14px;
+    border: 1px solid var(--jj-line);
+    border-radius: 16px;
+    background: var(--jj-panel);
+}
+
+.passflow-jj-kpi[hidden] {
+    display: none;
+}
+
+.passflow-jj-kpi strong {
+    display: block;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+}
+
+.passflow-jj-kpi span {
+    color: var(--jj-muted);
+    font-size: 13px;
+}
+
+.passflow-jj-kpi.is-none strong { color: var(--jj-late); }
+.passflow-jj-kpi.is-absent strong { color: #9ca3af; }
+.passflow-jj-kpi.is-walkin strong { color: #38bdf8; }
+.passflow-jj-kpi.is-docs strong { color: var(--jj-warn); }
+
+/* ---------- Colonnes ---------- */
+
+.passflow-jj-cols {
+    grid-area: cols;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    min-height: 0;
+}
+
+.passflow-jj.no-docs .passflow-jj-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.passflow-jj-col {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border: 1px solid var(--jj-line);
+    border-radius: 20px;
+    background: var(--jj-panel);
+    overflow: hidden;
+}
+
+.passflow-jj-col[hidden] {
+    display: none;
+}
+
+.passflow-jj-col h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--jj-line);
+    color: var(--jj-ink);
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.passflow-jj-col h2 .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.passflow-jj-col h2 span:not(.dashicons) {
+    flex: 1;
+}
+
+.passflow-jj-col h2 em {
+    min-width: 32px;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: var(--jj-panel-2);
+    font-size: 15px;
+    font-style: normal;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.passflow-jj-col.is-arrivals h2 .dashicons { color: var(--jj-ok); }
+.passflow-jj-col.is-expected h2 .dashicons { color: var(--jj-muted); }
+.passflow-jj.is-late .passflow-jj-col.is-expected h2 .dashicons,
+.passflow-jj.is-late .passflow-jj-col.is-expected h2 em { color: var(--jj-late); }
+.passflow-jj-col.is-docs h2 .dashicons { color: var(--jj-warn); }
+
+.passflow-jj-list {
+    flex: 1;
+    margin: 0;
+    padding: 8px;
+    list-style: none;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+.passflow-jj-person {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 64px;
+    margin: 0 0 6px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: var(--jj-panel-2);
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.passflow-jj-person:hover,
+.passflow-jj-person:focus-visible {
+    background: #292e39;
+    outline: none;
+}
+
+.passflow-jj-person:active {
+    transform: scale(0.98);
+}
+
+.passflow-jj-person.is-late {
+    box-shadow: inset 3px 0 0 var(--jj-late);
+}
+
+.passflow-jj-person.is-here {
+    box-shadow: inset 3px 0 0 var(--jj-warn);
+}
+
+.passflow-jj-person.is-new {
+    animation: passflow-jj-in 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes passflow-jj-in {
+    0% { opacity: 0; transform: translateY(-14px) scale(0.96); background: rgba(34, 197, 94, 0.5); }
+    25% { opacity: 1; transform: none; }
+    100% { background: var(--jj-panel-2); }
+}
+
+.passflow-jj-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--jj-accent);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.is-arrivals .passflow-jj-avatar { background: rgba(34, 197, 94, 0.22); color: var(--jj-ok); }
+.passflow-jj-person.is-late .passflow-jj-avatar { background: rgba(249, 115, 22, 0.2); color: var(--jj-late); }
+.is-docs .passflow-jj-avatar { background: rgba(250, 204, 21, 0.18); color: var(--jj-warn); }
+
+.passflow-jj-who {
+    flex: 1;
+    min-width: 0;
+}
+
+.passflow-jj-who strong {
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.passflow-jj-who small {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 6px;
+    margin-top: 3px;
+    color: var(--jj-muted);
+    font-size: 13px;
+}
+
+.passflow-jj-person time {
+    flex: none;
+    color: var(--jj-muted);
+    font-size: 16px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.passflow-jj-who .is-late {
+    color: var(--jj-late);
+    font-weight: 600;
+}
+
+.passflow-jj-tag {
+    display: inline-block;
+    white-space: nowrap;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: rgba(56, 189, 248, 0.16);
+    color: #7dd3fc;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.passflow-jj-tag.is-docs {
+    background: rgba(250, 204, 21, 0.14);
+    color: var(--jj-warn);
+}
+
+.passflow-jj-note {
+    color: #fca5a5;
+}
+
+.passflow-jj-state {
+    color: var(--jj-muted);
+}
+
+.passflow-jj-state.is-here {
+    color: var(--jj-ok);
+    font-weight: 600;
+}
+
+.passflow-jj-empty {
+    padding: 28px 12px;
+    color: var(--jj-muted);
+    text-align: center;
+}
+
+.passflow-jj-empty.is-good {
+    color: var(--jj-ok);
+    font-weight: 600;
+}
+
+/* ---------- Toasts, feuille d'actions, confettis ---------- */
+
+.passflow-jj-toasts {
+    position: fixed;
+    left: 50%;
+    bottom: max(20px, env(safe-area-inset-bottom));
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: min(560px, calc(100% - 32px));
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.passflow-jj-toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    border-radius: 16px;
+    background: #f9fafb;
+    color: #111827;
+    font-size: 18px;
+    font-weight: 600;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    animation: passflow-jj-toast 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: opacity 0.35s, transform 0.35s;
+}
+
+.passflow-jj-toast.is-out {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.passflow-jj-toast .dashicons {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--jj-ok);
+    color: #fff;
+    font-size: 20px;
+    line-height: 28px;
+    text-align: center;
+}
+
+.passflow-jj-toast.is-bad .dashicons { background: var(--jj-bad); }
+.passflow-jj-toast.is-warn .dashicons { background: var(--jj-warn); color: #111827; }
+
+@keyframes passflow-jj-toast {
+    from { opacity: 0; transform: translateY(16px) scale(0.96); }
+}
+
+.passflow-jj-sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 4;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.55);
+    animation: passflow-jj-fade 0.2s;
+}
+
+.passflow-jj-sheet-box {
+    width: min(520px, 100%);
+    padding: 20px 20px max(20px, env(safe-area-inset-bottom));
+    border-radius: 24px 24px 0 0;
+    background: var(--jj-panel);
+    animation: passflow-jj-up 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (min-width: 700px) {
+    .passflow-jj-sheet {
+        align-items: center;
+    }
+
+    .passflow-jj-sheet-box {
+        border-radius: 24px;
+    }
+}
+
+.passflow-jj-sheet-name {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 10px;
+    font-size: 22px;
+}
+
+.passflow-jj-sheet-docs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 12px;
+}
+
+.passflow-jj-sheet-actions {
+    display: grid;
+    gap: 8px;
+}
+
+.passflow-jj-sheet-actions > * {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 56px;
+    border: 0;
+    border-radius: 14px;
+    background: var(--jj-panel-2);
+    color: var(--jj-ink);
+    font-size: 18px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.passflow-jj-sheet-actions > *:hover,
+.passflow-jj-sheet-actions > *:focus {
+    color: var(--jj-ink);
+    filter: brightness(1.15);
+}
+
+.passflow-jj-sheet-actions .is-ok { background: var(--jj-ok); color: #052e16; }
+.passflow-jj-sheet-actions .is-ok:hover { color: #052e16; }
+.passflow-jj-sheet-actions .is-bad { background: rgba(239, 68, 68, 0.18); color: #fca5a5; }
+.passflow-jj-sheet-actions .is-warn { background: var(--jj-warn); color: #111827; }
+.passflow-jj-sheet-actions .is-warn:hover { color: #111827; }
+
+@keyframes passflow-jj-fade {
+    from { opacity: 0; }
+}
+
+@keyframes passflow-jj-up {
+    from { transform: translateY(40px); opacity: 0; }
+}
+
+.passflow-jj-confetti {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* ---------- Tablette en portrait, téléphone ---------- */
+
+@media (max-width: 1000px), (orientation: portrait) {
+    .passflow-jj {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto 1fr;
+        grid-template-areas: "top" "banner" "hero" "cols";
+    }
+
+    .passflow-jj-top {
+        flex-wrap: wrap;
+    }
+
+    .passflow-jj-title {
+        flex-basis: calc(100% - 64px);
+    }
+
+    .passflow-jj-clock {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-right: auto;
+        text-align: left;
+    }
+
+    .passflow-jj-clock span {
+        margin: 0;
+    }
+
+    .passflow-jj-hero {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .passflow-jj-ring {
+        width: 170px;
+        max-width: none;
+        flex: none;
+        margin: 0;
+    }
+
+    .passflow-jj-ring-text strong {
+        font-size: 48px;
+    }
+
+    .passflow-jj-kpis {
+        flex: 1;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 760px) {
+    .passflow-jj-layer {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .passflow-jj {
+        height: auto;
+        min-height: 100%;
+        gap: 12px;
+    }
+
+    .passflow-jj-top {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .passflow-jj-tools {
+        margin-left: auto;
+    }
+
+    .passflow-jj-live span,
+    .passflow-jj-scan {
+        display: none;
+    }
+
+    .passflow-jj-ring {
+        width: 120px;
+    }
+
+    .passflow-jj-ring-text strong {
+        font-size: 36px;
+    }
+
+    .passflow-jj-ring-text span {
+        font-size: 11px;
+    }
+
+    .passflow-jj-kpis {
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+    }
+
+    .passflow-jj-kpi {
+        padding: 8px 10px;
+    }
+
+    .passflow-jj-kpi strong {
+        font-size: 22px;
+    }
+
+    .passflow-jj-cols,
+    .passflow-jj.no-docs .passflow-jj-cols {
+        grid-template-columns: 1fr;
+    }
+
+    .passflow-jj-list {
+        max-height: none;
+        overflow: visible;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .passflow-jj-layer *,
+    .passflow-jj-layer *::before {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+.passflow-jj-scan[hidden],
+.passflow-jj-btn[hidden] {
+    display: none;
+}
+
+/* Thèmes CodeTool (ex. Cristal) : fond .passflow-admin transparent !important et texte du thème.
+   La scène Jour J garde toujours son fond et son encre. */
+html body .passflow-admin.passflow-jj-layer {
+    background: var(--jj-bg) !important;
+    color: var(--jj-ink) !important;
+}
+
+html body .passflow-jj-layer .passflow-jj-who strong,
+html body .passflow-jj-layer .passflow-jj-title h1,
+html body .passflow-jj-layer .passflow-jj-col h2,
+html body .passflow-jj-layer .passflow-jj-sheet-name strong {
+    color: var(--jj-ink);
+}
+
+/* Référence du billet sous le nom : contrôle visuel du ticket présenté. */
+html body .passflow-jj-layer .passflow-jj-ref {
+    display: inline-block;
+    margin: 3px 0 0;
+    padding: 1px 8px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #e5e7eb;
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: top;
+}
+
+html body .passflow-jj-layer .passflow-jj-ref.is-big {
+    margin: 0 0 0 auto;
+    padding: 4px 10px;
+    font-size: 18px;
+}
+
+/* Arrivées : l'heure passe en haut à droite pour laisser toute la largeur à la référence. */
+html body .passflow-jj-layer .is-arrivals .passflow-jj-person time {
+    position: absolute;
+    top: 11px;
+    right: 12px;
+    font-size: 15px;
+}
+
+html body .passflow-jj-layer .is-arrivals .passflow-jj-who strong {
+    padding-right: 50px;
+}
+
+/* Réglage « Avec champ » : petit champ dans la puce Douchette (même taille que la puce). */
+.passflow-jj-scan-input {
+    width: 130px;
+    height: 24px;
+    min-height: 0;
+    padding: 0 6px;
+    border: 0;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    color: inherit;
+    font: inherit;
+    box-shadow: none;
+}
+
+.passflow-jj-scan-input::placeholder {
+    color: inherit;
+    opacity: 1;
+}
+
+.passflow-jj-scan-input:focus {
+    outline: 2px solid var(--jj-accent);
+    outline-offset: 0;
+    box-shadow: none;
+}
+
+/* Nuit teintée : fonds sombres à la couleur du thème (bleu → bleu nuit…), comme la gestion mobile.
+   Sans color-mix, on garde le noir neutre. */
+@supports (color: color-mix(in oklab, red, blue)) {
+    .passflow-jj-layer {
+        --jj-tint: var(--smbb-t-accent, var(--passflow-brand, #b5476b));
+        --jj-deep: color-mix(in oklab, var(--jj-tint) 12%, #0a0c12);
+        --jj-bg: color-mix(in oklab, var(--jj-tint) 18%, #10131b);
+        --jj-panel: color-mix(in oklab, var(--jj-tint) 22%, #181c26);
+        --jj-panel-2: color-mix(in oklab, var(--jj-tint) 26%, #202533);
+        --jj-line: color-mix(in oklab, var(--jj-tint) 20%, rgba(255, 255, 255, 0.08));
+        --jj-muted: color-mix(in oklab, var(--jj-tint) 14%, #9aa1ad);
+    }
+    .passflow-jj-person:hover,
+    .passflow-jj-person:focus-visible { background: color-mix(in oklab, var(--jj-tint) 30%, #2a3040); }
+}

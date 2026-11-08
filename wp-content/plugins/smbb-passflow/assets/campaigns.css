@@ -1,0 +1,47 @@
+/* Demandes de dispo (back-office) et demandes en haut de « Mes disponibilités ». */
+.passflow-camp-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 10px; }
+.passflow-camp-tree, .passflow-camp-tree ul { list-style: none; margin: 0; padding: 0; }
+.passflow-camp-tree > li { border: 1px solid #e2e4e7; border-radius: 8px; margin-bottom: 8px; background: #fbfbfc; }
+.passflow-camp-folder-head { display: flex; align-items: center; gap: 8px; padding: 8px 12px; }
+.passflow-camp-folder-head label { display: inline-flex; align-items: center; gap: 4px; }
+.passflow-camp-folder-head .dashicons-category { color: #b5476b; }
+.passflow-camp-toggle { margin-left: auto; border: 0; background: none; cursor: pointer; color: #646970; padding: 2px; }
+.passflow-camp-toggle .dashicons { transition: transform .15s; }
+.passflow-camp-folder.is-open .passflow-camp-toggle .dashicons { transform: rotate(180deg); }
+.passflow-camp-folder > ul { display: none; padding: 2px 12px 8px 36px; border-top: 1px solid #e2e4e7; background: #fff; border-radius: 0 0 8px 8px; }
+.passflow-camp-folder.is-open > ul { display: block; }
+.passflow-camp-row { display: grid; grid-template-columns: minmax(250px, 1.3fr) 1fr 1fr 1fr; gap: 4px 16px; align-items: start; padding: 6px 0; border-bottom: 1px solid #f0f0f1; }
+.passflow-camp-row:last-child { border-bottom: 0; }
+.passflow-camp-col { display: flex; flex-wrap: wrap; gap: 4px 10px; min-height: 20px; }
+.passflow-camp-who { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; white-space: nowrap; }
+.passflow-camp-dot { width: 9px; height: 9px; border-radius: 50%; background: #c3c4c7; flex: none; }
+.passflow-camp-who.is-yes .passflow-camp-dot { background: #00a32a; }
+.passflow-camp-who.is-no .passflow-camp-dot { background: #d63638; }
+.passflow-camp-q { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; border-radius: 50%; background: #fcf0d9; color: #8a5300; font-size: 10px; font-weight: 700; flex: none; }
+.passflow-camp-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0 0 10px; }
+.passflow-admin .passflow-camp-form .button.button-hero { display: inline-flex !important; align-items: center; gap: 8px; line-height: 1.2 !important; padding-top: 10px; padding-bottom: 10px; }
+.passflow-admin .passflow-camp-form .button.button-hero .dashicons { font-size: 20px; width: 20px; height: 20px; line-height: 1 !important; margin: 0 !important; vertical-align: 0; position: static; top: auto; }
+.passflow-admin .passflow-camp-form .button.button-hero .dashicons::before { line-height: 1; vertical-align: 0; }
+@media (max-width: 782px) { .passflow-camp-row { grid-template-columns: 1fr; } .passflow-camp-col:empty { display: none; } }
+.passflow-camp-people { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 6px 16px; }
+.passflow-camp-people label { padding: 4px 0; }
+.passflow-camp-channels label { margin-right: 16px; }
+.passflow-camp-pct.is-yes strong, span.passflow-camp-pct.is-yes { color: #1e6b22; }
+.passflow-camp-pct.is-no strong, span.passflow-camp-pct.is-no { color: #a2310c; }
+.passflow-camp-pct.is-none strong, span.passflow-camp-pct.is-none { color: #8a5300; }
+.passflow-camp-table td { vertical-align: top; }
+.passflow-camp-bar { display: flex; height: 4px; margin-top: 6px; max-width: 160px; border-radius: 4px; overflow: hidden; background: #f0d9a8; }
+.passflow-camp-bar .is-yes { background: #00a32a; }
+.passflow-camp-bar .is-no { background: #d63638; }
+.passflow-camp-grid td { white-space: nowrap; }
+.passflow-camp-planned { color: #2271b1; font-size: 16px; width: 16px; height: 16px; vertical-align: middle; }
+
+/* Espace intervenant */
+.passflow-camp-request { background: #fff; border: 1px solid #e2e4e7; border-left: 4px solid #b5476b; border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; }
+.passflow-camp-request h2 { margin: 0 0 4px; font-size: 16px; }
+.passflow-camp-request .passflow-camp-message { margin: 8px 0 12px; padding: 8px 12px; background: #f6f7f7; border-radius: 6px; white-space: pre-line; }
+.passflow-camp-reply { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; }
+.passflow-camp-reply textarea { flex: 1 1 260px; min-height: 44px; }
+.passflow-camp-reply-state { flex-basis: 100%; font-size: 12px; color: #646970; }
+.passflow-availability-others-title { margin-top: 28px; }
+.passflow-camp-done { margin: 4px 0 8px; padding: 6px 10px; border-radius: 6px; background: #e5f4e4; color: #1e6b22; font-weight: 500; }

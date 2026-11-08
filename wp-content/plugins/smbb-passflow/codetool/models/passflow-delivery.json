@@ -1,0 +1,228 @@
+{
+  "name": "passflow_delivery",
+  "label": "Envoi",
+  "pluralLabel": "Envois",
+  "description": "Journal des e-mails et SMS envoyés aux participants et aux intervenants.",
+  "storage": {
+    "table": "passflow_delivery",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "event": {
+      "type": "varchar",
+      "length": 40,
+      "nullable": false,
+      "default": ""
+    },
+    "channel": {
+      "type": "varchar",
+      "length": 10,
+      "nullable": false,
+      "default": ""
+    },
+    "recipient_type": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": ""
+    },
+    "recipient": {
+      "type": "varchar",
+      "length": 190,
+      "nullable": false,
+      "default": ""
+    },
+    "recipient_name": {
+      "type": "varchar",
+      "length": 190,
+      "nullable": false,
+      "default": ""
+    },
+    "booking_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "slot_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "host_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "waitlist_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "subject": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": false,
+      "default": ""
+    },
+    "body": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "status": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "sent"
+    },
+    "error": {
+      "type": "text",
+      "nullable": true
+    },
+    "provider_id": {
+      "type": "varchar",
+      "length": 100,
+      "nullable": false,
+      "default": ""
+    },
+    "dedup_key": {
+      "type": "varchar",
+      "length": 190,
+      "nullable": false,
+      "default": ""
+    },
+    "sent_at": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "user_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_booking_id",
+      "type": "index",
+      "columns": [
+        "booking_id"
+      ]
+    },
+    {
+      "name": "idx_slot_id",
+      "type": "index",
+      "columns": [
+        "slot_id"
+      ]
+    },
+    {
+      "name": "idx_dedup_key",
+      "type": "index",
+      "columns": [
+        "dedup_key"
+      ]
+    },
+    {
+      "name": "idx_sent_at",
+      "type": "index",
+      "columns": [
+        "sent_at"
+      ]
+    },
+    {
+      "name": "idx_status",
+      "type": "index",
+      "columns": [
+        "status"
+      ]
+    }
+  ],
+  "admin": {
+    "enabled": true,
+    "capability": "manage_passflow",
+    "menu": {
+      "placement": "hidden",
+      "title": "Envois",
+      "icon": "dashicons-email-alt",
+      "position": 85,
+      "parent": "smbb-codetool-passflow",
+      "highlight": "passflow_history"
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "list": {
+      "perPage": 50,
+      "search": {
+        "enabled": true,
+        "provider": "default",
+        "fields": [
+          "recipient",
+          "recipient_name",
+          "subject"
+        ],
+        "mode": "or",
+        "placeholder": "Destinataire ou sujet"
+      },
+      "filters": {
+        "enabled": true,
+        "fields": [
+          {
+            "field": "channel",
+            "label": "Canal",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "status",
+            "label": "Résultat",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "event",
+            "label": "Message",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "slot_id",
+            "label": "Créneau",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "booking_id",
+            "label": "Inscription",
+            "operators": [
+              "eq"
+            ]
+          }
+        ]
+      },
+      "defaultOrder": {
+        "by": "id",
+        "direction": "desc"
+      }
+    },
+    "views": {
+      "list": "views/passflow-delivery/list.php",
+      "details": "views/passflow-delivery/details.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

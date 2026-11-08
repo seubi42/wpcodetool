@@ -185,9 +185,12 @@ final class Table
                     </div>
                 </div>
 
-                <?php if ($this->create_url) : ?>
+                <?php if ($this->create_url || $this->filterFormAvailable()) : ?>
                     <div class="smbb-codetool-page-header-actions">
-                        <a href="<?php echo esc_url($this->create_url); ?>" class="page-title-action"><?php esc_html_e('Ajouter', 'smbb-wpcodetool'); ?></a>
+                        <?php $this->renderFilterToggle(); ?>
+                        <?php if ($this->create_url) : ?>
+                            <a href="<?php echo esc_url($this->create_url); ?>" class="page-title-action"><?php esc_html_e('Ajouter', 'smbb-wpcodetool'); ?></a>
+                        <?php endif; ?>
                     </div>
                 <?php endif; ?>
             </div>
@@ -362,6 +365,60 @@ final class Table
     }
 
     /**
+     * Le filtre [champ] [opérateur] [valeur] est-il proposé sur cette liste ?
+     */
+    private function filterFormAvailable()
+    {
+        return $this->filter_enabled && $this->filter_form && $this->admin_url && $this->filter_fields;
+    }
+
+    /**
+     * Le filtre reste replié derrière l'icône d'en-tête, sauf si un filtre « à la main » est actif
+     * (un préfiltre actif se voit déjà dans ses onglets).
+     */
+    private function filterFormOpen()
+    {
+        return $this->hasActiveFilter() && !$this->activeFilterIsPreset();
+    }
+
+    private function activeFilterIsPreset()
+    {
+        if (empty($this->presets['items']) || !$this->hasActiveFilter()) {
+            return false;
+        }
+
+        foreach ($this->presets['items'] as $item) {
+            if ((string) $this->current_filter['field'] === $item['filter']['field']
+                && (string) $this->current_filter['operator'] === $item['filter']['operator']
+                && trim((string) $this->current_filter['value']) === trim($item['filter']['value'])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Petite icône entonnoir à gauche de « Ajouter » qui déplie le filtre.
+     */
+    private function renderFilterToggle()
+    {
+        if (!$this->filterFormAvailable()) {
+            return;
+        }
+
+        $open = $this->filterFormOpen();
+        $active = $this->hasActiveFilter() && !$this->activeFilterIsPreset();
+        $label = __('Filtrer la liste', 'smbb-wpcodetool');
+        ?>
+        <button type="button" class="smbb-codetool-filter-toggle<?php echo $active ? ' has-filter' : ''; ?>" data-smbb-filter-toggle aria-controls="smbb-codetool-filter-form" aria-expanded="<?php echo $open ? 'true' : 'false'; ?>" title="<?php echo esc_attr($label); ?>">
+            <span class="dashicons dashicons-filter" aria-hidden="true"></span>
+            <span class="screen-reader-text"><?php echo esc_html($label); ?></span>
+        </button>
+        <?php
+    }
+
+    /**
      * Rend une recherche simple si la ressource declare des colonnes search.
      */
     private function renderSearchForm()
@@ -387,7 +444,7 @@ final class Table
      */
     private function renderFilterForm()
     {
-        if (!$this->filter_enabled || !$this->filter_form || !$this->admin_url || !$this->filter_fields) {
+        if (!$this->filterFormAvailable()) {
             return;
         }
 
@@ -395,7 +452,7 @@ final class Table
         $operator = isset($this->current_filter['operator']) ? (string) $this->current_filter['operator'] : '';
         $value = isset($this->current_filter['value']) ? (string) $this->current_filter['value'] : '';
         ?>
-        <form class="smbb-codetool-filter-form" method="get" action="<?php echo esc_url(admin_url('admin.php')); ?>">
+        <form class="smbb-codetool-filter-form" id="smbb-codetool-filter-form" method="get" action="<?php echo esc_url(admin_url('admin.php')); ?>"<?php echo $this->filterFormOpen() ? '' : ' hidden'; ?>>
             <?php $this->renderHiddenQueryInputs(array('filter', 'paged')); ?>
 
             <label class="screen-reader-text" for="smbb-codetool-filter-field"><?php esc_html_e('Champ du filtre', 'smbb-wpcodetool'); ?></label>

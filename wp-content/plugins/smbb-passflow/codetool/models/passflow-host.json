@@ -1,0 +1,173 @@
+{
+  "name": "passflow_host",
+  "label": "Intervenant",
+  "pluralLabel": "Intervenants",
+  "description": "Les intervenants qui animent les ateliers, chacun avec son compte WordPress.",
+  "storage": {
+    "table": "passflow_host",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "user_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "first_name": {
+      "type": "varchar",
+      "length": 100,
+      "nullable": false,
+      "default": ""
+    },
+    "last_name": {
+      "type": "varchar",
+      "length": 100,
+      "nullable": false,
+      "default": ""
+    },
+    "email": {
+      "type": "varchar",
+      "length": 190,
+      "nullable": false,
+      "default": ""
+    },
+    "phone": {
+      "type": "varchar",
+      "length": 40,
+      "nullable": false,
+      "default": ""
+    },
+    "bio": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "photo_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "status": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "active"
+    },
+    "notes": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "creation_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "create_datetime"
+    },
+    "creation_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "create_user"
+    },
+    "lastupdate_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "update_datetime"
+    },
+    "lastupdate_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "update_user"
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_user_id",
+      "type": "index",
+      "columns": [
+        "user_id"
+      ]
+    },
+    {
+      "name": "idx_status",
+      "type": "index",
+      "columns": [
+        "status"
+      ]
+    },
+    {
+      "name": "idx_last_name",
+      "type": "index",
+      "columns": [
+        "last_name"
+      ]
+    }
+  ],
+  "admin": {
+    "enabled": true,
+    "capability": "manage_passflow",
+    "menu": {
+      "placement": "submenu",
+      "title": "Intervenants",
+      "icon": "dashicons-businessperson",
+      "position": 72,
+      "parent": "smbb-codetool-passflow",
+      "group": "Paramétrage"
+    },
+    "appBar": {
+      "create": "Nouvel intervenant"
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "list": {
+      "perPage": 25,
+      "search": {
+        "enabled": true,
+        "provider": "default",
+        "fields": [
+          "first_name",
+          "last_name",
+          "email",
+          "phone"
+        ],
+        "mode": "or",
+        "placeholder": "Rechercher un intervenant"
+      },
+      "filters": {
+        "enabled": true,
+        "fields": [
+          {
+            "field": "status",
+            "label": "Statut",
+            "operators": [
+              "eq"
+            ]
+          }
+        ]
+      },
+      "defaultOrder": {
+        "by": "last_name",
+        "direction": "asc"
+      }
+    },
+    "views": {
+      "list": "views/passflow-host/list.php",
+      "form": "views/passflow-host/form.php"
+    }
+  },
+  "hooks": {
+    "file": "hooks/HostHooks.php",
+    "class": "Smbb\\Passflow\\CodeTool\\HostHooks"
+  },
+  "api": {
+    "enabled": false
+  }
+}

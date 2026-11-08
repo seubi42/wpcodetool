@@ -102,8 +102,13 @@ final class ProductLookup
             $meta[] = sprintf(__('Réf. %s', 'smbb-wpcodetool'), $product->get_sku());
         }
 
+        if ($product->is_type('variable')) {
+            $count = count($product->get_children());
+            $meta[] = sprintf(_n('%d variante', '%d variantes', $count, 'smbb-wpcodetool'), $count);
+        }
+
         if ($product->get_price() !== '') {
-            $meta[] = html_entity_decode(wp_strip_all_tags(wc_price(wc_get_price_to_display($product))), ENT_QUOTES, 'UTF-8');
+            $meta[] = ($product->is_type('variable') && $product->get_variation_price('min') !== $product->get_variation_price('max') ? __('dès ', 'smbb-wpcodetool') : '') . html_entity_decode(wp_strip_all_tags(wc_price(wc_get_price_to_display($product))), ENT_QUOTES, 'UTF-8');
         }
 
         if ($product->get_status() !== 'publish') {

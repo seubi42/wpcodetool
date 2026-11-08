@@ -1,0 +1,34 @@
+
+/* Comparer (Suivi › Comparer, ouvert aussi depuis le Bilan). */
+.passflow-admin .passflow-compare-form { margin-top: 12px; }
+.passflow-admin .passflow-compare-picks { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; margin: 8px 0 12px; max-height: 340px; overflow-y: auto; }
+.passflow-admin .passflow-compare-pick { display: flex; gap: 8px; align-items: flex-start; padding: 8px 10px; border: 1px solid var(--smbb-t-line, var(--passflow-line)); border-radius: 10px; background: var(--smbb-t-card, #fff); cursor: pointer; }
+.passflow-admin .passflow-compare-pick span { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.passflow-admin .passflow-compare-pick.is-checked { border-color: var(--smbb-t-accent, var(--passflow-brand)); box-shadow: 0 0 0 1px var(--smbb-t-accent, var(--passflow-brand)); }
+.passflow-admin .passflow-compare-pick input:disabled + span { opacity: .5; }
+.passflow-admin .passflow-compare .passflow-actions label { margin-right: 8px; }
+.passflow-admin .passflow-compare-glance { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.passflow-admin .passflow-compare-row { display: grid; grid-template-columns: minmax(0, 9em) 1fr auto; gap: 8px; align-items: center; margin: 0 0 6px; font-size: 12px; }
+.passflow-admin .passflow-compare-row.is-ref .passflow-compare-label { font-weight: 700; }
+.passflow-admin .passflow-compare-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--smbb-t-muted, var(--passflow-muted)); }
+.passflow-admin .passflow-compare-track { display: block; height: 10px; border-radius: 5px; background: var(--smbb-t-fill, #f0f0f1); overflow: hidden; }
+.passflow-admin .passflow-compare-track span { display: block; height: 100%; border-radius: 5px; }
+.passflow-admin .passflow-compare-track .is-fill { background: var(--smbb-t-accent, var(--passflow-brand)); }
+.passflow-admin .passflow-compare-track .is-revenue { background: #2271b1; }
+.passflow-admin .passflow-compare-table th, .passflow-admin .passflow-compare-table td { vertical-align: top; }
+.passflow-admin .passflow-compare-table thead th { min-width: 120px; }
+.passflow-admin .passflow-compare-table thead th:first-child, .passflow-admin .passflow-compare-table tbody th { min-width: 160px; text-align: left; }
+.passflow-admin .passflow-compare-table .is-ref { background: rgba(var(--smbb-t-accent-rgb, 181, 71, 107), .07); }
+.passflow-admin .passflow-compare-table .is-best { font-weight: 700; }
+.passflow-admin .passflow-compare-group th { padding-top: 14px; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--smbb-t-muted, var(--passflow-muted)); border-bottom: 1px solid var(--smbb-t-line, var(--passflow-line)); }
+.passflow-admin .passflow-compare-ref { display: inline-block; margin-top: 2px; padding: 1px 6px; border-radius: 6px; font-size: 11px; background: var(--smbb-t-accent, var(--passflow-brand)); color: #fff; }
+.passflow-admin .passflow-compare-delta { display: inline-block; margin-left: 4px; padding: 0 5px; border-radius: 5px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.passflow-admin .passflow-compare-delta.is-up { color: #00a32a; background: rgba(0, 163, 42, .1); }
+.passflow-admin .passflow-compare-delta.is-down { color: #d63638; background: rgba(214, 54, 56, .1); }
+.passflow-admin .passflow-compare-delta.is-same, .passflow-admin .passflow-compare-delta.is-neutral { color: var(--smbb-t-muted, var(--passflow-muted)); background: var(--smbb-t-fill, #f0f0f1); }
+@media (max-width: 1100px) { .passflow-admin .passflow-compare-glance { grid-template-columns: 1fr; } }
+@media (max-width: 782px) { .passflow-admin .passflow-compare-picks { grid-template-columns: 1fr; } }
+@media print {
+  .passflow-admin .passflow-compare-track span, .passflow-admin .passflow-compare-delta, .passflow-admin .passflow-compare-ref, .passflow-admin .passflow-compare-table .is-ref { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .passflow-admin .passflow-compare-glance { grid-template-columns: repeat(3, 1fr); }
+}

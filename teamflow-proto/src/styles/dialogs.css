@@ -1,0 +1,30 @@
+/* Boîtes de dialogue (jamais alert / confirm natifs) */
+.tf-modal-back {
+  position: absolute; inset: 0; z-index: 50;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 14vh 16px 16px;
+  background: rgba(0,0,0,.38);
+  animation: tf-fade .12s ease;
+}
+.tf-modal {
+  width: min(420px, 100%);
+  padding: 18px 18px 14px;
+  background: var(--tf-panel); border: 1px solid var(--tf-panel-border); border-radius: 14px;
+  box-shadow: 0 24px 60px rgba(0,0,0,.4);
+  user-select: text; -webkit-user-select: text;
+}
+.tf-modal-title { font-size: 15.5px; font-weight: 700; }
+.tf-modal-msg { margin-top: 6px; font-size: 13.5px; color: var(--tf-muted); }
+.tf-modal-input {
+  display: block; width: 100%; margin-top: 12px; padding: 8px 10px;
+  border: 1px solid var(--tf-panel-border); border-radius: 8px;
+  background: var(--tf-bg); color: var(--tf-text); font: inherit; outline: none;
+}
+.tf-modal-input:focus { border-color: var(--tf-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--tf-accent) 25%, transparent); }
+.tf-modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.tf-modal-actions .tf-btn { padding: 0 14px; font-size: 13.5px; font-weight: 600; }
+.tf-modal-cancel { color: var(--tf-text) !important; }
+.tf-modal-ok { background: var(--tf-accent) !important; color: #fff !important; }
+.tf-modal-ok:hover { filter: brightness(1.1); }
+.tf-modal-ok.tf-danger-solid { background: var(--tf-danger) !important; }
+@keyframes tf-fade { from { opacity: 0; } }

@@ -1,0 +1,33 @@
+{
+  "name": "passflow_portal",
+  "label": "Mes ateliers",
+  "pluralLabel": "Mes ateliers",
+  "description": "Vos prochains ateliers et la liste de leurs participants.",
+  "storage": {
+    "type": "none"
+  },
+  "admin": {
+    "enabled": true,
+    "capability": "passflow_host",
+    "menu": {
+      "placement": "main",
+      "title": "Mes ateliers",
+      "icon": "dashicons-welcome-learn-more",
+      "position": 27
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "type": "page",
+    "page": {
+      "defaultView": "dashboard"
+    },
+    "views": {
+      "dashboard": "views/passflow-portal/dashboard.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

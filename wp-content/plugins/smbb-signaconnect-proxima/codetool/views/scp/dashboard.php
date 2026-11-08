@@ -107,8 +107,8 @@ foreach (is_array($organizations) ? $organizations : array() as $org) {
         $alerts[] = __('Universign autorisé mais clé API ou espace de travail manquant.', $d);
     }
 
-    if (in_array('internal', $levels, true) && empty($org['s3_bucket'])) {
-        $alerts[] = __('Niveau Simple autorisé mais aucun stockage S3.', $d);
+    if (in_array('internal', $levels, true) && !\Smbb\SignConnectProxima\Repository\Organizations::hasStorage($org)) {
+        $alerts[] = __('Niveau Simple autorisé mais aucun stockage choisi.', $d);
     }
 
     if (empty($org['default_plan_id'])) {

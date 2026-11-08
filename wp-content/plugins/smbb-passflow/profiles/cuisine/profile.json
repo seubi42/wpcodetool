@@ -1,0 +1,35 @@
+{
+  "format": "smbb-passflow-config",
+  "version": 1,
+  "profile": {
+    "title": "Atelier de cuisine",
+    "description": "Cours de cuisine ou de pâtisserie en petit groupe, avec un chef.",
+    "icon": "dashicons-carrot",
+    "order": 30
+  },
+  "settings": {
+    "vocabulary_event": "atelier",
+    "vocabulary_slot": "creneau",
+    "vocabulary_staff": "chef",
+    "vocabulary_participant": "participant",
+    "vocabulary_ticket": "billet",
+    "vocabulary_pass": "pass",
+    "vocabulary_voucher": "bon",
+    "vocabulary_example_name": "Atelier mochi",
+    "vocabulary_example_location": "Atelier, Paris 11e",
+    "ask_allergies": 1,
+    "ask_level": 1,
+    "ask_age": 0,
+    "ask_contact": "optional",
+    "waitlist_enabled": 1,
+    "ticket_color_mode": "fixed",
+    "ticket_color": "#8c3c34",
+    "email_color_mode": "ticket",
+    "email_background": "#f6f3ef",
+    "reminder_participant_hours": 24,
+    "reminder_host_days": 7
+  },
+  "documents": {
+    "documents": []
+  }
+}

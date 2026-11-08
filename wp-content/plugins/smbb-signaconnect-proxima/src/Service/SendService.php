@@ -43,7 +43,7 @@ final class SendService
         $inspection = Pdf::inspect($file['tmp_name']);
         $filename = sanitize_file_name((string) $file['name']) ?: 'document.pdf';
 
-        $document_id = Documents::insert(array(
+        $document = array(
             'organization_id' => (int) $organization['id'],
             'team_id' => (int) $team_id,
             'sender_id' => (int) $user_id,
@@ -56,7 +56,15 @@ final class SendService
             'signature_level' => Levels::INTERNAL,
             'status' => 'draft',
             'storage_location' => 's3',
-        ));
+        );
+
+        // Unité CodeTool où le PDF est rangé : retenue par le document (l'organisation peut en changer).
+        // Colonne ajoutée en 0.12.0 : seulement une fois la table à jour.
+        if (\Smbb\SignConnectProxima\Support\Schema::atLeast('0.12.0') && Storage::unitOf($organization) !== '') {
+            $document['storage_unit'] = Storage::unitOf($organization);
+        }
+
+        $document_id = Documents::insert($document);
 
         try {
             $key = Storage::documentKey($organization['id'], $document_id, 'source');
@@ -470,7 +478,7 @@ final class SendService
             throw new \RuntimeException(__("Aucun niveau de signature n'est disponible pour cette organisation. Contactez votre administrateur.", 'smbb-signaconnect-proxima'));
         }
 
-        if (!Organizations::hasS3($organization)) {
+        if (!Organizations::hasStorage($organization)) {
             throw new \RuntimeException(__("Le stockage de l'organisation n'est pas configuré. Contactez votre administrateur.", 'smbb-signaconnect-proxima'));
         }
 

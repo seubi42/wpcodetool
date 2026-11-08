@@ -1,0 +1,104 @@
+{
+  "name": "passflow_broadcast",
+  "label": "Communication",
+  "pluralLabel": "Communications",
+  "description": "Campagnes SMS / e-mail envoyées aux inscrits d'une journée, diffusées par la file d'attente.",
+  "storage": {
+    "table": "passflow_broadcast",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "slot_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "target": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "all"
+    },
+    "channels": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": ""
+    },
+    "consent": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "kind": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "manual"
+    },
+    "subject": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": true
+    },
+    "message": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "status": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "queued"
+    },
+    "total": {
+      "type": "int",
+      "nullable": false,
+      "default": 0
+    },
+    "created_at": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "created_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "finished_at": {
+      "type": "datetime",
+      "nullable": true
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_slot_id",
+      "type": "index",
+      "columns": [
+        "slot_id"
+      ]
+    },
+    {
+      "name": "idx_status",
+      "type": "index",
+      "columns": [
+        "status"
+      ]
+    }
+  ],
+  "admin": {
+    "enabled": false
+  },
+  "api": {
+    "enabled": false
+  }
+}

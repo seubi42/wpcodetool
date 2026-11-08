@@ -129,7 +129,7 @@ final class Lifecycle
         global $wpdb;
 
         $rows = $wpdb->get_results($wpdb->prepare(
-            'SELECT id, organization_id, source_storage_path FROM ' . Lookup::table('scp_document') . " WHERE deleted_flag = 0 AND status = 'draft' AND creation_date < %s LIMIT 200",
+            'SELECT id, organization_id, ' . self::unitColumn('') . 'source_storage_path FROM ' . Lookup::table('scp_document') . " WHERE deleted_flag = 0 AND status = 'draft' AND creation_date < %s LIMIT 200",
             date('Y-m-d H:i:s', current_time('timestamp') - 7 * DAY_IN_SECONDS)
         ), ARRAY_A);
 
@@ -138,7 +138,7 @@ final class Lifecycle
 
             try {
                 if ($organization && $row['source_storage_path']) {
-                    Storage::forOrganization($organization)->delete($row['source_storage_path']);
+                    Storage::forDocument($row, $organization)->delete($row['source_storage_path']);
                 }
             } catch (\Throwable $exception) {
                 continue;
@@ -156,7 +156,7 @@ final class Lifecycle
         global $wpdb;
 
         $rows = $wpdb->get_results(
-            'SELECT d.id, d.organization_id, d.closed_at, d.source_storage_path, d.signed_storage_path, d.evidence_storage_path, o.retention_months FROM ' . Lookup::table('scp_document') . ' d '
+            'SELECT d.id, d.organization_id, d.closed_at, ' . self::unitColumn('d.') . 'd.source_storage_path, d.signed_storage_path, d.evidence_storage_path, o.retention_months FROM ' . Lookup::table('scp_document') . ' d '
             . 'INNER JOIN ' . Lookup::table('scp_organization') . " o ON o.id = d.organization_id WHERE d.deleted_flag = 0 AND d.anonymized_at IS NULL AND d.storage_location = 's3' "
             . "AND d.status IN ('signed','refused','expired','cancelled') AND d.closed_at IS NOT NULL AND d.closed_at < DATE_SUB(NOW(), INTERVAL GREATEST(o.retention_months, 1) MONTH) LIMIT 100",
             ARRAY_A
@@ -166,7 +166,7 @@ final class Lifecycle
             $organization = Organizations::find($row['organization_id']);
 
             try {
-                $storage = Storage::forOrganization($organization);
+                $storage = Storage::forDocument($row, $organization);
                 $storage->delete($row['source_storage_path']);
                 $storage->delete($row['signed_storage_path']);
                 $storage->delete($row['evidence_storage_path']);
@@ -204,5 +204,13 @@ final class Lifecycle
     private static function closeBillingMonth()
     {
         Billing::autoClose();
+    }
+
+    /**
+     * Colonne storage_unit (0.12.0) dans un SELECT, seulement une fois la table à jour.
+     */
+    private static function unitColumn($alias)
+    {
+        return \Smbb\SignConnectProxima\Support\Schema::atLeast('0.12.0') ? $alias . 'storage_unit, ' : '';
     }
 }

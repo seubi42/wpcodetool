@@ -135,7 +135,7 @@ final class ResourceRuntime
             $sources[] = is_array($declared) ? $declared : array();
         }
 
-        foreach ($sources as $declared) {
+        foreach ($sources as $index => $declared) {
             foreach ($declared as $key => $definition) {
                 $key = sanitize_key((string) $key);
 
@@ -159,10 +159,12 @@ final class ResourceRuntime
                     continue;
                 }
 
+                // Libellés du JSON (source 0) traduits dans le domaine du plugin ; ceux des hooks le sont déjà.
+                $tr = $index === 0 ? array($resource, 'translate') : 'strval';
                 $custom[$key] = array(
-                    'label' => (string) $definition['label'],
+                    'label' => call_user_func($tr, (string) $definition['label']),
                     'method' => isset($definition['method']) ? (string) $definition['method'] : '',
-                    'confirm' => isset($definition['confirm']) ? (string) $definition['confirm'] : '',
+                    'confirm' => isset($definition['confirm']) ? call_user_func($tr, (string) $definition['confirm']) : '',
                     'capability' => isset($definition['capability']) ? (string) $definition['capability'] : '',
                     'danger' => !empty($definition['danger']),
                     'builtin' => false,

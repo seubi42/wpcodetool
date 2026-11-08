@@ -1,0 +1,42 @@
+{
+  "codetool_appearance": {
+    "preset": "porsche",
+    "theme": "porsche"
+  },
+  "offer": {
+    "name": "Week-end circuit VIP",
+    "location": "Circuit de Magny-Cours",
+    "duration_minutes": 480,
+    "default_price": 450,
+    "default_capacity": 20,
+    "color": "#1b1b1f",
+    "description": "Accès paddock, roulages encadrés, déjeuner au salon VIP et badge nominatif."
+  },
+  "demo": {
+    "host": [
+      "Alex",
+      "Bernard"
+    ],
+    "weekend_pass": true,
+    "pass_price": 790,
+    "event": {
+      "name": "Grand Prix Classic : week-end VIP",
+      "location": "Circuit de Magny-Cours",
+      "duration_minutes": 480,
+      "default_price": 450,
+      "default_capacity": 20,
+      "color": "#1b1b1f",
+      "description": "Samedi et dimanche : paddock, tribunes, salon VIP. Pack 2 jours ou journée seule."
+    },
+    "catalog": [
+      {
+        "name": "Casquette de l'événement",
+        "price": 35
+      },
+      {
+        "name": "Polo VIP",
+        "price": 59
+      }
+    ]
+  }
+}

@@ -1,0 +1,245 @@
+{
+  "name": "passflow_slot",
+  "label": "Créneau",
+  "pluralLabel": "Créneaux",
+  "description": "Les dates de chaque atelier, leurs places en vente et leurs intervenants.",
+  "storage": {
+    "table": "passflow_slot",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "activity_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "start_date": {
+      "type": "date",
+      "nullable": true
+    },
+    "start_time": {
+      "type": "time",
+      "nullable": true
+    },
+    "end_time": {
+      "type": "time",
+      "nullable": true
+    },
+    "capacity": {
+      "type": "int",
+      "nullable": false,
+      "default": 0
+    },
+    "price": {
+      "type": "decimal",
+      "precision": 10,
+      "scale": 2,
+      "nullable": true
+    },
+    "host_ids": {
+      "type": "longtext",
+      "nullable": true,
+      "format": "json"
+    },
+    "status": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "draft"
+    },
+    "internal_note": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "cancel_reason": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "reminders_sent": {
+      "type": "longtext",
+      "nullable": true,
+      "format": "json"
+    },
+    "review_sent_at": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "kind": {
+      "type": "varchar",
+      "length": 10,
+      "nullable": false,
+      "default": "day"
+    },
+    "pass_slot_ids": {
+      "type": "longtext",
+      "nullable": true,
+      "format": "json"
+    },
+    "all_day": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "sale_delayed": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "sale_opens_at": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "sale_show_date": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 1
+    },
+    "creation_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "create_datetime"
+    },
+    "creation_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "create_user"
+    },
+    "lastupdate_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "update_datetime"
+    },
+    "lastupdate_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "update_user"
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_activity_id",
+      "type": "index",
+      "columns": [
+        "activity_id"
+      ]
+    },
+    {
+      "name": "idx_start_date",
+      "type": "index",
+      "columns": [
+        "start_date"
+      ]
+    },
+    {
+      "name": "idx_status",
+      "type": "index",
+      "columns": [
+        "status"
+      ]
+    }
+  ],
+  "admin": {
+    "enabled": true,
+    "capability": "manage_passflow",
+    "menu": {
+      "placement": "submenu",
+      "title": "Créneaux",
+      "icon": "dashicons-clock",
+      "position": 20,
+      "parent": "smbb-codetool-passflow",
+      "group": "Au quotidien"
+    },
+    "appBar": {
+      "create": "Nouveau créneau"
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "list": {
+      "perPage": 30,
+      "search": {
+        "enabled": false
+      },
+      "filters": {
+        "enabled": true,
+        "fields": [
+          {
+            "field": "activity_id",
+            "label": "Atelier",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "status",
+            "label": "Statut",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "start_date",
+            "label": "Date",
+            "operators": [
+              "eq",
+              "gte",
+              "lte"
+            ]
+          }
+        ]
+      },
+      "defaultOrder": {
+        "by": "start_date",
+        "direction": "asc"
+      },
+      "batchActions": {
+        "passflow_open": {
+          "label": "Mettre en vente",
+          "method": "openSlots",
+          "capability": "manage_passflow"
+        },
+        "passflow_draft": {
+          "label": "Repasser en brouillon",
+          "method": "draftSlots",
+          "capability": "manage_passflow",
+          "confirm": "Retirer de la vente en ligne les créneaux sélectionnés ?"
+        },
+        "passflow_assign": {
+          "label": "Affecter intervenant(s)…",
+          "method": "assignHosts",
+          "capability": "manage_passflow"
+        }
+      }
+    },
+    "views": {
+      "list": "views/passflow-slot/list.php",
+      "form": "views/passflow-slot/form.php",
+      "details": "views/passflow-slot/details.php",
+      "communication": "views/passflow-slot/communication.php",
+      "report": "views/passflow-slot/report.php",
+      "wrapped": "views/passflow-slot/wrapped.php",
+      "dayboard": "views/passflow-slot/dayboard.php"
+    }
+  },
+  "hooks": {
+    "file": "hooks/SlotHooks.php",
+    "class": "Smbb\\Passflow\\CodeTool\\SlotHooks"
+  },
+  "api": {
+    "enabled": false
+  }
+}

@@ -39,7 +39,10 @@ final class SmbbTwilioSmsClient
         );
     }
 
-    public function send($to, $body)
+    /**
+     * @param array $extra Paramètres Twilio en plus (StatusCallback…), facultatif.
+     */
+    public function send($to, $body, array $extra = array())
     {
         $to = $this->normalizePhoneNumber($to);
         $body = trim((string) $body);
@@ -57,11 +60,11 @@ final class SmbbTwilioSmsClient
             'headers' => array(
                 'Authorization' => 'Basic ' . base64_encode($this->account_sid . ':' . $this->auth_token),
             ),
-            'body' => array(
+            'body' => array_merge(array_filter($extra, 'is_scalar'), array(
                 'Body' => $body,
                 'To' => $to,
                 'MessagingServiceSid' => $this->service_sid,
-            ),
+            )),
         ));
 
         if (is_wp_error($response)) {
@@ -88,6 +91,60 @@ final class SmbbTwilioSmsClient
             'to' => isset($payload['to']) ? (string) $payload['to'] : $to,
             'raw' => $payload,
         );
+    }
+
+    /**
+     * Relit un message chez Twilio (statut de remise, prix, nombre de segments).
+     *
+     * @return array Réponse brute de l'API (status, error_code, price, price_unit, num_segments…).
+     * @throws RuntimeException
+     */
+    public function fetch($message_sid)
+    {
+        $message_sid = preg_replace('/[^A-Za-z0-9]/', '', (string) $message_sid);
+
+        if ($message_sid === '') {
+            throw new RuntimeException('Identifiant de message Twilio manquant.');
+        }
+
+        $response = wp_remote_get('https://api.twilio.com/2010-04-01/Accounts/' . rawurlencode($this->account_sid) . '/Messages/' . rawurlencode($message_sid) . '.json', array(
+            'timeout' => 15,
+            'headers' => array(
+                'Authorization' => 'Basic ' . base64_encode($this->account_sid . ':' . $this->auth_token),
+            ),
+        ));
+
+        if (is_wp_error($response)) {
+            throw new RuntimeException($response->get_error_message());
+        }
+
+        $payload = json_decode((string) wp_remote_retrieve_body($response), true);
+        $code = (int) wp_remote_retrieve_response_code($response);
+
+        if ($code < 200 || $code >= 300 || !is_array($payload)) {
+            throw new RuntimeException(is_array($payload) && isset($payload['message']) ? (string) $payload['message'] : 'Twilio request failed.');
+        }
+
+        return $payload;
+    }
+
+    /**
+     * Vérifie l'en-tête X-Twilio-Signature d'un webhook : base64(HMAC-SHA1(jeton, URL + clés/valeurs triées)).
+     */
+    public static function validSignature($auth_token, $url, array $params, $signature)
+    {
+        if ((string) $signature === '' || (string) $auth_token === '') {
+            return false;
+        }
+
+        ksort($params, SORT_STRING);
+        $data = (string) $url;
+
+        foreach ($params as $key => $value) {
+            $data .= $key . (is_scalar($value) ? (string) $value : '');
+        }
+
+        return hash_equals(base64_encode(hash_hmac('sha1', $data, (string) $auth_token, true)), (string) $signature);
     }
 
     private function normalizePhoneNumber($phone)

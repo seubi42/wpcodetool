@@ -1,0 +1,486 @@
+/* Carte bancaire FICTIVE (CodeTool › WooCommerce) : formulaire embarqué + lightbox 3D Secure. */
+
+.smbb-fc {
+    --smbb-fc-accent: #5b5bd6;
+    --smbb-fc-ink: #1a1f36;
+    --smbb-fc-muted: #697386;
+    --smbb-fc-line: #e3e8ee;
+    --smbb-fc-danger: #d63638;
+    --smbb-fc-ok: #1f9d55;
+    margin: 4px 0 2px;
+    color: var(--smbb-fc-ink);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.smbb-fc *,
+.smbb-fc-3ds * {
+    box-sizing: border-box;
+}
+
+.smbb-fc-ribbon {
+    margin-bottom: 12px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: repeating-linear-gradient(-45deg, #fff4d6 0 10px, #ffecb3 10px 20px);
+    color: #7a4b00;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+}
+
+.smbb-fc-field {
+    flex: 1 1 0;
+    min-width: 0;
+    margin-bottom: 10px;
+}
+
+.smbb-fc-field label {
+    display: block;
+    margin: 0 0 4px;
+    color: var(--smbb-fc-muted);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.smbb-fc-input {
+    position: relative;
+}
+
+.smbb-fc .smbb-fc-input input {
+    width: 100%;
+    height: 44px;
+    margin: 0;
+    padding: 0 12px;
+    border: 1px solid var(--smbb-fc-line);
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .03), 0 3px 6px rgba(0, 0, 0, .02);
+    color: var(--smbb-fc-ink);
+    font: 500 15px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    letter-spacing: .04em;
+    transition: border-color .15s, box-shadow .15s;
+}
+
+.smbb-fc .smbb-fc-input.has-brand input {
+    padding-right: 64px;
+}
+
+.smbb-fc .smbb-fc-input input:focus {
+    outline: 0;
+    border-color: var(--smbb-fc-accent);
+    box-shadow: 0 0 0 3px rgba(91, 91, 214, .2);
+}
+
+.smbb-fc.is-typing .smbb-fc-input input {
+    caret-color: var(--smbb-fc-accent);
+}
+
+.smbb-fc-brand {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    min-width: 40px;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font: 800 11px/1 system-ui, sans-serif;
+    letter-spacing: .04em;
+    text-align: center;
+    transform: translateY(-50%) scale(.8);
+    opacity: 0;
+    transition: opacity .2s, transform .2s;
+}
+
+.smbb-fc-brand[data-brand="visa"],
+.smbb-fc-brand[data-brand="mastercard"],
+.smbb-fc-brand[data-brand="amex"] {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+}
+
+.smbb-fc-brand[data-brand="visa"] { background: #1a1f71; color: #fff; font-style: italic; }
+.smbb-fc-brand[data-brand="mastercard"] { background: linear-gradient(90deg, #eb001b 0 50%, #f79e1b 50%); color: #fff; }
+.smbb-fc-brand[data-brand="amex"] { background: #2e77bb; color: #fff; }
+
+.smbb-fc-row {
+    display: flex;
+    gap: 10px;
+}
+
+.smbb-fc-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 2px;
+    font-size: 13px;
+}
+
+.smbb-fc .smbb-fc-shuffle {
+    margin: 0;
+    padding: 6px 10px;
+    border: 1px dashed var(--smbb-fc-line);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--smbb-fc-accent);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+}
+
+.smbb-fc .smbb-fc-shuffle:hover {
+    border-color: var(--smbb-fc-accent);
+    background: rgba(91, 91, 214, .06);
+}
+
+.smbb-fc-scenario {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    color: var(--smbb-fc-muted);
+}
+
+.smbb-fc .smbb-fc-scenario select {
+    width: auto;
+    max-width: 230px;
+    height: 32px;
+    margin: 0;
+    padding: 0 8px;
+    border: 1px solid var(--smbb-fc-line);
+    border-radius: 6px;
+    background-color: #fff;
+    font-size: 13px;
+}
+
+.smbb-fc-badge.is-test {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: #d63638;
+    color: #fff;
+    font: 700 10px/1.3 system-ui, sans-serif;
+    letter-spacing: .06em;
+    vertical-align: middle;
+}
+
+.smbb-fc-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Lightbox 3D Secure                                                  */
+/* ------------------------------------------------------------------ */
+
+.smbb-fc-3ds {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(10, 14, 30, .55);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    color: #1a1f36;
+    font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    opacity: 0;
+    transition: opacity .25s ease;
+}
+
+.smbb-fc-3ds.is-open {
+    opacity: 1;
+}
+
+.smbb-fc-3ds-box {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    min-height: 330px;
+    overflow: hidden;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 30px 60px -12px rgba(50, 50, 93, .35), 0 18px 36px -18px rgba(0, 0, 0, .4);
+    transform: translateY(14px) scale(.96);
+    transition: transform .3s cubic-bezier(.2, .9, .3, 1.2);
+}
+
+.smbb-fc-3ds.is-open .smbb-fc-3ds-box {
+    transform: none;
+}
+
+.smbb-fc-3ds.is-closing .smbb-fc-3ds-box {
+    transform: translateY(8px) scale(.97);
+}
+
+.smbb-fc-3ds-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid #eef0f4;
+    background: linear-gradient(180deg, #f7f8fb, #fff);
+}
+
+.smbb-fc-3ds-bank {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+}
+
+.smbb-fc-3ds-shield {
+    width: 22px;
+    height: 24px;
+    border-radius: 4px 4px 11px 11px;
+    background: linear-gradient(135deg, #5b5bd6, #2b2b8f);
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .35);
+}
+
+.smbb-fc-3ds-scheme {
+    color: #697386;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.smbb-fc-3ds-step {
+    display: none;
+    padding: 22px 22px 8px;
+    text-align: center;
+}
+
+.smbb-fc-3ds.is-connect .is-connect,
+.smbb-fc-3ds.is-challenge .is-challenge,
+.smbb-fc-3ds.is-result .is-result {
+    display: block;
+    animation: smbb-fc-in .35s ease both;
+}
+
+@keyframes smbb-fc-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+}
+
+.smbb-fc-3ds-spinner {
+    display: block;
+    width: 44px;
+    height: 44px;
+    margin: 34px auto 18px;
+    border: 4px solid #e8e8fb;
+    border-top-color: #5b5bd6;
+    border-radius: 50%;
+    animation: smbb-fc-spin .8s linear infinite;
+}
+
+@keyframes smbb-fc-spin {
+    to { transform: rotate(360deg); }
+}
+
+.smbb-fc-3ds-progress {
+    display: block;
+    height: 4px;
+    margin: 18px 30px 0;
+    overflow: hidden;
+    border-radius: 2px;
+    background: #eef0f4;
+}
+
+.smbb-fc-3ds-progress span {
+    display: block;
+    width: 0;
+    height: 100%;
+    background: #5b5bd6;
+    animation: smbb-fc-progress 1.5s ease-in-out forwards;
+}
+
+@keyframes smbb-fc-progress {
+    to { width: 100%; }
+}
+
+.smbb-fc-3ds h3 {
+    margin: 0 0 4px;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.smbb-fc-3ds p {
+    margin: 0 0 8px;
+}
+
+.smbb-fc-3ds-amount {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -.01em;
+}
+
+.smbb-fc-3ds-muted {
+    color: #697386;
+    font-size: 13px;
+}
+
+.smbb-fc-3ds-code {
+    display: block;
+    margin: 12px 0 14px;
+    text-align: left;
+}
+
+.smbb-fc-3ds-code span {
+    display: block;
+    margin-bottom: 4px;
+    color: #697386;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.smbb-fc-3ds-code input {
+    width: 100%;
+    height: 48px;
+    padding: 0 14px;
+    border: 1px solid #e3e8ee;
+    border-radius: 8px;
+    font: 600 22px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    letter-spacing: .4em;
+    text-align: center;
+}
+
+.smbb-fc-3ds-code input:focus {
+    outline: 0;
+    border-color: #5b5bd6;
+    box-shadow: 0 0 0 3px rgba(91, 91, 214, .2);
+}
+
+.smbb-fc-3ds-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.smbb-fc-3ds button {
+    cursor: pointer;
+    font: inherit;
+}
+
+.smbb-fc-3ds-confirm {
+    flex: 1;
+    height: 44px;
+    border: 0;
+    border-radius: 8px;
+    background: #5b5bd6;
+    color: #fff;
+    font-weight: 700 !important;
+    transition: background .15s;
+}
+
+.smbb-fc-3ds-confirm:hover {
+    background: #4a4ac4;
+}
+
+.smbb-fc-3ds-confirm.is-busy {
+    background: #8c8ce4;
+    cursor: progress;
+}
+
+.smbb-fc-3ds-cancel {
+    height: 44px;
+    padding: 0 16px;
+    border: 1px solid #e3e8ee;
+    border-radius: 8px;
+    background: #fff;
+    color: #1a1f36;
+}
+
+.smbb-fc-3ds-fail {
+    margin-top: 10px;
+    padding: 4px;
+    border: 0;
+    background: none;
+    color: #d63638;
+    font-size: 12px !important;
+    text-decoration: underline;
+}
+
+.smbb-fc-3ds button:disabled {
+    opacity: .7;
+    cursor: default;
+}
+
+.smbb-fc-3ds-mark {
+    display: block;
+    width: 72px;
+    height: 72px;
+    margin: 36px auto 16px;
+}
+
+.smbb-fc-3ds-mark svg {
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.smbb-fc-3ds-mark circle {
+    stroke-dasharray: 151;
+    stroke-dashoffset: 151;
+    animation: smbb-fc-draw .5s ease forwards;
+}
+
+.smbb-fc-3ds-mark path {
+    display: none;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: smbb-fc-draw .35s .45s ease forwards;
+}
+
+.smbb-fc-3ds.is-ok .smbb-fc-3ds-mark { stroke: #1f9d55; }
+.smbb-fc-3ds.is-ok .smbb-fc-3ds-mark .ok { display: block; }
+.smbb-fc-3ds.is-ko .smbb-fc-3ds-mark { stroke: #d63638; animation: smbb-fc-shake .4s .8s ease; }
+.smbb-fc-3ds.is-ko .smbb-fc-3ds-mark .ko { display: block; }
+
+@keyframes smbb-fc-draw {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes smbb-fc-shake {
+    25% { transform: translateX(-6px); }
+    50% { transform: translateX(6px); }
+    75% { transform: translateX(-3px); }
+}
+
+.smbb-fc-3ds-result-text {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.smbb-fc-3ds-test {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: 0 !important;
+    padding: 8px 12px;
+    background: #fff4d6;
+    color: #7a4b00;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.smbb-fc-3ds-step.is-challenge {
+    padding-bottom: 44px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .smbb-fc-3ds,
+    .smbb-fc-3ds * {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+    }
+}

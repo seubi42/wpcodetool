@@ -22,6 +22,38 @@ foreach (Levels::labels() as $level_key => $level_label) {
 }
 $item = isset($item) && is_array($item) ? $item : array();
 $is_new = empty($item['id']);
+
+// Stockage : une unité de CodeTool (CodeTool › Réglages › Stockage) au lieu des réglages S3 propres à l'organisation.
+if (class_exists('Smbb\\WpCodeTool\\Storage\\Storage')) {
+    $storage_units = array(__('Aucun stockage', $d) => '');
+
+    foreach (\Smbb\WpCodeTool\Storage\Storage::choices() as $unit_id => $unit_label) {
+        $storage_units[$unit_label] = (string) $unit_id;
+    }
+
+    $storage_section = $form->section(__('Unité de stockage', $d), __('Où ranger les PDF du niveau Simple, et la copie optionnelle des PDF Universign.', $d), array(
+        $form->select(__('Unité de stockage', $d))->setName('storage_unit')->setOptions($storage_units)
+            ->setHelp(__('Les unités (bucket S3, dossier WordPress…) se déclarent une fois dans CodeTool et se partagent entre organisations. Les documents déjà rangés restent lisibles sur leur unité si vous en changez.', $d)),
+        '<p class="description"><a href="' . esc_url(admin_url('admin.php?page=smbb-wpcodetool-storage')) . '">' . esc_html__('Gérer les unités : CodeTool › Réglages › Stockage', $d) . '</a></p>',
+        ConnectionTests::button(isset($item['id']) ? $item['id'] : 0, 's3', __('Tester le stockage', $d)),
+    ))->setIcon('dashicons-cloud');
+} else {
+    // CodeTool sans unités de stockage : anciens réglages S3 de l'organisation.
+    $storage_section = $form->section(__('S3', $d), __('Stockage des documents du niveau Simple, et copie optionnelle des PDF Universign.', $d), array(
+        $form->row(
+            $form->text(__('Endpoint', $d))->setName('s3_endpoint'),
+            $form->text(__('Région', $d))->setName('s3_region'),
+            $form->text(__('Bucket', $d))->setName('s3_bucket')
+        ),
+        $form->row(
+            $form->text(__("Clé d'accès", $d))->setName('s3_access_key'),
+            $form->secret(__('Clé secrète', $d))->setName('s3_secret_key'),
+            $form->text(__('Préfixe', $d))->setName('s3_prefix')
+        ),
+        $form->toggle(__('Endpoint en path-style', $d))->setName('s3_path_style'),
+        ConnectionTests::button(isset($item['id']) ? $item['id'] : 0, 's3', __('Tester la connexion S3', $d)),
+    ))->setIcon('dashicons-cloud');
+}
 $money = array('min' => 0, 'step' => '0.01');
 $percent = array('min' => 0, 'max' => 100, 'step' => '0.01');
 
@@ -109,23 +141,10 @@ $fields = array(
             ))->setIcon('dashicons-smartphone'),
         )),
         $form->tab(__('Stockage', $d), '', array(
-            $form->section(__('S3', $d), __('Stockage des documents du niveau Simple, et copie optionnelle des PDF Universign.', $d), array(
-                $form->row(
-                    $form->text(__('Endpoint', $d))->setName('s3_endpoint'),
-                    $form->text(__('Région', $d))->setName('s3_region'),
-                    $form->text(__('Bucket', $d))->setName('s3_bucket')
-                ),
-                $form->row(
-                    $form->text(__("Clé d'accès", $d))->setName('s3_access_key'),
-                    $form->secret(__('Clé secrète', $d))->setName('s3_secret_key'),
-                    $form->text(__('Préfixe', $d))->setName('s3_prefix')
-                ),
-                $form->toggle(__('Endpoint en path-style', $d))->setName('s3_path_style'),
-                ConnectionTests::button(isset($item['id']) ? $item['id'] : 0, 's3', __('Tester la connexion S3', $d)),
-            ))->setIcon('dashicons-cloud'),
+            $storage_section,
             $form->section(__('Conservation', $d), '', array(
                 $form->row(
-                    $form->toggle(__('Copier les PDF Universign sur S3', $d))->setName('copy_universign_to_s3')
+                    $form->toggle(__('Copier les PDF Universign sur le stockage', $d))->setName('copy_universign_to_s3')
                         ->setHelp(__('PDF signé et fichier de preuve, copiés à la fin de la transaction.', $d)),
                     $form->number(__('Durée de conservation (mois)', $d), array('min' => 1, 'step' => 1))->setName('retention_months')
                         ->setHelp(__('Ensuite : suppression des fichiers et des données personnelles, ligne anonymisée conservée.', $d))

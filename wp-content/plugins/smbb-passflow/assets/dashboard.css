@@ -1,0 +1,82 @@
+/* Passflow – tableau de bord : aujourd'hui, à traiter, chiffres, 14 jours, fil. Chargé par views/passflow/dashboard.php. */
+.passflow-admin .passflow-dash { --passflow-ok: #1a7f4b; --passflow-ok-soft: #e3f3ea; --passflow-warn: #b26200; --passflow-warn-soft: #fbefdc; --passflow-bad: #b3261e; --passflow-bad-soft: #fbe5e3; --passflow-info: #2271b1; --passflow-info-soft: #e5eff8; display: grid; gap: 24px; margin-top: 12px; }
+.passflow-admin .passflow-dash h1 { font-size: 26px; line-height: 1.2; margin: 0; padding: 0; }
+.passflow-admin .passflow-dash h2 { font-size: 15px; margin: 0; display: flex; align-items: center; gap: 8px; }
+.passflow-admin .passflow-dash-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px; }
+.passflow-admin .passflow-dash-head p { margin: 4px 0 0; font-size: 14px; }
+.passflow-admin .passflow-dash-head .button .dashicons { font-size: 16px; width: 16px; height: 16px; vertical-align: -3px; }
+.passflow-admin .passflow-dash-title { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+.passflow-admin .passflow-dash-title a { font-size: 13px; text-decoration: none; }
+.passflow-admin .passflow-dash-count { font-size: 11px; font-weight: 600; line-height: 1; color: #fff; background: var(--passflow-bad); border-radius: 999px; padding: 3px 7px; }
+.passflow-admin .passflow-dash-empty { margin: 0; padding: 14px 16px; background: #fff; border: 1px solid var(--passflow-line); border-radius: 12px; }
+
+.passflow-admin .passflow-dash-today { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.passflow-admin .passflow-dash-slot { display: grid; gap: 10px; background: #fff; border: 1px solid var(--passflow-line); border-radius: 12px; padding: 14px 16px; }
+.passflow-admin .passflow-dash-slot.is-now { border-color: var(--passflow-brand); box-shadow: inset 0 0 0 1px var(--passflow-brand); }
+.passflow-admin .passflow-dash-slot-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.passflow-admin .passflow-dash-time { font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.passflow-admin .passflow-dash-chip { font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+.passflow-admin .passflow-dash-chip.is-ok { background: var(--passflow-ok-soft); color: var(--passflow-ok); }
+.passflow-admin .passflow-dash-chip.is-warn { background: var(--passflow-warn-soft); color: var(--passflow-warn); }
+.passflow-admin .passflow-dash-chip.is-info { background: var(--passflow-info-soft); color: var(--passflow-info); }
+.passflow-admin .passflow-dash-chip.is-mute { background: #f0f0f1; color: var(--passflow-muted); }
+.passflow-admin .passflow-dash-fill { display: grid; gap: 4px; font-size: 12px; color: var(--passflow-muted); }
+.passflow-admin .passflow-dash-bar { display: block; height: 7px; border-radius: 4px; background: #e2e4e7; overflow: hidden; }
+.passflow-admin .passflow-dash-bar i { display: block; height: 100%; border-radius: 4px; }
+.passflow-admin .passflow-dash i.is-good { background: var(--passflow-ok); }
+.passflow-admin .passflow-dash i.is-mid { background: var(--passflow-warn); }
+.passflow-admin .passflow-dash i.is-low { background: var(--passflow-bad); }
+
+.passflow-admin .passflow-dash-split { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.passflow-admin .passflow-dash-split--even { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+@media (max-width: 1100px) { .passflow-admin .passflow-dash-split { grid-template-columns: 1fr; } }
+
+.passflow-admin .passflow-dash-todo { background: #fff; border: 1px solid var(--passflow-line); border-radius: 12px; overflow: hidden; }
+.passflow-admin .passflow-dash-todo-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 14px 11px 16px; border-top: 1px solid var(--passflow-line); border-left: 5px solid var(--passflow-info); }
+.passflow-admin .passflow-dash-todo-row:first-child { border-top: 0; }
+.passflow-admin .passflow-dash-todo-row.is-bad { border-left-color: var(--passflow-bad); }
+.passflow-admin .passflow-dash-todo-row.is-warn { border-left-color: var(--passflow-warn); }
+.passflow-admin .passflow-dash-todo-row.is-ok { border-left-color: var(--passflow-ok); color: var(--passflow-ok); }
+.passflow-admin .passflow-dash-todo-row small { display: block; color: var(--passflow-muted); font-size: 12px; margin-top: 2px; }
+.passflow-admin .passflow-dash-todo-row .button { flex: 0 0 auto; }
+
+.passflow-admin .passflow-dash-kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 600px) { .passflow-admin .passflow-dash-kpis { grid-template-columns: 1fr; } }
+.passflow-admin .passflow-dash-kpi { display: flex; flex-direction: column; gap: 3px; background: #fff; border: 1px solid var(--passflow-line); border-radius: 12px; padding: 12px 14px; text-decoration: none; color: var(--passflow-ink); min-width: 0; }
+.passflow-admin a.passflow-dash-kpi:hover { border-color: var(--passflow-brand); color: var(--passflow-ink); }
+.passflow-admin .passflow-dash-kpi span { font-size: 12px; color: var(--passflow-muted); }
+.passflow-admin .passflow-dash-kpi strong { font-size: 24px; line-height: 1.15; font-weight: 600; font-variant-numeric: tabular-nums; }
+.passflow-admin .passflow-dash-kpi em { font-style: normal; font-size: 12px; color: var(--passflow-muted); }
+.passflow-admin .passflow-dash-kpi em.is-up { color: var(--passflow-ok); }
+.passflow-admin .passflow-dash-kpi em.is-down { color: var(--passflow-bad); }
+.passflow-admin .passflow-dash-spark { display: block; width: 100%; height: 26px; margin-top: 4px; }
+.passflow-admin .passflow-dash-spark .area { fill: var(--passflow-ok-soft); }
+.passflow-admin .passflow-dash-spark .line { fill: none; stroke: var(--passflow-ok); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.passflow-admin .passflow-dash-spark circle { fill: var(--passflow-ok); }
+
+.passflow-admin .passflow-dash-strip { background: #fff; border: 1px solid var(--passflow-line); border-radius: 12px; padding: 12px; overflow-x: auto; }
+.passflow-admin .passflow-dash-days { display: grid; grid-template-columns: repeat(14, minmax(70px, 1fr)); gap: 6px; min-width: 980px; }
+.passflow-admin .passflow-dash-day { display: flex; flex-direction: column; gap: 5px; }
+.passflow-admin .passflow-dash-day-head { text-align: center; font-size: 11px; color: var(--passflow-muted); padding-bottom: 4px; border-bottom: 1px solid var(--passflow-line); text-transform: lowercase; }
+.passflow-admin .passflow-dash-day-head b { display: block; font-size: 15px; color: var(--passflow-ink); font-variant-numeric: tabular-nums; }
+.passflow-admin .passflow-dash-day.is-weekend .passflow-dash-day-head b { color: var(--passflow-muted); }
+.passflow-admin .passflow-dash-day.is-today .passflow-dash-day-head { border-bottom: 2px solid var(--passflow-brand); }
+.passflow-admin .passflow-dash-ev { display: block; padding: 5px 6px; border-radius: 6px; font-size: 11px; line-height: 1.3; text-decoration: none; color: var(--passflow-ink); background: var(--passflow-ok-soft); border-left: 3px solid var(--passflow-ok); }
+.passflow-admin .passflow-dash-ev:hover { filter: brightness(.96); color: var(--passflow-ink); }
+.passflow-admin .passflow-dash-ev b { display: block; font-variant-numeric: tabular-nums; }
+.passflow-admin .passflow-dash-ev span { display: block; color: var(--passflow-muted); }
+.passflow-admin .passflow-dash-ev.is-mid { background: var(--passflow-warn-soft); border-left-color: var(--passflow-warn); }
+.passflow-admin .passflow-dash-ev.is-low { background: var(--passflow-bad-soft); border-left-color: var(--passflow-bad); }
+.passflow-admin .passflow-dash-ev.is-draft { background: transparent; border: 1px dashed #8c8f94; border-left-width: 3px; }
+.passflow-admin .passflow-dash-legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--passflow-muted); margin-top: 8px; }
+.passflow-admin .passflow-dash-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+.passflow-admin .passflow-dash-legend i.is-draft { border: 1px dashed #8c8f94; }
+
+.passflow-admin .passflow-dash-feed { background: #fff; border: 1px solid var(--passflow-line); border-radius: 12px; padding: 2px 14px; }
+.passflow-admin .passflow-dash-feed > div { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 10px; padding: 8px 0; border-top: 1px solid var(--passflow-line); font-size: 13px; }
+.passflow-admin .passflow-dash-feed > div:first-child { border-top: 0; }
+.passflow-admin .passflow-dash-feed time { color: var(--passflow-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.passflow-admin .passflow-dash-feed .is-failed strong { color: var(--passflow-bad); }
+.passflow-admin .passflow-dash-feed p { margin: 10px 0; }
+@media (max-width: 600px) { .passflow-admin .passflow-dash-feed > div { grid-template-columns: 1fr; gap: 0; } }
+

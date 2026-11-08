@@ -14,6 +14,7 @@ $tests = array(
     new \Smbb\WpCodeTool\Tests\Unit\RequestInputTest(),
     new \Smbb\WpCodeTool\Tests\Unit\SchemaSynchronizerTest(),
     new \Smbb\WpCodeTool\Tests\Unit\BatchActionsTest(),
+    new \Smbb\WpCodeTool\Tests\Unit\TotpTest(),
 );
 
 $failures = array();

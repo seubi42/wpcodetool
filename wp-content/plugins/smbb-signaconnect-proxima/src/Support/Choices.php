@@ -103,7 +103,7 @@ final class Choices
     {
         return array(
             'none' => __('Aucun', 'smbb-signaconnect-proxima'),
-            's3' => __('S3 de l\'organisation', 'smbb-signaconnect-proxima'),
+            's3' => __('Stockage de l\'organisation', 'smbb-signaconnect-proxima'),
             'universign' => __('Universign', 'smbb-signaconnect-proxima'),
         );
     }

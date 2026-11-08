@@ -1,0 +1,328 @@
+/* Assistant de démarrage CodeTool (page smbb-wpcodetool-wizard) et son bandeau de rappel. */
+
+.smbb-wizard {
+    --w-accent: var(--smbb-ui-accent, #a8406a);
+    --w-soft: var(--smbb-ui-accent-soft, #f5e3eb);
+    --w-card: var(--smbb-ui-card, #fff);
+    --w-line: var(--smbb-ui-line, #e3dee7);
+    --w-muted: var(--smbb-ui-muted, #6c6573);
+    --w-text: var(--smbb-ui-text, #1c1820);
+    --w-radius: var(--smbb-ui-radius, 14px);
+    max-width: 1180px;
+    margin: 18px auto 40px;
+    padding: 0 16px;
+}
+
+.smbb-wizard-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.smbb-wizard-head h1 {
+    margin: 0 0 4px;
+    font-size: 26px;
+    line-height: 1.25;
+}
+
+.smbb-wizard-exit {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--w-muted);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.smbb-wizard-layout {
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.smbb-wizard-steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: sticky;
+    top: 48px;
+}
+
+.smbb-wizard-step a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    color: var(--w-text);
+    text-decoration: none;
+}
+
+.smbb-wizard-step a:hover {
+    background: var(--w-soft);
+}
+
+.smbb-wizard-step-num {
+    flex: 0 0 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--w-line);
+    background: var(--w-card);
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.smbb-wizard-step-label em {
+    display: block;
+    font-style: normal;
+    font-size: 11px;
+    color: var(--w-muted);
+}
+
+.smbb-wizard-step.is-current a {
+    background: var(--w-soft);
+    font-weight: 600;
+}
+
+.smbb-wizard-step.is-current .smbb-wizard-step-num {
+    border-color: var(--w-accent);
+    color: var(--w-accent);
+}
+
+.smbb-wizard-step.is-done .smbb-wizard-step-num {
+    background: var(--w-accent);
+    border-color: var(--w-accent);
+    color: #fff;
+}
+
+.smbb-wizard-step.is-skipped .smbb-wizard-step-label {
+    color: var(--w-muted);
+    text-decoration: line-through;
+}
+
+.smbb-wizard-card {
+    background: var(--w-card);
+    border: 1px solid var(--w-line);
+    border-radius: var(--w-radius);
+    box-shadow: var(--smbb-ui-shadow, 0 1px 3px rgba(0, 0, 0, .06));
+    padding: 26px 28px 20px;
+}
+
+.smbb-wizard-card-head {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 18px;
+}
+
+.smbb-wizard-card-head h2 {
+    margin: 2px 0 4px;
+    font-size: 21px;
+}
+
+.smbb-wizard-kicker {
+    margin: 0;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--w-accent);
+    font-weight: 600;
+}
+
+.smbb-wizard-body > .smbb-codetool-section,
+.smbb-wizard-body > .smbb-codetool-fieldset {
+    margin-top: 0;
+}
+
+.smbb-wizard-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    border-top: 1px solid var(--w-line);
+    margin-top: 22px;
+    padding-top: 16px;
+}
+
+.smbb-wizard-foot-right {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.smbb-wizard-foot .button-link {
+    color: var(--w-muted);
+}
+
+/* Étape « plugins ». */
+.smbb-wizard-plugins {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.smbb-wizard-plugins li {
+    display: flex;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid var(--w-line);
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.smbb-wizard-plugins li.is-active .dashicons {
+    color: var(--smbb-ui-success, #2f8a4c);
+}
+
+/* Étape « profiles » : cartes. */
+.smbb-wizard-profiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+}
+
+.smbb-wizard-profile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 18px;
+    border: 1.5px solid var(--w-line);
+    border-radius: 14px;
+    cursor: pointer;
+    background: var(--w-card);
+    transition: border-color .15s, box-shadow .15s;
+}
+
+.smbb-wizard-profile input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.smbb-wizard-profile img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.smbb-wizard-profile-icon {
+    width: 42px;
+    height: 42px;
+    font-size: 26px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--w-soft);
+    color: var(--w-accent);
+}
+
+.smbb-wizard-profile-title {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.smbb-wizard-profile-text {
+    color: var(--w-muted);
+    font-size: 13px;
+}
+
+.smbb-wizard-profile .smbb-theme-check {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    opacity: 0;
+    color: var(--w-accent);
+}
+
+.smbb-wizard-profile:hover {
+    border-color: var(--w-accent);
+}
+
+.smbb-wizard-profile:has(input:checked),
+.smbb-wizard-profile.is-selected {
+    border-color: var(--w-accent);
+    box-shadow: 0 0 0 3px var(--w-soft);
+}
+
+.smbb-wizard-profile:has(input:checked) .smbb-theme-check {
+    opacity: 1;
+}
+
+/* Liste « ce que ça règle » et récapitulatifs des vues de plugin. */
+.smbb-wizard-recap {
+    margin: 16px 0 0;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--w-soft);
+}
+
+.smbb-wizard-recap ul {
+    margin: 6px 0 0 18px;
+    list-style: disc;
+}
+
+/* Bandeau de rappel sur l'accueil et les pages du plugin. */
+.notice.smbb-wizard-banner {
+    border-left-color: var(--smbb-ui-accent, #a8406a);
+}
+
+.notice.smbb-wizard-banner p {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.smbb-wizard-banner-count {
+    color: #646970;
+}
+
+.smbb-wizard-banner-hide {
+    margin-left: auto;
+}
+
+@media (max-width: 900px) {
+    .smbb-wizard-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .smbb-wizard-steps {
+        position: static;
+        display: flex;
+        overflow-x: auto;
+        gap: 4px;
+    }
+
+    .smbb-wizard-step-label em {
+        display: none;
+    }
+
+    .smbb-wizard-card {
+        padding: 18px 16px;
+    }
+}
+
+.smbb-wizard-check {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 6px 0;
+    cursor: pointer;
+}
+
+.smbb-wizard-check input {
+    margin-top: 3px;
+}
+
+fieldset.smbb-wizard-recap legend {
+    padding: 0 4px;
+}

@@ -7,12 +7,24 @@ use Smbb\WpCodeTool\Api\ApiScopeAuthorizer;
 use Smbb\WpCodeTool\Api\ApiVisibilitySettings;
 use Smbb\WpCodeTool\Admin\Pages\ApiClientsPage;
 use Smbb\WpCodeTool\Admin\Pages\ApiPage;
+use Smbb\WpCodeTool\Admin\Pages\AppearancePage;
 use Smbb\WpCodeTool\Admin\Pages\EncryptionPage;
 use Smbb\WpCodeTool\Admin\Pages\OverviewPage;
 use Smbb\WpCodeTool\Admin\Pages\ParentPage;
 use Smbb\WpCodeTool\Admin\Pages\ResourcePage;
 use Smbb\WpCodeTool\Admin\Pages\ResourcesIndexPage;
 use Smbb\WpCodeTool\Admin\Pages\RoutesPage;
+use Smbb\WpCodeTool\Admin\Pages\ContentPage;
+use Smbb\WpCodeTool\Admin\Pages\MediaReplacePage;
+use Smbb\WpCodeTool\Admin\Pages\WooCommercePage;
+use Smbb\WpCodeTool\Admin\Pages\MailPage;
+use Smbb\WpCodeTool\Admin\Pages\OutboxPage;
+use Smbb\WpCodeTool\Admin\Pages\StoragePage;
+use Smbb\WpCodeTool\Admin\Pages\RolesPage;
+use Smbb\WpCodeTool\Admin\Pages\SecurityPage;
+use Smbb\WpCodeTool\Admin\Pages\ActivityPage;
+use Smbb\WpCodeTool\Admin\Pages\FormsPage;
+use Smbb\WpCodeTool\Forms\Forms;
 use Smbb\WpCodeTool\Resource\ResourceDefinition;
 use Smbb\WpCodeTool\Resource\ResourceMutationService;
 use Smbb\WpCodeTool\Resource\ResourceRuntime;
@@ -101,11 +113,20 @@ final class AdminManager
         add_action('admin_menu', array($this, 'registerMenus'));
         add_action('admin_menu', array($this, 'insertMenuGroups'), 999);
         add_action('admin_head', array($this, 'printMenuGroupStyles'));
+        add_action('admin_menu', array($this, 'registerApps'), 1000);
+        add_action('admin_head', array($this, 'printAppBarStyles'));
+        add_action('in_admin_header', array($this, 'renderAppBar'));
         add_filter('parent_file', array($this, 'highlightParentFile'));
         add_filter('submenu_file', array($this, 'highlightSubmenuFile'));
         add_action('admin_bar_menu', array($this, 'registerAdminBarItems'), 90);
         add_action('admin_enqueue_scripts', array($this, 'enqueueAssets'));
+        add_filter('admin_body_class', array($this, 'skinBodyClass'));
+        Skin::hooks();
         add_action('wp_ajax_smbb_codetool_lookup', array($this, 'ajaxLookup'));
+
+        if (Forms::enabled()) {
+            FormsPage::hooks();
+        }
     }
 
     /**
@@ -126,6 +147,56 @@ final class AdminManager
 
         if ($page === EncryptionPage::SLUG) {
             EncryptionPage::handle($this);
+            return;
+        }
+
+        if ($page === AppearancePage::SLUG) {
+            AppearancePage::handle();
+            return;
+        }
+
+        if ($page === ContentPage::SLUG) {
+            ContentPage::handle();
+            return;
+        }
+
+        if ($page === WooCommercePage::SLUG) {
+            WooCommercePage::handle();
+            return;
+        }
+
+        if ($page === StoragePage::SLUG) {
+            StoragePage::handle();
+            return;
+        }
+
+        if ($page === MailPage::SLUG || $page === MailPage::SMS_SLUG) {
+            MailPage::handle();
+            return;
+        }
+
+        if ($page === OutboxPage::SLUG) {
+            OutboxPage::handle();
+            return;
+        }
+
+        if (in_array($page, RolesPage::slugs(), true)) {
+            RolesPage::handle();
+            return;
+        }
+
+        if (in_array($page, SecurityPage::slugs(), true)) {
+            SecurityPage::handle();
+            return;
+        }
+
+        if (in_array($page, ActivityPage::slugs(), true)) {
+            ActivityPage::handle();
+            return;
+        }
+
+        if (in_array($page, FormsPage::slugs(), true)) {
+            FormsPage::handle();
             return;
         }
 
@@ -194,16 +265,77 @@ final class AdminManager
             'smbb-wpcodetool-admin',
             SMBB_WPCODETOOL_URL . 'assets/admin.css',
             array(),
-            SMBB_WPCODETOOL_VERSION
+            self::assetVersion('admin.css')
         );
+
+        // Peau « premium » (thèmes nommés) par-dessus admin.css, sauf en apparence classique.
+        if (Skin::active()) {
+            wp_enqueue_style(
+                'smbb-wpcodetool-theme',
+                SMBB_WPCODETOOL_URL . 'assets/theme.css',
+                array('smbb-wpcodetool-admin'),
+                self::assetVersion('theme.css')
+            );
+            wp_add_inline_style('smbb-wpcodetool-theme', Skin::css());
+
+            // Barre d'app : la recherche ouvre la palette de commandes de WordPress quand elle existe.
+            $deps = array();
+
+            foreach (array('wp-data', 'wp-commands') as $handle) {
+                if (wp_script_is($handle, 'registered')) {
+                    $deps[] = $handle;
+                }
+            }
+
+            wp_enqueue_script(
+                'smbb-wpcodetool-appbar',
+                SMBB_WPCODETOOL_URL . 'assets/appbar.js',
+                $deps,
+                self::assetVersion('appbar.js'),
+                true
+            );
+        }
 
         wp_enqueue_script(
             'smbb-wpcodetool-admin',
             SMBB_WPCODETOOL_URL . 'assets/admin.js',
             array('jquery', 'wp-color-picker'),
-            SMBB_WPCODETOOL_VERSION,
+            self::assetVersion('admin.js'),
             true
         );
+
+        if ($this->request->page() === OutboxPage::SLUG) {
+            wp_enqueue_style('smbb-wpcodetool-outbox', SMBB_WPCODETOOL_URL . 'assets/outbox.css', array('smbb-wpcodetool-admin'), self::assetVersion('outbox.css'));
+        }
+
+        if (in_array($this->request->page(), ActivityPage::slugs(), true)) {
+            wp_enqueue_style('smbb-wpcodetool-activity', SMBB_WPCODETOOL_URL . 'assets/activity.css', array('smbb-wpcodetool-admin'), self::assetVersion('activity.css'));
+        }
+
+        if (Forms::enabled() && in_array($this->request->page(), FormsPage::slugs(), true)) {
+            // forms.css : les aperçus du builder reprennent le rendu public des champs.
+            wp_enqueue_style('smbb-forms', SMBB_WPCODETOOL_URL . 'assets/forms.css', array(), self::assetVersion('forms.css'));
+            wp_enqueue_style('smbb-wpcodetool-forms-admin', SMBB_WPCODETOOL_URL . 'assets/forms-admin.css', array('smbb-wpcodetool-admin', 'smbb-forms'), self::assetVersion('forms-admin.css'));
+            wp_enqueue_script('smbb-wpcodetool-forms-admin', SMBB_WPCODETOOL_URL . 'assets/forms-admin.js', array('smbb-wpcodetool-admin'), self::assetVersion('forms-admin.js'), true);
+            wp_localize_script('smbb-wpcodetool-forms-admin', 'SmbbFormsAdmin', array(
+                'tag' => __('Balise', 'smbb-wpcodetool'),
+                'choose' => __('Choisir…', 'smbb-wpcodetool'),
+                'option' => __('Option', 'smbb-wpcodetool'),
+                'files' => __('Glissez un fichier ou cliquez pour choisir', 'smbb-wpcodetool'),
+                'hidden' => __('Champ caché', 'smbb-wpcodetool'),
+                'gdpr' => __('J\'accepte que mes données soient utilisées pour traiter ma demande.', 'smbb-wpcodetool'),
+                'section' => __('Titre de section', 'smbb-wpcodetool'),
+                'html' => __('Texte libre : écrivez votre contenu dans le panneau.', 'smbb-wpcodetool'),
+                'shownIf' => __('Affiché si', 'smbb-wpcodetool'),
+                'hiddenIf' => __('Masqué si', 'smbb-wpcodetool'),
+                'ops' => \Smbb\WpCodeTool\Forms\Logic::operators(),
+            ));
+        }
+
+        if (in_array($this->request->page(), RolesPage::slugs(), true)) {
+            wp_enqueue_style('smbb-wpcodetool-roles', SMBB_WPCODETOOL_URL . 'assets/roles.css', array('smbb-wpcodetool-admin'), self::assetVersion('roles.css'));
+            wp_enqueue_script('smbb-wpcodetool-roles', SMBB_WPCODETOOL_URL . 'assets/roles.js', array(), self::assetVersion('roles.js'), true);
+        }
 
         /*
          * Le JS reste volontairement generique : il ne connait que des actions
@@ -234,6 +366,8 @@ final class AdminManager
                 'dialogDelete' => __('Supprimer', 'smbb-wpcodetool'),
                 'dialogRemove' => __('Retirer', 'smbb-wpcodetool'),
                 'unsaved' => __('Modifications non enregistrées', 'smbb-wpcodetool'),
+                'untitled' => __('Sans titre', 'smbb-wpcodetool'),
+                'settings' => __('Réglages', 'smbb-wpcodetool'),
             )
         );
     }
@@ -313,6 +447,170 @@ final class AdminManager
             EncryptionPage::SLUG,
             array($this, 'renderEncryptionPage')
         );
+
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('Apparence', 'smbb-wpcodetool'),
+            __('Apparence', 'smbb-wpcodetool'),
+            'manage_options',
+            AppearancePage::SLUG,
+            array($this, 'renderAppearancePage')
+        );
+
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('Contenu WP', 'smbb-wpcodetool'),
+            __('Contenu WP', 'smbb-wpcodetool'),
+            'manage_options',
+            ContentPage::SLUG,
+            array($this, 'renderContentPage')
+        );
+
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('Stockage', 'smbb-wpcodetool'),
+            __('Stockage', 'smbb-wpcodetool'),
+            'manage_options',
+            StoragePage::SLUG,
+            array($this, 'renderStoragePage')
+        );
+
+        // Médias › Remplacer le fichier : page sans entrée de menu (Media\MediaTools la retire),
+        // ouverte depuis la liste, la fenêtre des médias et l'écran d'édition d'un média.
+        if (\Smbb\WpCodeTool\Media\MediaTools::on('replace')) {
+            add_submenu_page(
+                'upload.php',
+                __('Remplacer le fichier', 'smbb-wpcodetool'),
+                __('Remplacer le fichier', 'smbb-wpcodetool'),
+                'upload_files',
+                MediaReplacePage::SLUG,
+                array($this, 'renderMediaReplacePage')
+            );
+        }
+
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('WooCommerce', 'smbb-wpcodetool'),
+            __('WooCommerce', 'smbb-wpcodetool'),
+            'manage_options',
+            WooCommercePage::SLUG,
+            array($this, 'renderWooCommercePage')
+        );
+
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('E-mails', 'smbb-wpcodetool'),
+            __('E-mails', 'smbb-wpcodetool'),
+            'manage_options',
+            MailPage::SLUG,
+            array($this, 'renderMailPage')
+        );
+
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('SMS', 'smbb-wpcodetool'),
+            __('SMS', 'smbb-wpcodetool'),
+            'manage_options',
+            MailPage::SMS_SLUG,
+            array($this, 'renderMailPage')
+        );
+
+        // File d'envoi commune (Passflow, SignaConnect…) : 3e page du groupe Communication.
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('File d\'envoi', 'smbb-wpcodetool'),
+            __('File d\'envoi', 'smbb-wpcodetool'),
+            \Smbb\WpCodeTool\Outbox\Outbox::capability(),
+            OutboxPage::SLUG,
+            array($this, 'renderOutboxPage')
+        );
+
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('Rôles et droits', 'smbb-wpcodetool'),
+            __('Rôles', 'smbb-wpcodetool'),
+            \Smbb\WpCodeTool\Roles\Roles::capability(),
+            RolesPage::SLUG,
+            array($this, 'renderRolesPage')
+        );
+
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('Comparer les rôles', 'smbb-wpcodetool'),
+            __('Comparer les rôles', 'smbb-wpcodetool'),
+            \Smbb\WpCodeTool\Roles\Roles::capability(),
+            RolesPage::COMPARE_SLUG,
+            array($this, 'renderRolesComparePage')
+        );
+
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('Historique des rôles', 'smbb-wpcodetool'),
+            __('Historique des rôles', 'smbb-wpcodetool'),
+            \Smbb\WpCodeTool\Roles\Roles::capability(),
+            RolesPage::HISTORY_SLUG,
+            array($this, 'renderRolesHistoryPage')
+        );
+
+        // Groupe « Sécurité » : Connexion, Double authentification, IP bloquées (2e niveau de la barre d'app).
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('Sécurité de la connexion', 'smbb-wpcodetool'),
+            __('Connexion', 'smbb-wpcodetool'),
+            'manage_options',
+            SecurityPage::SLUG,
+            array($this, 'renderSecurityPage')
+        );
+
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('Turnstile', 'smbb-wpcodetool'),
+            __('Turnstile', 'smbb-wpcodetool'),
+            'manage_options',
+            SecurityPage::TURNSTILE_SLUG,
+            array($this, 'renderSecurityTurnstilePage')
+        );
+
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('Double authentification', 'smbb-wpcodetool'),
+            __('Double authentification', 'smbb-wpcodetool'),
+            'manage_options',
+            SecurityPage::TWOFA_SLUG,
+            array($this, 'renderSecurity2faPage')
+        );
+
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('IP bloquées', 'smbb-wpcodetool'),
+            __('IP bloquées', 'smbb-wpcodetool'),
+            'manage_options',
+            SecurityPage::BLOCKED_SLUG,
+            array($this, 'renderSecurityBlockedPage')
+        );
+
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('Journal d\'activité', 'smbb-wpcodetool'),
+            __('Journal d\'activité', 'smbb-wpcodetool'),
+            \Smbb\WpCodeTool\Activity\ActivityLog::capability(),
+            ActivityPage::SLUG,
+            array($this, 'renderActivityPage')
+        );
+
+        add_submenu_page(
+            'smbb-wpcodetool',
+            __('Réglages du journal', 'smbb-wpcodetool'),
+            __('Réglages du journal', 'smbb-wpcodetool'),
+            \Smbb\WpCodeTool\Activity\ActivityLog::capability(),
+            ActivityPage::SETTINGS_SLUG,
+            array($this, 'renderActivitySettingsPage')
+        );
+
+        // Module Formulaires : sa propre app (menu Formulaires), pages dans Admin\Pages\FormsPage.
+        if (Forms::enabled()) {
+            FormsPage::registerMenus($this);
+        }
 
         $this->registerManagedParentMenus();
 
@@ -508,6 +806,9 @@ final class AdminManager
      */
     private $menu_group_labels = array();
 
+    // Icônes de groupe (admin.menu.groupIcon) : classe CSS de groupe => dashicon.
+    private $menu_group_icons = array();
+
     /**
      * Marque le début de chaque groupe (admin.menu.group) dans les sous-menus.
      *
@@ -527,10 +828,39 @@ final class AdminManager
         }
 
         $groups = array();
+        $group_icons = array();
+
+        // Pages de CodeTool lui-même : rangées dans l'ordre de leurs groupes, puis groupées comme
+        // les ressources. Les entrées ajoutées par d'autres plugins sous CodeTool restent à la fin.
+        if (!empty($submenu['smbb-wpcodetool']) && is_array($submenu['smbb-wpcodetool'])) {
+            $order = array_flip(array_keys(self::coreMenuGroups()));
+            $items = array_values($submenu['smbb-wpcodetool']);
+            $rank = array();
+
+            foreach ($items as $index => $item) {
+                $slug = isset($item[2]) ? (string) $item[2] : '';
+                $rank[$index] = isset($order[$slug]) ? $order[$slug] : count($order) + $index;
+            }
+
+            uksort($items, function ($a, $b) use ($rank) {
+                return $rank[$a] - $rank[$b];
+            });
+            $submenu['smbb-wpcodetool'] = array_values($items);
+        }
+
+        foreach (self::coreMenuGroups() as $slug => $group) {
+            $groups[$slug] = $group[0];
+            $group_icons[$group[0]] = $group[1];
+        }
 
         foreach ((array) $this->resources as $resource) {
             if ($resource->adminEnabled() && $resource->menuGroup() !== '') {
                 $groups[$resource->adminSlug()] = $resource->menuGroup();
+                $menu = $resource->menu();
+
+                if (!empty($menu['groupIcon']) && !isset($group_icons[$resource->menuGroup()])) {
+                    $group_icons[$resource->menuGroup()] = sanitize_html_class((string) $menu['groupIcon']);
+                }
             }
         }
 
@@ -554,12 +884,186 @@ final class AdminManager
 
                 $class = 'smbb-menu-group-' . (count($this->menu_group_labels) + 1);
                 $this->menu_group_labels[$class] = $group;
+
+                if (isset($group_icons[$group])) {
+                    $this->menu_group_icons[$class] = $group_icons[$group];
+                }
                 $item[3] = isset($item[3]) ? $item[3] : '';
                 $item[4] = trim((isset($item[4]) ? $item[4] . ' ' : '') . 'smbb-menu-group-start ' . $class);
                 $submenu[$parent][$key] = $item;
                 $current = $group;
             }
         }
+    }
+
+    /**
+     * Groupes des pages de CodeTool : slug => [groupe, icône du groupe], dans l'ordre du menu.
+     *
+     * @return array<string,array{0:string,1:string}>
+     */
+    private static function coreMenuGroups()
+    {
+        $dev = array(__('Développement', 'smbb-wpcodetool'), 'dashicons-editor-code');
+        $api = array(__('API', 'smbb-wpcodetool'), 'dashicons-rest-api');
+        $settings = array(__('Réglages', 'smbb-wpcodetool'), 'dashicons-admin-generic');
+        $communication = array(__('Communication', 'smbb-wpcodetool'), 'dashicons-megaphone');
+        $accounts = array(__('Comptes', 'smbb-wpcodetool'), 'dashicons-groups');
+        $security = array(__('Sécurité', 'smbb-wpcodetool'), 'dashicons-shield');
+
+        $groups = array(
+            'smbb-wpcodetool' => $dev,
+            'smbb-wpcodetool-resources' => $dev,
+            'smbb-wpcodetool-routes' => $dev,
+            'smbb-wpcodetool-cron-tasks' => $dev,
+            'smbb-wpcodetool-api' => $api,
+            'smbb-wpcodetool-api-tokens' => $api,
+            EncryptionPage::SLUG => $settings,
+            AppearancePage::SLUG => $settings,
+            ContentPage::SLUG => $settings,
+            StoragePage::SLUG => $settings,
+            WooCommercePage::SLUG => $settings,
+            MailPage::SLUG => $communication,
+            MailPage::SMS_SLUG => $communication,
+            OutboxPage::SLUG => $communication,
+            RolesPage::SLUG => $accounts,
+            RolesPage::COMPARE_SLUG => $accounts,
+            RolesPage::HISTORY_SLUG => $accounts,
+            // Groupe « Sécurité » : pages de connexion / double authentification (SecurityPage) puis journal d'activité.
+            SecurityPage::SLUG => $security,
+            SecurityPage::TURNSTILE_SLUG => $security,
+            SecurityPage::TWOFA_SLUG => $security,
+            SecurityPage::BLOCKED_SLUG => $security,
+            ActivityPage::SLUG => $security,
+            ActivityPage::SETTINGS_SLUG => $security,
+        );
+
+        // Modules qui ont leur propre app (Formulaires…) : leurs groupes de pages.
+        return (array) apply_filters('smbb_wpcodetool_menu_groups', $groups);
+    }
+
+    /**
+     * Version d'un fichier de assets/ : sa date de modification, pour que le navigateur reprenne
+     * le fichier dès qu'il change (sinon il garde l'ancien tant que la version du plugin bouge pas).
+     */
+    private static function assetVersion($file)
+    {
+        $path = SMBB_WPCODETOOL_PATH . 'assets/' . $file;
+
+        return is_readable($path) ? SMBB_WPCODETOOL_VERSION . '.' . filemtime($path) : SMBB_WPCODETOOL_VERSION;
+    }
+
+    /**
+     * Menus de premier niveau créés par CodeTool : ils deviennent des « apps » avec leur barre.
+     */
+    public function registerApps()
+    {
+        $slugs = array();
+
+        foreach ((array) $this->resources as $resource) {
+            if (!$resource->adminEnabled()) {
+                continue;
+            }
+
+            if ($resource->menuPlacement() === 'main') {
+                $slugs[] = $resource->adminSlug();
+            } elseif ($resource->menuParentManaged()) {
+                $slugs[] = $resource->menuParentSlug();
+            }
+        }
+
+        AppBar::setApps(array_unique((array) apply_filters('smbb_wpcodetool_apps', $slugs)));
+    }
+
+    /**
+     * Peau active : le menu de gauche n'affiche plus la liste dépliée des pages d'une app.
+     */
+    public function printAppBarStyles()
+    {
+        if (!Skin::topNav()) {
+            return;
+        }
+
+        $css = AppBar::compactMenuCss();
+
+        if ($css !== '') {
+            echo '<style id="smbb-appbar-menu">' . $css . '</style>'; // phpcs:ignore -- sélecteurs nettoyés par sanitize_html_class.
+        }
+    }
+
+    /**
+     * Barre d'app en haut des écrans d'une app CodeTool (peau active uniquement).
+     */
+    public function renderAppBar()
+    {
+        if (!Skin::topNav() || !$this->isCodeToolAdminPage()) {
+            return;
+        }
+
+        $icons = array();
+
+        foreach (Skin::navIcons() ? (array) $this->resources : array() as $resource) {
+            if ($resource->adminEnabled()) {
+                $icons[$resource->adminSlug()] = $resource->menuIcon();
+            }
+        }
+
+        $bar = AppBar::build($this->menu_group_labels, $this->appCreateEntries(get_admin_page_parent()), $icons, $this->menu_group_icons);
+
+        if ($bar && !Skin::navIcons()) {
+            $bar['icons'] = false;
+        }
+
+        if (!$bar) {
+            return;
+        }
+
+        AppBar::render($bar);
+        echo '<script type="application/json" id="smbb-appbar-commands">' . wp_json_encode(AppBar::commands($bar)) . '</script>'; // phpcs:ignore -- JSON encodé.
+    }
+
+    /**
+     * Entrées de « + Créer » : ressources de l'app marquées admin.adminBar.newContent.
+     *
+     * @return array<int,array{label:string,url:string}>
+     */
+    private function appCreateEntries($parent)
+    {
+        $out = array();
+
+        foreach ((array) $this->resources as $resource) {
+            if (!$resource->adminEnabled() || !current_user_can($resource->capability())) {
+                continue;
+            }
+
+            // admin.appBar.create : true ou un libellé (« Nouveau créneau »). Sans la clé, on suit
+            // admin.adminBar.newContent, comme le menu « + Créer » de la barre d'admin WordPress.
+            $admin = $resource->admin();
+            $wanted = isset($admin['appBar']['create']) ? $admin['appBar']['create'] : $resource->adminBarNewContentEnabled();
+
+            if (!$wanted || $resource->adminType() !== 'resource') {
+                continue;
+            }
+
+            $owner = $resource->menuPlacement() === 'main' ? $resource->adminSlug() : $resource->menuParentSlug();
+
+            if ($owner !== $parent) {
+                continue;
+            }
+
+            $out[] = array(
+                // Libellé du JSON traduit dans le domaine du plugin (vocabulaire de Passflow, etc.).
+                'label' => is_string($wanted) && $wanted !== '' ? $resource->translate($wanted) : $this->adminBarNewContentTitle($resource),
+                'url' => $this->adminBarResourceUrl($resource, true),
+                'position' => (float) $resource->menuPosition(),
+            );
+        }
+
+        // Même ordre que le menu.
+        usort($out, function ($a, $b) {
+            return $a['position'] == $b['position'] ? 0 : ($a['position'] < $b['position'] ? -1 : 1);
+        });
+
+        return $out;
     }
 
     /**
@@ -816,6 +1320,18 @@ final class AdminManager
      * - smbb-codetool-* : pages de ressources ;
      * - slug d'un parent thématique créé par CodeTool.
      */
+    /**
+     * Classes de la peau (smbb-skin smbb-theme-xxx) sur le <body> des pages CodeTool.
+     */
+    public function skinBodyClass($classes)
+    {
+        if (!$this->isCodeToolAdminPage()) {
+            return $classes;
+        }
+
+        return Skin::bodyClass((string) $classes);
+    }
+
     private function isCodeToolAdminPage()
     {
         $page = $this->request->page();
@@ -867,6 +1383,86 @@ final class AdminManager
     /**
      * Encryption key and stored secrets page.
      */
+    public function renderAppearancePage()
+    {
+        (new AppearancePage($this))->render();
+    }
+
+    public function renderContentPage()
+    {
+        (new ContentPage($this))->render();
+    }
+
+    public function renderStoragePage()
+    {
+        (new StoragePage($this))->render();
+    }
+
+    public function renderMediaReplacePage()
+    {
+        (new MediaReplacePage($this))->render();
+    }
+
+    public function renderWooCommercePage()
+    {
+        (new WooCommercePage($this))->render();
+    }
+
+    public function renderMailPage()
+    {
+        (new MailPage($this))->render();
+    }
+
+    public function renderRolesPage()
+    {
+        (new RolesPage($this))->render();
+    }
+
+    public function renderRolesComparePage()
+    {
+        (new RolesPage($this))->render('compare');
+    }
+
+    public function renderRolesHistoryPage()
+    {
+        (new RolesPage($this))->render('history');
+    }
+
+    public function renderSecurityPage()
+    {
+        (new SecurityPage($this))->render('login');
+    }
+
+    public function renderSecurityTurnstilePage()
+    {
+        (new SecurityPage($this))->render('turnstile');
+    }
+
+    public function renderSecurity2faPage()
+    {
+        (new SecurityPage($this))->render('2fa');
+    }
+
+    public function renderSecurityBlockedPage()
+    {
+        (new SecurityPage($this))->render('blocked');
+    }
+
+    public function renderOutboxPage()
+    {
+        (new OutboxPage($this))->render();
+    }
+
+    public function renderActivityPage()
+    {
+        (new ActivityPage($this))->render();
+    }
+
+    public function renderActivitySettingsPage()
+    {
+        (new ActivityPage($this))->render('settings');
+    }
+
     public function renderEncryptionPage()
     {
         (new EncryptionPage($this))->render();
@@ -2466,6 +3062,10 @@ final class AdminManager
                 <?php if (strpos((string) $icon, 'dashicons-') === 0) : ?>
                     <span class="smbb-codetool-page-icon" aria-hidden="true">
                         <span class="dashicons <?php echo esc_attr((string) $icon); ?>"></span>
+                    </span>
+                <?php elseif (strpos((string) $icon, 'data:image/svg+xml;base64,') === 0) : ?>
+                    <span class="smbb-codetool-page-icon" aria-hidden="true">
+                        <span class="dashicons smbb-svg-icon" style="--smbb-icon:url('<?php echo esc_attr((string) $icon); ?>')"></span>
                     </span>
                 <?php endif; ?>
 

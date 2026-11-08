@@ -1,0 +1,28 @@
+
+/* Bilan d'une journée (vue report du créneau) + 3e tuile de la fiche. */
+.passflow-admin .passflow-cta-row.has-report { grid-template-columns: 2fr 1fr 1fr; max-width: 1100px; }
+.passflow-admin .passflow-report-title { margin: 0 0 2px; font-size: 20px; }
+.passflow-admin .passflow-report-when { margin: 0 0 10px; color: var(--smbb-t-muted, var(--passflow-muted)); }
+.passflow-admin .passflow-report-kpis { margin: 0 0 14px; }
+.passflow-admin .passflow-report-bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: var(--smbb-t-fill, #f0f0f1); margin: 0 0 6px; max-width: 720px; }
+.passflow-admin .passflow-report-bar span, .passflow-admin .passflow-report-legend span { display: block; height: 100%; }
+.passflow-admin .passflow-report-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; font-size: 12px; color: var(--smbb-t-muted, var(--passflow-muted)); margin: 0 0 12px; }
+.passflow-admin .passflow-report-legend span { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: -8px; }
+.passflow-admin .passflow-report .is-present { background: #00a32a; }
+.passflow-admin .passflow-report .is-absent { background: #d63638; }
+.passflow-admin .passflow-report .is-unpointed { background: #dba617; }
+.passflow-admin .passflow-report-cols { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; margin: 0 0 12px; }
+.passflow-admin .passflow-report .passflow-num { text-align: right; white-space: nowrap; }
+.passflow-admin .passflow-report-ok { color: #00a32a; font-weight: 600; }
+.passflow-admin .passflow-report-notes { margin: 0; padding-left: 18px; list-style: disc; }
+@media (max-width: 1100px) { .passflow-admin .passflow-cta-row.has-report { grid-template-columns: 1fr 1fr; } .passflow-admin .passflow-cta-row.has-report > .passflow-mobile-cta { grid-column: 1 / -1; } }
+@media (max-width: 782px) {
+  .passflow-admin .passflow-cta-row.has-report { grid-template-columns: 1fr; }
+  .passflow-admin .passflow-report-cols { grid-template-columns: 1fr; }
+  .passflow-admin .passflow-report .passflow-table { display: block; overflow-x: auto; }
+}
+@media print {
+  .passflow-admin .passflow-report .passflow-kpi { border: 1px solid #ccc; break-inside: avoid; }
+  .passflow-admin .passflow-report .passflow-card { break-inside: avoid-page; margin-bottom: 14px; }
+  .passflow-admin .passflow-report-bar, .passflow-admin .passflow-report .is-present, .passflow-admin .passflow-report .is-absent, .passflow-admin .passflow-report .is-unpointed { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

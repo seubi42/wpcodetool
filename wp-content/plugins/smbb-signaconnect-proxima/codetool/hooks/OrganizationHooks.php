@@ -19,7 +19,7 @@ final class OrganizationHooks
     {
         $data = Input::stripManaged($data);
         unset($data['webhook_key'], $data['webhook_last_received_at']);
-        $data = Input::trim($data, array('name', 'reminder_days', 'universign_workspace_id', 'openai_model', 'twilio_sid', 'twilio_from', 's3_endpoint', 's3_region', 's3_bucket', 's3_access_key', 's3_prefix', 'billing_email', 'billing_siret', 'billing_vat_number', 'customer_reference'));
+        $data = Input::trim($data, array('name', 'reminder_days', 'universign_workspace_id', 'openai_model', 'twilio_sid', 'twilio_from', 's3_endpoint', 's3_region', 's3_bucket', 's3_access_key', 's3_prefix', 'storage_unit', 'billing_email', 'billing_siret', 'billing_vat_number', 'customer_reference'));
         $data = Input::checkboxList($data, 'allowed_levels', Levels::all());
         $data = Input::checkboxList($data, 'internal_channels', array_keys(Choices::channels()));
         $data = Input::decimal($data, array('fixed_monthly_fee', 'discount_subscription_pct', 'discount_overage_pct'));
@@ -95,8 +95,18 @@ final class OrganizationHooks
             $errors['billing_email'] = __('Adresse email invalide.', 'smbb-signaconnect-proxima');
         }
 
-        if (!empty($data['copy_universign_to_s3']) && empty($data['s3_bucket'])) {
-            $errors['copy_universign_to_s3'] = __('La copie vers S3 nécessite un stockage S3 configuré.', 'smbb-signaconnect-proxima');
+        $unit = isset($data['storage_unit']) ? (string) $data['storage_unit'] : '';
+
+        if ($unit !== '' && class_exists('Smbb\\WpCodeTool\\Storage\\Storage') && !\Smbb\WpCodeTool\Storage\Storage::exists($unit)) {
+            $errors['storage_unit'] = __('Unité de stockage introuvable dans CodeTool.', 'smbb-signaconnect-proxima');
+        }
+
+        $current = isset($context['current']) && is_array($context['current']) ? $context['current'] : array();
+        $has_storage = $unit !== '' || (!array_key_exists('storage_unit', $data) && \Smbb\SignConnectProxima\Repository\Organizations::hasStorage(array_merge($current, $data)))
+            || (!class_exists('Smbb\\WpCodeTool\\Storage\\Storage') && !empty($data['s3_bucket']));
+
+        if (!empty($data['copy_universign_to_s3']) && !$has_storage) {
+            $errors['copy_universign_to_s3'] = __('La copie des PDF Universign nécessite une unité de stockage.', 'smbb-signaconnect-proxima');
         }
 
         return $errors;

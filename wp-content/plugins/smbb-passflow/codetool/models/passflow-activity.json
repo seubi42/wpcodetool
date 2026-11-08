@@ -1,0 +1,195 @@
+{
+  "name": "passflow_activity",
+  "label": "Atelier",
+  "pluralLabel": "Ateliers",
+  "description": "Les ateliers proposés, avec leur lieu, leur prix et leur nombre de places par défaut.",
+  "storage": {
+    "table": "passflow_activity",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "name": {
+      "type": "varchar",
+      "length": 190,
+      "nullable": false,
+      "default": ""
+    },
+    "description": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "image_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "location": {
+      "type": "varchar",
+      "length": 190,
+      "nullable": false,
+      "default": ""
+    },
+    "address": {
+      "type": "text",
+      "nullable": true
+    },
+    "latitude": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": true
+    },
+    "longitude": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": true
+    },
+    "duration_minutes": {
+      "type": "int",
+      "nullable": true
+    },
+    "practical_info": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "default_price": {
+      "type": "decimal",
+      "precision": 10,
+      "scale": 2,
+      "nullable": true
+    },
+    "default_capacity": {
+      "type": "int",
+      "nullable": true
+    },
+    "color": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": true
+    },
+    "status": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "active"
+    },
+    "product_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "extra_product_ids": {
+      "type": "longtext",
+      "nullable": true,
+      "format": "json"
+    },
+    "notes": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "creation_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "create_datetime"
+    },
+    "creation_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "create_user"
+    },
+    "lastupdate_date": {
+      "type": "datetime",
+      "nullable": true,
+      "managed": "update_datetime"
+    },
+    "lastupdate_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true,
+      "managed": "update_user"
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_status",
+      "type": "index",
+      "columns": [
+        "status"
+      ]
+    },
+    {
+      "name": "idx_name",
+      "type": "index",
+      "columns": [
+        "name"
+      ]
+    }
+  ],
+  "admin": {
+    "enabled": true,
+    "capability": "manage_passflow",
+    "menu": {
+      "placement": "submenu",
+      "title": "Ateliers",
+      "icon": "dashicons-tickets-alt",
+      "position": 70,
+      "parent": "smbb-codetool-passflow",
+      "group": "Paramétrage",
+      "groupIcon": "dashicons-admin-generic"
+    },
+    "appBar": {
+      "create": "Nouvel atelier"
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "list": {
+      "perPage": 25,
+      "search": {
+        "enabled": true,
+        "provider": "default",
+        "fields": [
+          "name",
+          "location"
+        ],
+        "mode": "or",
+        "placeholder": "Rechercher un atelier"
+      },
+      "filters": {
+        "enabled": true,
+        "fields": [
+          {
+            "field": "status",
+            "label": "Statut",
+            "operators": [
+              "eq"
+            ]
+          }
+        ]
+      },
+      "defaultOrder": {
+        "by": "name",
+        "direction": "asc"
+      }
+    },
+    "views": {
+      "list": "views/passflow-activity/list.php",
+      "form": "views/passflow-activity/form.php"
+    }
+  },
+  "hooks": {
+    "file": "hooks/ActivityHooks.php",
+    "class": "Smbb\\Passflow\\CodeTool\\ActivityHooks"
+  },
+  "api": {
+    "enabled": false
+  }
+}

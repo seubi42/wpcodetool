@@ -1,0 +1,828 @@
+/* ==========================================================================
+ * CodeTool – catégories de médias (Contenu WP › Médiathèque › Catégories de médias).
+ * Panneau d'arborescence de la médiathèque, pastilles des vignettes, champ des détails.
+ * Couleurs : variables du thème CodeTool quand le style est actif, sinon celles de WordPress.
+ * ========================================================================== */
+
+:root {
+    --smbb-mcat-accent: var(--smbb-m-accent, var(--wp-admin-theme-color, #2271b1));
+    --smbb-mcat-accent-rgb: var(--smbb-m-accent-rgb, 34, 113, 177);
+    --smbb-mcat-card: var(--smbb-t-card, #fff);
+    --smbb-mcat-line: var(--smbb-t-line, #dcdcde);
+    --smbb-mcat-text: var(--smbb-t-text, #1d2327);
+    --smbb-mcat-muted: var(--smbb-t-muted, #646970);
+    --smbb-mcat-fill: var(--smbb-t-fill, #f0f0f1);
+}
+
+html.smbb-dark {
+    --smbb-mcat-card: var(--smbb-t-card, #1f1f24);
+    --smbb-mcat-line: var(--smbb-t-line, #34343c);
+    --smbb-mcat-text: var(--smbb-t-text, #ececf1);
+    --smbb-mcat-muted: var(--smbb-t-muted, #a1a1ab);
+    --smbb-mcat-fill: var(--smbb-t-fill, #2a2a31);
+}
+
+/* 1. Mise en page : panneau + colonne principale.
+ * La largeur utile (pas celle de la fenêtre) décide de l'empilement : outils de développement
+ * ouverts ou zoom, le panneau reste en colonne tant qu'il y a la place. */
+
+
+.smbb-mcat-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-top: 12px;
+}
+
+.smbb-mcat-layout.is-right {
+    flex-direction: row-reverse;
+}
+
+.smbb-mcat-main {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.smbb-mcat-panel {
+    position: sticky;
+    top: 46px;
+    flex: 0 0 260px;
+    box-sizing: border-box;
+    max-height: calc(100vh - 66px);
+    overflow: auto;
+    padding: 12px;
+    border: 1px solid var(--smbb-mcat-line);
+    border-radius: 14px;
+    background: var(--smbb-mcat-card);
+    color: var(--smbb-mcat-text);
+    transition: box-shadow .15s ease;
+}
+
+.smbb-mcat-panel.is-receiving,
+.smbb-mcat-panel.is-sorting {
+    box-shadow: 0 0 0 3px rgba(var(--smbb-mcat-accent-rgb), .25);
+}
+
+.smbb-mcat-head {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 10px;
+}
+
+.smbb-mcat-title {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 650;
+}
+
+.smbb-mcat-iconbtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--smbb-mcat-muted);
+    cursor: pointer;
+}
+
+.smbb-mcat-iconbtn:hover,
+.smbb-mcat-iconbtn:focus-visible {
+    background: var(--smbb-mcat-fill);
+    color: var(--smbb-mcat-accent);
+}
+
+.smbb-mcat-iconbtn[data-act="new"] {
+    color: var(--smbb-mcat-accent);
+}
+
+.smbb-mcat-iconbtn .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+input.smbb-mcat-search {
+    width: 100%;
+    margin: 0 0 8px;
+    border-radius: 8px;
+}
+
+.smbb-mcat-fixed,
+.smbb-mcat-tree,
+.smbb-mcat-children {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.smbb-mcat-fixed {
+    padding-bottom: 6px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid var(--smbb-mcat-line);
+}
+
+.smbb-mcat-fixed li,
+.smbb-mcat-tree li {
+    margin: 0;
+}
+
+/* 2. Lignes de l'arborescence. */
+.smbb-mcat-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 32px;
+    padding: 2px 6px 2px calc(4px + var(--smbb-mcat-depth, 0) * 16px);
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+}
+
+.smbb-mcat-row:hover {
+    background: var(--smbb-mcat-fill);
+}
+
+.smbb-mcat-row:focus-visible {
+    box-shadow: inset 0 0 0 2px rgba(var(--smbb-mcat-accent-rgb), .6);
+}
+
+.smbb-mcat-row.is-current {
+    background: rgba(var(--smbb-mcat-accent-rgb), .12);
+    color: var(--smbb-mcat-accent);
+    font-weight: 600;
+}
+
+.smbb-mcat-row.is-fixed .dashicons {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+    margin: 0 1px 0 2px;
+    color: var(--smbb-mcat-muted);
+}
+
+.smbb-mcat-row.is-current.is-fixed .dashicons {
+    color: inherit;
+}
+
+.smbb-mcat-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.smbb-mcat-count {
+    min-width: 22px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: var(--smbb-mcat-fill);
+    color: var(--smbb-mcat-muted);
+    font-size: 11px;
+    line-height: 16px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.smbb-mcat-row:hover .smbb-mcat-count {
+    background: var(--smbb-mcat-card);
+}
+
+.smbb-mcat-twisty {
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--smbb-mcat-muted);
+    cursor: pointer;
+}
+
+.smbb-mcat-twisty::before {
+    content: "";
+    display: block;
+    width: 6px;
+    height: 6px;
+    margin: auto;
+    border-right: 1.6px solid currentColor;
+    border-bottom: 1.6px solid currentColor;
+    transform: rotate(45deg) translate(-1px, -1px);
+    transition: transform .15s ease;
+}
+
+[aria-expanded="false"] > .smbb-mcat-row .smbb-mcat-twisty::before,
+[aria-expanded="false"] > .smbb-mcat-checkrow .smbb-mcat-twisty::before {
+    transform: rotate(-45deg);
+}
+
+.smbb-mcat-twisty.is-leaf {
+    visibility: hidden;
+}
+
+.smbb-mcat-more {
+    width: 24px;
+    height: 24px;
+    opacity: 0;
+}
+
+.smbb-mcat-row:hover .smbb-mcat-more,
+.smbb-mcat-row:focus-within .smbb-mcat-more,
+.smbb-mcat-more:focus-visible {
+    opacity: 1;
+}
+
+@media (hover: none) {
+    .smbb-mcat-more {
+        opacity: 1;
+    }
+}
+
+.smbb-mcat-input {
+    flex: 1;
+    min-width: 0;
+    min-height: 26px !important;
+    padding: 0 6px !important;
+    border-radius: 6px !important;
+}
+
+.smbb-mcat-empty {
+    padding: 10px 6px;
+    color: var(--smbb-mcat-muted);
+    font-size: 12px;
+}
+
+.smbb-mcat-hint {
+    margin: 12px 2px 0;
+    color: var(--smbb-mcat-muted);
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+/* Glisser-déposer : cible, insertion avant / après. */
+.smbb-mcat-row.is-drop {
+    background: rgba(var(--smbb-mcat-accent-rgb), .16);
+    box-shadow: inset 0 0 0 2px var(--smbb-mcat-accent);
+}
+
+.smbb-mcat-row.is-before::before,
+.smbb-mcat-row.is-after::after {
+    content: "";
+    position: absolute;
+    left: calc(4px + var(--smbb-mcat-depth, 0) * 16px);
+    right: 4px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--smbb-mcat-accent);
+}
+
+.smbb-mcat-row.is-before::before {
+    top: -1px;
+}
+
+.smbb-mcat-row.is-after::after {
+    bottom: -1px;
+}
+
+.smbb-mcat-row.is-dragging {
+    opacity: .45;
+}
+
+.smbb-mcat-ghost {
+    position: fixed;
+    top: -100px;
+    left: -100px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--smbb-mcat-accent);
+    color: #fff;
+    font: 600 13px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    pointer-events: none;
+}
+
+.smbb-mcat-on li.attachment[draggable="true"] {
+    cursor: grab;
+}
+
+/* Sélection en masse. */
+.smbb-mcat-bulk {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 8px 8px 8px 12px;
+    border-radius: 10px;
+    background: rgba(var(--smbb-mcat-accent-rgb), .1);
+}
+
+.smbb-mcat-bulk[hidden] {
+    display: none;
+}
+
+.smbb-mcat-bulk-count {
+    flex: 1;
+    font-weight: 600;
+}
+
+/* 3. Pastilles : la couleur vient de --smbb-mcat-c. */
+.smbb-mcat-dot {
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 10px;
+    height: 10px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--smbb-mcat-c, #8d8d8d);
+    font-style: normal;
+}
+
+/* Vignettes de la grille et de la fenêtre des médias. */
+.attachment .smbb-mcat-dots {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 4;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 4px;
+    max-width: calc(100% - 28px);
+}
+
+.media-frame .attachment .smbb-mcat-dots {
+    top: 10px;
+    right: 10px;
+}
+
+/* Sélection groupée : la case cochée de WordPress occupe le coin, les pastilles se décalent. */
+.attachment.selected .smbb-mcat-dots,
+.attachment.details .smbb-mcat-dots {
+    right: 34px;
+}
+
+.attachment .smbb-mcat-dots .smbb-mcat-dot {
+    position: relative;
+    width: 14px;
+    height: 14px;
+    box-shadow: 0 0 0 2px #fff, 0 1px 4px rgba(0, 0, 0, .35);
+    cursor: pointer;
+}
+
+.attachment .smbb-mcat-dots .smbb-mcat-dot.is-more {
+    width: auto;
+    min-width: 14px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: #fff;
+    color: #1d2327;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 14px;
+    text-align: center;
+}
+
+/* Nom au survol (infobulle maison : title met une seconde à venir). */
+.smbb-mcat-dot[data-tip]:hover::after,
+.smbb-mcat-dot[data-tip]:focus-visible::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    padding: 4px 9px;
+    border-radius: 7px;
+    background: #1d2327;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.35;
+    white-space: nowrap;
+    pointer-events: none;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .25);
+}
+
+/* Vignettes : pastilles en haut, l'infobulle s'ouvre dessous et vers la gauche (reste dans l'image). */
+.attachment .smbb-mcat-dots .smbb-mcat-dot[data-tip]:hover::after,
+.attachment .smbb-mcat-dots .smbb-mcat-dot[data-tip]:focus-visible::after {
+    top: calc(100% + 8px);
+    bottom: auto;
+    left: auto;
+    right: -4px;
+    transform: none;
+}
+
+/* 4. Puces (colonne de la liste, champ des détails). */
+.smbb-mcat-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 4px 4px 0;
+    padding: 2px 10px 2px 8px;
+    border: 1px solid var(--smbb-mcat-line);
+    border-radius: 999px;
+    background: var(--smbb-mcat-card);
+    color: var(--smbb-mcat-text);
+    font-size: 12px;
+    line-height: 20px;
+    cursor: pointer;
+}
+
+.smbb-mcat-chip.is-static {
+    border-color: transparent;
+    background: color-mix(in srgb, var(--smbb-mcat-c, #8d8d8d) 14%, transparent);
+}
+
+.smbb-mcat-field .smbb-mcat-chip {
+    opacity: .7;
+}
+
+.smbb-mcat-field .smbb-mcat-chip:hover {
+    opacity: 1;
+}
+
+.smbb-mcat-field .smbb-mcat-chip.is-on {
+    opacity: 1;
+    border-color: var(--smbb-mcat-c, #8d8d8d);
+    background: color-mix(in srgb, var(--smbb-mcat-c, #8d8d8d) 16%, var(--smbb-mcat-card));
+    font-weight: 600;
+}
+
+.smbb-mcat-field .smbb-mcat-chip:not(.is-on) .smbb-mcat-dot {
+    background: transparent;
+    box-shadow: inset 0 0 0 2px var(--smbb-mcat-c, #8d8d8d);
+}
+
+.smbb-mcat-chip-depth {
+    color: var(--smbb-mcat-muted);
+    font-size: 11px;
+    letter-spacing: -1px;
+}
+
+.smbb-mcat-field {
+    padding-top: 4px;
+}
+
+.compat-field-smbb_mcat_ids th {
+    vertical-align: top;
+}
+
+.wp-list-table .column-smbb_media_cat {
+    width: 18%;
+}
+
+/* 5. Menus flottants (« … » et « Classer… »). */
+.smbb-mcat-pop {
+    position: absolute;
+    z-index: 200000;
+    min-width: 220px;
+    max-width: 300px;
+    max-height: 60vh;
+    overflow: auto;
+    padding: 6px;
+    border: 1px solid var(--smbb-mcat-line);
+    border-radius: 12px;
+    background: var(--smbb-mcat-card);
+    color: var(--smbb-mcat-text);
+    box-shadow: 0 18px 40px -12px rgba(0, 0, 0, .35);
+}
+
+.smbb-mcat-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 7px 8px 7px calc(8px + var(--smbb-mcat-depth, 0) * 14px);
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.smbb-mcat-menu-item:hover,
+.smbb-mcat-menu-item:focus-visible {
+    background: var(--smbb-mcat-fill);
+    outline: none;
+}
+
+.smbb-mcat-menu-item .dashicons {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+    color: var(--smbb-mcat-muted);
+}
+
+.smbb-mcat-menu-item.is-danger,
+.smbb-mcat-menu-item.is-danger .dashicons {
+    color: #d63638;
+}
+
+.smbb-mcat-menu-label {
+    padding: 8px 8px 4px;
+    color: var(--smbb-mcat-muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.smbb-mcat-swatches {
+    display: grid;
+    grid-template-columns: repeat(6, 26px);
+    gap: 6px;
+    padding: 2px 8px 8px;
+}
+
+.smbb-mcat-swatch {
+    position: relative;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--smbb-mcat-c);
+    cursor: pointer;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12);
+}
+
+.smbb-mcat-swatch.is-on,
+.smbb-mcat-swatch:focus-visible {
+    box-shadow: 0 0 0 2px var(--smbb-mcat-card), 0 0 0 4px var(--smbb-mcat-c);
+    outline: none;
+}
+
+.smbb-mcat-swatch.is-custom {
+    overflow: hidden;
+    background: conic-gradient(#e5484d, #ffc53d, #46a758, #0090ff, #8e4ec6, #e5484d);
+}
+
+.smbb-mcat-swatch.is-custom input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.smbb-mcat-check .smbb-mcat-box {
+    width: 16px;
+    height: 16px;
+    box-sizing: border-box;
+    border: 1.5px solid var(--smbb-mcat-muted);
+    border-radius: 4px;
+}
+
+.smbb-mcat-check.is-on .smbb-mcat-box {
+    border-color: var(--smbb-mcat-accent);
+    background: var(--smbb-mcat-accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-7' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 12px no-repeat;
+}
+
+.smbb-mcat-check.is-some .smbb-mcat-box {
+    border-color: var(--smbb-mcat-accent);
+    background: linear-gradient(var(--smbb-mcat-accent), var(--smbb-mcat-accent)) center / 8px 2px no-repeat;
+}
+
+/* 6. Message bref en bas de l'écran. */
+.smbb-mcat-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    z-index: 200001;
+    max-width: calc(100vw - 32px);
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: #1d2327;
+    color: #fff;
+    font-size: 13px;
+    box-shadow: 0 12px 30px -8px rgba(0, 0, 0, .4);
+    opacity: 0;
+    transform: translate(-50%, 12px);
+    transition: opacity .2s ease, transform .2s ease;
+    pointer-events: none;
+}
+
+.smbb-mcat-toast.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.smbb-mcat-toast.is-error {
+    background: #b32d2e;
+}
+
+/* 7. Fenêtre « Catégoriser » : l'arborescence à cocher.
+ * En mode sélection, WordPress masque le reste de sa barre d'outils : on force l'affichage du bouton. */
+.smbb-mcat-categorize[hidden] {
+    display: none !important;
+}
+
+.smbb-mcat-categorize:not([hidden]) {
+    display: inline-flex !important;
+    align-items: center;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.smbb-mcat-floatbar {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    z-index: 100000;
+    transform: translateX(-50%);
+}
+
+.smbb-mcat-floatbar .smbb-mcat-categorize {
+    box-shadow: 0 12px 30px -8px rgba(0, 0, 0, .4);
+}
+
+.tablenav .smbb-mcat-categorize {
+    margin-left: 6px;
+}
+
+/* Grille : boutons de la sélection groupée sur une seule ligne. */
+.smbb-mcat-host {
+    display: inline-flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    gap: 8px;
+    width: auto !important;
+    max-width: none !important;
+}
+
+.smbb-mcat-host > .button,
+.smbb-mcat-host > button {
+    float: none !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    margin-left: 0 !important;
+}
+
+.smbb-mcat-dialog-back {
+    position: fixed;
+    inset: 0;
+    z-index: 200000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(20, 16, 24, .45);
+}
+
+.smbb-mcat-dialog {
+    display: flex;
+    flex-direction: column;
+    width: 420px;
+    max-width: 100%;
+    max-height: min(640px, calc(100vh - 32px));
+    box-sizing: border-box;
+    padding: 16px;
+    border-radius: 16px;
+    background: var(--smbb-mcat-card);
+    color: var(--smbb-mcat-text);
+    box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .45);
+}
+
+.smbb-mcat-dialog-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.smbb-mcat-dialog-head strong {
+    font-size: 16px;
+    font-weight: 650;
+}
+
+.smbb-mcat-dialog-sub {
+    flex: 1;
+    color: var(--smbb-mcat-muted);
+}
+
+.smbb-mcat-dialog-close {
+    align-self: center;
+}
+
+.smbb-mcat-checktree,
+.smbb-mcat-checktree ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.smbb-mcat-checktree {
+    flex: 1 1 auto;
+    min-height: 80px;
+    overflow: auto;
+    margin: 0 -4px;
+    padding: 0 4px;
+}
+
+.smbb-mcat-checktree li {
+    margin: 0;
+}
+
+.smbb-mcat-checkrow {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding-left: calc(var(--smbb-mcat-depth, 0) * 20px);
+}
+
+.smbb-mcat-checkrow .smbb-mcat-check {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 7px 8px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.smbb-mcat-checkrow .smbb-mcat-check:hover,
+.smbb-mcat-checkrow .smbb-mcat-check:focus-visible {
+    background: var(--smbb-mcat-fill);
+    outline: none;
+}
+
+.smbb-mcat-check.is-changed .smbb-mcat-name {
+    font-weight: 600;
+}
+
+.smbb-mcat-dialog-foot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--smbb-mcat-line);
+}
+
+.smbb-mcat-dialog-spacer {
+    flex: 1;
+}
+
+.smbb-mcat-dialog-new {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 6px;
+}
+
+.smbb-mcat-dialog-new .dashicons {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    font-size: 16px;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+.smbb-mcat-dialog-new .dashicons::before {
+    display: block;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+}
+
+/* 8. Petits écrans : le panneau passe au-dessus, sans hauteur fixe. */
+.smbb-mcat-layout.is-stacked,
+.smbb-mcat-layout.is-stacked.is-right {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.smbb-mcat-layout.is-stacked .smbb-mcat-panel {
+    position: static;
+    flex-basis: auto;
+    max-height: 50vh;
+}
+
+.smbb-mcat-layout.is-stacked .smbb-mcat-hint {
+    display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .smbb-mcat-toast,
+    .smbb-mcat-twisty::before,
+    .smbb-mcat-panel {
+        transition: none;
+    }
+}

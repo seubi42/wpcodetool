@@ -1,0 +1,130 @@
+{
+  "name": "passflow_document",
+  "label": "Document signé",
+  "pluralLabel": "Documents signés",
+  "description": "Décharges signées, consentements (droit à l'image) et formulaires remplis par les participants. entry_id : entrée CodeTool › Formulaires jointe au document.",
+  "storage": {
+    "table": "passflow_document",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "booking_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "doc_key": {
+      "type": "varchar",
+      "length": 60,
+      "nullable": false,
+      "default": ""
+    },
+    "doc_title": {
+      "type": "varchar",
+      "length": 190,
+      "nullable": false,
+      "default": ""
+    },
+    "doc_hash": {
+      "type": "varchar",
+      "length": 64,
+      "nullable": false,
+      "default": ""
+    },
+    "doc_text": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "answer": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": ""
+    },
+    "signer_name": {
+      "type": "varchar",
+      "length": 190,
+      "nullable": false,
+      "default": ""
+    },
+    "signer_role": {
+      "type": "varchar",
+      "length": 30,
+      "nullable": false,
+      "default": ""
+    },
+    "signature": {
+      "type": "longtext",
+      "nullable": true
+    },
+    "form_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "entry_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "method": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": "online"
+    },
+    "ip": {
+      "type": "varchar",
+      "length": 64,
+      "nullable": false,
+      "default": ""
+    },
+    "user_agent": {
+      "type": "varchar",
+      "length": 255,
+      "nullable": false,
+      "default": ""
+    },
+    "user_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "signed_at": {
+      "type": "datetime",
+      "nullable": true
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_booking_id",
+      "type": "index",
+      "columns": [
+        "booking_id"
+      ]
+    },
+    {
+      "name": "idx_doc_key",
+      "type": "index",
+      "columns": [
+        "doc_key"
+      ]
+    }
+  ],
+  "admin": {
+    "enabled": false
+  },
+  "api": {
+    "enabled": false
+  }
+}

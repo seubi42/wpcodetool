@@ -1,0 +1,87 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "monsterinsights/popular-posts-widget",
+  "title": "Popular Posts",
+  "category": "widgets",
+  "description": "Add popular posts.",
+  "keywords": [
+    "popular",
+    "posts",
+    "widget"
+  ],
+  "textdomain": "default",
+  "attributes": {
+    "preview": {
+      "type": "boolean",
+      "default": false
+    },
+    "theme": {
+      "type": "string"
+    },
+    "title_size": {
+      "type": "number"
+    },
+    "title_color": {
+      "type": "string"
+    },
+    "label_color": {
+      "type": "string"
+    },
+    "label_text": {
+      "type": "string"
+    },
+    "label_background": {
+      "type": "string"
+    },
+    "background_color": {
+      "type": "string"
+    },
+    "background_border": {
+      "type": "string"
+    },
+    "meta_color": {
+      "type": "string"
+    },
+    "meta_size": {
+      "type": "string"
+    },
+    "meta_author": {
+      "type": "boolean"
+    },
+    "meta_date": {
+      "type": "boolean"
+    },
+    "meta_comments": {
+      "type": "boolean"
+    },
+    "comments_color": {
+      "type": "string"
+    },
+    "columns": {
+      "type": "number",
+      "default": 1
+    },
+    "widget_title": {
+      "type": "boolean"
+    },
+    "widget_title_text": {
+      "type": "string"
+    },
+    "post_count": {
+      "type": "number",
+      "default": 5
+    },
+    "categories": {
+      "type": "array",
+      "default": []
+    },
+    "slug": {
+      "type": "string"
+    },
+    "followrules": {
+      "type": "boolean"
+    }
+  },
+  "editorStyle": "monsterinsights-gutenberg-editor-css"
+}

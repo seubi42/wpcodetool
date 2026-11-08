@@ -1,0 +1,83 @@
+{
+  "name": "passflow_availability",
+  "label": "Disponibilité",
+  "pluralLabel": "Disponibilités",
+  "description": "Réponses des intervenants : disponible ou non sur chaque date.",
+  "storage": {
+    "table": "passflow_availability",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "slot_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "host_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "answer": {
+      "type": "varchar",
+      "length": 10,
+      "nullable": false,
+      "default": ""
+    },
+    "asked_at": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "answered_at": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "answered_by": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "source": {
+      "type": "varchar",
+      "length": 20,
+      "nullable": false,
+      "default": ""
+    },
+    "campaign_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_slot_id",
+      "type": "index",
+      "columns": [
+        "slot_id"
+      ]
+    },
+    {
+      "name": "idx_host_id",
+      "type": "index",
+      "columns": [
+        "host_id"
+      ]
+    }
+  ],
+  "admin": {
+    "enabled": false
+  },
+  "api": {
+    "enabled": false
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "name": "passflow_history",
+  "label": "Mouvement",
+  "pluralLabel": "Journal",
+  "description": "Mouvements des réservations et messages envoyés aux participants et aux intervenants.",
+  "storage": {
+    "table": "passflow_history",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "booking_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "slot_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "from_slot_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "action": {
+      "type": "varchar",
+      "length": 30,
+      "nullable": false,
+      "default": ""
+    },
+    "message": {
+      "type": "text",
+      "nullable": true
+    },
+    "user_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": true
+    },
+    "created_at": {
+      "type": "datetime",
+      "nullable": true
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_booking_id",
+      "type": "index",
+      "columns": [
+        "booking_id"
+      ]
+    },
+    {
+      "name": "idx_slot_id",
+      "type": "index",
+      "columns": [
+        "slot_id"
+      ]
+    },
+    {
+      "name": "idx_created_at",
+      "type": "index",
+      "columns": [
+        "created_at"
+      ]
+    }
+  ],
+  "admin": {
+    "enabled": true,
+    "capability": "manage_passflow",
+    "menu": {
+      "placement": "submenu",
+      "title": "Journal",
+      "icon": "dashicons-backup",
+      "position": 56,
+      "parent": "smbb-codetool-passflow",
+      "group": "Suivi"
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "list": {
+      "perPage": 50,
+      "search": {
+        "enabled": true,
+        "provider": "default",
+        "fields": [
+          "message"
+        ],
+        "mode": "or",
+        "placeholder": "Rechercher"
+      },
+      "filters": {
+        "enabled": true,
+        "fields": [
+          {
+            "field": "action",
+            "label": "Action",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "booking_id",
+            "label": "Inscription",
+            "operators": [
+              "eq"
+            ]
+          },
+          {
+            "field": "slot_id",
+            "label": "Créneau",
+            "operators": [
+              "eq"
+            ]
+          }
+        ]
+      },
+      "defaultOrder": {
+        "by": "id",
+        "direction": "desc"
+      }
+    },
+    "views": {
+      "list": "views/passflow-history/list.php",
+      "form": "views/passflow-history/form.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

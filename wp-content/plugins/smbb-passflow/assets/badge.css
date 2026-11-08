@@ -1,0 +1,155 @@
+/* Pointage badge (écran d'appel) : bouton sous l'en-tête et fenêtre de bip plein écran. */
+.passflow-admin .passflow-rollcall-head.has-badge, .passflow-admin .passflow-rollcall-stats.has-badge { margin-bottom: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: 0; }
+.passflow-admin .passflow-badge-open { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 60px; margin: 0 0 16px; padding: 12px 16px; border: 0; border-radius: 0 0 12px 12px; background: var(--passflow-brand); color: #fff; font-size: 19px; font-weight: 700; letter-spacing: .01em; cursor: pointer; -webkit-tap-highlight-color: transparent; box-shadow: 0 2px 6px rgba(0,0,0,.12); }
+.passflow-admin .passflow-badge-open .dashicons { font-size: 26px; width: 26px; height: 26px; }
+.passflow-admin .passflow-badge-open:hover, .passflow-admin .passflow-badge-open:focus-visible { filter: brightness(1.08); outline: none; }
+.passflow-admin .passflow-badge-open:active { filter: brightness(.95); }
+.passflow-admin .passflow-badge-open:disabled { opacity: .45; cursor: not-allowed; filter: none; }
+
+html.passflow-badge-on, html.passflow-badge-on body { overflow: hidden; }
+.passflow-badge-layer { margin: 0; padding: 0; height: 0; }
+.passflow-badge-modal { position: fixed; inset: 0; z-index: 100060; display: flex; flex-direction: column; gap: 14px; padding: max(14px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom)); background: #1d2327; color: #fff; transition: background-color .18s ease; overflow-y: auto; }
+.passflow-badge-modal[hidden] { display: none; }
+.passflow-badge-modal[data-state="ok"] { background: #1e8a4c; }
+.passflow-badge-modal[data-state="error"] { background: #c62828; }
+.passflow-badge-modal[data-state="busy"] { background: #2c3338; }
+.passflow-badge-bar { display: flex; align-items: center; justify-content: space-between; font-size: 17px; }
+.passflow-badge-x { border: 0; background: rgba(255,255,255,.16); color: #fff; width: 44px; height: 44px; border-radius: 50%; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+.passflow-badge-x .dashicons { font-size: 28px; width: 28px; height: 28px; }
+.passflow-badge-form { display: flex; gap: 8px; margin: 0; }
+.passflow-badge-form input[type=text] { flex: 1; min-width: 0; height: 60px; font-size: 26px; font-weight: 600; letter-spacing: .04em; text-align: center; border: 0; border-radius: 12px; padding: 0 12px; background: #fff; color: #1d2327; box-shadow: inset 0 0 0 3px rgba(0,0,0,.08); }
+.passflow-badge-form input[type=text]:focus { outline: 3px solid #ffd54a; outline-offset: 0; }
+.passflow-badge-form .button.button-primary { height: 60px; min-width: 96px; font-size: 17px; border-radius: 12px; background: rgba(255,255,255,.18); border: 2px solid rgba(255,255,255,.7); color: #fff; }
+.passflow-badge-hint { margin: -4px 0 0; text-align: center; opacity: .8; font-size: 14px; }
+.passflow-badge-result { flex: 1; min-height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; }
+.passflow-badge-result .dashicons { font-size: 96px; width: 96px; height: 96px; opacity: .95; }
+.passflow-badge-modal[data-state="idle"] .passflow-badge-result .dashicons { opacity: .35; }
+.passflow-badge-modal[data-state="busy"] .passflow-badge-result .dashicons { animation: passflow-badge-spin 1s linear infinite; }
+@keyframes passflow-badge-spin { to { transform: rotate(360deg); } }
+.passflow-badge-result strong { font-size: 24px; line-height: 1.25; }
+.passflow-badge-result small { font-size: 14px; opacity: .8; word-break: break-all; }
+.passflow-badge-docs { display: flex; align-items: center; gap: 12px; width: 100%; padding: 16px; border: 0; border-radius: 14px; background: #ffd54a; color: #3b2f00; text-align: left; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,.25); animation: passflow-badge-pop .25s ease-out; }
+.passflow-badge-docs[hidden] { display: none; }
+.passflow-badge-docs .dashicons { font-size: 34px; width: 34px; height: 34px; flex: none; }
+.passflow-badge-docs strong { display: block; font-size: 18px; line-height: 1.25; }
+.passflow-badge-docs small { display: block; font-size: 14px; margin-top: 2px; text-decoration: underline; }
+@keyframes passflow-badge-pop { from { transform: scale(.94); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (min-width: 783px) { .passflow-badge-modal { padding-left: max(16px, calc(50% - 320px)); padding-right: max(16px, calc(50% - 320px)); } }
+
+/* Moitié basse toujours vide : place réservée au clavier virtuel. Tout tient dans la moitié haute. */
+.passflow-badge-modal { gap: 8px; padding-bottom: 50vh; padding-bottom: 50dvh; overflow: hidden; }
+.passflow-badge-bar { font-size: 15px; }
+.passflow-badge-x { width: 36px; height: 36px; }
+.passflow-badge-form input[type=text], .passflow-badge-form .button.button-primary { height: 52px; }
+.passflow-badge-form input[type=text] { font-size: 22px; }
+.passflow-badge-hint { margin: 0; font-size: 12px; }
+.passflow-badge-result { flex: 1 1 auto; min-height: 0; gap: 4px; overflow: hidden; }
+.passflow-badge-result .dashicons { font-size: 44px; width: 44px; height: 44px; }
+.passflow-badge-result strong { font-size: 20px; }
+.passflow-badge-result small { font-size: 12px; }
+.passflow-badge-docs { flex: none; padding: 10px 12px; gap: 10px; border-radius: 12px; }
+.passflow-badge-docs .dashicons { font-size: 26px; width: 26px; height: 26px; }
+.passflow-badge-docs strong { font-size: 16px; }
+.passflow-badge-docs small { font-size: 13px; }
+@media (max-height: 560px) { .passflow-badge-hint { display: none; } .passflow-badge-result .dashicons { display: none; } }
+
+/* Caméra (toggle à côté de Valider) : elle prend la moitié basse, celle laissée libre pour le clavier.
+   Champ sans focus caméra allumée, donc pas de clavier ; les QR s'enchaînent sans toucher à rien. */
+.passflow-badge-form .passflow-badge-cam-btn { height: 52px; width: 56px; flex: none; display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(255,255,255,.18); border: 2px solid rgba(255,255,255,.7); color: #fff; padding: 0; }
+.passflow-badge-form .passflow-badge-cam-btn.is-on { background: #fff; color: #1d2327; border-color: #fff; }
+.passflow-badge-cam { position: fixed; left: 0; right: 0; bottom: 0; height: 50vh; height: 50dvh; display: flex; justify-content: center; align-items: center; overflow: hidden; background: #000; border-top: 4px solid rgba(255,255,255,.85); }
+.passflow-badge-cam[hidden] { display: none; }
+/* Ne jamais déformer la vidéo : html5-qrcode copie l'image dans un canevas à la taille affichée de la vidéo.
+   Une hauteur forcée (object-fit: cover) écrasait le QR dans ce canevas, et plus rien n'était lu. */
+.passflow-badge-cam #passflow-badge-reader { position: absolute !important; left: 0; top: 50%; width: 1280px; border: 0 !important; transform-origin: 0 0; }
+.passflow-badge-cam #passflow-badge-reader video { width: 100% !important; height: auto !important; object-fit: fill; }
+.passflow-badge-modal.is-cam .passflow-badge-hint { display: none; }
+@media (min-width: 783px) { .passflow-badge-cam { left: max(0px, calc(50% - 336px)); right: max(0px, calc(50% - 336px)); } }
+
+/* Valider = petite touche Entrée dans le champ ; résultat collé sous le champ. */
+.passflow-badge-field { position: relative; flex: 1; min-width: 0; display: flex; }
+.passflow-badge-field input[type=text] { width: 100%; padding-right: 58px; }
+.passflow-badge-go { position: absolute; top: 6px; right: 6px; bottom: 6px; width: 46px; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 9px; background: #1d2327; color: #fff; cursor: pointer; padding: 0; }
+.passflow-badge-go:active { transform: scale(.96); }
+.passflow-badge-result { flex: none; justify-content: flex-start; margin-top: 6px; }
+.passflow-badge-result { display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 10px; row-gap: 0; text-align: left; margin-top: 4px; }
+.passflow-badge-result .dashicons { grid-row: span 2; font-size: 36px; width: 36px; height: 36px; }
+.passflow-badge-result small:empty { display: none; }
+
+/* Interrupteur du clavier virtuel, à gauche de la croix. Barré quand le clavier est masqué. */
+.passflow-badge-tools { display: inline-flex; gap: 8px; }
+.passflow-badge-kb { border: 0; background: rgba(255,255,255,.16); color: #fff; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0; }
+.passflow-badge-kb.is-off { background: rgba(0,0,0,.28); }
+.passflow-badge-kb .passflow-badge-kb-off { display: none; }
+.passflow-badge-kb.is-off .passflow-badge-kb-off { display: inline; }
+
+/* Bouton « Effacer la recherche », juste après le champ (visible s'il y a du texte). */
+.passflow-admin .passflow-search-clear { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: #dcdcde; color: #1d2327; cursor: pointer; }
+.passflow-admin .passflow-search-clear[hidden] { display: none; }
+.passflow-admin .passflow-search-clear:hover { background: #c3c4c7; }
+.passflow-admin .passflow-rollcall-search input[type=search]::-webkit-search-cancel-button { -webkit-appearance: none; display: none; }
+
+/* ---------- Effets du pointage ----------
+   Tout est en surimpression (position absolute / fixed, pointer-events none) : aucune hauteur ajoutée,
+   la moitié basse de la fenêtre badge (clavier virtuel, caméra) reste entière. */
+
+/* Ligne pointée présente : voile vert qui s'efface et coche qui se dessine, en haut à droite. */
+.passflow-admin .passflow-rollcall-row { position: relative; }
+.passflow-admin .passflow-rollcall-row::after { content: ""; position: absolute; inset: -1px -1px -1px -4px; border-radius: 12px; pointer-events: none; opacity: 0; background: rgba(30,138,76,.16); box-shadow: 0 0 0 2px rgba(30,138,76,.55); }
+.passflow-admin .passflow-rollcall-row.is-checked::after { animation: passflow-row-glow 1.3s ease-out forwards; }
+@keyframes passflow-row-glow { 0% { opacity: 0; } 12% { opacity: 1; } 100% { opacity: 0; } }
+.passflow-rollcall-tick { position: absolute; top: -10px; right: -8px; width: 34px; height: 34px; border-radius: 50%; background: #1e8a4c; box-shadow: 0 3px 10px rgba(30,138,76,.45); pointer-events: none; opacity: 0; transform: scale(.4); z-index: 2; }
+.passflow-rollcall-tick svg { display: block; width: 100%; height: 100%; fill: none; stroke: #fff; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
+.passflow-rollcall-tick circle { stroke: rgba(255,255,255,.35); stroke-width: 2; stroke-dasharray: 95; stroke-dashoffset: 95; }
+.passflow-rollcall-tick path { stroke-dasharray: 26; stroke-dashoffset: 26; }
+.passflow-rollcall-row.is-checked .passflow-rollcall-tick { animation: passflow-tick-in 1.3s cubic-bezier(.2,.9,.3,1.4) forwards; }
+.passflow-rollcall-row.is-checked .passflow-rollcall-tick circle { animation: passflow-tick-draw .45s ease-out forwards; }
+.passflow-rollcall-row.is-checked .passflow-rollcall-tick path { animation: passflow-tick-draw .35s .15s ease-out forwards; }
+@keyframes passflow-tick-in { 0% { opacity: 0; transform: scale(.4); } 18% { opacity: 1; transform: scale(1.12); } 30% { transform: scale(1); } 80% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(.9); } }
+@keyframes passflow-tick-draw { to { stroke-dashoffset: 0; } }
+.passflow-rollcall-row.is-checked .passflow-presence-present input:checked + span { animation: passflow-seg-pop .4s cubic-bezier(.2,.9,.3,1.5); }
+@keyframes passflow-seg-pop { 0% { transform: scale(.9); } 60% { transform: scale(1.06); } 100% { transform: none; } }
+
+/* Jauge de l'en-tête : remplissage plus souple, chiffres qui sautent, reflet quand tout le monde est là. */
+.passflow-admin .passflow-gauge-bar span { transition: width .6s cubic-bezier(.22,1,.36,1); }
+.passflow-admin .passflow-gauge-bar { position: relative; }
+.passflow-admin [data-gauge-count].is-bump, .passflow-badge-count.is-bump { display: inline-block; animation: passflow-bump .45s cubic-bezier(.2,.9,.3,1.6); }
+@keyframes passflow-bump { 0% { transform: scale(1); } 40% { transform: scale(1.35); } 100% { transform: scale(1); } }
+.passflow-admin .passflow-gauge.is-full .passflow-gauge-key--present strong { color: #1e8a4c; }
+.passflow-admin .passflow-gauge.is-cheer .passflow-gauge-bar::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,.75) 50%, transparent 80%); transform: translateX(-100%); animation: passflow-shine 1s ease-out 2; pointer-events: none; }
+@keyframes passflow-shine { to { transform: translateX(100%); } }
+
+/* Fenêtre badge : compteur « 12 / 20 » à côté du titre et trait de progression collé sous la barre. */
+.passflow-badge-bar { position: relative; }
+.passflow-badge-title { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+.passflow-badge-count { padding: 2px 9px; border-radius: 999px; background: rgba(255,255,255,.16); font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.passflow-badge-count:empty { display: none; }
+.passflow-badge-count.is-full { background: #ffd54a; color: #3b2f00; }
+.passflow-badge-progress { position: absolute; left: 0; right: 0; bottom: -5px; height: 3px; border-radius: 3px; background: rgba(255,255,255,.14); overflow: hidden; pointer-events: none; }
+.passflow-badge-progress b { display: block; height: 100%; width: 0; background: #3ccf7a; border-radius: inherit; transition: width .6s cubic-bezier(.22,1,.36,1); }
+.passflow-badge-modal[data-state="ok"] .passflow-badge-progress b { background: #fff; }
+.passflow-badge-modal[data-state="ok"] .passflow-badge-result .dashicons { animation: passflow-tick-pop .45s cubic-bezier(.2,.9,.3,1.5); }
+@keyframes passflow-tick-pop { 0% { transform: scale(.3); opacity: 0; } 60% { transform: scale(1.15); opacity: 1; } 100% { transform: none; } }
+
+/* Confettis : calque fixe et transparent, au-dessus de tout, retiré au bout d'1,3 s. */
+.passflow-confetti { position: fixed; top: 0; left: 0; width: 100vw; z-index: 100080; pointer-events: none; }
+
+@media (prefers-reduced-motion: reduce) {
+    .passflow-admin .passflow-rollcall-row.is-checked::after { animation: none; opacity: .7; }
+    .passflow-rollcall-row.is-checked .passflow-rollcall-tick { animation: none; opacity: 1; transform: none; }
+    .passflow-rollcall-row.is-checked .passflow-rollcall-tick circle, .passflow-rollcall-row.is-checked .passflow-rollcall-tick path { animation: none; stroke-dashoffset: 0; }
+    .passflow-rollcall-row.is-checked .passflow-presence-present input:checked + span,
+    .passflow-admin [data-gauge-count].is-bump, .passflow-badge-count.is-bump,
+    .passflow-badge-modal[data-state="ok"] .passflow-badge-result .dashicons { animation: none; }
+    .passflow-admin .passflow-gauge.is-cheer .passflow-gauge-bar::after { display: none; }
+    .passflow-admin .passflow-gauge-bar span, .passflow-badge-progress b { transition: none; }
+}
+
+/* Douchette sans champ (réglage par défaut) : la fenêtre garde le focus, sans contour ; pas d'interrupteur clavier. */
+.passflow-badge-modal:focus { outline: none; }
+.passflow-badge-kb[hidden] { display: none; }
+
+/* Pastille du numéro de billet lu (blanche, chiffres noirs), sous le nom. */
+.passflow-badge-result .dashicons { grid-row: span 3; }
+.passflow-badge-result .passflow-badge-ref { justify-self: start; margin-top: 4px; padding: 3px 10px; border-radius: 999px; background: #fff; color: #111827; font-style: normal; font-size: 14px; font-weight: 800; letter-spacing: .04em; font-variant-numeric: tabular-nums; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+.passflow-badge-result .passflow-badge-ref[hidden] { display: none; }

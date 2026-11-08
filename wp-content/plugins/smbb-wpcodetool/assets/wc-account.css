@@ -1,0 +1,2333 @@
+/*
+ * CodeTool – page « Mon compte » de WooCommerce (réglage CodeTool › Apparence › Côté site).
+ * Tout est sous body.smbb-wc-account : le reste du thème n'est pas touché.
+ * Couleurs : variables --smbb-t-* posées par WcAccount (thème du site), avec repli neutre.
+ * Icônes des onglets : règles générées par WcAccount::iconsCss() (Dashicons).
+ */
+
+body.smbb-wc-account {
+    --acc-accent: var(--smbb-t-accent, #2271b1);
+    --acc-accent-hover: var(--smbb-t-accent-hover, #135e96);
+    --acc-accent-ink: var(--smbb-t-accent-ink, #fff);
+    --acc-soft: var(--smbb-t-accent-soft, #eef4fa);
+    --acc-deep: var(--smbb-t-accent-deep, #0a4b78);
+    --acc-card: #fff;
+    --acc-fill: var(--smbb-t-fill, #f2f2f4);
+    --acc-text: var(--smbb-t-text, #1d1d1f);
+    --acc-muted: var(--smbb-t-muted, #6e6e73);
+    --acc-line: var(--smbb-t-line, #e5e5ea);
+    --acc-radius: 16px;
+    --acc-shadow: 0 0 0 1px var(--acc-line), 0 12px 32px -24px rgba(0, 0, 0, .35);
+}
+
+/* ---------- Mise en page : menu à gauche, contenu à droite ---------- */
+body.smbb-wc-account .woocommerce:has(> .woocommerce-MyAccount-navigation) {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 32px;
+    align-items: start;
+}
+
+body.smbb-wc-account .woocommerce > .woocommerce-MyAccount-navigation,
+body.smbb-wc-account .woocommerce > .woocommerce-MyAccount-content {
+    float: none;
+    width: auto;
+    margin: 0;
+}
+
+body.smbb-wc-account .woocommerce::before,
+body.smbb-wc-account .woocommerce::after {
+    display: none;
+}
+
+/* ---------- Menu ---------- */
+body.smbb-wc-account .woocommerce-MyAccount-navigation {
+    position: sticky;
+    top: 24px;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-navigation ul {
+    margin: 0;
+    padding: 8px;
+    border-radius: var(--acc-radius);
+    background: var(--acc-card);
+    box-shadow: var(--acc-shadow);
+    list-style: none;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-navigation li {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    list-style: none;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-navigation li::before,
+body.smbb-wc-account .woocommerce-MyAccount-navigation li::marker {
+    content: none;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-navigation a {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 9px 12px;
+    border-radius: 11px;
+    color: var(--acc-text);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.3;
+    text-decoration: none;
+    transition: background-color .15s ease, color .15s ease;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-navigation a::before {
+    flex: 0 0 20px;
+    width: 20px;
+    color: var(--acc-muted);
+    font-family: dashicons;
+    font-size: 19px;
+    font-weight: 400;
+    line-height: 1;
+    text-align: center;
+    content: "\f345";
+    transition: color .15s ease;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-navigation a:hover {
+    background: var(--acc-fill);
+    color: var(--acc-text);
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-navigation a:hover::before {
+    color: var(--acc-accent);
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-navigation li.is-active a {
+    background: var(--acc-soft);
+    color: var(--acc-deep);
+    font-weight: 650;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-navigation li.is-active a::before {
+    color: var(--acc-accent);
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-navigation a:focus-visible {
+    outline: 2px solid var(--acc-accent);
+    outline-offset: 1px;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-navigation-link--customer-logout {
+    margin-top: 6px !important;
+    padding-top: 6px !important;
+    border-top: 1px solid var(--acc-line) !important;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-navigation-link--customer-logout a {
+    color: var(--acc-muted);
+}
+
+/* ---------- Contenu ---------- */
+body.smbb-wc-account .woocommerce-MyAccount-content {
+    min-width: 0;
+    color: var(--acc-text);
+    animation: smbb-acc-in .3s ease both;
+}
+
+@keyframes smbb-acc-in {
+    from { opacity: 0; transform: translateY(6px); }
+}
+
+/* Tableau de bord : le texte d'origine laisse la place aux tuiles. */
+body.smbb-wc-dash .woocommerce-MyAccount-content > p {
+    display: none;
+}
+
+body.smbb-wc-account .smbb-acc-dash {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+body.smbb-wc-account .smbb-acc-card {
+    padding: 22px;
+    border-radius: var(--acc-radius);
+    background: var(--acc-card);
+    box-shadow: var(--acc-shadow);
+}
+
+body.smbb-wc-account .smbb-acc-hello {
+    display: flex;
+    grid-column: 1 / -1;
+    align-items: center;
+    gap: 16px;
+    background: linear-gradient(135deg, var(--acc-soft), var(--acc-card) 70%);
+}
+
+body.smbb-wc-account .smbb-acc-avatar {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px var(--acc-card), 0 0 0 4px var(--acc-line);
+}
+
+body.smbb-wc-account .smbb-acc-hello-text {
+    flex: 1;
+    min-width: 0;
+}
+
+body.smbb-wc-account .smbb-acc-hello h2 {
+    margin: 0 0 2px;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    line-height: 1.2;
+}
+
+body.smbb-wc-account .smbb-acc-hello p {
+    margin: 0;
+    color: var(--acc-muted);
+    font-size: 14px;
+}
+
+body.smbb-wc-account .smbb-acc-last {
+    grid-column: 1 / -1;
+}
+
+body.smbb-wc-account .smbb-acc-card h3 {
+    margin: 0 0 12px;
+    color: var(--acc-muted);
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+body.smbb-wc-account .smbb-acc-order {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 18px;
+}
+
+body.smbb-wc-account .smbb-acc-order > div {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 160px;
+}
+
+body.smbb-wc-account .smbb-acc-order strong {
+    font-size: 16px;
+}
+
+body.smbb-wc-account .smbb-acc-muted {
+    color: var(--acc-muted);
+    font-size: 14px;
+}
+
+body.smbb-wc-account .smbb-acc-total {
+    font-size: 16px;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Statut de commande en pastille. */
+body.smbb-wc-account .smbb-acc-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 99px;
+    background: var(--acc-fill);
+    color: var(--acc-text);
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+body.smbb-wc-account .smbb-acc-status::before {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    content: "";
+    opacity: .8;
+}
+
+body.smbb-wc-account .smbb-acc-status.is-completed { background: #e3f6e8; color: #1c7a3a; }
+body.smbb-wc-account .smbb-acc-status.is-processing { background: #e6f0fb; color: #1d5fa8; }
+body.smbb-wc-account .smbb-acc-status:is(.is-on-hold, .is-pending) { background: #fdf2dc; color: #9a6200; }
+body.smbb-wc-account .smbb-acc-status:is(.is-cancelled, .is-failed, .is-refunded) { background: #fbe7e7; color: #b42318; }
+
+/* Raccourcis en tuiles. */
+body.smbb-wc-account .smbb-acc-tiles {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 12px;
+}
+
+body.smbb-wc-account .smbb-acc-tile {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 18px;
+    border-radius: var(--acc-radius);
+    background: var(--acc-card);
+    box-shadow: var(--acc-shadow);
+    color: var(--acc-text);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.3;
+    text-decoration: none;
+    transition: transform .2s cubic-bezier(.2, .8, .2, 1), box-shadow .2s ease;
+}
+
+body.smbb-wc-account .smbb-acc-tile:hover {
+    color: var(--acc-text);
+    box-shadow: 0 0 0 1px var(--acc-line), 0 18px 36px -20px rgba(var(--smbb-t-accent-rgb, 34, 113, 177), .45);
+    transform: translateY(-2px);
+}
+
+body.smbb-wc-account .smbb-acc-tile:focus-visible {
+    outline: 2px solid var(--acc-accent);
+    outline-offset: 2px;
+}
+
+body.smbb-wc-account .smbb-acc-ic {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--acc-soft);
+    color: var(--acc-accent);
+}
+
+body.smbb-wc-account .smbb-acc-ic::before {
+    font-family: dashicons;
+    font-size: 21px;
+    line-height: 1;
+    content: "\f345";
+}
+
+/* ---------- Boutons ---------- */
+body.smbb-wc-account .smbb-acc-btn,
+body.smbb-wc-account .woocommerce-MyAccount-content :is(.button, button[type="submit"], .woocommerce-Button) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 11px;
+    background: var(--acc-accent);
+    box-shadow: 0 6px 16px -10px rgba(var(--smbb-t-accent-rgb, 34, 113, 177), .9);
+    color: var(--acc-accent-ink);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color .15s ease, transform .15s ease;
+}
+
+body.smbb-wc-account .smbb-acc-btn:hover,
+body.smbb-wc-account .woocommerce-MyAccount-content :is(.button, button[type="submit"], .woocommerce-Button):hover {
+    background: var(--acc-accent-hover);
+    color: var(--acc-accent-ink);
+}
+
+body.smbb-wc-account .smbb-acc-btn:active,
+body.smbb-wc-account .woocommerce-MyAccount-content :is(.button, button[type="submit"]):active {
+    transform: scale(.98);
+}
+
+body.smbb-wc-account .smbb-acc-btn.is-ghost {
+    background: var(--acc-card);
+    box-shadow: 0 0 0 1px var(--acc-line);
+    color: var(--acc-text);
+}
+
+body.smbb-wc-account .smbb-acc-btn.is-ghost:hover {
+    background: var(--acc-fill);
+    color: var(--acc-text);
+}
+
+/* ---------- Tableaux (commandes, téléchargements, factures…) ---------- */
+body.smbb-wc-account .woocommerce-MyAccount-content table.shop_table {
+    width: 100%;
+    margin: 0 0 20px;
+    overflow: hidden;
+    border: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: var(--acc-radius);
+    background: var(--acc-card);
+    box-shadow: var(--acc-shadow);
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.shop_table :is(th, td) {
+    padding: 14px 16px;
+    border: 0;
+    border-top: 1px solid var(--acc-line);
+    text-align: left;
+    vertical-align: middle;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.shop_table thead th {
+    border-top: 0;
+    background: var(--acc-fill);
+    color: var(--acc-muted);
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.shop_table tbody tr {
+    transition: background-color .15s ease;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.shop_table tbody tr:hover {
+    background: color-mix(in srgb, var(--acc-fill) 55%, transparent);
+}
+
+body.smbb-wc-account .woocommerce-orders-table__cell-order-total,
+body.smbb-wc-account .woocommerce-orders-table__cell-order-number {
+    font-variant-numeric: tabular-nums;
+}
+
+body.smbb-wc-account .woocommerce-orders-table__cell-order-number a {
+    color: var(--acc-text);
+    font-weight: 650;
+    text-decoration: none;
+}
+
+body.smbb-wc-account .woocommerce-orders-table__cell-order-status {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+body.smbb-wc-account .woocommerce-orders-table__cell-order-status::before {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 7px;
+    border-radius: 50%;
+    background: #a1a1a6;
+    content: "";
+}
+
+body.smbb-wc-account .woocommerce-orders-table__row--status-completed .woocommerce-orders-table__cell-order-status::before { background: #30a14e; }
+body.smbb-wc-account .woocommerce-orders-table__row--status-processing .woocommerce-orders-table__cell-order-status::before { background: #2f7fd8; }
+body.smbb-wc-account :is(.woocommerce-orders-table__row--status-on-hold, .woocommerce-orders-table__row--status-pending) .woocommerce-orders-table__cell-order-status::before { background: #e8a317; }
+body.smbb-wc-account :is(.woocommerce-orders-table__row--status-cancelled, .woocommerce-orders-table__row--status-failed, .woocommerce-orders-table__row--status-refunded) .woocommerce-orders-table__cell-order-status::before { background: #e5484d; }
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.shop_table .button {
+    min-height: 34px;
+    margin: 2px 4px 2px 0;
+    padding: 0 14px;
+    font-size: 13px;
+}
+
+/* ---------- Adresses ---------- */
+body.smbb-wc-account .woocommerce-Addresses {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+body.smbb-wc-account .woocommerce-Addresses::before,
+body.smbb-wc-account .woocommerce-Addresses::after {
+    display: none;
+}
+
+body.smbb-wc-account .woocommerce-Addresses .woocommerce-Address {
+    float: none;
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding: 22px;
+    border-radius: var(--acc-radius);
+    background: var(--acc-card);
+    box-shadow: var(--acc-shadow);
+}
+
+body.smbb-wc-account .woocommerce-Address-title {
+    padding: 0;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+body.smbb-wc-account .woocommerce-Address-title h2,
+body.smbb-wc-account .woocommerce-Address-title h3 {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-size: 17px;
+    font-weight: 650;
+    letter-spacing: -.01em;
+    line-height: 1.3;
+}
+
+body.smbb-wc-account .woocommerce-Address-title::before,
+body.smbb-wc-account .woocommerce-Address-title::after {
+    display: none;
+}
+
+body.smbb-wc-account .woocommerce-Address-title .edit {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 11px 5px 9px;
+    border-radius: 99px;
+    background: var(--acc-fill);
+    color: var(--acc-text);
+    font-size: 0;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color .15s ease, color .15s ease;
+}
+
+/* « Modifier Adresse de facturation » : le titre est juste à côté, « Modifier » suffit. */
+body.smbb-wc-account .woocommerce-Address-title .edit::before {
+    font-family: dashicons;
+    font-size: 15px;
+    content: "\f464";
+}
+
+body.smbb-wc-account .woocommerce-Address-title .edit::after {
+    font-size: 13px;
+    font-weight: 600;
+    content: "Modifier";
+}
+
+body.smbb-wc-account .woocommerce-Address-title .edit:hover {
+    background: var(--acc-soft);
+    color: var(--acc-deep);
+}
+
+body.smbb-wc-account .woocommerce-Address address {
+    color: var(--acc-muted);
+    font-style: normal;
+    line-height: 1.6;
+}
+
+/* ---------- Formulaires (compte, adresses, connexion) ---------- */
+body.smbb-wc-account .woocommerce :is(.woocommerce-EditAccountForm, .woocommerce-address-fields, .woocommerce-form-login, .woocommerce-form-register, .woocommerce-ResetPassword) {
+    padding: 24px;
+    border: 0;
+    border-radius: var(--acc-radius);
+    background: var(--acc-card);
+    box-shadow: var(--acc-shadow);
+}
+
+body.smbb-wc-account .woocommerce form fieldset {
+    margin: 22px 0 0;
+    padding: 18px 0 0;
+    border: 0;
+    border-top: 1px solid var(--acc-line);
+}
+
+body.smbb-wc-account .woocommerce form legend {
+    padding: 0;
+    font-size: 16px;
+    font-weight: 650;
+}
+
+body.smbb-wc-account .woocommerce form .form-row label {
+    margin-bottom: 5px;
+    color: var(--acc-text);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+body.smbb-wc-account .woocommerce form :is(input.input-text, input[type="text"], input[type="email"], input[type="tel"], input[type="password"], select, textarea) {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 13px;
+    border: 1px solid var(--acc-line);
+    border-radius: 11px;
+    background: var(--acc-card);
+    box-shadow: none;
+    color: var(--acc-text);
+    font-size: 15px;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+body.smbb-wc-account .woocommerce form :is(input.input-text, input[type="text"], input[type="email"], input[type="tel"], input[type="password"], select, textarea):focus {
+    border-color: var(--acc-accent);
+    outline: 0;
+    box-shadow: 0 0 0 4px rgba(var(--smbb-t-accent-rgb, 34, 113, 177), .15);
+}
+
+body.smbb-wc-account .woocommerce form .select2-container .select2-selection--single {
+    height: 44px;
+    border: 1px solid var(--acc-line);
+    border-radius: 11px;
+}
+
+body.smbb-wc-account .woocommerce form .select2-container .select2-selection__rendered {
+    padding-left: 13px;
+    line-height: 42px;
+}
+
+body.smbb-wc-account .woocommerce form .select2-container .select2-selection__arrow {
+    height: 42px;
+}
+
+body.smbb-wc-account .woocommerce form .form-row em,
+body.smbb-wc-account .woocommerce form .form-row .description {
+    color: var(--acc-muted);
+    font-size: 13px;
+}
+
+/* ---------- Messages ---------- */
+body.smbb-wc-account .woocommerce :is(.woocommerce-message, .woocommerce-info, .woocommerce-error) {
+    margin: 0 0 18px;
+    padding: 14px 18px 14px 46px;
+    border: 0;
+    border-radius: 14px;
+    background: var(--acc-card);
+    box-shadow: var(--acc-shadow);
+    color: var(--acc-text);
+    list-style: none;
+}
+
+body.smbb-wc-account .woocommerce :is(.woocommerce-message, .woocommerce-info, .woocommerce-error)::before {
+    top: 50%;
+    left: 16px;
+    transform: translateY(-50%);
+}
+
+body.smbb-wc-account .woocommerce .woocommerce-message { box-shadow: inset 3px 0 0 #30a14e, var(--acc-shadow); }
+body.smbb-wc-account .woocommerce .woocommerce-message::before { color: #30a14e; }
+body.smbb-wc-account .woocommerce .woocommerce-info { box-shadow: inset 3px 0 0 var(--acc-accent), var(--acc-shadow); }
+body.smbb-wc-account .woocommerce .woocommerce-info::before { color: var(--acc-accent); }
+body.smbb-wc-account .woocommerce .woocommerce-error { box-shadow: inset 3px 0 0 #e5484d, var(--acc-shadow); }
+body.smbb-wc-account .woocommerce .woocommerce-error::before { color: #e5484d; }
+
+body.smbb-wc-account .woocommerce :is(.woocommerce-message, .woocommerce-info) .button {
+    float: right;
+    min-height: 32px;
+    margin-left: 12px;
+    padding: 0 12px;
+    font-size: 13px;
+}
+
+/* ---------- Pagination ---------- */
+body.smbb-wc-account .woocommerce-pagination {
+    display: flex;
+    gap: 8px;
+}
+
+/* ---------- Titres et textes des onglets (Factures, Mes ateliers…) ---------- */
+body.smbb-wc-account .woocommerce-MyAccount-content > :is(h2, h3) {
+    margin: 30px 0 12px;
+    color: var(--acc-text);
+    font-size: 19px;
+    font-weight: 650;
+    letter-spacing: -.01em;
+    line-height: 1.3;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content > :is(h2, h3):first-child,
+body.smbb-wc-account .woocommerce-MyAccount-content > .woocommerce-notices-wrapper + :is(h2, h3),
+body.smbb-wc-account .woocommerce-MyAccount-content > .passflow-account-help + :is(h2, h3) {
+    margin-top: 0;
+}
+
+/* Phrase d'aide : bandeau discret. */
+body.smbb-wc-account .woocommerce-MyAccount-content .passflow-account-help {
+    margin: 0 0 22px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: var(--acc-fill);
+    color: var(--acc-muted);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content .passflow-account-help a {
+    color: var(--acc-accent);
+    font-weight: 600;
+}
+
+/* Liens d'action simples dans le contenu. */
+body.smbb-wc-account .woocommerce-MyAccount-content a:not(.button):not(.smbb-acc-btn):not(.smbb-acc-tile):not(.passflow-wallet) {
+    color: var(--acc-accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+}
+
+/* ---------- Factures (Tomo) ---------- */
+body.smbb-wc-account ul.passflow-inv-todo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0 0 8px;
+    padding: 0;
+    list-style: none;
+}
+
+body.smbb-wc-account ul.passflow-inv-todo li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 16px;
+    margin: 0;
+    padding: 14px 16px 14px 56px;
+    position: relative;
+    border-radius: 14px;
+    background: var(--acc-card);
+    box-shadow: var(--acc-shadow);
+    font-size: 15px;
+    list-style: none;
+}
+
+body.smbb-wc-account ul.passflow-inv-todo li::before {
+    position: absolute;
+    top: 50%;
+    left: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    background: var(--acc-soft);
+    color: var(--acc-accent);
+    font-family: dashicons;
+    font-size: 17px;
+    content: "\f497";
+    transform: translateY(-50%);
+}
+
+body.smbb-wc-account ul.passflow-inv-todo li .button {
+    min-height: 34px;
+    font-size: 13px;
+}
+
+body.smbb-wc-account table.passflow-inv-docs {
+    width: 100%;
+    margin: 0 0 20px;
+    overflow: hidden;
+    border: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: var(--acc-radius);
+    background: var(--acc-card);
+    box-shadow: var(--acc-shadow);
+}
+
+body.smbb-wc-account table.passflow-inv-docs :is(th, td) {
+    padding: 13px 16px;
+    border: 0;
+    border-top: 1px solid var(--acc-line);
+    background: transparent;
+    text-align: left;
+    vertical-align: middle;
+}
+
+body.smbb-wc-account table.passflow-inv-docs thead th {
+    border-top: 0;
+    background: var(--acc-fill);
+    color: var(--acc-muted);
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+body.smbb-wc-account table.passflow-inv-docs .num {
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+body.smbb-wc-account table.passflow-inv-docs .button {
+    min-height: 32px;
+    padding: 0 12px;
+    font-size: 13px;
+}
+
+/* « Aucune facture » et autres messages vides juste sous un titre. */
+body.smbb-wc-account .woocommerce-MyAccount-content > :is(h2, h3) + p:last-child,
+body.smbb-wc-account .woocommerce-MyAccount-content > :is(h2, h3) + p:has(+ :is(h2, h3, details)) {
+    margin: 0;
+    padding: 18px;
+    border-radius: 14px;
+    background: var(--acc-card);
+    box-shadow: var(--acc-shadow);
+    color: var(--acc-muted);
+}
+
+/* Demande de correction, ateliers passés : volets repliables. */
+body.smbb-wc-account .woocommerce-MyAccount-content details:is(.passflow-inv-request, .passflow-account-past) {
+    margin: 22px 0 0;
+    border-radius: 14px;
+    background: var(--acc-card);
+    box-shadow: var(--acc-shadow);
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content details:is(.passflow-inv-request, .passflow-account-past) > summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    color: var(--acc-text);
+    font-weight: 600;
+    list-style: none;
+    cursor: pointer;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content details:is(.passflow-inv-request, .passflow-account-past) > summary::-webkit-details-marker {
+    display: none;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content details:is(.passflow-inv-request, .passflow-account-past) > summary::before {
+    color: var(--acc-muted);
+    font-family: dashicons;
+    font-size: 18px;
+    content: "\f345";
+    transition: transform .2s ease;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content details[open]:is(.passflow-inv-request, .passflow-account-past) > summary::before {
+    transform: rotate(90deg);
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content details:is(.passflow-inv-request, .passflow-account-past) > :not(summary) {
+    width: auto;
+    margin: 0 18px 18px;
+}
+
+/* Facture d'une commande : couleur du thème et lignes en carte. */
+body.smbb-wc-account .passflow-inv {
+    --inv-brand: var(--acc-accent);
+}
+
+body.smbb-wc-account table.passflow-inv-lines {
+    overflow: hidden;
+    border: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: var(--acc-radius);
+    background: var(--acc-card);
+    box-shadow: var(--acc-shadow);
+}
+
+body.smbb-wc-account table.passflow-inv-lines :is(th, td) {
+    padding: 11px 16px;
+    border: 0;
+    border-top: 1px solid var(--acc-line);
+}
+
+body.smbb-wc-account table.passflow-inv-lines tbody tr:first-child > *,
+body.smbb-wc-account table.passflow-inv-lines tr.passflow-inv-item th {
+    border-top: 0;
+}
+
+body.smbb-wc-account table.passflow-inv-lines tr.passflow-inv-item th {
+    background: var(--acc-fill);
+}
+
+body.smbb-wc-account table.passflow-inv-lines tfoot th {
+    font-weight: 700;
+}
+
+/* ---------- Mes ateliers (Tomo) : chaque réservation devient une carte ---------- */
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table,
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table tbody {
+    display: block;
+    width: 100%;
+    margin: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table thead {
+    display: none;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table tbody {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
+    gap: 14px;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+        "atelier status"
+        "date date"
+        "who order"
+        "ticket ticket"
+        "docs docs";
+    align-items: start;
+    align-content: start;
+    gap: 6px 14px;
+    padding: 18px;
+    border-radius: var(--acc-radius);
+    background: var(--acc-card);
+    box-shadow: var(--acc-shadow);
+    transition: box-shadow .2s ease, transform .2s ease;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table tr:hover {
+    background: var(--acc-card);
+    box-shadow: 0 0 0 1px var(--acc-line), 0 18px 36px -22px rgba(var(--smbb-t-accent-rgb, 34, 113, 177), .45);
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table td {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: none;
+    text-align: left;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table td::before {
+    display: none;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table td:nth-child(1) {
+    grid-area: atelier;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -.01em;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table td:nth-child(2) {
+    grid-area: date;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--acc-deep);
+    font-weight: 600;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table td:nth-child(2)::before {
+    display: inline;
+    float: none;
+    color: var(--acc-accent);
+    font-family: dashicons;
+    font-size: 17px;
+    font-weight: 400;
+    content: "\f508";
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table td:nth-child(3) {
+    grid-area: who;
+    color: var(--acc-muted);
+    font-size: 14px;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table td:nth-child(3)::before {
+    display: inline;
+    float: none;
+    margin-right: 5px;
+    font-family: dashicons;
+    font-size: 15px;
+    vertical-align: -2px;
+    content: "\f110";
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table td:nth-child(4) {
+    grid-area: status;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table td:nth-child(5) {
+    grid-area: order;
+    color: var(--acc-muted);
+    font-size: 14px;
+    text-align: right;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table td:nth-child(6) {
+    grid-area: ticket;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--acc-line);
+    font-size: 14px;
+}
+
+/* Le « · » entre PDF et agenda disparaît ; une cellule sans lien (« — ») est masquée. */
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table td:nth-child(6) {
+    font-size: 0;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table td:nth-child(6) > * {
+    font-size: 14px;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table td:nth-child(6) .passflow-order-waiting {
+    color: var(--acc-muted);
+    font-style: italic;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table td:nth-child(n+6):not(:has(*)) {
+    display: none;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table td:nth-child(7) {
+    grid-area: docs;
+    margin-top: 8px;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table .passflow-ticket-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0 2px 4px 0;
+    padding: 6px 11px;
+    border-radius: 99px;
+    background: var(--acc-fill);
+    color: var(--acc-text);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table .passflow-ticket-link:hover {
+    background: var(--acc-soft);
+    color: var(--acc-deep);
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table .passflow-ticket-link[href*="pdf"]::before,
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table .passflow-ticket-link:first-child::before {
+    font-family: dashicons;
+    font-size: 15px;
+    content: "\f497";
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table .passflow-ticket-link + .passflow-ticket-link::before,
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table .passflow-ticket-link[href*="ics"]::before {
+    font-family: dashicons;
+    font-size: 15px;
+    content: "\f508";
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table .passflow-wallets {
+    margin-top: 6px;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table .passflow-wallet {
+    border-radius: 10px;
+    padding: 7px 12px;
+}
+
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.shop_table .passflow-docs-link {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 38px;
+    white-space: nowrap;
+}
+
+body.smbb-wc-account .passflow-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-size: 12.5px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+body.smbb-wc-account .passflow-status::before {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    content: "";
+    opacity: .8;
+}
+
+/* Factures sur téléphone : une carte par document. */
+@media (max-width: 600px) {
+    body.smbb-wc-account table.passflow-inv-docs,
+    body.smbb-wc-account table.passflow-inv-docs tbody {
+        display: block;
+    }
+
+    body.smbb-wc-account table.passflow-inv-docs thead {
+        display: none;
+    }
+
+    body.smbb-wc-account table.passflow-inv-docs tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 4px 12px;
+        padding: 14px 16px;
+        border-top: 1px solid var(--acc-line);
+    }
+
+    body.smbb-wc-account table.passflow-inv-docs tbody tr:first-child {
+        border-top: 0;
+    }
+
+    body.smbb-wc-account table.passflow-inv-docs td {
+        display: block;
+        padding: 0;
+        border: 0;
+    }
+
+    body.smbb-wc-account table.passflow-inv-docs td:nth-child(1) { grid-column: 1; grid-row: 1; }
+    body.smbb-wc-account table.passflow-inv-docs td:nth-child(4) { grid-column: 2; grid-row: 1; font-weight: 700; }
+    body.smbb-wc-account table.passflow-inv-docs td:nth-child(2),
+    body.smbb-wc-account table.passflow-inv-docs td:nth-child(3) { grid-column: 1 / -1; color: var(--acc-muted); font-size: 14px; }
+    body.smbb-wc-account table.passflow-inv-docs td:nth-child(5) { grid-column: 1 / -1; margin-top: 6px; }
+}
+
+/* ---------- Mobile : menu en pastilles défilantes ---------- */
+@media (max-width: 860px) {
+    body.smbb-wc-account .woocommerce:has(> .woocommerce-MyAccount-navigation) {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 18px;
+    }
+
+    body.smbb-wc-account .woocommerce-MyAccount-navigation {
+        position: static;
+    }
+
+    body.smbb-wc-account .woocommerce-MyAccount-navigation ul {
+        display: flex;
+        gap: 4px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    body.smbb-wc-account .woocommerce-MyAccount-navigation a {
+        white-space: nowrap;
+    }
+
+    body.smbb-wc-account .woocommerce-MyAccount-navigation-link--customer-logout {
+        margin: 0 0 0 4px !important;
+        padding: 0 0 0 4px !important;
+        border-top: 0 !important;
+        border-left: 1px solid var(--acc-line) !important;
+    }
+
+    body.smbb-wc-account .smbb-acc-dash {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    body.smbb-wc-account .smbb-acc-hello {
+        flex-wrap: wrap;
+    }
+
+    body.smbb-wc-account .smbb-acc-tiles {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.smbb-wc-account .woocommerce-MyAccount-content,
+    body.smbb-wc-account .smbb-acc-tile {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* ---------- Palettes à dégradé (Bleu Apple, UniFi…) ---------- */
+body.smbb-wc-account .smbb-acc-btn:not(.is-ghost),
+body.smbb-wc-account .woocommerce-MyAccount-content :is(.button, button[type="submit"], .woocommerce-Button) {
+    background-image: var(--smbb-t-grad, none);
+}
+
+body.smbb-wc-account .smbb-acc-btn:not(.is-ghost):hover,
+body.smbb-wc-account .woocommerce-MyAccount-content :is(.button, button[type="submit"], .woocommerce-Button):hover {
+    background-image: var(--smbb-t-grad-hover, none);
+}
+
+/* ---------- Mes ateliers en deux niveaux (assets/wc-account.js) ---------- */
+body.smbb-wc-account .woocommerce-MyAccount-content table.passflow-account-table.smbb-bk-source {
+    display: none;
+}
+
+body.smbb-wc-account .smbb-bk-list {
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 16px;
+    padding: 0;
+    overflow: hidden;
+    border-radius: var(--acc-radius);
+    background: var(--acc-card);
+    box-shadow: var(--acc-shadow);
+    list-style: none;
+}
+
+body.smbb-wc-account .smbb-bk {
+    margin: 0;
+    list-style: none;
+}
+
+body.smbb-wc-account .smbb-bk + .smbb-bk {
+    border-top: 1px solid var(--acc-line);
+}
+
+body.smbb-wc-account .smbb-bk-open {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    margin: 0;
+    padding: 16px 18px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    color: var(--acc-text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color .15s ease;
+}
+
+body.smbb-wc-account .smbb-bk-open:hover {
+    background: var(--acc-fill);
+    color: var(--acc-text);
+}
+
+body.smbb-wc-account .smbb-bk-open:focus-visible {
+    outline: 0;
+    box-shadow: inset 0 0 0 2px var(--acc-accent);
+}
+
+body.smbb-wc-account .smbb-bk-open > .smbb-bk-i {
+    flex-shrink: 0;
+    color: var(--acc-muted);
+    opacity: .6;
+    transition: transform .15s ease, opacity .15s ease;
+}
+
+body.smbb-wc-account .smbb-bk-open:hover > .smbb-bk-i {
+    opacity: 1;
+    transform: translateX(2px);
+}
+
+/* Pastille de date, façon calendrier. */
+body.smbb-wc-account .smbb-bk-date {
+    display: flex;
+    flex: 0 0 52px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 56px;
+    overflow: hidden;
+    border-radius: 13px;
+    background: var(--acc-card);
+    box-shadow: 0 0 0 1px var(--acc-line), 0 4px 10px -6px rgba(0, 0, 0, .25);
+    line-height: 1;
+}
+
+body.smbb-wc-account .smbb-bk-month {
+    display: block;
+    width: 100%;
+    padding: 4px 0 3px;
+    background: var(--acc-accent);
+    background-image: var(--smbb-t-grad, none);
+    color: var(--acc-accent-ink);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+body.smbb-wc-account .smbb-bk-day {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+}
+
+body.smbb-wc-account .smbb-bk-date.is-icon {
+    background: var(--acc-soft);
+    color: var(--acc-accent);
+}
+
+body.smbb-wc-account .smbb-bk-main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+body.smbb-wc-account .smbb-bk-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 10px;
+}
+
+body.smbb-wc-account .smbb-bk-name {
+    font-size: 16px;
+    font-weight: 650;
+    letter-spacing: -.01em;
+}
+
+body.smbb-wc-account .smbb-bk-top .passflow-status {
+    padding: 2px 8px;
+    font-size: 11.5px;
+}
+
+body.smbb-wc-account .smbb-bk-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 14px;
+    color: var(--acc-muted);
+    font-size: 14px;
+}
+
+body.smbb-wc-account .smbb-bk-who::before {
+    margin-right: 5px;
+    font-family: dashicons;
+    font-size: 14px;
+    vertical-align: -2px;
+    content: "\f110";
+}
+
+body.smbb-wc-account .smbb-bk-flag {
+    align-self: flex-start;
+    margin-top: 4px;
+    padding: 2px 9px 2px 7px;
+    border-radius: 99px;
+    background: #fff4d6;
+    color: #7a5500;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+body.smbb-wc-account .smbb-bk-flag::before {
+    margin-right: 4px;
+    font-family: dashicons;
+    font-size: 13px;
+    vertical-align: -2px;
+    content: "\f534";
+}
+
+/* Fiche ouverte : feuille centrée (en bas de l'écran sur téléphone). */
+.smbb-bk-dialog {
+    width: min(460px, calc(100vw - 32px));
+    max-height: calc(100vh - 48px);
+    margin: auto;
+    padding: 0;
+    overflow: auto;
+    border: 0;
+    border-radius: 22px;
+    background: var(--smbb-t-card, #fff);
+    color: var(--smbb-t-text, #1d1d1f);
+    box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .45);
+    font-size: 15px;
+    line-height: 1.45;
+}
+
+.smbb-bk-dialog::backdrop {
+    background: rgba(20, 16, 24, .38);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
+.smbb-bk-dialog[open] {
+    animation: smbb-bk-in .22s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+@keyframes smbb-bk-in {
+    from { opacity: 0; transform: translateY(14px) scale(.98); }
+}
+
+.smbb-bk-sheet {
+    padding: 20px 20px 22px;
+}
+
+.smbb-bk-head {
+    padding: 0;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.smbb-bk-titles {
+    flex: 1;
+    min-width: 0;
+}
+
+.smbb-bk-titles h2 {
+    margin: 0;
+    padding: 0;
+    color: inherit;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -.015em;
+    line-height: 1.25;
+}
+
+.smbb-bk-when {
+    margin: 3px 0 0;
+    color: var(--smbb-t-muted, #6e6e73);
+    font-size: 14px;
+}
+
+.smbb-bk-close {
+    display: flex;
+    flex: 0 0 32px;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    width: 32px;
+    height: 32px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--smbb-t-fill, #f0f0f2);
+    color: var(--smbb-t-muted, #6e6e73);
+    cursor: pointer;
+}
+
+.smbb-bk-close:hover {
+    background: var(--smbb-t-fill-hover, #e6e6ea);
+    color: var(--smbb-t-text, #1d1d1f);
+}
+
+.smbb-bk-label {
+    margin: 20px 4px 8px;
+    color: var(--smbb-t-muted, #6e6e73);
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+.smbb-bk-group {
+    overflow: hidden;
+    border-radius: 14px;
+    background: var(--smbb-t-fill, #f2f2f4);
+}
+
+.smbb-bk-row,
+.smbb-bk-dialog a.smbb-bk-action {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 46px;
+    padding: 0 14px;
+}
+
+.smbb-bk-row + .smbb-bk-row,
+.smbb-bk-dialog a.smbb-bk-action + a.smbb-bk-action {
+    border-top: 1px solid var(--smbb-t-line, #e3e3e8);
+}
+
+.smbb-bk-dialog .smbb-bk-i {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    font-size: 19px;
+}
+
+.smbb-bk-row > .smbb-bk-i {
+    color: var(--smbb-t-muted, #6e6e73);
+}
+
+.smbb-bk-row-label {
+    flex: 1;
+    color: var(--smbb-t-muted, #6e6e73);
+}
+
+.smbb-bk-row-value {
+    font-weight: 600;
+    text-align: right;
+}
+
+.smbb-bk-row-value a {
+    color: var(--smbb-t-accent, #2271b1);
+}
+
+.smbb-bk-dialog a.smbb-bk-action {
+    color: var(--smbb-t-text, #1d1d1f);
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color .15s ease;
+}
+
+.smbb-bk-dialog a.smbb-bk-action:hover {
+    background: var(--smbb-t-fill-hover, #e6e6ea);
+}
+
+.smbb-bk-dialog a.smbb-bk-action > span:not(.smbb-bk-i) {
+    flex: 1;
+}
+
+.smbb-bk-dialog a.smbb-bk-action > .smbb-bk-i:first-child {
+    color: var(--smbb-t-accent, #2271b1);
+}
+
+.smbb-bk-dialog a.smbb-bk-action > .smbb-bk-i:last-child {
+    color: var(--smbb-t-muted, #6e6e73);
+    opacity: .6;
+}
+
+.smbb-bk-note {
+    margin: 0;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: var(--smbb-t-fill, #f2f2f4);
+    color: var(--smbb-t-muted, #6e6e73);
+}
+
+/* Wallets : badges côte à côte, centrés, sous le billet. */
+.smbb-bk-dialog .passflow-wallets {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 14px 0 0;
+}
+
+.smbb-bk-dialog .passflow-wallet:not(.passflow-wallet--badge) {
+    min-height: 44px;
+    padding: 0 14px;
+    border-radius: 12px;
+    font-size: 13px;
+}
+
+.smbb-bk-dialog .passflow-wallet--badge img {
+    height: 46px;
+}
+
+.smbb-bk-docs {
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: var(--smbb-t-fill, #f2f2f4);
+    color: var(--smbb-t-muted, #6e6e73);
+}
+
+.smbb-bk-docs a {
+    color: var(--smbb-t-accent, #2271b1);
+    font-weight: 600;
+}
+
+.smbb-bk-docs.is-todo {
+    padding: 0;
+    background: none;
+}
+
+.smbb-bk-dialog .smbb-bk-docs a.passflow-docs-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 46px;
+    border: 0;
+    border-radius: 13px;
+    background: var(--smbb-t-accent, #2271b1);
+    background-image: var(--smbb-t-grad, none);
+    color: var(--smbb-t-accent-ink, #fff);
+    font-size: 15px;
+    text-decoration: none;
+}
+
+.smbb-bk-dialog .passflow-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 9px;
+    border-radius: 99px;
+    font-size: 12.5px;
+    font-weight: 600;
+}
+
+.smbb-bk-dialog .passflow-status::before {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    content: "";
+}
+
+@media (max-width: 600px) {
+    body.smbb-wc-account .smbb-bk-open {
+        gap: 12px;
+        padding: 14px;
+    }
+
+    .smbb-bk-dialog {
+        width: 100vw;
+        max-width: none;
+        max-height: 88vh;
+        margin: auto 0 0;
+        border-radius: 22px 22px 0 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .smbb-bk-dialog[open] {
+        animation: none;
+    }
+}
+
+/* =====================================================================
+ * Page « Commande reçue » (body.smbb-wc-thanks, WcAccount::thanks).
+ * Carte Merci animée, récapitulatif en carte, réservations, détail et
+ * adresses en cartes ; sur grand écran, les adresses passent à droite.
+ * ===================================================================== */
+body.smbb-wc-thanks .woocommerce-order {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 20px 24px;
+    align-items: start;
+    color: var(--acc-text);
+}
+
+body.smbb-wc-thanks .woocommerce-order > * {
+    grid-column: 1 / -1;
+    min-width: 0;
+    margin: 0;
+}
+
+body.smbb-wc-thanks .woocommerce-order > .woocommerce-order-details {
+    grid-column: 1;
+}
+
+body.smbb-wc-thanks .woocommerce-order > .woocommerce-customer-details {
+    grid-column: 2;
+    position: sticky;
+    top: 24px;
+}
+
+/* Le « Merci. Votre commande a été reçue. » d'origine laisse la place à la carte. */
+body.smbb-wc-thanks .smbb-ty-hero ~ .woocommerce-thankyou-order-received {
+    display: none;
+}
+
+body.smbb-wc-thanks .woocommerce-order h2 {
+    margin: 0 0 12px;
+    padding: 0;
+    color: var(--acc-text);
+    font-size: 19px;
+    font-weight: 650;
+    letter-spacing: -.01em;
+    line-height: 1.3;
+}
+
+/* ---------- Carte Merci ---------- */
+body.smbb-wc-thanks .smbb-ty-hero {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 30px 32px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 22px;
+    background:
+        radial-gradient(120% 140% at 0% 0%, var(--acc-soft) 0%, transparent 55%),
+        linear-gradient(135deg, var(--acc-soft), var(--acc-card) 65%);
+    box-shadow: var(--acc-shadow);
+    animation: smbb-ty-rise .5s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+@keyframes smbb-ty-rise {
+    from { opacity: 0; transform: translateY(12px); }
+}
+
+body.smbb-wc-thanks .smbb-ty-badge {
+    position: relative;
+    flex: 0 0 104px;
+    width: 104px;
+    height: 104px;
+}
+
+body.smbb-wc-thanks .smbb-ty-disc {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    background: var(--acc-accent);
+    background-image: var(--smbb-t-grad, none);
+    box-shadow: 0 14px 30px -12px rgba(var(--smbb-t-accent-rgb, 34, 113, 177), .8);
+    color: var(--acc-accent-ink);
+    animation: smbb-ty-pop .6s cubic-bezier(.34, 1.56, .64, 1) .15s both;
+}
+
+@keyframes smbb-ty-pop {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+
+body.smbb-wc-thanks .smbb-ty-thumb {
+    width: 44px;
+    height: 44px;
+    transform-origin: 30% 85%;
+    animation:
+        smbb-ty-thumb .7s cubic-bezier(.34, 1.56, .64, 1) .45s both,
+        smbb-ty-wiggle 1s ease-in-out 1.4s 1;
+}
+
+@keyframes smbb-ty-thumb {
+    0% { opacity: 0; transform: translateY(14px) rotate(-35deg) scale(.6); }
+    100% { opacity: 1; transform: none; }
+}
+
+@keyframes smbb-ty-wiggle {
+    0%, 100% { transform: rotate(0); }
+    20% { transform: rotate(-14deg); }
+    40% { transform: rotate(10deg); }
+    60% { transform: rotate(-6deg); }
+    80% { transform: rotate(3deg); }
+}
+
+/* Onde qui s'élargit derrière le disque. */
+body.smbb-wc-thanks .smbb-ty-ring {
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(var(--smbb-t-accent-rgb, 34, 113, 177), .45);
+    animation: smbb-ty-ring 1.6s ease-out .6s 2;
+}
+
+@keyframes smbb-ty-ring {
+    0% { box-shadow: 0 0 0 0 rgba(var(--smbb-t-accent-rgb, 34, 113, 177), .45); }
+    100% { box-shadow: 0 0 0 26px rgba(var(--smbb-t-accent-rgb, 34, 113, 177), 0); }
+}
+
+/* Petites étincelles qui partent en étoile. */
+body.smbb-wc-thanks .smbb-ty-spark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    margin: -4px 0 0 -4px;
+    border-radius: 50%;
+    background: var(--acc-accent);
+    opacity: 0;
+    transform: rotate(calc(var(--i) * 45deg)) translateY(0);
+    animation: smbb-ty-spark .9s cubic-bezier(.2, .8, .2, 1) .55s both;
+}
+
+body.smbb-wc-thanks .smbb-ty-spark:nth-child(odd) {
+    width: 6px;
+    height: 6px;
+    margin: -3px 0 0 -3px;
+    background: #f5b400;
+}
+
+body.smbb-wc-thanks .smbb-ty-spark:nth-child(3n) {
+    background: #30a14e;
+}
+
+@keyframes smbb-ty-spark {
+    0% { opacity: 0; transform: rotate(calc(var(--i) * 45deg)) translateY(-20px) scale(.4); }
+    25% { opacity: 1; }
+    100% { opacity: 0; transform: rotate(calc(var(--i) * 45deg)) translateY(-62px) scale(1); }
+}
+
+body.smbb-wc-thanks .smbb-ty-text {
+    flex: 1;
+    min-width: 0;
+    animation: smbb-ty-rise .5s cubic-bezier(.2, .8, .2, 1) .25s both;
+}
+
+body.smbb-wc-thanks .smbb-ty-kicker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    margin: 0 0 8px;
+    color: var(--acc-muted);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+body.smbb-wc-thanks .smbb-ty-hero h2 {
+    margin: 0 0 6px;
+    font-size: clamp(24px, 3.2vw, 32px);
+    font-weight: 750;
+    letter-spacing: -.025em;
+    line-height: 1.15;
+}
+
+body.smbb-wc-thanks .smbb-ty-lead {
+    margin: 0;
+    color: var(--acc-text);
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+body.smbb-wc-thanks .smbb-ty-mail {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 6px 0 0;
+    color: var(--acc-muted);
+    font-size: 14px;
+}
+
+body.smbb-wc-thanks .smbb-ty-mail .dashicons {
+    color: var(--acc-accent);
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+body.smbb-wc-thanks .smbb-ty-mail strong {
+    color: var(--acc-text);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+body.smbb-wc-thanks .smbb-ty-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+/* ---------- Récapitulatif (n°, date, e-mail, total, paiement) ---------- */
+body.smbb-wc-thanks ul.woocommerce-order-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    padding: 0;
+    overflow: hidden;
+    border-radius: var(--acc-radius);
+    background: var(--acc-card);
+    box-shadow: var(--acc-shadow);
+    list-style: none;
+    animation: smbb-ty-rise .5s cubic-bezier(.2, .8, .2, 1) .35s both;
+}
+
+body.smbb-wc-thanks ul.woocommerce-order-overview::before,
+body.smbb-wc-thanks ul.woocommerce-order-overview::after {
+    display: none;
+}
+
+body.smbb-wc-thanks ul.woocommerce-order-overview li {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    float: none;
+    margin: 0;
+    padding: 16px 20px;
+    border: 0;
+    box-shadow: -1px 0 0 var(--acc-line), 0 -1px 0 var(--acc-line);
+    color: var(--acc-muted);
+    font-size: 11.5px;
+    font-weight: 650;
+    letter-spacing: .06em;
+    line-height: 1.3;
+    text-transform: uppercase;
+}
+
+body.smbb-wc-thanks ul.woocommerce-order-overview li strong {
+    color: var(--acc-text);
+    font-size: 16px;
+    font-weight: 650;
+    letter-spacing: -.01em;
+    text-transform: none;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+}
+
+body.smbb-wc-thanks ul.woocommerce-order-overview li.total strong {
+    color: var(--acc-deep);
+}
+
+/* ---------- Détail de la commande ---------- */
+body.smbb-wc-thanks .woocommerce-order-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    animation: smbb-ty-rise .5s cubic-bezier(.2, .8, .2, 1) .45s both;
+}
+
+body.smbb-wc-thanks .woocommerce-order-details > * {
+    margin-top: 0;
+}
+
+/* Les réservations (billet, Wallet…) passent avant le tableau : c'est ce que le client cherche. */
+body.smbb-wc-thanks .woocommerce-order-details > :is(.passflow-order-reservations, .passflow-order-reservations) {
+    order: -1;
+    margin: 0 0 26px;
+}
+
+body.smbb-wc-thanks table.shop_table.order_details,
+body.smbb-wc-account .woocommerce-MyAccount-content table.shop_table.order_details {
+    width: 100%;
+    margin: 0 0 16px;
+    overflow: hidden;
+    border: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: var(--acc-radius);
+    background: var(--acc-card);
+    box-shadow: var(--acc-shadow);
+}
+
+body.smbb-wc-thanks table.shop_table.order_details :is(th, td) {
+    padding: 14px 18px;
+    border: 0;
+    border-top: 1px solid var(--acc-line);
+    background: transparent;
+    text-align: left;
+    vertical-align: top;
+}
+
+body.smbb-wc-thanks table.shop_table.order_details thead th {
+    border-top: 0;
+    background: var(--acc-fill);
+    color: var(--acc-muted);
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+body.smbb-wc-thanks table.shop_table.order_details :is(td, th):last-child {
+    text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+body.smbb-wc-thanks table.shop_table.order_details .product-name > a {
+    color: var(--acc-text);
+    font-weight: 650;
+    text-decoration: none;
+}
+
+body.smbb-wc-thanks table.shop_table.order_details .product-name > a:hover {
+    color: var(--acc-accent);
+}
+
+body.smbb-wc-thanks table.shop_table.order_details .product-quantity {
+    color: var(--acc-muted);
+    font-weight: 600;
+}
+
+body.smbb-wc-thanks table.shop_table.order_details ul.wc-item-meta {
+    margin: 6px 0 0;
+    padding: 0;
+    color: var(--acc-muted);
+    font-size: 14px;
+    list-style: none;
+}
+
+body.smbb-wc-thanks table.shop_table.order_details ul.wc-item-meta li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 5px;
+    margin: 2px 0 0;
+}
+
+body.smbb-wc-thanks table.shop_table.order_details ul.wc-item-meta :is(strong, p) {
+    display: inline;
+    margin: 0;
+}
+
+body.smbb-wc-thanks table.shop_table.order_details ul.wc-item-meta strong {
+    color: var(--acc-text);
+    font-weight: 600;
+}
+
+body.smbb-wc-thanks table.shop_table.order_details tfoot :is(th, td) {
+    padding-top: 11px;
+    padding-bottom: 11px;
+    color: var(--acc-muted);
+    font-weight: 500;
+}
+
+body.smbb-wc-thanks table.shop_table.order_details tfoot td {
+    color: var(--acc-text);
+    font-weight: 600;
+}
+
+body.smbb-wc-thanks table.shop_table.order_details tfoot tr:first-child > * {
+    border-top: 1px solid var(--acc-line);
+}
+
+/* Bouton(s) d'action de la commande (Factures…) et « Commander à nouveau ». */
+body.smbb-wc-thanks .woocommerce-order :is(.order-actions-button, .order-again .button, .passflow-inv-order-link .button, .passflow-inv-order-link .button) {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 36px;
+    margin: 0;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 11px;
+    background: var(--acc-card);
+    box-shadow: 0 0 0 1px var(--acc-line);
+    color: var(--acc-text);
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    transition: background-color .15s ease, color .15s ease;
+}
+
+body.smbb-wc-thanks .woocommerce-order :is(.order-actions-button, .order-again .button, .passflow-inv-order-link .button, .passflow-inv-order-link .button):hover {
+    background: var(--acc-soft);
+    color: var(--acc-deep);
+}
+
+body.smbb-wc-thanks .woocommerce-order :is(.passflow-inv-order-link, .passflow-inv-order-link) .button::before {
+    font-family: dashicons;
+    font-size: 16px;
+    font-weight: 400;
+    content: "\f497";
+}
+
+body.smbb-wc-thanks .woocommerce-order :is(.passflow-inv-order-link, .passflow-inv-order-link, .order-again) {
+    margin: 0;
+}
+
+/* ---------- Adresses (colonne de droite) ---------- */
+body.smbb-wc-thanks .woocommerce-customer-details {
+    padding: 22px;
+    border-radius: var(--acc-radius);
+    background: var(--acc-card);
+    box-shadow: var(--acc-shadow);
+    animation: smbb-ty-rise .5s cubic-bezier(.2, .8, .2, 1) .55s both;
+}
+
+body.smbb-wc-thanks .woocommerce-customer-details .woocommerce-columns {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+body.smbb-wc-thanks .woocommerce-customer-details .woocommerce-columns::before,
+body.smbb-wc-thanks .woocommerce-customer-details .woocommerce-columns::after {
+    display: none;
+}
+
+body.smbb-wc-thanks .woocommerce-customer-details .woocommerce-column {
+    float: none;
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+}
+
+body.smbb-wc-thanks .woocommerce-customer-details h2 {
+    margin: 0 0 10px;
+    color: var(--acc-muted);
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+body.smbb-wc-thanks .woocommerce-customer-details address {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    color: var(--acc-text);
+    font-style: normal;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+body.smbb-wc-thanks .woocommerce-customer-details address p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0 0;
+    padding: 0;
+    color: var(--acc-muted);
+    font-size: 14px;
+}
+
+body.smbb-wc-thanks .woocommerce-customer-details address p::before {
+    position: static;
+    margin: 0;
+    color: var(--acc-accent);
+}
+
+/* =====================================================================
+ * Réservations sous une commande (Tomo / Passflow) : page Commande reçue
+ * et fiche commande de « Mon compte ».
+ * ===================================================================== */
+body.smbb-wc-account :is(.passflow-order-reservations, .passflow-order-reservations) {
+    margin: 26px 0;
+}
+
+body.smbb-wc-account :is(.passflow-order-reservations, .passflow-order-reservations) > ul {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+body.smbb-wc-account li:is(.passflow-order-item, .passflow-order-item) {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin: 0;
+    padding: 18px;
+    border: 0;
+    border-radius: var(--acc-radius);
+    background: var(--acc-card);
+    box-shadow: var(--acc-shadow);
+    line-height: 1.45;
+    list-style: none;
+}
+
+body.smbb-wc-account :is(.passflow-order-date, .passflow-order-date) {
+    display: flex;
+    flex: 0 0 56px;
+    flex-direction: column;
+    align-items: center;
+    width: 56px;
+    height: 60px;
+    overflow: hidden;
+    border: 0;
+    border-radius: 14px;
+    background: var(--acc-card);
+    box-shadow: 0 0 0 1px var(--acc-line), 0 6px 14px -8px rgba(0, 0, 0, .3);
+    line-height: 1;
+}
+
+body.smbb-wc-account :is(.passflow-order-month, .passflow-order-month) {
+    display: block;
+    width: 100%;
+    padding: 5px 0 4px;
+    background: var(--acc-accent);
+    background-image: var(--smbb-t-grad, none);
+    color: var(--acc-accent-ink);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+body.smbb-wc-account :is(.passflow-order-day, .passflow-order-day) {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    padding: 0;
+    font-size: 23px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+}
+
+body.smbb-wc-account :is(.passflow-order-body, .passflow-order-body) {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+    color: var(--acc-muted);
+    font-size: 15px;
+}
+
+body.smbb-wc-account :is(.passflow-order-body, .passflow-order-body) > br {
+    display: none;
+}
+
+/* « Prénom Nom · Atelier » sur une ligne, le participant en gras. */
+body.smbb-wc-account :is(.passflow-order-head, .passflow-order-head) {
+    color: var(--acc-muted);
+    font-size: 17px;
+    line-height: 1.3;
+}
+
+body.smbb-wc-account :is(.passflow-order-who, .passflow-order-who) {
+    color: var(--acc-text);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -.01em;
+}
+
+body.smbb-wc-account :is(.passflow-order-atelier, .passflow-order-atelier) {
+    color: var(--acc-text);
+    font-weight: 500;
+}
+
+body.smbb-wc-account :is(.passflow-order-when, .passflow-order-when) {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--acc-deep);
+    font-weight: 600;
+    opacity: 1;
+}
+
+body.smbb-wc-account :is(.passflow-order-when, .passflow-order-when)::before {
+    color: var(--acc-accent);
+    font-family: dashicons;
+    font-size: 16px;
+    font-weight: 400;
+    content: "\f469";
+}
+
+body.smbb-wc-account :is(.passflow-order-waiting, .passflow-order-waiting) {
+    display: block;
+    margin: 4px 0 2px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: #fff4d6;
+    color: #7a5500;
+    font-size: 13.5px;
+}
+
+/* Liens : pastilles avec icône ; le « · » d'origine disparaît (font-size 0). */
+body.smbb-wc-account :is(.passflow-order-links, .passflow-order-links) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 0;
+}
+
+body.smbb-wc-account a:is(.passflow-order-link, .passflow-order-link) {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 0 14px 0 12px;
+    border-radius: 99px;
+    background: var(--acc-fill);
+    color: var(--acc-text);
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color .15s ease, color .15s ease;
+}
+
+body.smbb-wc-account a:is(.passflow-order-link, .passflow-order-link):hover {
+    background: var(--acc-soft);
+    color: var(--acc-deep);
+}
+
+body.smbb-wc-account a:is(.passflow-order-link, .passflow-order-link)::before {
+    color: var(--acc-accent);
+    font-family: dashicons;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+body.smbb-wc-account a:is(.passflow-order-link, .passflow-order-link).is-pdf::before { content: "\f316"; }
+body.smbb-wc-account a:is(.passflow-order-link, .passflow-order-link).is-ics::before { content: "\f508"; }
+body.smbb-wc-account a:is(.passflow-order-link, .passflow-order-link).is-docs::before { content: "\f119"; color: inherit; }
+
+/* Documents à remplir : l'action importante, en couleur du thème. */
+body.smbb-wc-account a:is(.passflow-order-link, .passflow-order-link).is-docs {
+    background: var(--acc-accent);
+    background-image: var(--smbb-t-grad, none);
+    color: var(--acc-accent-ink);
+}
+
+body.smbb-wc-account a:is(.passflow-order-link, .passflow-order-link).is-docs:hover {
+    background: var(--acc-accent-hover);
+    background-image: var(--smbb-t-grad-hover, none);
+    color: var(--acc-accent-ink);
+}
+
+body.smbb-wc-account a:is(.passflow-order-link, .passflow-order-link) strong {
+    font-weight: inherit;
+}
+
+body.smbb-wc-account :is(.passflow-order-body, .passflow-order-body) :is(.passflow-wallets, .passflow-wallets) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+body.smbb-wc-account :is(.passflow-order-body, .passflow-order-body) :is(.passflow-wallet--badge, .passflow-wallet--badge) img {
+    height: 44px;
+}
+
+/* ---------- Commande reçue : téléphone et tablette ---------- */
+@media (max-width: 900px) {
+    body.smbb-wc-thanks .woocommerce-order {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    body.smbb-wc-thanks .woocommerce-order > :is(.woocommerce-order-details, .woocommerce-customer-details) {
+        grid-column: 1;
+        position: static;
+    }
+}
+
+@media (max-width: 600px) {
+    body.smbb-wc-thanks .smbb-ty-hero {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 22px 20px;
+    }
+
+    body.smbb-wc-thanks .smbb-ty-badge {
+        flex-basis: 84px;
+        width: 84px;
+        height: 84px;
+    }
+
+    body.smbb-wc-thanks .smbb-ty-thumb {
+        width: 36px;
+        height: 36px;
+    }
+
+    body.smbb-wc-thanks .smbb-ty-actions .smbb-acc-btn {
+        flex: 1 1 auto;
+    }
+
+    body.smbb-wc-thanks ul.woocommerce-order-overview {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body.smbb-wc-account li:is(.passflow-order-item, .passflow-order-item) {
+        gap: 12px;
+        padding: 14px;
+    }
+
+    body.smbb-wc-account :is(.passflow-order-date, .passflow-order-date) {
+        flex-basis: 48px;
+        width: 48px;
+        height: 54px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.smbb-wc-thanks :is(.smbb-ty-hero, .smbb-ty-text, .smbb-ty-disc, .smbb-ty-thumb, .smbb-ty-ring, ul.woocommerce-order-overview, .woocommerce-order-details, .woocommerce-customer-details) {
+        animation: none;
+    }
+
+    body.smbb-wc-thanks .smbb-ty-spark {
+        display: none;
+    }
+}

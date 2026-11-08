@@ -107,7 +107,8 @@
       "parent": "smbb-codetool-scp",
       "title": "Journal d'audit",
       "icon": "dashicons-list-view",
-      "position": 80
+      "position": 7,
+      "group": "Activité"
     },
     "adminBar": {
       "newContent": false,

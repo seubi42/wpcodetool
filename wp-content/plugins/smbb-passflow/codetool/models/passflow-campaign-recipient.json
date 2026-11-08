@@ -1,0 +1,77 @@
+{
+  "name": "passflow_campaign_recipient",
+  "label": "Destinataire de demande",
+  "pluralLabel": "Destinataires de demande",
+  "description": "Suivi d'une demande de dispo par intervenant : envoi, lecture, message.",
+  "storage": {
+    "table": "passflow_campaign_recipient",
+    "primaryKey": "id"
+  },
+  "columns": {
+    "id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "autoIncrement": true,
+      "primary": true
+    },
+    "campaign_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "host_id": {
+      "type": "bigint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "email_sent": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "sms_sent": {
+      "type": "tinyint",
+      "unsigned": true,
+      "nullable": false,
+      "default": 0
+    },
+    "opened_at": {
+      "type": "datetime",
+      "nullable": true
+    },
+    "reply": {
+      "type": "text",
+      "nullable": true
+    },
+    "replied_at": {
+      "type": "datetime",
+      "nullable": true
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_campaign_id",
+      "type": "index",
+      "columns": [
+        "campaign_id"
+      ]
+    },
+    {
+      "name": "idx_host_id",
+      "type": "index",
+      "columns": [
+        "host_id"
+      ]
+    }
+  ],
+  "admin": {
+    "enabled": false
+  },
+  "api": {
+    "enabled": false
+  }
+}

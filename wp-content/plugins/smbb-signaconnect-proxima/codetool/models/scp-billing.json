@@ -15,7 +15,8 @@
       "parent": "smbb-codetool-scp",
       "title": "Facturation",
       "icon": "dashicons-money-alt",
-      "position": 70
+      "position": 35,
+      "group": "Offre et facturation"
     },
     "adminBar": {
       "newContent": false,

@@ -1,0 +1,14 @@
+{
+  "name": "teamflow",
+  "version": "0.4.0",
+  "description": "TeamFlow — whiteboard infini (démonstrateur)",
+  "scripts": {
+    "build": "esbuild src/index.js --bundle --format=iife --global-name=TeamFlow --target=es2020 --outfile=dist/teamflow.js --sourcemap --legal-comments=none",
+    "watch": "npm run build -- --watch",
+    "test": "node tests/smoke.js && node tests/features.js && node tests/blockselect.js && node tests/regression.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  },
+  "private": true
+}

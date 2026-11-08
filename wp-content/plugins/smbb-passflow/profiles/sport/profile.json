@@ -1,0 +1,60 @@
+{
+  "format": "smbb-passflow-config",
+  "version": 1,
+  "profile": {
+    "title": "Stage sportif",
+    "description": "Surf, escalade, tennis, équitation : stages et séances encadrés par un moniteur.",
+    "icon": "dashicons-universal-access",
+    "order": 40
+  },
+  "settings": {
+    "vocabulary_event": "stage",
+    "vocabulary_slot": "seance",
+    "vocabulary_staff": "moniteur",
+    "vocabulary_participant": "eleve",
+    "vocabulary_ticket": "billet",
+    "vocabulary_pass": "forfait",
+    "vocabulary_voucher": "carte",
+    "vocabulary_example_name": "Stage surf débutant",
+    "vocabulary_example_location": "Plage de la Côte des Basques",
+    "ask_allergies": 0,
+    "ask_level": 1,
+    "ask_age": 1,
+    "ask_contact": "optional",
+    "waitlist_enabled": 1,
+    "ticket_color_mode": "fixed",
+    "ticket_color": "#1f6fb2",
+    "email_color_mode": "ticket",
+    "email_background": "#eef4f9",
+    "reminder_participant_hours": 24,
+    "reminder_host_days": 7
+  },
+  "documents": {
+    "documents": [
+      {
+        "title": "Décharge de responsabilité",
+        "kind": "signature",
+        "active": 1,
+        "text": "Je déclare être apte à participer à cette activité et en connaître les risques. Je m'engage à respecter les consignes de sécurité données par l'équipe. Je reconnais que l'organisateur ne pourra être tenu responsable d'un accident résultant du non-respect de ces consignes.",
+        "required": 1,
+        "key": "decharge"
+      },
+      {
+        "title": "Autorisation parentale (mineurs)",
+        "kind": "signature",
+        "active": 1,
+        "text": "Je soussigné(e), représentant légal du participant mineur, l'autorise à participer à l'activité et autorise l'équipe à prendre toute mesure d'urgence nécessaire.",
+        "required": 0,
+        "key": "autorisation-parentale"
+      },
+      {
+        "title": "Droit à l'image",
+        "kind": "consent",
+        "active": 1,
+        "text": "J'accepte que des photos ou vidéos sur lesquelles j'apparais, prises pendant la séance, soient utilisées pour la communication de l'organisateur (site, réseaux sociaux). Je peux retirer mon accord à tout moment par simple e-mail.",
+        "required": 0,
+        "key": "droit-image"
+      }
+    ]
+  }
+}

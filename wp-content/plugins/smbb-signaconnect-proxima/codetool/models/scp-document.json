@@ -161,6 +161,11 @@
       "nullable": false,
       "default": "none"
     },
+    "storage_unit": {
+      "type": "varchar",
+      "length": 64,
+      "nullable": true
+    },
     "source_storage_path": {
       "type": "varchar",
       "length": 1024,
@@ -336,7 +341,8 @@
       "parent": "smbb-codetool-scp",
       "title": "Documents",
       "icon": "dashicons-media-document",
-      "position": 60
+      "position": 5,
+      "group": "Activité"
     },
     "adminBar": {
       "newContent": false,

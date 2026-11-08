@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SignaConnect
  * Description: Signature électronique multi-organisations (interne et Universign), forfaits et facturation. Bâti sur SMBB WP CodeTool.
- * Version: 0.11.3
+ * Version: 0.12.0
  * Author: SMBB
  * Text Domain: smbb-signaconnect-proxima
  * Requires at least: 6.0
@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
 define('SMBB_SCP_FILE', __FILE__);
 define('SMBB_SCP_PATH', plugin_dir_path(__FILE__));
 define('SMBB_SCP_URL', plugin_dir_url(__FILE__));
-define('SMBB_SCP_VERSION', '0.11.3');
+define('SMBB_SCP_VERSION', '0.12.0');
 
 spl_autoload_register('smbb_scp_autoload');
 

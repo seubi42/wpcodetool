@@ -1,0 +1,12 @@
+/* TeamFlow — tous les styles sont confinés sous .tf-root */
+@import "./tokens.css";
+@import "./canvas.css";
+@import "./cards.css";
+@import "./card-tools.css";
+@import "./blocks.css";
+@import "./mentions.css";
+@import "./edges.css";
+@import "./menus.css";
+@import "./chrome.css";
+@import "./dialogs.css";
+@import "./focus.css";

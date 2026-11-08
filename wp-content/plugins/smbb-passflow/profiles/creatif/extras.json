@@ -1,0 +1,32 @@
+{
+  "codetool_appearance": {
+    "preset": "galet",
+    "theme": "orange"
+  },
+  "offer": {
+    "name": "Atelier céramique : tournage",
+    "location": "Atelier, 12 rue des Potiers",
+    "duration_minutes": 150,
+    "default_price": 65,
+    "default_capacity": 8,
+    "color": "#c0603a",
+    "description": "Initiation au tour de potier : centrage, montage d'un bol, finitions. Terre et cuisson comprises."
+  },
+  "demo": {
+    "host": [
+      "Camille",
+      "Martin"
+    ],
+    "time": "18:30",
+    "catalog": [
+      {
+        "name": "Kit d'émaux",
+        "price": 12
+      },
+      {
+        "name": "Tablier en lin",
+        "price": 25
+      }
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "passflow",
+  "label": "Passflow",
+  "pluralLabel": "Passflow",
+  "description": "Prochains créneaux, remplissage et points d'attention.",
+  "storage": {
+    "type": "none"
+  },
+  "admin": {
+    "enabled": true,
+    "capability": "manage_passflow",
+    "menu": {
+      "placement": "main",
+      "title": "Passflow",
+      "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMCAyMCI+PHBhdGggZmlsbD0iYmxhY2siIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTTUgMi41SDE1YTEuMiAxLjIgMCAwIDEgMS4yIDEuMlY0LjZIMy44VjMuN2ExLjIgMS4yIDAgMCAxIDEuMi0xLjJaIE0zIDZIMTdhMiAyIDAgMCAxIDIgMlYxMGEyIDIgMCAwIDAgMCA0VjE2YTIgMiAwIDAgMS0yIDJIM2EyIDIgMCAwIDEtMi0yVjE0YTIgMiAwIDAgMCAwLTRWOGEyIDIgMCAwIDEgMi0yWiBNNSAxMS4ySDExVjlMMTUgMTJMMTEgMTVWMTIuOEg1WiIvPjwvc3ZnPg==",
+      "position": 26,
+      "group": "Au quotidien",
+      "groupIcon": "dashicons-calendar-alt",
+      "submenuTitle": "Tableau de bord"
+    },
+    "adminBar": {
+      "newContent": false,
+      "shortcut": false
+    },
+    "type": "page",
+    "page": {
+      "defaultView": "dashboard"
+    },
+    "views": {
+      "dashboard": "views/passflow/dashboard.php"
+    }
+  },
+  "api": {
+    "enabled": false
+  }
+}

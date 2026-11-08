@@ -1,0 +1,580 @@
+/**
+ * Gestion mobile « PDA » : écran d'appel et caisse de l'espace intervenant, en scène sombre
+ * comme le mode Jour J. S'applique à toutes les tailles d'écran ; sur ordinateur, la page est centrée
+ * en colonne de téléphone. Sans la classe (autres pages), les éléments PDA restent cachés.
+ * Classe posée par la vue : html.passflow-pda. La fenêtre « Pointage badge » (badge.css) n'est pas touchée.
+ */
+
+/* ---------- Sans la classe html.passflow-pda : éléments PDA cachés ---------- */
+
+.passflow-rollcall-card { display: contents; }
+.passflow-pda-top,
+.passflow-pda-av,
+.passflow-pda-ref,
+.passflow-pda-tap,
+.passflow-pda-under,
+.passflow-pda-bar,
+.passflow-pda-sheet,
+.passflow-pda-toast,
+.passflow-pos-day,
+.passflow-pos-sales,
+.passflow-pos-checkout,
+.passflow-pos-paysheet,
+.passflow-pos-stock,
+.passflow-pos-done { display: none; }
+.passflow-rollcall-filters button[hidden] { display: none; }
+
+/* Toutes tailles d'écran (choix de Seb : même mode sur PC). */
+@media all {
+
+    html.passflow-pda {
+        --pda-bg: #0f1115;
+        --pda-panel: #181b22;
+        --pda-panel-2: #20242d;
+        --pda-line: rgba(255, 255, 255, 0.08);
+        --pda-ink: #f3f4f6;
+        --pda-muted: #9aa1ad;
+        --pda-ok: #22c55e;
+        --pda-ok-ink: #052e12;
+        --pda-late: #f97316;
+        --pda-bad: #ef4444;
+        --pda-warn: #facc15;
+        --pda-accent: var(--passflow-brand, #b5476b);
+        --pda-bar-h: 84px;
+        background: var(--pda-bg);
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ---------- Chrome WordPress / CodeTool retiré : plein écran au pouce ---------- */
+
+    html.passflow-pda.wp-toolbar { padding-top: 0 !important; }
+    html.passflow-pda body #wpadminbar,
+    html.passflow-pda body #adminmenumain,
+    html.passflow-pda body #adminmenuback,
+    html.passflow-pda body #adminmenuwrap,
+    html.passflow-pda body #wpfooter,
+    html.passflow-pda body #screen-meta,
+    html.passflow-pda body #screen-meta-links,
+    html.passflow-pda body .smbb-appbar,
+    html.passflow-pda body .update-nag { display: none !important; }
+    html.passflow-pda body,
+    html.passflow-pda body #wpwrap,
+    html.passflow-pda body #wpcontent,
+    html.passflow-pda body #wpbody,
+    html.passflow-pda body #wpbody-content { background: var(--pda-bg) !important; }
+    html.passflow-pda body #wpcontent { margin-left: 0 !important; padding-left: 0 !important; }
+    html.passflow-pda body #wpbody-content { padding-bottom: calc(var(--pda-bar-h) + 24px + env(safe-area-inset-bottom)); }
+    html.passflow-pda body .wrap.passflow-admin { margin: 0; padding: 0 12px; color: var(--pda-ink); }
+    html.passflow-pda body .passflow-portal { max-width: none; color: var(--pda-ink); font-size: 15px; }
+
+    /* Couleurs de base de tout ce qui reste (imprévu, onglet Caisse, verrou…) */
+    html.passflow-pda body .passflow-portal :is(h2, h3, h4, strong, label, legend, th, td, li, p, summary) { color: inherit; }
+    html.passflow-pda body .passflow-portal a:not(.button):not([class*="passflow-pda"]) { color: #f0a6bf; }
+    html.passflow-pda body .passflow-portal .passflow-muted,
+    html.passflow-pda body .passflow-portal .description { color: var(--pda-muted) !important; }
+    html.passflow-pda body .passflow-portal .passflow-card { background: var(--pda-panel); border: 1px solid var(--pda-line); border-radius: 16px; color: var(--pda-ink); box-shadow: none; }
+    html.passflow-pda body .passflow-portal :is(input[type=text], input[type=email], input[type=tel], input[type=search], input[type=number], select, textarea) {
+        background: var(--pda-panel-2); border: 1px solid var(--pda-line); color: var(--pda-ink); border-radius: 12px; min-height: 44px; font-size: 16px;
+    }
+    html.passflow-pda body .passflow-portal .button { background: var(--pda-panel-2); border-color: var(--pda-line); color: var(--pda-ink); border-radius: 12px; min-height: 40px; display: inline-flex; align-items: center; gap: 4px; }
+    html.passflow-pda body .passflow-portal .button-primary { background: var(--pda-accent); border-color: transparent; color: #fff; }
+    html.passflow-pda body .passflow-portal hr,
+    html.passflow-pda body .passflow-portal table td,
+    html.passflow-pda body .passflow-portal table th { border-color: var(--pda-line); }
+    html.passflow-pda body .passflow-portal table { background: transparent; color: var(--pda-ink); }
+    html.passflow-pda body .passflow-cashdesk-kpi,
+    html.passflow-pda body .passflow-cashdesk-refund[open] { background: var(--pda-panel-2); border-color: var(--pda-line); color: var(--pda-ink); }
+    html.passflow-pda body .passflow-cashdesk-kpi span { color: var(--pda-muted); }
+    html.passflow-pda body .passflow-cashdesk-kpi.is-main { background: rgba(34, 197, 94, 0.14); border-color: rgba(34, 197, 94, 0.35); }
+    html.passflow-pda body .passflow-cashdesk-kpi.is-main strong { color: var(--pda-ok); }
+
+    /* Ce que la barre du bas et l'en-tête remplacent */
+    html.passflow-pda body .passflow-rollcall-back,
+    html.passflow-pda body .passflow-rollcall-head,
+    html.passflow-pda body .passflow-rollcall-stats,
+    html.passflow-pda body .passflow-badge-open,
+    html.passflow-pda body .passflow-rollcall-tabs,
+    html.passflow-pda body .passflow-rollcall-search .button[data-passflow-walkin],
+    html.passflow-pda body .passflow-rollcall-sale,
+    html.passflow-pda body .passflow-sale-bar,
+    html.passflow-pda body .passflow-rollcall-links,
+    html.passflow-pda body .passflow-rollcall-tick { display: none !important; }
+
+    /* ---------- En-tête d'une ligne ---------- */
+
+    html.passflow-pda body .passflow-pda-top { display: flex; align-items: center; gap: 8px; padding: max(10px, env(safe-area-inset-top)) 0 8px; }
+    html.passflow-pda body .passflow-pda-btn { display: grid; place-items: center; flex: none; width: 44px; height: 44px; border-radius: 13px; background: var(--pda-panel); border: 1px solid var(--pda-line); color: var(--pda-ink) !important; text-decoration: none; }
+    html.passflow-pda body .passflow-pda-btn svg,
+    html.passflow-pda body .passflow-pda-bar svg,
+    html.passflow-pda body .passflow-pda-act svg,
+    html.passflow-pda body .passflow-pda-tap svg,
+    html.passflow-pda body .passflow-pda-under svg,
+    html.passflow-pda body .passflow-pda-more-item svg,
+    html.passflow-pda body .passflow-pos-sales svg,
+    html.passflow-pda body .passflow-pos-checkout svg,
+    html.passflow-pda body .passflow-pos-method svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+    html.passflow-pda body .passflow-pda-ring { position: relative; flex: none; width: 50px; height: 50px; }
+    html.passflow-pda body .passflow-pda-ring svg { width: 50px; height: 50px; transform: rotate(-90deg); }
+    html.passflow-pda body .passflow-pda-ring circle { fill: none; stroke-width: 6; stroke-linecap: round; }
+    html.passflow-pda body .passflow-pda-ring-bg { stroke: var(--pda-panel-2); }
+    html.passflow-pda body .passflow-pda-ring-fill { stroke: var(--pda-ok); transition: stroke-dasharray 0.8s cubic-bezier(0.22, 1, 0.36, 1); filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.45)); }
+    html.passflow-pda body .passflow-pda-ring b { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; white-space: nowrap; font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; color: var(--pda-ink); }
+    html.passflow-pda body .passflow-pda-ring small { font-size: 10px; color: var(--pda-muted); font-weight: 700; }
+    html.passflow-pda body .passflow-pda-ring.is-bump b { animation: passflow-pda-bump 0.4s ease-out; }
+    html.passflow-pda body .passflow-pda-ring.is-full .passflow-pda-ring-fill { animation: passflow-pda-glow 1.6s ease-in-out infinite alternate; }
+    @keyframes passflow-pda-bump { 50% { transform: scale(1.25); } }
+    @keyframes passflow-pda-glow { to { filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.9)); } }
+
+    html.passflow-pda body .passflow-pda-title { flex: 1; min-width: 0; }
+    html.passflow-pda body .passflow-pda-title small { display: block; font-size: 11px; color: var(--pda-muted); text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    html.passflow-pda body .passflow-pda-title strong { display: block; font-size: 16px; font-weight: 700; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--pda-ink); }
+    html.passflow-pda body .passflow-pda-clock { flex: none; text-align: right; }
+    html.passflow-pda body .passflow-pda-clock strong { display: block; font-size: 20px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; color: var(--pda-ink); }
+    html.passflow-pda body .passflow-pda-clock span { display: inline-block; margin-top: 4px; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; background: var(--pda-panel-2); color: var(--pda-muted); white-space: nowrap; }
+    html.passflow-pda body .passflow-pda-clock span[hidden] { display: none; }
+    html.passflow-pda body .passflow-pda-clock span.is-soon { background: rgba(250, 204, 21, 0.16); color: var(--pda-warn); }
+    html.passflow-pda body .passflow-pda-clock span.is-on { background: rgba(34, 197, 94, 0.16); color: var(--pda-ok); }
+
+    /* Pas le jour de l'atelier : bandeau jaune du Jour J */
+    html.passflow-pda body .passflow-rollcall-lock { background: rgba(250, 204, 21, 0.12); border: 1px solid rgba(250, 204, 21, 0.3); color: var(--pda-warn); border-radius: 14px; }
+    html.passflow-pda body .passflow-rollcall-lock > .dashicons { color: var(--pda-warn); }
+    html.passflow-pda body .passflow-rollcall-lock.is-unlocked { background: rgba(56, 189, 248, 0.14); border-color: rgba(56, 189, 248, 0.35); color: #7dd3fc; }
+    html.passflow-pda body .passflow-rollcall-lock.is-unlocked > .dashicons { color: #7dd3fc; }
+
+    /* Imprévus en attente de paiement */
+    html.passflow-pda body .passflow-walkin-pending { background: rgba(56, 189, 248, 0.1); border-color: rgba(56, 189, 248, 0.3); border-radius: 14px; }
+    html.passflow-pda body .passflow-walkin-modal-box,
+    html.passflow-pda body .passflow-walkin-choice { background: var(--pda-panel); color: var(--pda-ink); border-color: var(--pda-line); }
+    html.passflow-pda body .passflow-walkin-choice small { color: var(--pda-muted); }
+
+    /* ---------- Recherche et puces ---------- */
+
+    html.passflow-pda body .passflow-rollcall-tools { top: 0; background: var(--pda-bg); padding: 4px 0 10px; margin: 0; }
+    html.passflow-pda body .passflow-rollcall-search { height: 48px; padding: 0 6px 0 14px; border-radius: 14px; background: var(--pda-panel); border: 1px solid var(--pda-line); }
+    html.passflow-pda body .passflow-rollcall-search .dashicons { color: var(--pda-muted); }
+    html.passflow-pda body .passflow-rollcall-search input[type=search] { background: transparent; border: 0; min-height: 0; color: var(--pda-ink); font-size: 16px; }
+    html.passflow-pda body .passflow-rollcall-search input[type=search]::placeholder { color: var(--pda-muted); }
+    html.passflow-pda body .passflow-search-clear { width: 36px; height: 36px; border-radius: 10px; background: var(--pda-panel-2); color: var(--pda-ink); }
+    html.passflow-pda body .passflow-rollcall-filters { gap: 8px; margin-top: 10px; scrollbar-width: none; }
+    html.passflow-pda body .passflow-rollcall-filters::-webkit-scrollbar { display: none; }
+    html.passflow-pda body .passflow-rollcall-filters button { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border-radius: 999px; background: var(--pda-panel); border: 1px solid var(--pda-line); color: var(--pda-ink); font-size: 13.5px; font-weight: 600; white-space: nowrap; }
+    html.passflow-pda body .passflow-rollcall-filters button[hidden] { display: none; }
+    html.passflow-pda body .passflow-rollcall-filters button span { opacity: 1; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--pda-panel-2); display: inline-grid; place-items: center; font-size: 12px; color: var(--pda-muted); }
+    html.passflow-pda body .passflow-rollcall-filters button.is-warn span { background: rgba(250, 204, 21, 0.2); color: var(--pda-warn); }
+    html.passflow-pda body .passflow-rollcall-filters button.is-bad span { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+    html.passflow-pda body .passflow-rollcall-filters button.is-active { background: var(--pda-ink); color: #111827; border-color: transparent; }
+    html.passflow-pda body .passflow-rollcall-filters button.is-active span { background: #111827; color: var(--pda-ink); }
+    html.passflow-pda body .passflow-rollcall-empty { color: var(--pda-muted); }
+
+    /* ---------- Cartes des participants ---------- */
+
+    html.passflow-pda body .passflow-rollcall-list { gap: 8px; }
+    html.passflow-pda body .passflow-rollcall-row { display: block; position: relative; padding: 0; background: transparent; border: 0; border-radius: 16px; overflow: hidden; }
+    html.passflow-pda body .passflow-rollcall-row[hidden] { display: none; }
+    html.passflow-pda body .passflow-rollcall-row::after { inset: 0; border-radius: 16px; z-index: 3; }
+
+    html.passflow-pda body .passflow-rollcall-card {
+        position: relative; z-index: 2; display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; align-items: center; gap: 4px 12px;
+        min-height: 76px; padding: 10px 10px 10px 14px; border-radius: 16px; background: var(--pda-panel); border: 1px solid var(--pda-line);
+        touch-action: pan-y; transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1); user-select: none; -webkit-user-select: none;
+    }
+    html.passflow-pda body .passflow-rollcall-row.is-swiping .passflow-rollcall-card { transition: none; }
+    html.passflow-pda body .passflow-rollcall-card::before { content: ""; position: absolute; left: 0; top: 12px; bottom: 12px; width: 4px; border-radius: 0 4px 4px 0; background: #4b5563; }
+    html.passflow-pda body .passflow-rollcall-row[data-status="present"] .passflow-rollcall-card::before { background: var(--pda-ok); }
+    html.passflow-pda body .passflow-rollcall-row[data-status="absent"] .passflow-rollcall-card::before { background: var(--pda-bad); }
+
+    html.passflow-pda body .passflow-pda-av { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--pda-panel-2); color: var(--pda-ink); font-weight: 800; font-size: 14px; grid-column: 1; grid-row: 1; }
+    html.passflow-pda body .passflow-rollcall-row[data-status="present"] .passflow-pda-av { background: rgba(34, 197, 94, 0.18); color: var(--pda-ok); }
+    html.passflow-pda body .passflow-rollcall-row[data-status="absent"] .passflow-pda-av { background: rgba(239, 68, 68, 0.14); color: #fca5a5; }
+
+    html.passflow-pda body .passflow-rollcall-who { grid-column: 2; grid-row: 1; min-width: 0; line-height: 1.3; }
+    html.passflow-pda body .passflow-rollcall-who > strong { font-size: 16px; font-weight: 700; }
+    html.passflow-pda body .passflow-rollcall-who > br,
+    html.passflow-pda body .passflow-rollcall-who > a.passflow-muted { display: none; }
+    html.passflow-pda body .passflow-pda-ref { display: block; font-size: 12.5px; color: var(--pda-muted); font-variant-numeric: tabular-nums; }
+    html.passflow-pda body .passflow-rollcall-who .passflow-badge { display: inline-flex; align-items: center; gap: 3px; height: 22px; padding: 0 8px; border-radius: 999px; font-size: 11.5px; font-weight: 700; background: var(--pda-panel-2); color: var(--pda-muted); border: 0; vertical-align: 2px; }
+    html.passflow-pda body .passflow-rollcall-who .passflow-badge .dashicons { font-size: 13px; width: 13px; height: 13px; }
+    html.passflow-pda body .passflow-rollcall-who .passflow-badge--pass { background: rgba(181, 71, 107, 0.22); color: #f0a6bf; }
+    html.passflow-pda body .passflow-rollcall-who .passflow-badge--walkin { background: rgba(56, 189, 248, 0.14); color: #7dd3fc; }
+    html.passflow-pda body .passflow-rollcall-who .passflow-badge--pending { background: rgba(239, 68, 68, 0.16); color: #fca5a5; }
+    html.passflow-pda body .passflow-rollcall-who .passflow-badge--confirmed { background: rgba(34, 197, 94, 0.14); color: #86efac; }
+    html.passflow-pda body .passflow-rollcall-who .passflow-badge--absent { background: rgba(239, 68, 68, 0.16); color: #fca5a5; }
+    html.passflow-pda body .passflow-rollcall-docs .button { text-decoration: none; }
+    html.passflow-pda body .passflow-rollcall-infos { text-align: left; margin-top: 4px; font-size: 12.5px; color: var(--pda-muted); }
+    html.passflow-pda body .passflow-allergy { color: #fdba74; font-weight: 700; }
+    html.passflow-pda body .passflow-allergy .dashicons { font-size: 15px; width: 15px; height: 15px; }
+    html.passflow-pda body .passflow-rollcall-remark { color: var(--pda-muted); font-size: 12.5px; }
+    html.passflow-pda body .passflow-rollcall-docs { margin-top: 5px; gap: 5px; }
+    html.passflow-pda body .passflow-rollcall-docs .passflow-badge--pending { background: rgba(250, 204, 21, 0.15); color: var(--pda-warn); }
+    html.passflow-pda body .passflow-rollcall-docs .button { min-height: 32px; height: 32px; padding: 0 12px; border-radius: 10px; background: var(--pda-warn); border: 0; color: #111827; font-weight: 800; font-size: 13px; }
+
+    /* Les trois boutons radio restent (enregistrement), cachés : la grosse coche les pilote. */
+    html.passflow-pda body .passflow-presence { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); border: 0; padding: 0; margin: 0; }
+
+    html.passflow-pda body .passflow-pda-tap {
+        grid-column: 3; grid-row: 1; display: grid; place-items: center; width: 52px; height: 52px; padding: 0; border-radius: 14px;
+        border: 2px solid #3a404c; background: transparent; color: var(--pda-muted); cursor: pointer; touch-action: manipulation; transition: background 0.15s, transform 0.1s;
+    }
+    html.passflow-pda body .passflow-pda-tap:active { transform: scale(0.92); }
+    html.passflow-pda body .passflow-pda-tap svg { width: 28px; height: 28px; stroke-width: 3; }
+    html.passflow-pda body .passflow-pda-tap .passflow-pda-tap-no { display: none; }
+    html.passflow-pda body .passflow-rollcall-row[data-status="present"] .passflow-pda-tap { background: var(--pda-ok); border-color: transparent; color: var(--pda-ok-ink); }
+    html.passflow-pda body .passflow-rollcall-row[data-status="absent"] .passflow-pda-tap { border-color: rgba(239, 68, 68, 0.55); color: #fca5a5; }
+    html.passflow-pda body .passflow-rollcall-row[data-status="absent"] .passflow-pda-tap-yes { display: none; }
+    html.passflow-pda body .passflow-rollcall-row[data-status="absent"] .passflow-pda-tap-no { display: inline; }
+    html.passflow-pda body .passflow-pda-tap:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+    html.passflow-pda body .passflow-pda-tap.is-long { animation: passflow-pda-long 0.4s ease-out; }
+    @keyframes passflow-pda-long { 40% { transform: scale(1.12); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0.25); } }
+
+    html.passflow-pda body .passflow-rollcall-note { grid-column: 1 / -1; grid-row: 2; }
+    html.passflow-pda body .passflow-rollcall-note:not([open]) { display: none; }
+    html.passflow-pda body .passflow-rollcall-note summary { color: var(--pda-muted); }
+    html.passflow-pda body .passflow-saved { position: absolute; right: 72px; bottom: 4px; font-size: 11px; color: var(--pda-muted); }
+    html.passflow-pda body .passflow-saved.is-error { color: #fca5a5; }
+
+    /* Sous la carte : « Arrivé » (glisser à droite) et les actions (glisser à gauche) */
+    html.passflow-pda body .passflow-pda-under { display: flex; align-items: center; position: absolute; inset: 0; z-index: 1; border-radius: 16px; }
+    html.passflow-pda body .passflow-pda-under--yes { gap: 8px; padding: 0 18px; background: #166534; color: #dcfce7; font-weight: 800; font-size: 15px; transition: background 0.15s; }
+    html.passflow-pda body .passflow-pda-under--yes svg { width: 26px; height: 26px; stroke-width: 3; transition: transform 0.15s; }
+    html.passflow-pda body .passflow-rollcall-row.is-yes .passflow-pda-under--yes { background: var(--pda-ok); color: var(--pda-ok-ink); }
+    html.passflow-pda body .passflow-rollcall-row.is-yes .passflow-pda-under--yes svg { transform: scale(1.2); }
+    html.passflow-pda body .passflow-pda-under--acts { justify-content: flex-end; gap: 6px; padding: 0 8px; background: var(--pda-panel-2); left: auto; width: auto; }
+    html.passflow-pda body .passflow-rollcall-row:not(.is-right) .passflow-pda-under--yes,
+    html.passflow-pda body .passflow-rollcall-row.is-right .passflow-pda-under--acts { visibility: hidden; }
+    html.passflow-pda body .passflow-pda-act { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 60px; height: 62px; padding: 0; border: 0; border-radius: 12px; background: #2b3140; color: var(--pda-ink) !important; font-size: 11px; font-weight: 700; text-decoration: none; cursor: pointer; }
+    html.passflow-pda body .passflow-pda-act[data-pda-note] { background: #3b4252; }
+    html.passflow-pda body .passflow-pda-act.is-sale { background: var(--pda-accent); color: #fff !important; }
+    html.passflow-pda body .passflow-pda-act:disabled { opacity: 0.4; }
+
+    /* ---------- Barre du bas ---------- */
+
+    html.passflow-pda body .passflow-pda-bar {
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 9990; display: grid; grid-template-columns: 1fr 1fr 1.25fr 1fr 1fr; align-items: end; gap: 4px;
+        padding: 8px 8px calc(12px + env(safe-area-inset-bottom)); background: #12141a; border-top: 1px solid var(--pda-line);
+    }
+    html.passflow-pda body .passflow-pda-tab {
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; height: 58px; min-width: 0; padding: 0; border: 0; border-radius: 14px;
+        background: transparent; color: var(--pda-muted) !important; font: inherit; font-size: 11.5px; font-weight: 700; text-decoration: none; cursor: pointer; touch-action: manipulation;
+    }
+    html.passflow-pda body .passflow-pda-tab span { white-space: nowrap; }
+    html.passflow-pda body .passflow-pda-tab em { font-style: normal; font-size: 10.5px; font-weight: 800; color: var(--pda-ok); margin-top: -2px; white-space: nowrap; }
+    html.passflow-pda body .passflow-pda-tab em:empty { display: none; }
+    html.passflow-pda body .passflow-pda-tab.is-on { background: var(--pda-panel); color: var(--pda-ink) !important; }
+    html.passflow-pda body .passflow-pda-tab:active { transform: scale(0.95); }
+    html.passflow-pda body .passflow-pda-tab:disabled { opacity: 0.4; }
+    html.passflow-pda body .passflow-pda-tab.is-big { height: 70px; margin-top: -14px; border-radius: 20px; background: var(--pda-accent); color: #fff !important; font-size: 12.5px; box-shadow: 0 8px 24px rgba(181, 71, 107, 0.45); }
+    html.passflow-pda body .passflow-pda-tab.is-big svg { width: 28px; height: 28px; }
+    html.passflow-pda body .passflow-pda-tab.is-void { visibility: hidden; }
+
+    /* ---------- Feuille « Plus » ---------- */
+
+    html.passflow-pda-sheet-on { overflow: hidden; }
+    html.passflow-pda body .passflow-pda-sheet { display: flex; align-items: flex-end; position: fixed; inset: 0; z-index: 100040; background: rgba(0, 0, 0, 0.55); }
+    html.passflow-pda body .passflow-pda-sheet[hidden] { display: none; }
+    html.passflow-pda body .passflow-pda-sheet-box { width: 100%; padding: 10px 12px calc(16px + env(safe-area-inset-bottom)); border-radius: 24px 24px 0 0; background: var(--pda-panel); color: var(--pda-ink); animation: passflow-pda-up 0.22s ease-out; }
+    html.passflow-pda body .passflow-pda-grab { display: block; width: 42px; height: 5px; margin: 0 auto 10px; border-radius: 5px; background: #3a404c; }
+    html.passflow-pda body .passflow-pda-more-item { display: flex; align-items: center; gap: 14px; min-height: 54px; padding: 0 12px; border-radius: 14px; color: var(--pda-ink) !important; font-size: 16px; font-weight: 600; text-decoration: none; }
+    html.passflow-pda body .passflow-pda-more-item:active { background: var(--pda-panel-2); }
+    html.passflow-pda body .passflow-pda-more-item svg { color: var(--pda-muted); }
+    html.passflow-pda body .passflow-pda-more-close { width: 100%; height: 48px; margin-top: 6px; border: 0; border-radius: 14px; background: var(--pda-panel-2); color: var(--pda-ink); font: inherit; font-weight: 700; }
+    @keyframes passflow-pda-up { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+    /* ---------- Bandeau « X arrivé · Annuler » ---------- */
+
+    html.passflow-pda body .passflow-pda-toast {
+        display: flex; align-items: center; gap: 10px; position: fixed; left: 12px; right: 12px; bottom: calc(var(--pda-bar-h) + 14px + env(safe-area-inset-bottom)); z-index: 9995;
+        padding: 12px 14px; border-radius: 14px; background: var(--pda-ink); color: #111827; font-weight: 700; font-size: 14px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    }
+    html.passflow-pda body .passflow-pda-toast[hidden] { display: none; }
+    html.passflow-pda body .passflow-pda-toast.is-in { animation: passflow-pda-up 0.22s ease-out; }
+    html.passflow-pda body .passflow-pda-toast i { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--pda-ok) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat; }
+    html.passflow-pda body .passflow-pda-toast span { flex: 1; min-width: 0; }
+    html.passflow-pda body .passflow-pda-toast button { flex: none; border: 0; background: none; padding: 6px 4px; color: var(--pda-accent); font: inherit; font-weight: 800; cursor: pointer; }
+
+    /* ======================================================================
+       Caisse (fenêtre « Nouvelle vente ») : tuiles avec photo, Encaisser, feuille de paiement
+       ====================================================================== */
+
+    html.passflow-pda body .passflow-pos-box { position: relative; background: var(--pda-bg); color: var(--pda-ink); }
+    html.passflow-pda body .passflow-pos-head { gap: 8px; padding: max(10px, env(safe-area-inset-top)) 10px 8px 14px; border-bottom: 0; }
+    html.passflow-pda body .passflow-pos-head h2 { flex: 1; min-width: 0; font-size: 16px; color: var(--pda-ink); }
+    html.passflow-pda body .passflow-pos-day { display: flex; flex-direction: column; align-items: flex-end; flex: none; line-height: 1.1; }
+    html.passflow-pda body .passflow-pos-day[hidden] { display: none; }
+    html.passflow-pda body .passflow-pos-day small { display: none; }
+    html.passflow-pda body .passflow-pos-day strong { font-size: 16px; font-weight: 800; color: var(--pda-ok); font-variant-numeric: tabular-nums; }
+    html.passflow-pda body .passflow-pos-sales,
+    html.passflow-pda body .passflow-pos-x { display: grid; place-items: center; flex: none; width: 42px; height: 42px; padding: 0; border-radius: 12px; background: var(--pda-panel); border: 1px solid var(--pda-line); color: var(--pda-ink); font-size: 26px; line-height: 1; }
+    html.passflow-pda body .passflow-pos-shop { padding: 0 12px; }
+    html.passflow-pda body .passflow-pos-tab,
+    html.passflow-pda body .passflow-pos-back { height: 36px; padding: 0 14px; border-radius: 999px; background: var(--pda-panel); border: 1px solid var(--pda-line); color: var(--pda-ink); font-weight: 600; font-size: 13.5px; }
+    html.passflow-pda body .passflow-pos-tab[aria-selected="true"] { background: var(--pda-ink); color: #111827; border-color: transparent; }
+    html.passflow-pda body .passflow-pos-tabs { scrollbar-width: none; }
+    html.passflow-pda body .passflow-pos-search { min-height: 46px; border-radius: 14px; background: var(--pda-panel); border: 1px solid var(--pda-line); color: var(--pda-ink); padding: 0 14px; }
+    html.passflow-pda body .passflow-pos-search::placeholder { color: var(--pda-muted); }
+
+    html.passflow-pda body .passflow-pos-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    html.passflow-pda body .passflow-pos-tile {
+        display: flex; flex-direction: column; justify-content: flex-start; gap: 0; min-height: 0; padding: 0; overflow: hidden;
+        border-radius: 16px; background: var(--pda-panel); border: 1px solid var(--pda-line); color: var(--pda-ink); text-align: left;
+    }
+    html.passflow-pda body .passflow-pos-tile:has(.passflow-pos-badge) { border-color: var(--pda-accent); box-shadow: inset 0 0 0 1px var(--pda-accent); }
+    html.passflow-pda body .passflow-pos-pic {
+        position: static; transform: none; width: 100%; height: 96px; aspect-ratio: auto; margin: 0; border-radius: 0;
+        background: #fff; color: #9aa1ad; font-size: 32px; font-weight: 800;
+    }
+    html.passflow-pda body .passflow-pos-pic img { width: 100%; height: 100%; object-fit: contain; padding: 6px; box-sizing: border-box; }
+    html.passflow-pda body .passflow-pos-name { display: block; padding: 8px 10px 0; font-size: 13.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--pda-ink); }
+    html.passflow-pda body .passflow-pos-tile .passflow-pos-ref,
+    html.passflow-pda body .passflow-pos-desc { display: none; }
+    html.passflow-pda body .passflow-pos-tile .passflow-pos-price { margin: 0; padding: 2px 10px 10px; font-size: 16px; font-weight: 800; color: var(--pda-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    html.passflow-pda body .passflow-pos-stock { display: block; position: absolute; right: 10px; bottom: 12px; font-size: 11px; font-weight: 600; color: var(--pda-muted); }
+    html.passflow-pda body .passflow-pos-stock.is-low { color: var(--pda-late); }
+    html.passflow-pda body .passflow-pos-tile .passflow-pos-badge { top: -1px; right: -1px; transform: none; min-width: 30px; height: 30px; border-radius: 0 16px 0 12px; font-size: 14px; font-weight: 800; }
+    html.passflow-pda body .passflow-pos-tile.is-out { opacity: 1; }
+    html.passflow-pda body .passflow-pos-tile.is-out > * { opacity: 0.4; filter: grayscale(1); }
+    html.passflow-pda body .passflow-pos-tile.is-out .passflow-pos-price { color: #fca5a5; filter: none; opacity: 1; }
+    html.passflow-pda body .passflow-pos-variant { min-height: 72px; border-radius: 16px; background: var(--pda-panel); border: 1px solid var(--pda-line); color: var(--pda-ink); }
+    html.passflow-pda body .passflow-pos-pick-title { color: var(--pda-ink); }
+    html.passflow-pda body .passflow-pos-none { color: var(--pda-muted); }
+
+    /* Barre du panier : nombre d'articles, total, Encaisser */
+    html.passflow-pda body .passflow-pos-cart {
+        display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px;
+        margin: 8px 12px calc(12px + env(safe-area-inset-bottom)); padding: 8px; border: 0; border-radius: 18px; background: var(--pda-ink); color: #111827; box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.35);
+    }
+    html.passflow-pda body .passflow-pos-cart > * { grid-column: 1 / -1; }
+    html.passflow-pda body .passflow-pos-cart > .passflow-pos-sheet { grid-column: 1; width: auto; min-width: 0; gap: 6px; margin: 0; padding: 4px 6px; color: #111827; }
+    html.passflow-pda body .passflow-pos-sheet-title { font-size: 13px; }
+    html.passflow-pda body .passflow-pos-sheet-title .dashicons,
+    html.passflow-pda body .passflow-pos-sheet-chev { display: none; }
+    html.passflow-pda body .passflow-pos-sheet-total { color: #111827; font-size: 20px; font-weight: 800; white-space: nowrap; }
+    html.passflow-pda body .passflow-pos-cart > .passflow-pos-checkout {
+        grid-column: 2; grid-row: 1; display: inline-flex; align-items: center; gap: 8px; height: 52px; padding: 0 14px; border: 0; border-radius: 14px;
+        background: var(--pda-ok); color: var(--pda-ok-ink); font: inherit; font-size: 16px; font-weight: 800; cursor: pointer;
+    }
+    html.passflow-pda body .passflow-pos-checkout svg { stroke-width: 3; }
+    html.passflow-pda body .passflow-pos-checkout:active { transform: scale(0.97); }
+    html.passflow-pda body .passflow-pos-pay { display: none; }
+    html.passflow-pda body .passflow-pos-error { margin: 0; padding: 4px 6px; color: #b91c1c; font-weight: 700; }
+    html.passflow-pda body .passflow-pos-detail .passflow-pos-line { background: #fff; }
+
+    /* Feuille de paiement : un toucher = vente validée */
+    html.passflow-pda body .passflow-pos-paysheet { display: flex; align-items: flex-end; position: absolute; inset: 0; z-index: 10; background: rgba(0, 0, 0, 0.55); }
+    html.passflow-pda body .passflow-pos-paysheet[hidden] { display: none; }
+    html.passflow-pda body .passflow-pos-paysheet-box { width: 100%; padding: 10px 14px calc(18px + env(safe-area-inset-bottom)); border-radius: 24px 24px 0 0; background: var(--pda-panel); color: var(--pda-ink); animation: passflow-pda-up 0.22s ease-out; }
+    html.passflow-pda body .passflow-pos-grab { display: block; width: 42px; height: 5px; margin: 0 auto 12px; border-radius: 5px; background: #3a404c; }
+    html.passflow-pda body .passflow-pos-cart .passflow-pos-paysheet-box h3 { display: block; }
+    html.passflow-pda body .passflow-pos-paysheet-box h3 { margin: 0; font-size: 13px; color: var(--pda-muted); text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    html.passflow-pda body .passflow-pos-paysheet-total { display: block; margin: 2px 0 4px; font-size: 40px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--pda-ink); }
+    html.passflow-pda body .passflow-pos-paysheet-lines { margin: 0 0 14px; font-size: 13px; line-height: 1.5; color: var(--pda-muted); }
+    html.passflow-pda body .passflow-pos-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    html.passflow-pda body .passflow-pos-method { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; height: 84px; padding: 0 6px; border-radius: 16px; background: var(--pda-panel-2); border: 1px solid var(--pda-line); color: var(--pda-ink); font: inherit; cursor: pointer; }
+    html.passflow-pda body .passflow-pos-method svg { width: 28px; height: 28px; }
+    html.passflow-pda body .passflow-pos-method strong { font-size: 14px; font-weight: 800; color: inherit; }
+    html.passflow-pda body .passflow-pos-method small { font-size: 11px; font-weight: 600; color: var(--pda-muted); max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    html.passflow-pda body .passflow-pos-method small:empty { display: none; }
+    html.passflow-pda body .passflow-pos-method.is-main { background: var(--pda-ok); border-color: transparent; color: var(--pda-ok-ink); }
+    html.passflow-pda body .passflow-pos-method.is-main small { color: #14532d; }
+    html.passflow-pda body .passflow-pos-method:active { transform: scale(0.97); }
+    html.passflow-pda body .passflow-pos-paysheet-back { width: 100%; height: 46px; margin-top: 8px; border: 0; background: none; color: var(--pda-muted); font: inherit; font-weight: 700; }
+
+    /* Vente validée : coche verte plein écran, une seconde */
+    html.passflow-pda body .passflow-pos-done { display: grid; place-items: center; position: fixed; inset: 0; z-index: 100070; background: rgba(22, 163, 74, 0.94); animation: passflow-pos-done 1.1s ease-out forwards; pointer-events: none; }
+    html.passflow-pda body .passflow-pos-done svg { width: 140px; height: 140px; fill: none; stroke: #fff; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+    html.passflow-pda body .passflow-pos-done path { stroke-dasharray: 40; stroke-dashoffset: 40; animation: passflow-pos-draw 0.45s 0.1s ease-out forwards; }
+    @keyframes passflow-pos-draw { to { stroke-dashoffset: 0; } }
+    @keyframes passflow-pos-done { 0% { opacity: 0; } 12% { opacity: 1; } 75% { opacity: 1; } 100% { opacity: 0; } }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html.passflow-pda body .passflow-rollcall-card,
+    html.passflow-pda body .passflow-pda-sheet-box,
+    html.passflow-pda body .passflow-pos-paysheet-box { transition: none; animation: none; }
+}
+
+/* :not(#pda-z) ajoute un poids d'ID : le preset Cristal (sélecteurs :is/:not très lourds) ne peut plus gagner. */
+/* ======================================================================
+   Skin CodeTool et presets (Cristal…) : leurs fonds blancs, champs et boutons passent
+   devant sinon. Spécificité plus forte + !important sur ce qui compte.
+   ====================================================================== */
+
+/* Un parent animé (smbb-skin-in, transform) piège les éléments « fixed » : pas d'animation ici. */
+html.passflow-pda:not(#pda-z) body.smbb-skin .wrap.smbb-codetool > *,
+html.passflow-pda:not(#pda-z) body .wrap.smbb-codetool > * { animation: none !important; transform: none !important; }
+html.passflow-pda:not(#pda-z) body::before,
+html.passflow-pda:not(#pda-z) body::after { display: none !important; }
+html.passflow-pda:not(#pda-z) body,
+html.passflow-pda:not(#pda-z) body #wpwrap,
+html.passflow-pda:not(#pda-z) body #wpcontent,
+html.passflow-pda:not(#pda-z) body #wpbody,
+html.passflow-pda:not(#pda-z) body #wpbody-content,
+html.passflow-pda:not(#pda-z) body .wrap.smbb-codetool,
+html.passflow-pda:not(#pda-z) body .passflow-admin { background: var(--pda-bg) !important; }
+html.passflow-pda:not(#pda-z) body .passflow-pda-layer { margin: 0; padding: 0; height: 0; }
+
+/* Panneaux et cartes : jamais de fond blanc du thème */
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-panel,
+html.passflow-pda:not(#pda-z) body .passflow-admin form.passflow-rollcall,
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-list { background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; }
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-tools { background: var(--pda-bg) !important; top: 0 !important; }
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-card,
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-card,
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-cashdesk-card,
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-walkin { background: var(--pda-panel) !important; border: 1px solid var(--pda-line) !important; box-shadow: none !important; color: var(--pda-ink) !important; }
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-lock { background: rgba(250, 204, 21, 0.12) !important; border-color: rgba(250, 204, 21, 0.3) !important; box-shadow: none !important; }
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-lock.is-unlocked { background: rgba(56, 189, 248, 0.14) !important; border-color: rgba(56, 189, 248, 0.35) !important; }
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-who > strong,
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-pda-title strong,
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-pda-clock strong { color: var(--pda-ink) !important; }
+
+/* Recherche : le champ se fond dans sa boîte sombre */
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-search { background: var(--pda-panel) !important; border-color: var(--pda-line) !important; box-shadow: none !important; }
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-search input[type=search],
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-search input[type=search]:focus { background: transparent !important; border: 0 !important; box-shadow: none !important; outline: 0; color: var(--pda-ink) !important; min-height: 0 !important; height: 44px; padding: 0 !important; }
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-search .dashicons { color: var(--pda-muted) !important; }
+
+/* Puces de filtre */
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-filters button { background: var(--pda-panel) !important; border-color: var(--pda-line) !important; color: var(--pda-ink) !important; }
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-filters button.is-active { background: var(--pda-ink) !important; border-color: transparent !important; color: #111827 !important; }
+
+/* « Faire signer » : bouton jaune */
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-docs .button,
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-docs .button:hover,
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-docs .button:focus { background: var(--pda-warn) !important; border: 0 !important; color: #111827 !important; box-shadow: none !important; text-decoration: none !important; }
+
+/* Boutons et champs restants (imprévu, onglet Caisse) */
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-portal .button:not(.button-primary) { background: var(--pda-panel-2) !important; border-color: var(--pda-line) !important; color: var(--pda-ink) !important; box-shadow: none !important; }
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-portal .button-primary { background: var(--pda-accent) !important; border-color: transparent !important; color: #fff !important; }
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-portal :is(input[type=text], input[type=email], input[type=tel], input[type=number], select, textarea) { background: var(--pda-panel-2) !important; border-color: var(--pda-line) !important; color: var(--pda-ink) !important; }
+
+/* ======================================================================
+   Caisse : même mise en page « téléphone » sur toutes les largeurs (admin.css ne la donne
+   qu'en dessous de 782 px), fenêtre centrée en colonne sur ordinateur.
+   ====================================================================== */
+
+html.passflow-pda:not(#pda-z) body .passflow-pos { padding: 0; z-index: 100050; align-items: stretch; justify-content: center; background: rgba(0, 0, 0, 0.6); }
+html.passflow-pda:not(#pda-z) body .passflow-pos-box { width: 100%; max-width: 560px; height: 100%; height: 100dvh; max-height: none; border-radius: 0; box-shadow: none; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-head h2 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-body { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-shop { flex: 1; min-height: 0; padding: 0 12px; gap: 8px; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-tabs,
+html.passflow-pda:not(#pda-z) body .passflow-pos-search { flex: none; font-size: 16px; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-grid { padding-bottom: 10px; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-grid.is-picking { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); }
+html.passflow-pda:not(#pda-z) body .passflow-pos-cart { flex: none; max-height: 82%; overflow: hidden; border-left: 0; border-top: 0; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-cart h3 { display: none; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-sheet { display: flex; align-items: center; gap: 6px; border: 0; background: none; font: inherit; cursor: pointer; text-align: left; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-sheet-title { flex: 1; display: flex; align-items: center; gap: 6px; font-weight: 600; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-sheet-count { min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px; background: var(--pda-accent); color: #fff; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-sheet-count[hidden] { display: none; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-detail { display: none; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-cart.is-expanded .passflow-pos-detail { display: flex; flex: 1; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-total { display: none; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-cart .passflow-pos-paysheet-box h3 { display: block; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-paysheet { position: fixed; left: 50%; right: auto; top: 0; bottom: 0; width: 100%; max-width: 560px; transform: translateX(-50%); }
+
+/* ======================================================================
+   Ordinateur : colonne centrée, barre du bas et bandeaux à sa largeur
+   ====================================================================== */
+
+@media (min-width: 783px) {
+    html.passflow-pda:not(#pda-z) body .wrap.passflow-admin { max-width: 640px; margin: 0 auto !important; padding: 0 16px; }
+    html.passflow-pda:not(#pda-z) body .passflow-pda-bar,
+    html.passflow-pda:not(#pda-z) body .passflow-pda-toast { left: max(12px, calc(50% - 320px)); right: max(12px, calc(50% - 320px)); }
+    html.passflow-pda:not(#pda-z) body .passflow-pda-bar { border-radius: 22px 22px 0 0; border: 1px solid var(--pda-line); border-bottom: 0; }
+    html.passflow-pda:not(#pda-z) body .passflow-pda-sheet { justify-content: center; }
+    html.passflow-pda:not(#pda-z) body .passflow-pda-sheet-box { max-width: 640px; }
+}
+
+/* Barre WordPress et barre d'app masquées : plus d'espace réservé en haut */
+html.passflow-pda,
+html.passflow-pda.wp-toolbar { padding-top: 0 !important; --wp-admin--admin-bar--height: 0px; --smbb-appbar-h: 0px !important; }
+html.passflow-pda:not(#pda-z) body #wpadminbar,
+html.passflow-pda:not(#pda-z) body .smbb-appbar,
+html.passflow-pda:not(#pda-z) body [data-smbb-appbar] { display: none !important; }
+html.passflow-pda:not(#pda-z) body #wpwrap,
+html.passflow-pda:not(#pda-z) body #wpcontent,
+html.passflow-pda:not(#pda-z) body #wpbody,
+html.passflow-pda:not(#pda-z) body #wpbody-content,
+html.passflow-pda:not(#pda-z) body .wrap.smbb-codetool { padding-top: 0 !important; margin-top: 0 !important; }
+html.passflow-pda:not(#pda-z) body .passflow-portal > .passflow-pda-top { padding-top: max(8px, env(safe-area-inset-top)); }
+
+/* Tuiles de la caisse : le preset Cristal force un fond blanc sur les « -tile » */
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-pos-tile { background: var(--pda-panel) !important; border-color: var(--pda-line) !important; box-shadow: none !important; color: var(--pda-ink) !important; }
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-pos-tile:has(.passflow-pos-badge) { border-color: var(--pda-accent) !important; box-shadow: inset 0 0 0 1px var(--pda-accent) !important; }
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-pos-box { background: var(--pda-bg) !important; color: var(--pda-ink) !important; }
+
+/* Couleur de la marque (réglée sur .passflow-admin par le thème) */
+html.passflow-pda:not(#pda-z) body .passflow-admin { --pda-accent: var(--passflow-brand, #b5476b); }
+html.passflow-pda:not(#pda-z) body .passflow-pda-layer { height: 0 !important; min-height: 0 !important; padding: 0 !important; margin: 0 !important; background: transparent !important; }
+html.passflow-pda:not(#pda-z) body .passflow-pda-tab.is-big { box-shadow: 0 8px 24px color-mix(in srgb, var(--pda-accent) 45%, transparent); }
+
+/* ======================================================================
+   Tactile : cibles de 44 px minimum, pas de zoom au double appui,
+   pas de surlignage gris, retour visuel immédiat à l'appui.
+   ====================================================================== */
+html.passflow-pda:not(#pda-z) body .passflow-admin :is(a, button, summary, label, input, select, textarea, [role="button"]) { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-filters { gap: 8px !important; }
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-filters button { min-height: 44px !important; padding: 0 16px !important; font-size: 14px !important; }
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-row a.button-small,
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-row .button { min-height: 44px !important; line-height: 42px !important; padding: 0 16px !important; font-size: 14px !important; display: inline-flex !important; align-items: center; }
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-note > summary { min-height: 44px; display: flex; align-items: center; padding: 0 4px; }
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-note textarea { min-height: 88px; font-size: 16px !important; }
+html.passflow-pda:not(#pda-z) body .passflow-admin :is(input[type="search"], input[type="text"], input[type="email"], input[type="tel"], input[type="number"], select, textarea) { font-size: 16px !important; } /* 16 px : iOS ne zoome pas au focus */
+html.passflow-pda:not(#pda-z) body :is(.passflow-pos-tab) { min-height: 44px !important; padding: 0 16px !important; font-size: 14px !important; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-x { width: 48px !important; height: 48px !important; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-sheet { min-height: 44px !important; }
+html.passflow-pda:not(#pda-z) body :is(.passflow-pos-qty button, .passflow-pos-line button) { min-width: 44px !important; min-height: 44px !important; }
+html.passflow-pda:not(#pda-z) body :is(.passflow-pos-tile, .passflow-pos-variant, [data-pos-pay], .passflow-pda-bar a, .passflow-pda-bar button, .passflow-pda-act, .passflow-rollcall-filters button, .passflow-pda-sheet a, .passflow-pda-sheet button) { transition: transform 0.08s ease, filter 0.08s ease; }
+html.passflow-pda:not(#pda-z) body :is(.passflow-pos-tile, .passflow-pos-variant, [data-pos-pay], .passflow-pda-bar a, .passflow-pda-bar button, .passflow-pda-act, .passflow-rollcall-filters button, .passflow-pda-sheet a, .passflow-pda-sheet button):active { transform: scale(0.96); filter: brightness(1.15); }
+html.passflow-pda:not(#pda-z) body .passflow-pda-tap:active { transform: scale(0.9); }
+html.passflow-pda:not(#pda-z) body :is(.passflow-pda-bar, .passflow-pda-top, .passflow-pos-tile, .passflow-rollcall-filters) { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+
+/* Panier déplié : feuille posée sur le magasin (les tuiles gardent leur taille), voile derrière. */
+html.passflow-pda:not(#pda-z) body .passflow-pos-body { position: relative; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-cart.is-expanded { position: absolute; left: 0; right: 0; bottom: 0; z-index: 6; max-height: 86%; display: flex; flex-direction: column; align-items: stretch; box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.55), 0 -6px 24px rgba(0, 0, 0, 0.35); }
+html.passflow-pda:not(#pda-z) body .passflow-pos-cart.is-expanded > .passflow-pos-sheet { min-height: 52px; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-cart.is-expanded > .passflow-pos-checkout { order: 9; justify-content: center; height: 56px; flex: none; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-detail :is(input, select) { min-height: 44px; }
+
+/* Tuiles : jamais écrasées par la hauteur de la grille (photo 96 px, nom et prix entiers, on fait défiler). */
+html.passflow-pda:not(#pda-z) body .passflow-pos-grid { grid-auto-rows: max-content !important; grid-template-rows: none !important; align-content: start !important; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-tile { height: auto !important; min-height: 150px !important; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-tile > * { flex: none; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-tile .passflow-pos-price { padding-right: 64px; }
+
+/* « Faire signer » reste jaune malgré la règle générique des boutons du portail. */
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-portal .passflow-rollcall-docs .button.button { background: var(--pda-warn) !important; border: 0 !important; color: #111827 !important; font-weight: 800 !important; }
+html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-note textarea { font-family: inherit !important; }
+
+/* Feuille de paiement : interlignes explicites (le thème met line-height < 1 sur les gros chiffres). */
+html.passflow-pda:not(#pda-z) body .passflow-pos-paysheet-box h3 { margin: 0 0 6px !important; line-height: 1.3 !important; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-paysheet-total { margin: 0 0 8px !important; font-size: 38px !important; line-height: 1.1 !important; }
+html.passflow-pda:not(#pda-z) body .passflow-pos-paysheet-lines { margin: 0 0 16px !important; line-height: 1.45 !important; }
+
+/* ======================================================================
+   Nuit teintée : les fonds sombres reprennent la couleur du thème CodeTool
+   (bleu → bleu nuit, aubergine → aubergine nuit…), en très très foncé.
+   Trois niveaux : « profond » (barres), fond, cartes un poil plus claires.
+   Défini sur body ET sur .passflow-admin : la couleur du thème n'existe qu'à
+   partir de body (--smbb-t-accent) et de .passflow-admin (--passflow-brand).
+   Sans color-mix (vieux navigateurs), on garde le noir neutre d'avant.
+   ====================================================================== */
+@supports (color: color-mix(in oklab, red, blue)) {
+    html.passflow-pda body,
+    html.passflow-pda body .passflow-admin {
+        --pda-tint: var(--smbb-t-accent, var(--passflow-brand, #b5476b));
+        --pda-deep: color-mix(in oklab, var(--pda-tint) 12%, #0a0c12);
+        --pda-bg: color-mix(in oklab, var(--pda-tint) 18%, #10131b);
+        --pda-panel: color-mix(in oklab, var(--pda-tint) 22%, #181c26);
+        --pda-panel-2: color-mix(in oklab, var(--pda-tint) 26%, #202533);
+        --pda-line: color-mix(in oklab, var(--pda-tint) 20%, rgba(255, 255, 255, 0.08));
+        --pda-muted: color-mix(in oklab, var(--pda-tint) 14%, #9aa1ad);
+    }
+    html.passflow-pda:not(#pda-z) body .passflow-pda-bar,
+    html.passflow-pda:not(#pda-z) body .passflow-admin .passflow-rollcall-tools { background: var(--pda-deep) !important; }
+    html.passflow-pda:not(#pda-z) body :is(.passflow-pda-grab, .passflow-pos-grab) { background: var(--pda-line) !important; }
+    html.passflow-pda:not(#pda-z) body .passflow-pda-tap { border-color: color-mix(in oklab, var(--pda-tint) 25%, #3a404c) !important; }
+    html.passflow-pda:not(#pda-z) body .passflow-pos-box { background: var(--pda-bg) !important; }
+}
